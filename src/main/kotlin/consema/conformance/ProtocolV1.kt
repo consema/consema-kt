@@ -20,10 +20,12 @@
 // roundtrips. ProtocolMessage equality is contract + payload-value
 // equality, mirroring the Rust derived Eq.
 //
-// Two cases are documented skips: the Kotlin milestone exposes no
-// core-diagnostic snapshot-bound location surface and no
-// NativeMatchLocator process-local handle surface, so the two
-// ProcessLocalHandle rejection cases have nothing to call.
+// Both ProcessLocalHandle rejection cases are implemented, not skipped:
+// the runner dispatches protocol.diagnostic.require-source-binding and
+// protocol.query.reject-native-handle to the strict wire surfaces, which
+// refuse with core.protocol.process-local-handle@1 (requireSourceBinding /
+// rejectNativeHandle below). The runner records zero skipped cases, and
+// ConformanceRunnerTest asserts "no documented skips" (0 skipped).
 
 package consema.conformance
 
