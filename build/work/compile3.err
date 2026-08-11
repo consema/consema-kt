@@ -1,0 +1,2799 @@
+kotlin\src\main\kotlin\consema\ini\Edit.kt:333:34: error: 'name' hides member of supertype 'EditFailure' and needs an 'override' modifier.
+    data class ResourceLimit(val name: String) : EditFailure("ResourceLimit")
+                                 ^^^^
+kotlin\src\main\kotlin\consema\ini\Edit.kt:796:79: error: unresolved reference 'target'.
+                val entry = entriesList.firstOrNull { it.nodeRef == operation.target }
+                                                                              ^^^^^^
+kotlin\src\main\kotlin\consema\ini\Edit.kt:1384:59: error: unresolved reference 'saturatingMul'.
+        maxPatchBytes = parseLimits.common.maxSourceBytes.saturatingMul(2),
+                                                          ^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\ini\Errors.kt:60:9: error: 'cause' hides member of supertype 'Throwable' and needs an 'override' modifier.
+    val cause: Exception? = null,
+        ^^^^^
+kotlin\src\main\kotlin\consema\ini\Errors.kt:108:30: error: unresolved reference 'RelatedSourceLocation'.
+    related: List<Diagnostic.RelatedSourceLocation> = emptyList(),
+                             ^^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\ini\Errors.kt:108:55: error: cannot infer type for this parameter. Specify it explicitly.
+    related: List<Diagnostic.RelatedSourceLocation> = emptyList(),
+                                                      ^^^^^^^^^
+kotlin\src\main\kotlin\consema\ini\Materialization.kt:280:53: error: unresolved reference 'saturatingMul'.
+        maxDecodedUtf8Bytes = limits.maxOutputBytes.saturatingMul(3),
+                                                    ^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\ini\Materialization.kt:826:28: error: unresolved reference 'saturatingMul'.
+            maxOutputBytes.saturatingMul(2)
+                           ^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\ini\Materialization.kt:830:32: error: unresolved reference 'saturatingMul'.
+                maxOutputBytes.saturatingMul(3)
+                               ^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\ini\Materialization.kt:992:12: error: unresolved reference 'PvBoolean'.
+        is PvBoolean -> left.value == (right as PvBoolean).value
+           ^^^^^^^^^
+kotlin\src\main\kotlin\consema\ini\Materialization.kt:992:30: error: unresolved reference 'value'.
+        is PvBoolean -> left.value == (right as PvBoolean).value
+                             ^^^^^
+kotlin\src\main\kotlin\consema\ini\Materialization.kt:992:49: error: unresolved reference 'PvBoolean'.
+        is PvBoolean -> left.value == (right as PvBoolean).value
+                                                ^^^^^^^^^
+kotlin\src\main\kotlin\consema\ini\Materialization.kt:992:60: error: unresolved reference 'value'.
+        is PvBoolean -> left.value == (right as PvBoolean).value
+                                                           ^^^^^
+kotlin\src\main\kotlin\consema\ini\Parser.kt:165:17: error: no parameter with name 'byteOffset' found.
+                byteOffset = error.byteOffset,
+                ^^^^^^^^^^
+kotlin\src\main\kotlin\consema\ini\Parser.kt:686:60: error: unresolved reference 'add'.
+            logicalLines[state.logicalIndex].physicalLines.add(
+                                                           ^^^
+kotlin\src\main\kotlin\consema\ini\Parser.kt:691:56: error: unresolved reference 'add'.
+        logicalLines[state.logicalIndex].physicalLines.add(physical.nodeRef)
+                                                       ^^^
+kotlin\src\main\kotlin\consema\ini\Parser.kt:1096:39: error: type argument is not within its bounds: must be subtype of 'Comparable<Pair<String, String>>'.
+        val entryGroups = sortedMapOf<Pair<String, String>, MutableList<Int>>()
+                                      ^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\ini\Projection.kt:355:15: error: redeclaration:
+class Context : Any
+private class Context(
+              ^^^^^^^
+kotlin\src\main\kotlin\consema\ini\Projection.kt:657:17: error: unresolved reference 'projectedOrdinalValue'.
+                projectedOrdinalValue.toLong(),
+                ^^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\ini\Query.kt:179:19: error: cannot access 'class Context : Any': it is private in file.
+    val context = Context(document, limits, cancellation)
+                  ^^^^^^^
+kotlin\src\main\kotlin\consema\ini\Query.kt:180:13: error: unresolved reference 'step'.
+    context.step(1)
+            ^^^^
+kotlin\src\main\kotlin\consema\ini\Query.kt:206:19: error: cannot access 'class Context : Any': it is private in file.
+    val context = Context(document, limits, cancellation)
+                  ^^^^^^^
+kotlin\src\main\kotlin\consema\ini\Query.kt:209:13: error: unresolved reference 'step'.
+    context.step(pieces.size)
+            ^^^^
+kotlin\src\main\kotlin\consema\ini\Query.kt:231:13: error: unresolved reference 'cancellation'.
+        if (cancellation.isCancelled()) {
+            ^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\ini\Query.kt:234:9: error: unresolved reference 'steps'.
+        steps = steps.inc()
+        ^^^^^
+kotlin\src\main\kotlin\consema\ini\Query.kt:234:17: error: unresolved reference 'steps'.
+        steps = steps.inc()
+                ^^^^^
+kotlin\src\main\kotlin\consema\ini\Query.kt:235:13: error: unresolved reference 'steps'.
+        if (steps > limits.maxSteps || results > limits.maxResults) {
+            ^^^^^
+kotlin\src\main\kotlin\consema\ini\Query.kt:235:21: error: unresolved reference 'limits'.
+        if (steps > limits.maxSteps || results > limits.maxResults) {
+                    ^^^^^^
+kotlin\src\main\kotlin\consema\ini\Query.kt:235:50: error: unresolved reference 'limits'.
+        if (steps > limits.maxSteps || results > limits.maxResults) {
+                                                 ^^^^^^
+kotlin\src\main\kotlin\consema\ini\Query.kt:241:23: error: cannot access 'class Context : Any': it is private in file.
+        val section = document.sectionsList[ordinal]
+                      ^^^^^^^^
+kotlin\src\main\kotlin\consema\ini\Query.kt:253:21: error: cannot access 'class Context : Any': it is private in file.
+        val entry = document.entriesList[ordinal]
+                    ^^^^^^^^
+kotlin\src\main\kotlin\consema\ini\Query.kt:269:14: error: cannot access 'class Context : Any': it is private in file.
+    context: Context,
+             ^^^^^^^
+kotlin\src\main\kotlin\consema\ini\Query.kt:280:21: error: unresolved reference 'step'.
+            context.step(output.size)
+                    ^^^^
+kotlin\src\main\kotlin\consema\ini\Query.kt:290:55: error: cannot access 'class Context : Any': it is private in file.
+            compareBy<IniMatch> { sourceOrder(context.document, it).first }
+                                                      ^^^^^^^^
+kotlin\src\main\kotlin\consema\ini\Query.kt:291:47: error: cannot access 'class Context : Any': it is private in file.
+                .thenBy { sourceOrder(context.document, it).second },
+                                              ^^^^^^^^
+kotlin\src\main\kotlin\consema\ini\Query.kt:293:17: error: unresolved reference 'step'.
+        context.step(output.size)
+                ^^^^
+kotlin\src\main\kotlin\consema\ini\Query.kt:301:14: error: cannot access 'class Context : Any': it is private in file.
+    context: Context,
+             ^^^^^^^
+kotlin\src\main\kotlin\consema\ini\Query.kt:312:21: error: unresolved reference 'step'.
+            context.step(output.size)
+                    ^^^^
+kotlin\src\main\kotlin\consema\ini\Query.kt:322:17: error: unresolved reference 'step'.
+        context.step(output.size)
+                ^^^^
+kotlin\src\main\kotlin\consema\ini\Query.kt:330:14: error: cannot access 'class Context : Any': it is private in file.
+    context: Context,
+             ^^^^^^^
+kotlin\src\main\kotlin\consema\ini\Query.kt:342:25: error: cannot access 'class Context : Any': it is private in file.
+                context.document.sourceSnapshot.decodedTextBetween(item.span.startByte, item.span.endByte) == expected
+                        ^^^^^^^^
+kotlin\src\main\kotlin\consema\ini\Query.kt:355:13: error: unresolved reference 'step'.
+    context.step(output.size)
+            ^^^^
+kotlin\src\main\kotlin\consema\ini\Query.kt:362:14: error: cannot access 'class Context : Any': it is private in file.
+    context: Context,
+             ^^^^^^^
+kotlin\src\main\kotlin\consema\ini\Query.kt:369:45: error: cannot access 'class Context : Any': it is private in file.
+                    for (ordinal in context.document.sectionsList.indices) {
+                                            ^^^^^^^^
+kotlin\src\main\kotlin\consema\ini\Query.kt:370:60: error: unresolved reference 'sectionMatch'.
+                        pushMatch(context, output, context.sectionMatch(ordinal))
+                                                           ^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\ini\Query.kt:378:54: error: cannot access 'class Context : Any': it is private in file.
+                    for ((ordinal, entry) in context.document.entriesList.withIndex()) {
+                                                     ^^^^^^^^
+kotlin\src\main\kotlin\consema\ini\Query.kt:380:64: error: unresolved reference 'entryMatch'.
+                            pushMatch(context, output, context.entryMatch(ordinal))
+                                                               ^^^^^^^^^^
+kotlin\src\main\kotlin\consema\ini\Query.kt:389:45: error: cannot access 'class Context : Any': it is private in file.
+                    for (ordinal in context.document.entriesList.indices) {
+                                            ^^^^^^^^
+kotlin\src\main\kotlin\consema\ini\Query.kt:390:60: error: unresolved reference 'entryMatch'.
+                        pushMatch(context, output, context.entryMatch(ordinal))
+                                                           ^^^^^^^^^^
+kotlin\src\main\kotlin\consema\ini\Query.kt:398:43: error: cannot access 'class Context : Any': it is private in file.
+                    val ordinal = context.document.sectionsList
+                                          ^^^^^^^^
+kotlin\src\main\kotlin\consema\ini\Query.kt:401:60: error: unresolved reference 'sectionMatch'.
+                        pushMatch(context, output, context.sectionMatch(ordinal))
+                                                           ^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\ini\Query.kt:409:60: error: cannot access 'class Context : Any': it is private in file.
+            val equivalent = sectionComparisonName(context.document.profile, expected)
+                                                           ^^^^^^^^
+kotlin\src\main\kotlin\consema\ini\Query.kt:429:56: error: cannot access 'class Context : Any': it is private in file.
+            val equivalent = keyComparisonName(context.document.profile, expected)
+                                                       ^^^^^^^^
+kotlin\src\main\kotlin\consema\ini\Query.kt:464:49: error: cannot access 'class Context : Any': it is private in file.
+                        for (ordinal in context.document.sectionsList.indices) {
+                                                ^^^^^^^^
+kotlin\src\main\kotlin\consema\ini\Query.kt:465:41: error: cannot access 'class Context : Any': it is private in file.
+                            if (context.document.sectionsList[ordinal].duplicateGroup == group) {
+                                        ^^^^^^^^
+kotlin\src\main\kotlin\consema\ini\Query.kt:466:68: error: unresolved reference 'sectionMatch'.
+                                pushMatch(context, output, context.sectionMatch(ordinal))
+                                                                   ^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\ini\Query.kt:472:49: error: cannot access 'class Context : Any': it is private in file.
+                        for (ordinal in context.document.entriesList.indices) {
+                                                ^^^^^^^^
+kotlin\src\main\kotlin\consema\ini\Query.kt:473:41: error: cannot access 'class Context : Any': it is private in file.
+                            if (context.document.entriesList[ordinal].duplicateGroup == group) {
+                                        ^^^^^^^^
+kotlin\src\main\kotlin\consema\ini\Query.kt:474:68: error: unresolved reference 'entryMatch'.
+                                pushMatch(context, output, context.entryMatch(ordinal))
+                                                                   ^^^^^^^^^^
+kotlin\src\main\kotlin\consema\ini\Query.kt:485:53: error: cannot access 'class Context : Any': it is private in file.
+                    for ((ordinal, line) in context.document.physicalLinesList.withIndex()) {
+                                                    ^^^^^^^^
+kotlin\src\main\kotlin\consema\ini\Query.kt:498:53: error: cannot access 'class Context : Any': it is private in file.
+                    for ((ordinal, line) in context.document.logicalLinesList.withIndex()) {
+                                                    ^^^^^^^^
+kotlin\src\main\kotlin\consema\ini\Query.kt:522:13: error: unresolved reference 'step'.
+    context.step(output.size)
+            ^^^^
+kotlin\src\main\kotlin\consema\ini\Query.kt:527:32: error: cannot access 'class Context : Any': it is private in file.
+private fun pushMatch(context: Context, output: ArrayList<IniMatch>, match: IniMatch) {
+                               ^^^^^^^
+kotlin\src\main\kotlin\consema\ini\Query.kt:529:28: error: unresolved reference 'limits'.
+    if (observed > context.limits.maxResults) {
+                           ^^^^^^
+kotlin\src\main\kotlin\consema\ini\Source.kt:161:13: error: 'public' function exposes its 'internal' parameter type 'IniEncodingRequest'.
+            request: IniEncodingRequest,
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\ini\Source.kt:415:9: error: operator '==' cannot be applied to 'Byte' and 'Int'.
+        bytes[2] == 0x00 && bytes[3] == 0x00
+        ^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\ini\Source.kt:415:29: error: operator '==' cannot be applied to 'Byte' and 'Int'.
+        bytes[2] == 0x00 && bytes[3] == 0x00
+                            ^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\ini\Source.kt:422:28: error: operator '==' cannot be applied to 'Byte' and 'Int'.
+    if (bytes.size >= 4 && bytes[0] == 0x00 && bytes[1] == 0x00 &&
+                           ^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\ini\Source.kt:422:48: error: operator '==' cannot be applied to 'Byte' and 'Int'.
+    if (bytes.size >= 4 && bytes[0] == 0x00 && bytes[1] == 0x00 &&
+                                               ^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\ini\Source.kt:674:44: error: argument type mismatch: actual type is 'Number & Comparable<CapturedType(*)>', but 'Int' was expected.
+        current = advance(current, scalar, width)
+                                           ^^^^^
+kotlin\src\main\kotlin\consema\json\Document.kt:110:35: error: unresolved reference 'PvDecimal'.
+    data class Decimal(val value: PvDecimal) : InternalValueKind()
+                                  ^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Document.kt:198:9: error: return type mismatch: expected 'SemanticAvailability<Boolean?>', actual 'SemanticAvailability<Any?>'.
+        when (val kind = document.valueEntity(index).kind) {
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Document.kt:213:43: error: unresolved reference 'PvDecimal'.
+    fun asDecimal(): SemanticAvailability<PvDecimal?> =
+                                          ^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Document.kt:231:9: error: return type mismatch: expected 'SemanticAvailability<String?>', actual 'SemanticAvailability<Any?>'.
+        when (val kind = document.valueEntity(index).kind) {
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Document.kt:286:9: error: return type mismatch: expected 'SemanticAvailability<String>', actual 'SemanticAvailability<InternalValueKind.String>'.
+        when (val kind = document.valueEntity(entity().key).kind) {
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Edit.kt:116:13: error: syntax error: Parameter name expected.
+        val object: NodeRef,
+            ^^^^^^
+kotlin\src\main\kotlin\consema\json\Edit.kt:321:34: error: 'name' hides member of supertype 'EditFailure' and needs an 'override' modifier.
+    data class ResourceLimit(val name: String) : EditFailure("ResourceLimit")
+                                 ^^^^
+kotlin\src\main\kotlin\consema\json\Edit.kt:474:68: error: argument type mismatch: actual type is '<anonymous>', but 'NodeRef' was expected.
+    is EditOperation.InsertMember -> prepareInsertMember(operation.object, operation.name, operation.value, operation.placement)
+                                                                   ^^^^^^
+kotlin\src\main\kotlin\consema\json\Edit.kt:474:68: error: the expression cannot be a selector (cannot occur after a dot).
+    is EditOperation.InsertMember -> prepareInsertMember(operation.object, operation.name, operation.value, operation.placement)
+                                                                   ^^^^^^
+kotlin\src\main\kotlin\consema\json\Edit.kt:474:74: error: syntax error: Expecting a class body.
+    is EditOperation.InsertMember -> prepareInsertMember(operation.object, operation.name, operation.value, operation.placement)
+                                                                         ^
+kotlin\src\main\kotlin\consema\json\Edit.kt:555:67: error: unresolved reference 'LeftBrace'.
+            InsertionSyntax(NodeRole.ObjectMember, JsonSyntaxKind.LeftBrace, JsonSyntaxKind.RightBrace),
+                                                                  ^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Edit.kt:555:93: error: unresolved reference 'RightBrace'.
+            InsertionSyntax(NodeRole.ObjectMember, JsonSyntaxKind.LeftBrace, JsonSyntaxKind.RightBrace),
+                                                                                            ^^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Edit.kt:581:67: error: unresolved reference 'LeftBracket'.
+            InsertionSyntax(NodeRole.ArrayElement, JsonSyntaxKind.LeftBracket, JsonSyntaxKind.RightBracket),
+                                                                  ^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Edit.kt:581:95: error: unresolved reference 'RightBracket'.
+            InsertionSyntax(NodeRole.ArrayElement, JsonSyntaxKind.LeftBracket, JsonSyntaxKind.RightBracket),
+                                                                                              ^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Edit.kt:679:27: error: unresolved reference 'anchor'.
+            if (placement.anchor == target) {
+                          ^^^^^^
+kotlin\src\main\kotlin\consema\json\Edit.kt:682:50: error: unresolved reference 'anchor'.
+            val anchor = resolveAnchor(placement.anchor, NodeRole.ObjectMember, remaining)
+                                                 ^^^^^^
+kotlin\src\main\kotlin\consema\json\Edit.kt:707:67: error: unresolved reference 'LeftBrace'.
+            InsertionSyntax(NodeRole.ObjectMember, JsonSyntaxKind.LeftBrace, JsonSyntaxKind.RightBrace),
+                                                                  ^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Edit.kt:707:93: error: unresolved reference 'RightBrace'.
+            InsertionSyntax(NodeRole.ObjectMember, JsonSyntaxKind.LeftBrace, JsonSyntaxKind.RightBrace),
+                                                                                            ^^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Edit.kt:877:24: error: unresolved reference 'Comma'.
+        JsonSyntaxKind.Comma,
+                       ^^^^^
+kotlin\src\main\kotlin\consema\json\Edit.kt:890:24: error: unresolved reference 'Comma'.
+        JsonSyntaxKind.Comma,
+                       ^^^^^
+kotlin\src\main\kotlin\consema\json\Edit.kt:943:39: error: unresolved reference 'target'.
+                removed.add(operation.target)
+                                      ^^^^^^
+kotlin\src\main\kotlin\consema\json\Edit.kt:946:41: error: unresolved reference 'placement'.
+                collectAnchor(operation.placement, anchors)
+                                        ^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Edit.kt:1211:12: error: return type mismatch: expected 'JsonScalarLexicalStyle?', actual 'Any?'.
+    return when (old) {
+           ^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Edit.kt:1265:49: error: syntax error: Expecting a when-condition.
+        is InternalValueKind.Unavailable -> null,
+                                                ^
+kotlin\src\main\kotlin\consema\json\Edit.kt:1266:5: error: syntax error: Expecting an expression, is-condition or in-condition.
+    }
+    ^
+kotlin\src\main\kotlin\consema\json\Edit.kt:1467:9: error: unresolved reference 'toLongExact'.
+        toLongExact()
+        ^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Edit.kt:1474:9: error: unresolved reference 'toIntExact'.
+        toIntExact()
+        ^^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Edit.kt:1481:9: error: unresolved reference 'toIntExact'.
+        toIntExact()
+        ^^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Edit.kt:1499:9: error: value out of range.
+        0xfff0_0000_0000_0000L -> "-Infinity"
+        ^^^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Edit.kt:1501:9: error: value out of range.
+        0xfff8_0000_0000_0000L -> "-NaN"
+        ^^^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Errors.kt:62:9: error: 'cause' hides member of supertype 'Throwable' and needs an 'override' modifier.
+    val cause: Exception? = null,
+        ^^^^^
+kotlin\src\main\kotlin\consema\json\Errors.kt:111:30: error: unresolved reference 'RelatedSourceLocation'.
+    related: List<Diagnostic.RelatedSourceLocation> = emptyList(),
+                             ^^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Errors.kt:111:55: error: cannot infer type for this parameter. Specify it explicitly.
+    related: List<Diagnostic.RelatedSourceLocation> = emptyList(),
+                                                      ^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Materialization.kt:292:13: error: value out of range.
+            0xfff0_0000_0000_0000L -> "-Infinity"
+            ^^^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Materialization.kt:294:13: error: value out of range.
+            0xfff8_0000_0000_0000L -> "-NaN"
+            ^^^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Parser.kt:91:34: error: cannot access 'val tokens: List<Token>': it is private in 'consema/json/Parser'.
+    if (parser.position < parser.tokens.size) {
+                                 ^^^^^^
+kotlin\src\main\kotlin\consema\json\Parser.kt:92:28: error: cannot access 'val tokens: List<Token>': it is private in 'consema/json/Parser'.
+        val token = parser.tokens[parser.position]
+                           ^^^^^^
+kotlin\src\main\kotlin\consema\json\Parser.kt:96:20: error: cannot access 'val tokens: List<Token>': it is private in 'consema/json/Parser'.
+            parser.tokens.last().end,
+                   ^^^^^^
+kotlin\src\main\kotlin\consema\json\Parser.kt:201:55: error: unresolved reference 'LeftBrace'.
+                TokenKind.LeftBrace -> JsonSyntaxKind.LeftBrace
+                                                      ^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Parser.kt:202:56: error: unresolved reference 'RightBrace'.
+                TokenKind.RightBrace -> JsonSyntaxKind.RightBrace
+                                                       ^^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Parser.kt:203:57: error: unresolved reference 'LeftBracket'.
+                TokenKind.LeftBracket -> JsonSyntaxKind.LeftBracket
+                                                        ^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Parser.kt:204:58: error: unresolved reference 'RightBracket'.
+                TokenKind.RightBracket -> JsonSyntaxKind.RightBracket
+                                                         ^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Parser.kt:205:51: error: unresolved reference 'Colon'.
+                TokenKind.Colon -> JsonSyntaxKind.Colon
+                                                  ^^^^^
+kotlin\src\main\kotlin\consema\json\Parser.kt:206:51: error: unresolved reference 'Comma'.
+                TokenKind.Comma -> JsonSyntaxKind.Comma
+                                                  ^^^^^
+kotlin\src\main\kotlin\consema\json\Parser.kt:207:52: error: unresolved reference 'String'.
+                TokenKind.String -> JsonSyntaxKind.String
+                                                   ^^^^^^
+kotlin\src\main\kotlin\consema\json\Parser.kt:208:56: error: unresolved reference 'Identifier'.
+                TokenKind.Identifier -> JsonSyntaxKind.Identifier
+                                                       ^^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Parser.kt:209:52: error: unresolved reference 'Number'.
+                TokenKind.Number -> JsonSyntaxKind.Number
+                                                   ^^^^^^
+kotlin\src\main\kotlin\consema\json\Parser.kt:210:50: error: unresolved reference 'True'.
+                TokenKind.True -> JsonSyntaxKind.True
+                                                 ^^^^
+kotlin\src\main\kotlin\consema\json\Parser.kt:211:51: error: unresolved reference 'False'.
+                TokenKind.False -> JsonSyntaxKind.False
+                                                  ^^^^^
+kotlin\src\main\kotlin\consema\json\Parser.kt:212:50: error: unresolved reference 'Null'.
+                TokenKind.Null -> JsonSyntaxKind.Null
+                                                 ^^^^
+kotlin\src\main\kotlin\consema\json\Parser.kt:216:37: error: unresolved reference 'ErrorRegion'.
+            Error -> JsonSyntaxKind.ErrorRegion
+                                    ^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Parser.kt:268:57: error: operator '==' cannot be applied to 'Byte' and 'Int'.
+            octet == 0x2f && offset + 1 < bytes.size && bytes[offset + 1] == 0x2f -> {
+                                                        ^^^^^^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Parser.kt:291:57: error: operator '==' cannot be applied to 'Byte' and 'Int'.
+            octet == 0x2f && offset + 1 < bytes.size && bytes[offset + 1] == 0x2a -> {
+                                                        ^^^^^^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Parser.kt:295:25: error: operator '==' cannot be applied to 'Byte' and 'Int'.
+                    if (bytes[offset] == 0x2a && bytes[offset + 1] == 0x2f) {
+                        ^^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Parser.kt:295:50: error: operator '==' cannot be applied to 'Byte' and 'Int'.
+                    if (bytes[offset] == 0x2a && bytes[offset + 1] == 0x2f) {
+                                                 ^^^^^^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Parser.kt:317:55: error: unresolved reference 'BlockComment'.
+                    LexemeClass.Trivia(JsonSyntaxKind.BlockComment)
+                                                      ^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Parser.kt:525:51: error: unresolved reference 'BlockComment'.
+                LexemeClass.Trivia(JsonSyntaxKind.BlockComment)
+                                                  ^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Parser.kt:781:13: error: return type mismatch: expected 'Pair<Int, Boolean>', actual 'Int'.
+    return (offset, valid && !first)
+            ^^^^^^
+kotlin\src\main\kotlin\consema\json\Parser.kt:781:19: error: syntax error: Expecting ')'.
+    return (offset, valid && !first)
+                  ^
+kotlin\src\main\kotlin\consema\json\Parser.kt:781:19: error: syntax error: Unexpected tokens (use ';' to separate expressions on the same line).
+    return (offset, valid && !first)
+                  ^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Parser.kt:804:9: error: operator '!=' cannot be applied to 'Byte' and 'Int'.
+    if (bytes[offset] != 0x5c || bytes[offset + 1] != 0x75) return null
+        ^^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Parser.kt:804:34: error: operator '!=' cannot be applied to 'Byte' and 'Int'.
+    if (bytes[offset] != 0x5c || bytes[offset + 1] != 0x75) return null
+                                 ^^^^^^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Parser.kt:834:24: error: operator '==' cannot be applied to 'Byte' and 'Int'.
+    if (index < end && bytes[index] == 0x2d) {
+                       ^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Parser.kt:838:24: error: operator '==' cannot be applied to 'Byte' and 'Int'.
+        index < end && bytes[index] == 0x30 -> index += 1
+                       ^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Parser.kt:847:24: error: operator '==' cannot be applied to 'Byte' and 'Int'.
+    if (index < end && bytes[index] == 0x2e) {
+                       ^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Parser.kt:855:25: error: operator '==' cannot be applied to 'Byte' and 'Int'.
+    if (index < end && (bytes[index] == 0x65 || bytes[index] == 0x45)) {
+                        ^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Parser.kt:855:49: error: operator '==' cannot be applied to 'Byte' and 'Int'.
+    if (index < end && (bytes[index] == 0x65 || bytes[index] == 0x45)) {
+                                                ^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Parser.kt:857:29: error: operator '==' cannot be applied to 'Byte' and 'Int'.
+        if (index < end && (bytes[index] == 0x2b || bytes[index] == 0x2d)) {
+                            ^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Parser.kt:857:53: error: operator '==' cannot be applied to 'Byte' and 'Int'.
+        if (index < end && (bytes[index] == 0x2b || bytes[index] == 0x2d)) {
+                                                    ^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Parser.kt:880:57: error: too many arguments for 'fun Char.isDigit(): Boolean'.
+        return hex.isNotEmpty() && hex.all { it.isDigit(16) }
+                                                        ^^
+kotlin\src\main\kotlin\consema\json\Parser.kt:976:62: error: argument type mismatch: actual type is 'Boolean', but 'InternalValueKind.Boolean' was expected.
+                allocScalar(token, InternalValueKind.Boolean(true))
+                                                             ^^^^
+kotlin\src\main\kotlin\consema\json\Parser.kt:980:62: error: argument type mismatch: actual type is 'Boolean', but 'InternalValueKind.Boolean' was expected.
+                allocScalar(token, InternalValueKind.Boolean(false))
+                                                             ^^^^^
+kotlin\src\main\kotlin\consema\json\Parser.kt:1011:65: error: argument type mismatch: actual type is 'String', but 'InternalValueKind.String' was expected.
+                    allocScalar(token, InternalValueKind.String(decoded.first))
+                                                                ^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Parser.kt:1044:61: error: argument type mismatch: actual type is 'Boolean', but 'InternalValueKind.Boolean' was expected.
+                        "true" -> InternalValueKind.Boolean(true)
+                                                            ^^^^
+kotlin\src\main\kotlin\consema\json\Parser.kt:1045:62: error: argument type mismatch: actual type is 'Boolean', but 'InternalValueKind.Boolean' was expected.
+                        "false" -> InternalValueKind.Boolean(false)
+                                                             ^^^^^
+kotlin\src\main\kotlin\consema\json\Parser.kt:1133:39: error: argument type mismatch: actual type is 'InternalValueKind.String', but 'String' was expected.
+                val first = names.put(name, member)
+                                      ^^^^
+kotlin\src\main\kotlin\consema\json\Parser.kt:1145:41: error: argument type mismatch: actual type is 'Map<String, InternalValueKind.String>', but 'Map<String, String>' was expected.
+                            arguments = mapOf("name" to name),
+                                        ^^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Parser.kt:1146:39: error: cannot infer type for this parameter. Specify it explicitly.
+                            related = listOf(
+                                      ^^^^^^
+kotlin\src\main\kotlin\consema\json\Parser.kt:1146:39: error: argument type mismatch: actual type is 'List<uninferred T (of fun <T> listOf)>', but 'List<ERROR CLASS: Symbol not found for Diagnostic.RelatedSourceLocation>' was expected.
+                            related = listOf(
+                                      ^^^^^^^
+kotlin\src\main\kotlin\consema\json\Parser.kt:1147:44: error: unresolved reference 'RelatedSourceLocation'.
+                                Diagnostic.RelatedSourceLocation(
+                                           ^^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Parser.kt:1149:48: error: unresolved reference 'SourceLocation'.
+                                    Diagnostic.SourceLocation.of(
+                                               ^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Parser.kt:1241:60: error: argument type mismatch: actual type is 'String', but 'InternalValueKind.String' was expected.
+        return allocScalar(token, InternalValueKind.String(name))
+                                                           ^^^^
+kotlin\src\main\kotlin\consema\json\Parser.kt:1503:38: error: value out of range.
+            val bits = if (negative) 0xfff0_0000_0000_0000L else 0x7ff0_0000_0000_0000L
+                                     ^^^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Parser.kt:1507:38: error: value out of range.
+            val bits = if (negative) 0xfff8_0000_0000_0000L else 0x7ff8_0000_0000_0000L
+                                     ^^^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Profile.kt:69:17: error: syntax error: Expecting ';' after the last enum entry or '}' to close enum class body.
+    LineComment,
+                ^
+kotlin\src\main\kotlin\consema\json\Profile.kt:71:49: error: syntax error: Expecting member declaration.
+    /** Closed slash-star block comment (the `*/` terminator). */
+                                                ^
+kotlin\src\main\kotlin\consema\json\Profile.kt:71:51: error: syntax error: Expecting member declaration.
+    /** Closed slash-star block comment (the `*/` terminator). */
+                                                  ^^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Profile.kt:71:61: error: syntax error: Expecting member declaration.
+    /** Closed slash-star block comment (the `*/` terminator). */
+                                                            ^
+kotlin\src\main\kotlin\consema\json\Profile.kt:71:62: error: syntax error: Expecting member declaration.
+    /** Closed slash-star block comment (the `*/` terminator). */
+                                                             ^
+kotlin\src\main\kotlin\consema\json\Profile.kt:71:64: error: syntax error: Expecting member declaration.
+    /** Closed slash-star block comment (the `*/` terminator). */
+                                                               ^
+kotlin\src\main\kotlin\consema\json\Profile.kt:71:65: error: syntax error: Expecting member declaration.
+    /** Closed slash-star block comment (the `*/` terminator). */
+                                                                ^
+kotlin\src\main\kotlin\consema\json\Profile.kt:72:5: error: syntax error: Expecting member declaration.
+    BlockComment,
+    ^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Profile.kt:72:17: error: syntax error: Expecting member declaration.
+    BlockComment,
+                ^
+kotlin\src\main\kotlin\consema\json\Profile.kt:75:5: error: syntax error: Expecting member declaration.
+    LeftBrace,
+    ^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Profile.kt:75:14: error: syntax error: Expecting member declaration.
+    LeftBrace,
+             ^
+kotlin\src\main\kotlin\consema\json\Profile.kt:78:5: error: syntax error: Expecting member declaration.
+    RightBrace,
+    ^^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Profile.kt:78:15: error: syntax error: Expecting member declaration.
+    RightBrace,
+              ^
+kotlin\src\main\kotlin\consema\json\Profile.kt:81:5: error: syntax error: Expecting member declaration.
+    LeftBracket,
+    ^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Profile.kt:81:16: error: syntax error: Expecting member declaration.
+    LeftBracket,
+               ^
+kotlin\src\main\kotlin\consema\json\Profile.kt:84:5: error: syntax error: Expecting member declaration.
+    RightBracket,
+    ^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Profile.kt:84:17: error: syntax error: Expecting member declaration.
+    RightBracket,
+                ^
+kotlin\src\main\kotlin\consema\json\Profile.kt:87:5: error: syntax error: Expecting member declaration.
+    Colon,
+    ^^^^^
+kotlin\src\main\kotlin\consema\json\Profile.kt:87:10: error: syntax error: Expecting member declaration.
+    Colon,
+         ^
+kotlin\src\main\kotlin\consema\json\Profile.kt:90:5: error: syntax error: Expecting member declaration.
+    Comma,
+    ^^^^^
+kotlin\src\main\kotlin\consema\json\Profile.kt:90:10: error: syntax error: Expecting member declaration.
+    Comma,
+         ^
+kotlin\src\main\kotlin\consema\json\Profile.kt:93:5: error: syntax error: Expecting member declaration.
+    String,
+    ^^^^^^
+kotlin\src\main\kotlin\consema\json\Profile.kt:93:11: error: syntax error: Expecting member declaration.
+    String,
+          ^
+kotlin\src\main\kotlin\consema\json\Profile.kt:96:5: error: syntax error: Expecting member declaration.
+    Identifier,
+    ^^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Profile.kt:96:15: error: syntax error: Expecting member declaration.
+    Identifier,
+              ^
+kotlin\src\main\kotlin\consema\json\Profile.kt:99:5: error: syntax error: Expecting member declaration.
+    Number,
+    ^^^^^^
+kotlin\src\main\kotlin\consema\json\Profile.kt:99:11: error: syntax error: Expecting member declaration.
+    Number,
+          ^
+kotlin\src\main\kotlin\consema\json\Profile.kt:102:5: error: syntax error: Expecting member declaration.
+    True,
+    ^^^^
+kotlin\src\main\kotlin\consema\json\Profile.kt:102:9: error: syntax error: Expecting member declaration.
+    True,
+        ^
+kotlin\src\main\kotlin\consema\json\Profile.kt:105:5: error: syntax error: Expecting member declaration.
+    False,
+    ^^^^^
+kotlin\src\main\kotlin\consema\json\Profile.kt:105:10: error: syntax error: Expecting member declaration.
+    False,
+         ^
+kotlin\src\main\kotlin\consema\json\Profile.kt:108:5: error: syntax error: Expecting member declaration.
+    Null,
+    ^^^^
+kotlin\src\main\kotlin\consema\json\Profile.kt:108:9: error: syntax error: Expecting member declaration.
+    Null,
+        ^
+kotlin\src\main\kotlin\consema\json\Profile.kt:111:5: error: syntax error: Expecting member declaration.
+    ErrorRegion,
+    ^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Profile.kt:111:16: error: syntax error: Expecting member declaration.
+    ErrorRegion,
+               ^
+kotlin\src\main\kotlin\consema\json\Profile.kt:120:13: error: unresolved reference 'BlockComment'.
+            BlockComment -> "BlockComment"
+            ^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Profile.kt:121:13: error: unresolved reference 'LeftBrace'.
+            LeftBrace -> "LeftBrace"
+            ^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Profile.kt:122:13: error: unresolved reference 'RightBrace'.
+            RightBrace -> "RightBrace"
+            ^^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Profile.kt:123:13: error: unresolved reference 'LeftBracket'.
+            LeftBracket -> "LeftBracket"
+            ^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Profile.kt:124:13: error: unresolved reference 'RightBracket'.
+            RightBracket -> "RightBracket"
+            ^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Profile.kt:125:13: error: unresolved reference 'Colon'.
+            Colon -> "Colon"
+            ^^^^^
+kotlin\src\main\kotlin\consema\json\Profile.kt:126:13: error: unresolved reference 'Comma'.
+            Comma -> "Comma"
+            ^^^^^
+kotlin\src\main\kotlin\consema\json\Profile.kt:127:13: error: incompatible types 'JsonSyntaxKind' and 'String.Companion'.
+            String -> "String"
+            ^^^^^^
+kotlin\src\main\kotlin\consema\json\Profile.kt:128:13: error: unresolved reference 'Identifier'.
+            Identifier -> "Identifier"
+            ^^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Profile.kt:129:13: error: incompatible types 'JsonSyntaxKind' and 'Unit'.
+            Number -> "Number"
+            ^^^^^^
+kotlin\src\main\kotlin\consema\json\Profile.kt:129:13: error: classifier 'class Number : Any, Serializable' does not have a companion object, so it cannot be used as an expression.
+            Number -> "Number"
+            ^^^^^^
+kotlin\src\main\kotlin\consema\json\Profile.kt:130:13: error: unresolved reference 'True'.
+            True -> "True"
+            ^^^^
+kotlin\src\main\kotlin\consema\json\Profile.kt:131:13: error: unresolved reference 'False'.
+            False -> "False"
+            ^^^^^
+kotlin\src\main\kotlin\consema\json\Profile.kt:132:13: error: unresolved reference 'Null'.
+            Null -> "Null"
+            ^^^^
+kotlin\src\main\kotlin\consema\json\Profile.kt:133:13: error: unresolved reference 'ErrorRegion'.
+            ErrorRegion -> "ErrorRegion"
+            ^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Projection.kt:515:55: error: argument type mismatch: actual type is 'InternalValueKind.Boolean', but 'Boolean' was expected.
+            is InternalValueKind.Boolean -> PvBoolean(kind.value)
+                                                      ^^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Projection.kt:519:53: error: argument type mismatch: actual type is 'InternalValueKind.String', but 'String' was expected.
+            is InternalValueKind.String -> PvString(kind.value)
+                                                    ^^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Projection.kt:536:72: error: argument type mismatch: actual type is 'SemanticUnavailable', but 'ProjectionFailure.SemanticUnavailable' was expected.
+                ProjectionFailure.SemanticUnavailable(value.nodeRef(), kind.reason),
+                                                                       ^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Projection.kt:551:80: error: argument type mismatch: actual type is 'SemanticUnavailable', but 'ProjectionFailure.SemanticUnavailable' was expected.
+                    ProjectionFailure.SemanticUnavailable(member.keyNodeRef(), name.reason),
+                                                                               ^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\properties\Edit.kt:235:34: error: 'name' hides member of supertype 'EditFailure' and needs an 'override' modifier.
+    data class ResourceLimit(val name: String) : EditFailure("ResourceLimit")
+                                 ^^^^
+kotlin\src\main\kotlin\consema\properties\Edit.kt:378:22: error: unresolved reference 'TreeMap'.
+    val insertions = TreeMap<Int, ExpectedProperty>()
+                     ^^^^^^^
+kotlin\src\main\kotlin\consema\properties\Edit.kt:865:17: error: unresolved reference 'TreeMap'.
+    insertions: TreeMap<Int, ExpectedProperty>,
+                ^^^^^^^
+kotlin\src\main\kotlin\consema\properties\Edit.kt:867:68: error: unresolved reference 'size'.
+    val output = ArrayList<ExpectedProperty>(old.size + insertions.size)
+                                                                   ^^^^
+kotlin\src\main\kotlin\consema\properties\Edit.kt:869:38: error: cannot infer type for this parameter. Specify it explicitly.
+        insertions.remove(boundary)?.let { output.add(it) }
+                                     ^^^
+kotlin\src\main\kotlin\consema\properties\Edit.kt:869:38: error: unresolved reference. None of the following candidates is applicable because of a receiver type mismatch:
+fun <T, R> T.let(block: (T) -> R): R
+    [R|Contract description]
+     <
+        CallsInPlace(block, EXACTLY_ONCE)
+    >
+        insertions.remove(boundary)?.let { output.add(it) }
+                                     ^^^
+kotlin\src\main\kotlin\consema\properties\Edit.kt:869:42: error: cannot infer type for this parameter. Specify it explicitly.
+        insertions.remove(boundary)?.let { output.add(it) }
+                                         ^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\properties\Edit.kt:869:51: error: unresolved reference 'add'.
+        insertions.remove(boundary)?.let { output.add(it) }
+                                                  ^^^
+kotlin\src\main\kotlin\consema\properties\Edit.kt:870:58: error: cannot infer type for this parameter. Specify it explicitly.
+        old.getOrNull(boundary)?.takeIf { !it.removed }?.let { output.add(it) }
+                                                         ^^^
+kotlin\src\main\kotlin\consema\properties\Edit.kt:870:71: error: unresolved reference 'add'.
+        old.getOrNull(boundary)?.takeIf { !it.removed }?.let { output.add(it) }
+                                                                      ^^^
+kotlin\src\main\kotlin\consema\properties\Encoding.kt:369:9: error: operator '==' cannot be applied to 'Byte' and 'Int'.
+        bytes[2] == 0x00 && bytes[3] == 0x00
+        ^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\properties\Encoding.kt:369:29: error: operator '==' cannot be applied to 'Byte' and 'Int'.
+        bytes[2] == 0x00 && bytes[3] == 0x00
+                            ^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\properties\Encoding.kt:376:28: error: operator '==' cannot be applied to 'Byte' and 'Int'.
+    if (bytes.size >= 4 && bytes[0] == 0x00 && bytes[1] == 0x00 &&
+                           ^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\properties\Encoding.kt:376:48: error: operator '==' cannot be applied to 'Byte' and 'Int'.
+    if (bytes.size >= 4 && bytes[0] == 0x00 && bytes[1] == 0x00 &&
+                                               ^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\properties\Errors.kt:74:9: error: 'cause' hides member of supertype 'Throwable' and needs an 'override' modifier.
+    val cause: Exception? = null,
+        ^^^^^
+kotlin\src\main\kotlin\consema\properties\Errors.kt:122:30: error: unresolved reference 'RelatedSourceLocation'.
+    related: List<Diagnostic.RelatedSourceLocation> = emptyList(),
+                             ^^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\properties\Errors.kt:122:55: error: cannot infer type for this parameter. Specify it explicitly.
+    related: List<Diagnostic.RelatedSourceLocation> = emptyList(),
+                                                      ^^^^^^^^^
+kotlin\src\main\kotlin\consema\properties\Parser.kt:772:29: error: syntax error: Type annotations are not allowed on destructuring declarations.
+        val (kind, consumed): Pair<PropertiesEscapeKind, Int> = when (next) {
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\properties\Parser.kt:828:56: error: argument type mismatch: actual type is 'Unit', but 'CharArray' was expected.
+    return JavaStringDecode.Complete(DecodedJavaString(units.toCharArray(), escapes, unicodeEscapes))
+                                                       ^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\properties\Parser.kt:828:73: error: no value passed for parameter 'destination'.
+    return JavaStringDecode.Complete(DecodedJavaString(units.toCharArray(), escapes, unicodeEscapes))
+                                                                        ^^
+kotlin\src\main\kotlin\consema\properties\Projection.kt:500:15: error: redeclaration:
+class Context : Any
+private class Context(
+              ^^^^^^^
+kotlin\src\main\kotlin\consema\properties\Query.kt:189:19: error: cannot access 'class Context : Any': it is private in file.
+    val context = Context(document, limits, cancellation)
+                  ^^^^^^^
+kotlin\src\main\kotlin\consema\properties\Query.kt:190:13: error: unresolved reference 'step'.
+    context.step(1)
+            ^^^^
+kotlin\src\main\kotlin\consema\properties\Query.kt:216:19: error: cannot access 'class Context : Any': it is private in file.
+    val context = Context(document, limits, cancellation)
+                  ^^^^^^^
+kotlin\src\main\kotlin\consema\properties\Query.kt:219:13: error: unresolved reference 'step'.
+    context.step(pieces.size)
+            ^^^^
+kotlin\src\main\kotlin\consema\properties\Query.kt:241:13: error: unresolved reference 'cancellation'.
+        if (cancellation.isCancelled()) {
+            ^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\properties\Query.kt:244:9: error: unresolved reference 'steps'.
+        steps = steps.inc()
+        ^^^^^
+kotlin\src\main\kotlin\consema\properties\Query.kt:244:17: error: unresolved reference 'steps'.
+        steps = steps.inc()
+                ^^^^^
+kotlin\src\main\kotlin\consema\properties\Query.kt:245:13: error: unresolved reference 'steps'.
+        if (steps > limits.maxSteps || results > limits.maxResults) {
+            ^^^^^
+kotlin\src\main\kotlin\consema\properties\Query.kt:245:21: error: unresolved reference 'limits'.
+        if (steps > limits.maxSteps || results > limits.maxResults) {
+                    ^^^^^^
+kotlin\src\main\kotlin\consema\properties\Query.kt:245:50: error: unresolved reference 'limits'.
+        if (steps > limits.maxSteps || results > limits.maxResults) {
+                                                 ^^^^^^
+kotlin\src\main\kotlin\consema\properties\Query.kt:251:24: error: cannot access 'class Context : Any': it is private in file.
+        val property = document.propertyEntity(ordinal)
+                       ^^^^^^^^
+kotlin\src\main\kotlin\consema\properties\Query.kt:256:17: error: cannot access 'class Context : Any': it is private in file.
+                document.logicalLineEntity(it).node
+                ^^^^^^^^
+kotlin\src\main\kotlin\consema\properties\Query.kt:266:20: error: cannot access 'class Context : Any': it is private in file.
+        val line = document.naturalLineEntity(ordinal)
+                   ^^^^^^^^
+kotlin\src\main\kotlin\consema\properties\Query.kt:275:20: error: cannot access 'class Context : Any': it is private in file.
+        val line = document.logicalLineEntity(ordinal)
+                   ^^^^^^^^
+kotlin\src\main\kotlin\consema\properties\Query.kt:284:22: error: cannot access 'class Context : Any': it is private in file.
+        val escape = document.escapeEntity(ordinal)
+                     ^^^^^^^^
+kotlin\src\main\kotlin\consema\properties\Query.kt:288:24: error: cannot access 'class Context : Any': it is private in file.
+            property = document.propertyEntity(escape.propertyIndex).node,
+                       ^^^^^^^^
+kotlin\src\main\kotlin\consema\properties\Query.kt:301:14: error: cannot access 'class Context : Any': it is private in file.
+    context: Context,
+             ^^^^^^^
+kotlin\src\main\kotlin\consema\properties\Query.kt:312:21: error: unresolved reference 'step'.
+            context.step(output.size)
+                    ^^^^
+kotlin\src\main\kotlin\consema\properties\Query.kt:322:62: error: cannot access 'class Context : Any': it is private in file.
+            compareBy<PropertiesMatch> { sourceOrder(context.document, it).first }
+                                                             ^^^^^^^^
+kotlin\src\main\kotlin\consema\properties\Query.kt:323:47: error: cannot access 'class Context : Any': it is private in file.
+                .thenBy { sourceOrder(context.document, it).second },
+                                              ^^^^^^^^
+kotlin\src\main\kotlin\consema\properties\Query.kt:325:17: error: unresolved reference 'step'.
+        context.step(output.size)
+                ^^^^
+kotlin\src\main\kotlin\consema\properties\Query.kt:333:14: error: cannot access 'class Context : Any': it is private in file.
+    context: Context,
+             ^^^^^^^
+kotlin\src\main\kotlin\consema\properties\Query.kt:344:21: error: unresolved reference 'step'.
+            context.step(output.size)
+                    ^^^^
+kotlin\src\main\kotlin\consema\properties\Query.kt:354:17: error: unresolved reference 'step'.
+        context.step(output.size)
+                ^^^^
+kotlin\src\main\kotlin\consema\properties\Query.kt:362:14: error: cannot access 'class Context : Any': it is private in file.
+    context: Context,
+             ^^^^^^^
+kotlin\src\main\kotlin\consema\properties\Query.kt:374:25: error: cannot access 'class Context : Any': it is private in file.
+                context.document.text.spanText(item.span) == expected
+                        ^^^^^^^^
+kotlin\src\main\kotlin\consema\properties\Query.kt:380:25: error: cannot access 'class Context : Any': it is private in file.
+                context.document.source.bytes()
+                        ^^^^^^^^
+kotlin\src\main\kotlin\consema\properties\Query.kt:389:29: error: cannot access 'class Context : Any': it is private in file.
+                    context.document.text.spanText(item.span),
+                            ^^^^^^^^
+kotlin\src\main\kotlin\consema\properties\Query.kt:404:13: error: unresolved reference 'step'.
+    context.step(output.size)
+            ^^^^
+kotlin\src\main\kotlin\consema\properties\Query.kt:411:14: error: cannot access 'class Context : Any': it is private in file.
+    context: Context,
+             ^^^^^^^
+kotlin\src\main\kotlin\consema\properties\Query.kt:418:45: error: cannot access 'class Context : Any': it is private in file.
+                    for (ordinal in context.document.propertyEntities.indices) {
+                                            ^^^^^^^^
+kotlin\src\main\kotlin\consema\properties\Query.kt:419:52: error: unresolved reference 'propertyMatch'.
+                        pushResult(output, context.propertyMatch(ordinal), context)
+                                                   ^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\properties\Query.kt:427:45: error: cannot access 'class Context : Any': it is private in file.
+                    for (ordinal in context.document.naturalLineEntities.indices) {
+                                            ^^^^^^^^
+kotlin\src\main\kotlin\consema\properties\Query.kt:428:52: error: unresolved reference 'naturalLineMatch'.
+                        pushResult(output, context.naturalLineMatch(ordinal), context)
+                                                   ^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\properties\Query.kt:436:45: error: cannot access 'class Context : Any': it is private in file.
+                    for (ordinal in context.document.logicalLineEntities.indices) {
+                                            ^^^^^^^^
+kotlin\src\main\kotlin\consema\properties\Query.kt:437:52: error: unresolved reference 'logicalLineMatch'.
+                        pushResult(output, context.logicalLineMatch(ordinal), context)
+                                                   ^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\properties\Query.kt:445:43: error: cannot access 'class Context : Any': it is private in file.
+                    val logical = context.document.logicalLineEntity(item.ordinal)
+                                          ^^^^^^^^
+kotlin\src\main\kotlin\consema\properties\Query.kt:447:52: error: unresolved reference 'naturalLineMatch'.
+                        pushResult(output, context.naturalLineMatch(naturalIndex), context)
+                                                   ^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\properties\Query.kt:476:55: error: cannot access 'class Context : Any': it is private in file.
+                    for ((ordinal, escape) in context.document.escapeEntities.withIndex()) {
+                                                      ^^^^^^^^
+kotlin\src\main\kotlin\consema\properties\Query.kt:477:37: error: cannot access 'class Context : Any': it is private in file.
+                        if (context.document.propertyEntity(escape.propertyIndex).node == item.node) {
+                                    ^^^^^^^^
+kotlin\src\main\kotlin\consema\properties\Query.kt:478:56: error: unresolved reference 'escapeMatch'.
+                            pushResult(output, context.escapeMatch(ordinal), context)
+                                                       ^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\properties\Query.kt:487:45: error: cannot access 'class Context : Any': it is private in file.
+                    for (ordinal in context.document.propertyEntities.indices) {
+                                            ^^^^^^^^
+kotlin\src\main\kotlin\consema\properties\Query.kt:488:37: error: cannot access 'class Context : Any': it is private in file.
+                        if (context.document.propertyEntity(ordinal).duplicateGroup ==
+                                    ^^^^^^^^
+kotlin\src\main\kotlin\consema\properties\Query.kt:491:56: error: unresolved reference 'propertyMatch'.
+                            pushResult(output, context.propertyMatch(ordinal), context)
+                                                       ^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\properties\Query.kt:513:13: error: unresolved reference 'step'.
+    context.step(output.size)
+            ^^^^
+kotlin\src\main\kotlin\consema\properties\Query.kt:517:93: error: cannot access 'class Context : Any': it is private in file.
+private fun pushResult(output: ArrayList<PropertiesMatch>, value: PropertiesMatch, context: Context) {
+                                                                                            ^^^^^^^
+kotlin\src\main\kotlin\consema\properties\Query.kt:518:35: error: unresolved reference 'limits'.
+    if (output.size + 1 > context.limits.maxResults) {
+                                  ^^^^^^
+kotlin\src\main\kotlin\consema\toml\Canonical.kt:62:17: error: value out of range.
+    if (bits == 0xFFF8_0000_0000_0000L) return "-nan"
+                ^^^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Canonical.kt:64:17: error: value out of range.
+    if (bits == 0xFFF0_0000_0000_0000L) return "-inf"
+                ^^^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Canonical.kt:65:17: error: value out of range.
+    if (bits == 0x8000_0000_0000_0000L) return "-0.0"
+                ^^^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Canonical.kt:163:38: error: unresolved reference 'toLongOrNull'.
+    val exponent = fraction.exponent.toLongOrNull() ?: return null
+                                     ^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Canonical.kt:167:44: error: unresolved reference 'toLongOrNull'.
+    var nanoseconds = fraction.coefficient.toLongOrNull() ?: return null
+                                           ^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Edit.kt:94:13: error: 'target' hides member of supertype 'ScalarReplacement' and needs an 'override' modifier.
+        val target: NodeRef,
+            ^^^^^^
+kotlin\src\main\kotlin\consema\toml\Edit.kt:105:13: error: 'target' hides member of supertype 'ScalarReplacement' and needs an 'override' modifier.
+        val target: NodeRef,
+            ^^^^^^
+kotlin\src\main\kotlin\consema\toml\Edit.kt:307:34: error: 'name' hides member of supertype 'EditFailureKind' and needs an 'override' modifier.
+    data class ResourceLimit(val name: String) : EditFailureKind()
+                                 ^^^^
+kotlin\src\main\kotlin\consema\toml\Edit.kt:407:14: error: cannot infer type for this parameter. Specify it explicitly.
+    prepared.sortBy { it.oldSpan.startByte to it.oldSpan.endByte }
+             ^^^^^^
+kotlin\src\main\kotlin\consema\toml\Edit.kt:407:21: error: cannot infer type for this parameter. Specify it explicitly.
+    prepared.sortBy { it.oldSpan.startByte to it.oldSpan.endByte }
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Edit.kt:407:23: error: return type mismatch: expected 'Comparable<uninferred R (of fun <T, R : Comparable<R>> MutableList<T>.sortBy)>?', actual 'Pair<Int, Int>'.
+    prepared.sortBy { it.oldSpan.startByte to it.oldSpan.endByte }
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Edit.kt:567:37: error: unresolved reference 'kind'.
+    val oldKind = itemEntity(index).kind.publicKind()
+                                    ^^^^
+kotlin\src\main\kotlin\consema\toml\Edit.kt:582:27: error: unresolved reference 'span'.
+            entity(index).span,
+                          ^^^^
+kotlin\src\main\kotlin\consema\toml\Edit.kt:587:23: error: unresolved reference 'span'.
+        entity(index).span,
+                      ^^^^
+kotlin\src\main\kotlin\consema\toml\Edit.kt:600:39: error: unresolved reference 'kind'.
+    val item = itemEntity(tableIndex).kind
+                                      ^^^^
+kotlin\src\main\kotlin\consema\toml\Edit.kt:602:12: error: unresolved reference 'InternalItemKind'.
+        is InternalItemKind.Table -> item.entries
+           ^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Edit.kt:602:43: error: unresolved reference 'entries'.
+        is InternalItemKind.Table -> item.entries
+                                          ^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Edit.kt:603:12: error: unresolved reference 'InternalItemKind'.
+        is InternalItemKind.InlineTable -> item.entries
+           ^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Edit.kt:603:49: error: unresolved reference 'entries'.
+        is InternalItemKind.InlineTable -> item.entries
+                                                ^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Edit.kt:628:36: error: unresolved reference 'span'.
+                entity(tableIndex).span,
+                                   ^^^^
+kotlin\src\main\kotlin\consema\toml\Edit.kt:646:34: error: unresolved reference 'kind'.
+    val item = itemEntity(index).kind as? InternalItemKind.Array
+                                 ^^^^
+kotlin\src\main\kotlin\consema\toml\Edit.kt:646:43: error: unresolved reference 'InternalItemKind'.
+    val item = itemEntity(index).kind as? InternalItemKind.Array
+                                          ^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Edit.kt:651:27: error: unresolved reference 'span'.
+            entity(index).span,
+                          ^^^^
+kotlin\src\main\kotlin\consema\toml\Edit.kt:652:18: error: unresolved reference 'elements'.
+            item.elements,
+                 ^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Edit.kt:681:9: error: 'when' expression must be exhaustive. Add the 'is After', 'is Before' branches or an 'else' branch.
+        when (placement) {
+        ^^^^
+kotlin\src\main\kotlin\consema\toml\Edit.kt:688:34: error: classifier 'data class Before : AssociationPlacement' does not have a companion object, so it cannot be used as an expression.
+            AssociationPlacement.Before, AssociationPlacement.After ->
+                                 ^^^^^^
+kotlin\src\main\kotlin\consema\toml\Edit.kt:688:63: error: classifier 'data class After : AssociationPlacement' does not have a companion object, so it cannot be used as an expression.
+            AssociationPlacement.Before, AssociationPlacement.After ->
+                                                              ^^^^^
+kotlin\src\main\kotlin\consema\toml\Edit.kt:694:52: error: unresolved reference 'span'.
+                position = entity(associations[0]).span.startByte
+                                                   ^^^^
+kotlin\src\main\kotlin\consema\toml\Edit.kt:698:72: error: unresolved reference 'span'.
+                position = entity(associations[associations.size - 1]).span.endByte
+                                                                       ^^^^
+kotlin\src\main\kotlin\consema\toml\Edit.kt:703:43: error: unresolved reference 'span'.
+                position = entity(anchor).span.startByte
+                                          ^^^^
+kotlin\src\main\kotlin\consema\toml\Edit.kt:708:43: error: unresolved reference 'span'.
+                position = entity(anchor).span.endByte
+                                          ^^^^
+kotlin\src\main\kotlin\consema\toml\Edit.kt:722:24: error: variable 'position' must be initialized.
+        authority.span(position, position),
+                       ^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Edit.kt:722:34: error: variable 'position' must be initialized.
+        authority.span(position, position),
+                                 ^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Edit.kt:737:39: error: unresolved reference 'kind'.
+    val kind = itemEntity(tableIndex).kind.publicKind()
+                                      ^^^^
+kotlin\src\main\kotlin\consema\toml\Edit.kt:743:57: error: unresolved reference 'span'.
+                firstLineAfterHeader(entity(tableIndex).span)
+                                                        ^^^^
+kotlin\src\main\kotlin\consema\toml\Edit.kt:749:38: error: unresolved reference 'span'.
+            lineStart(entity(anchor).span.startByte)
+                                     ^^^^
+kotlin\src\main\kotlin\consema\toml\Edit.kt:756:38: error: unresolved reference 'span'.
+            lineAfter(entity(anchor).span.endByte)
+                                     ^^^^
+kotlin\src\main\kotlin\consema\toml\Edit.kt:774:40: error: unresolved reference 'kind'.
+    return when (itemEntity(container).kind.publicKind()) {
+                                       ^^^^
+kotlin\src\main\kotlin\consema\toml\Edit.kt:780:31: error: unresolved reference 'span'.
+            entity(container).span.endByte,
+                              ^^^^
+kotlin\src\main\kotlin\consema\toml\Edit.kt:784:31: error: unresolved reference 'span'.
+                entity(index).span,
+                              ^^^^
+kotlin\src\main\kotlin\consema\toml\Edit.kt:803:27: error: unresolved reference 'span'.
+        entity(container).span.endByte,
+                          ^^^^
+kotlin\src\main\kotlin\consema\toml\Edit.kt:816:36: error: unresolved reference 'span'.
+    val targetSpan = entity(index).span
+                                   ^^^^
+kotlin\src\main\kotlin\consema\toml\Edit.kt:859:31: error: unresolved reference 'kind'.
+    if (itemEntity(container).kind.publicKind() != TomlItemKind.RootTable &&
+                              ^^^^
+kotlin\src\main\kotlin\consema\toml\Edit.kt:860:31: error: unresolved reference 'kind'.
+        itemEntity(container).kind.publicKind() != TomlItemKind.StandardTable &&
+                              ^^^^
+kotlin\src\main\kotlin\consema\toml\Edit.kt:861:31: error: unresolved reference 'kind'.
+        itemEntity(container).kind.publicKind() != TomlItemKind.InlineTable
+                              ^^^^
+kotlin\src\main\kotlin\consema\toml\Edit.kt:868:31: error: unresolved reference 'kind'.
+    val entry = entity(index).kind as? EntityKind.Entry
+                              ^^^^
+kotlin\src\main\kotlin\consema\toml\Edit.kt:868:40: error: unresolved reference 'EntityKind'.
+    val entry = entity(index).kind as? EntityKind.Entry
+                                       ^^^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Edit.kt:871:22: error: unresolved reference 'entry'.
+        entity(entry.entry.key).span,
+                     ^^^^^
+kotlin\src\main\kotlin\consema\toml\Edit.kt:871:33: error: unresolved reference 'span'.
+        entity(entry.entry.key).span,
+                                ^^^^
+kotlin\src\main\kotlin\consema\toml\Edit.kt:934:38: error: cannot infer type for this parameter. Specify it explicitly.
+    for ((index, entity) in entities.withIndex()) {
+                                     ^^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Edit.kt:934:38: error: unresolved reference. None of the following candidates is applicable because of a receiver type mismatch:
+fun <T> Iterable<T>.withIndex(): Iterable<IndexedValue<T>>
+    for ((index, entity) in entities.withIndex()) {
+                                     ^^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Edit.kt:935:27: error: unresolved reference 'kind'.
+        val kind = entity.kind
+                          ^^^^
+kotlin\src\main\kotlin\consema\toml\Edit.kt:936:21: error: unresolved reference 'EntityKind'.
+        if (kind is EntityKind.Item) {
+                    ^^^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Edit.kt:937:49: error: unresolved reference 'item'.
+            val entries = when (val item = kind.item.kind) {
+                                                ^^^^
+kotlin\src\main\kotlin\consema\toml\Edit.kt:938:20: error: unresolved reference 'InternalItemKind'.
+                is InternalItemKind.Table -> item.entries
+                   ^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Edit.kt:938:51: error: unresolved reference 'entries'.
+                is InternalItemKind.Table -> item.entries
+                                                  ^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Edit.kt:939:20: error: unresolved reference 'InternalItemKind'.
+                is InternalItemKind.InlineTable -> item.entries
+                   ^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Edit.kt:939:57: error: unresolved reference 'entries'.
+                is InternalItemKind.InlineTable -> item.entries
+                                                        ^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Edit.kt:954:38: error: cannot infer type for this parameter. Specify it explicitly.
+    for ((index, entity) in entities.withIndex()) {
+                                     ^^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Edit.kt:954:38: error: unresolved reference. None of the following candidates is applicable because of a receiver type mismatch:
+fun <T> Iterable<T>.withIndex(): Iterable<IndexedValue<T>>
+    for ((index, entity) in entities.withIndex()) {
+                                     ^^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Edit.kt:955:27: error: unresolved reference 'kind'.
+        val kind = entity.kind
+                          ^^^^
+kotlin\src\main\kotlin\consema\toml\Edit.kt:956:21: error: unresolved reference 'EntityKind'.
+        if (kind is EntityKind.Item) {
+                    ^^^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Edit.kt:957:34: error: unresolved reference 'item'.
+            val elements = (kind.item.kind as? InternalItemKind.Array)?.elements
+                                 ^^^^
+kotlin\src\main\kotlin\consema\toml\Edit.kt:957:48: error: unresolved reference 'InternalItemKind'.
+            val elements = (kind.item.kind as? InternalItemKind.Array)?.elements
+                                               ^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Edit.kt:957:73: error: unresolved reference 'elements'.
+            val elements = (kind.item.kind as? InternalItemKind.Array)?.elements
+                                                                        ^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Edit.kt:959:40: error: unresolved reference 'indexOf'.
+                val ordinal = elements.indexOf(element)
+                                       ^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Edit.kt:961:28: error: cannot infer type for this parameter. Specify it explicitly.
+                    return Triple(index, elements, ordinal)
+                           ^^^^^^
+kotlin\src\main\kotlin\consema\toml\Edit.kt:961:28: error: return type mismatch: expected 'Triple<Int, List<Int>, Int>?', actual 'Triple<Int, Any, uninferred ERROR CLASS: Cannot infer argument for type parameter C>'.
+                    return Triple(index, elements, ordinal)
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Edit.kt:970:40: error: unresolved reference 'kind'.
+    val entryEntity = (entities[entry].kind as? EntityKind.Entry)?.entry
+                                       ^^^^
+kotlin\src\main\kotlin\consema\toml\Edit.kt:970:49: error: unresolved reference 'EntityKind'.
+    val entryEntity = (entities[entry].kind as? EntityKind.Entry)?.entry
+                                                ^^^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Edit.kt:970:68: error: unresolved reference 'entry'.
+    val entryEntity = (entities[entry].kind as? EntityKind.Entry)?.entry
+                                                                   ^^^^^
+kotlin\src\main\kotlin\consema\toml\Edit.kt:972:42: error: unresolved reference 'kind'.
+    val key = (entities[entryEntity.key].kind as? EntityKind.Key)?.key
+                                         ^^^^
+kotlin\src\main\kotlin\consema\toml\Edit.kt:972:51: error: unresolved reference 'EntityKind'.
+    val key = (entities[entryEntity.key].kind as? EntityKind.Key)?.key
+                                                  ^^^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Edit.kt:972:68: error: unresolved reference 'key'.
+    val key = (entities[entryEntity.key].kind as? EntityKind.Key)?.key
+                                                                   ^^^
+kotlin\src\main\kotlin\consema\toml\Edit.kt:978:40: error: unresolved reference 'kind'.
+    val entryEntity = (entities[entry].kind as? EntityKind.Entry)?.entry
+                                       ^^^^
+kotlin\src\main\kotlin\consema\toml\Edit.kt:978:49: error: unresolved reference 'EntityKind'.
+    val entryEntity = (entities[entry].kind as? EntityKind.Entry)?.entry
+                                                ^^^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Edit.kt:978:68: error: unresolved reference 'entry'.
+    val entryEntity = (entities[entry].kind as? EntityKind.Entry)?.entry
+                                                                   ^^^^^
+kotlin\src\main\kotlin\consema\toml\Edit.kt:980:41: error: unresolved reference 'kind'.
+    return itemEntity(entryEntity.item).kind.publicKind()
+                                        ^^^^
+kotlin\src\main\kotlin\consema\toml\Edit.kt:986:45: error: unresolved reference 'span'.
+        return lineStart(entity(tableEntry).span.startByte)
+                                            ^^^^
+kotlin\src\main\kotlin\consema\toml\Edit.kt:990:39: error: unresolved reference 'span'.
+        return lineAfter(entity(last).span.endByte)
+                                      ^^^^
+kotlin\src\main\kotlin\consema\toml\Edit.kt:992:32: error: unresolved reference 'kind'.
+    if (itemEntity(tableIndex).kind.publicKind() == TomlItemKind.StandardTable) {
+                               ^^^^
+kotlin\src\main\kotlin\consema\toml\Edit.kt:993:56: error: unresolved reference 'span'.
+        return firstLineAfterHeader(entity(tableIndex).span)
+                                                       ^^^^
+kotlin\src\main\kotlin\consema\toml\Edit.kt:995:31: error: unresolved reference 'span'.
+    return entity(tableIndex).span.endByte
+                              ^^^^
+kotlin\src\main\kotlin\consema\toml\Edit.kt:1056:49: error: unresolved reference 'span'.
+    val current = entity(associations[ordinal]).span
+                                                ^^^^
+kotlin\src\main\kotlin\consema\toml\Edit.kt:1058:43: error: unresolved reference 'span'.
+        entity(associations[ordinal + 1]).span.startByte
+                                          ^^^^
+kotlin\src\main\kotlin\consema\toml\Edit.kt:1069:54: error: unresolved reference 'span'.
+    val previous = entity(associations[ordinal - 1]).span
+                                                     ^^^^
+kotlin\src\main\kotlin\consema\toml\Edit.kt:1290:9: error: unresolved reference 'parseTree'.
+        parseTree(source)
+        ^^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Edit.kt:1291:14: error: throwable type mismatch: actual type is 'ParseError'.
+    } catch (e: ParseError) {
+             ^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Edit.kt:1294:14: error: unresolved reference 'items'.
+    if (tree.items.size != 1) {
+             ^^^^^
+kotlin\src\main\kotlin\consema\toml\Edit.kt:1297:16: error: cannot infer type for this parameter. Specify it explicitly.
+    val item = tree.items[0]
+               ^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Edit.kt:1297:21: error: unresolved reference 'items'.
+    val item = tree.items[0]
+                    ^^^^^
+kotlin\src\main\kotlin\consema\toml\Edit.kt:1298:14: error: unresolved reference 'kind'.
+    if (item.kind != PItemKind.KEYVAL) {
+             ^^^^
+kotlin\src\main\kotlin\consema\toml\Edit.kt:1301:22: error: unresolved reference 'value'.
+    val value = item.value!!
+                     ^^^^^
+kotlin\src\main\kotlin\consema\toml\Edit.kt:1303:15: error: unresolved reference 'span'.
+    if (value.span.start != expectedStart || value.span.end != expectedStart + literal.size) {
+              ^^^^
+kotlin\src\main\kotlin\consema\toml\Edit.kt:1303:52: error: unresolved reference 'span'.
+    if (value.span.start != expectedStart || value.span.end != expectedStart + literal.size) {
+                                                   ^^^^
+kotlin\src\main\kotlin\consema\toml\Edit.kt:1306:12: error: 'when' expression must be exhaustive. Add an 'else' branch.
+    return when (value.kind) {
+           ^^^^
+kotlin\src\main\kotlin\consema\toml\Edit.kt:1306:24: error: unresolved reference 'kind'.
+    return when (value.kind) {
+                       ^^^^
+kotlin\src\main\kotlin\consema\toml\Edit.kt:1312:28: error: unresolved reference 'dateTime'.
+            val dt = value.dateTime
+                           ^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Edit.kt:1396:31: error: unresolved reference 'toLongOrNull'.
+        val year = value.year.toLongOrNull()?.toInt() ?: -1
+                              ^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Edit.kt:1408:30: error: unresolved reference 'toLongOrNull'.
+        val year = date.year.toLongOrNull()?.toInt() ?: -1
+                             ^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Edit.kt:1419:30: error: unresolved reference 'toLongOrNull'.
+        val year = date.year.toLongOrNull()?.toInt() ?: -1
+                             ^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Edit.kt:1434:37: error: cannot infer type for this parameter. Specify it explicitly.
+    val matches = document.entities.withIndex()
+                                    ^^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Edit.kt:1434:37: error: unresolved reference. None of the following candidates is applicable because of a receiver type mismatch:
+fun <T> Iterable<T>.withIndex(): Iterable<IndexedValue<T>>
+    val matches = document.entities.withIndex()
+                                    ^^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Edit.kt:1435:10: error: cannot infer type for this parameter. Specify it explicitly.
+        .filter { (_, entity) ->
+         ^^^^^^
+kotlin\src\main\kotlin\consema\toml\Edit.kt:1435:10: error: not enough information to infer type argument for 'T'.
+        .filter { (_, entity) ->
+         ^^^^^^
+kotlin\src\main\kotlin\consema\toml\Edit.kt:1435:19: error: cannot infer type for this parameter. Specify it explicitly.
+        .filter { (_, entity) ->
+                  ^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Edit.kt:1435:19: error: function 'component1()' is ambiguous for this expression: 
+fun <T> Array<out T>.component1(): T
+fun ByteArray.component1(): Byte
+fun ShortArray.component1(): Short
+fun IntArray.component1(): Int
+fun LongArray.component1(): Long
+fun FloatArray.component1(): Float
+fun DoubleArray.component1(): Double
+fun BooleanArray.component1(): Boolean
+fun CharArray.component1(): Char
+fun <T> List<T>.component1(): T
+fun <K, V> Map.Entry<K, V>.component1(): K
+fun UIntArray.component1(): UInt
+fun ULongArray.component1(): ULong
+fun UByteArray.component1(): UByte
+fun UShortArray.component1(): UShort.
+        .filter { (_, entity) ->
+                  ^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Edit.kt:1435:19: error: function 'component2()' is ambiguous for this expression: 
+fun <T> Array<out T>.component2(): T
+fun ByteArray.component2(): Byte
+fun ShortArray.component2(): Short
+fun IntArray.component2(): Int
+fun LongArray.component2(): Long
+fun FloatArray.component2(): Float
+fun DoubleArray.component2(): Double
+fun BooleanArray.component2(): Boolean
+fun CharArray.component2(): Char
+fun <T> List<T>.component2(): T
+fun <K, V> Map.Entry<K, V>.component2(): V
+fun UIntArray.component2(): UInt
+fun ULongArray.component2(): ULong
+fun UByteArray.component2(): UByte
+fun UShortArray.component2(): UShort.
+        .filter { (_, entity) ->
+                  ^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Edit.kt:1436:20: error: unresolved reference 'kind'.
+            entity.kind is EntityKind.Item &&
+                   ^^^^
+kotlin\src\main\kotlin\consema\toml\Edit.kt:1436:28: error: unresolved reference 'EntityKind'.
+            entity.kind is EntityKind.Item &&
+                           ^^^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Edit.kt:1437:24: error: unresolved reference 'span'.
+                entity.span.startByte == start && entity.span.endByte == end
+                       ^^^^
+kotlin\src\main\kotlin\consema\toml\Edit.kt:1437:58: error: unresolved reference 'span'.
+                entity.span.startByte == start && entity.span.endByte == end
+                                                         ^^^^
+kotlin\src\main\kotlin\consema\toml\Edit.kt:1439:10: error: cannot infer type for this parameter. Specify it explicitly.
+        .map { (index, _) -> index }
+         ^^^
+kotlin\src\main\kotlin\consema\toml\Edit.kt:1439:10: error: not enough information to infer type argument for 'T'.
+        .map { (index, _) -> index }
+         ^^^
+kotlin\src\main\kotlin\consema\toml\Edit.kt:1439:10: error: not enough information to infer type argument for 'R'.
+        .map { (index, _) -> index }
+         ^^^
+kotlin\src\main\kotlin\consema\toml\Edit.kt:1439:16: error: cannot infer type for this parameter. Specify it explicitly.
+        .map { (index, _) -> index }
+               ^^^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Edit.kt:1439:16: error: function 'component1()' is ambiguous for this expression: 
+fun <T> Array<out T>.component1(): T
+fun ByteArray.component1(): Byte
+fun ShortArray.component1(): Short
+fun IntArray.component1(): Int
+fun LongArray.component1(): Long
+fun FloatArray.component1(): Float
+fun DoubleArray.component1(): Double
+fun BooleanArray.component1(): Boolean
+fun CharArray.component1(): Char
+fun <T> List<T>.component1(): T
+fun <K, V> Map.Entry<K, V>.component1(): K
+fun UIntArray.component1(): UInt
+fun ULongArray.component1(): ULong
+fun UByteArray.component1(): UByte
+fun UShortArray.component1(): UShort.
+        .map { (index, _) -> index }
+               ^^^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Edit.kt:1439:16: error: function 'component2()' is ambiguous for this expression: 
+fun <T> Array<out T>.component2(): T
+fun ByteArray.component2(): Byte
+fun ShortArray.component2(): Short
+fun IntArray.component2(): Int
+fun LongArray.component2(): Long
+fun FloatArray.component2(): Float
+fun DoubleArray.component2(): Double
+fun BooleanArray.component2(): Boolean
+fun CharArray.component2(): Char
+fun <T> List<T>.component2(): T
+fun <K, V> Map.Entry<K, V>.component2(): V
+fun UIntArray.component2(): UInt
+fun ULongArray.component2(): ULong
+fun UByteArray.component2(): UByte
+fun UShortArray.component2(): UShort.
+        .map { (index, _) -> index }
+               ^^^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Lexer.kt:168:9: error: operator '==' cannot be applied to 'Byte' and 'Int'.
+        byte == 0x0C.toByte() || byte == '\r'.code.toByte()
+        ^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Materialization.kt:294:14: error: 'internal' function exposes its 'private-in-file' parameter type argument 'RootEntry'.
+    fun root(entries: List<RootEntry>, isMapping: Boolean) {
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Materialization.kt:301:30: error: argument type mismatch: actual type is 'ByteArray', but 'String' was expected.
+            output.pushBytes(newline.bytes())
+                             ^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Materialization.kt:304:30: error: argument type mismatch: actual type is 'ByteArray', but 'String' was expected.
+            output.pushBytes(newline.bytes())
+                             ^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Materialization.kt:326:32: error: unresolved reference 'toLongOrNull'.
+                    value.year.toLongOrNull()?.toInt() ?: -1,
+                               ^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Materialization.kt:337:31: error: unresolved reference 'toLongOrNull'.
+                    date.year.toLongOrNull()?.toInt() ?: -1,
+                              ^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Materialization.kt:393:23: error: unresolved reference 'toLongOrNull'.
+            date.year.toLongOrNull()?.toInt() ?: -1,
+                      ^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Parser.kt:1667:47: error: syntax error: Unclosed comment.
+    authority.nodeRef(index.toLong(), NodeRole.TomlItem)
+                                              ^
+kotlin\src\main\kotlin\consema\toml\Projection.kt:286:36: error: 'when' expression must be exhaustive. Add an 'else' branch.
+        val value: PortableValue = when (val kind = document.itemEntity(index).kind) {
+                                   ^^^^
+kotlin\src\main\kotlin\consema\toml\Projection.kt:286:80: error: unresolved reference 'kind'.
+        val value: PortableValue = when (val kind = document.itemEntity(index).kind) {
+                                                                               ^^^^
+kotlin\src\main\kotlin\consema\toml\Projection.kt:287:16: error: unresolved reference 'InternalItemKind'.
+            is InternalItemKind.String -> PvString(kind.value)
+               ^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Projection.kt:287:57: error: unresolved reference 'value'.
+            is InternalItemKind.String -> PvString(kind.value)
+                                                        ^^^^^
+kotlin\src\main\kotlin\consema\toml\Projection.kt:288:16: error: unresolved reference 'InternalItemKind'.
+            is InternalItemKind.Integer -> PvInteger(BigInteger.valueOf(kind.value))
+               ^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Projection.kt:288:78: error: unresolved reference 'value'.
+            is InternalItemKind.Integer -> PvInteger(BigInteger.valueOf(kind.value))
+                                                                             ^^^^^
+kotlin\src\main\kotlin\consema\toml\Projection.kt:289:16: error: unresolved reference 'InternalItemKind'.
+            is InternalItemKind.Float -> PvBinaryFloat64(kind.bits)
+               ^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Projection.kt:289:63: error: unresolved reference 'bits'.
+            is InternalItemKind.Float -> PvBinaryFloat64(kind.bits)
+                                                              ^^^^
+kotlin\src\main\kotlin\consema\toml\Projection.kt:290:16: error: unresolved reference 'InternalItemKind'.
+            is InternalItemKind.Boolean -> PvBoolean(kind.value)
+               ^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Projection.kt:290:59: error: unresolved reference 'value'.
+            is InternalItemKind.Boolean -> PvBoolean(kind.value)
+                                                          ^^^^^
+kotlin\src\main\kotlin\consema\toml\Projection.kt:291:16: error: unresolved reference 'InternalItemKind'.
+            is InternalItemKind.DateTime -> projectDateTime(kind.value)
+               ^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Projection.kt:291:66: error: unresolved reference 'value'.
+            is InternalItemKind.DateTime -> projectDateTime(kind.value)
+                                                                 ^^^^^
+kotlin\src\main\kotlin\consema\toml\Projection.kt:292:16: error: unresolved reference 'InternalItemKind'.
+            is InternalItemKind.Array, is InternalItemKind.ArrayOfTables -> {
+               ^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Projection.kt:292:43: error: unresolved reference 'InternalItemKind'.
+            is InternalItemKind.Array, is InternalItemKind.ArrayOfTables -> {
+                                          ^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Projection.kt:294:24: error: unresolved reference 'InternalItemKind'.
+                    is InternalItemKind.Array -> kind.elements
+                       ^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Projection.kt:294:55: error: unresolved reference 'elements'.
+                    is InternalItemKind.Array -> kind.elements
+                                                      ^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Projection.kt:295:24: error: unresolved reference 'InternalItemKind'.
+                    is InternalItemKind.ArrayOfTables -> kind.elements
+                       ^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Projection.kt:295:63: error: unresolved reference 'elements'.
+                    is InternalItemKind.ArrayOfTables -> kind.elements
+                                                              ^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Projection.kt:298:63: error: unresolved reference 'size'.
+                val items = ArrayList<PortableValue>(elements.size)
+                                                              ^^^^
+kotlin\src\main\kotlin\consema\toml\Projection.kt:299:49: error: function 'component1()' is ambiguous for this expression: 
+fun <T> Array<out T>.component1(): T
+fun ByteArray.component1(): Byte
+fun ShortArray.component1(): Short
+fun IntArray.component1(): Int
+fun LongArray.component1(): Long
+fun FloatArray.component1(): Float
+fun DoubleArray.component1(): Double
+fun BooleanArray.component1(): Boolean
+fun CharArray.component1(): Char
+fun <T> List<T>.component1(): T
+fun <K, V> Map.Entry<K, V>.component1(): K
+fun UIntArray.component1(): UInt
+fun ULongArray.component1(): ULong
+fun UByteArray.component1(): UByte
+fun UShortArray.component1(): UShort.
+                for ((ordinal, elementIndex) in elements.withIndex()) {
+                                                ^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Projection.kt:299:49: error: function 'component2()' is ambiguous for this expression: 
+fun <T> Array<out T>.component2(): T
+fun ByteArray.component2(): Byte
+fun ShortArray.component2(): Short
+fun IntArray.component2(): Int
+fun LongArray.component2(): Long
+fun FloatArray.component2(): Float
+fun DoubleArray.component2(): Double
+fun BooleanArray.component2(): Boolean
+fun CharArray.component2(): Char
+fun <T> List<T>.component2(): T
+fun <K, V> Map.Entry<K, V>.component2(): V
+fun UIntArray.component2(): UInt
+fun ULongArray.component2(): ULong
+fun UByteArray.component2(): UByte
+fun UShortArray.component2(): UShort.
+                for ((ordinal, elementIndex) in elements.withIndex()) {
+                                                ^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Projection.kt:299:58: error: method 'iterator()' is ambiguous for this expression. Applicable candidates:
+fun <T> Enumeration<T>.iterator(): Iterator<T>
+fun <T> Iterator<T>.iterator(): Iterator<T>
+fun <K, V> Map<out K, V>.iterator(): Iterator<Map.Entry<K, V>>
+fun <K, V> MutableMap<K, V>.iterator(): MutableIterator<MutableMap.MutableEntry<K, V>>
+fun CharSequence.iterator(): CharIterator
+fun BufferedInputStream.iterator(): ByteIterator
+                for ((ordinal, elementIndex) in elements.withIndex()) {
+                                                         ^^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Projection.kt:299:58: error: overload resolution ambiguity between candidates:
+fun <T> Array<out T>.withIndex(): Iterable<IndexedValue<T>>
+fun ByteArray.withIndex(): Iterable<IndexedValue<Byte>>
+fun ShortArray.withIndex(): Iterable<IndexedValue<Short>>
+fun IntArray.withIndex(): Iterable<IndexedValue<Int>>
+fun LongArray.withIndex(): Iterable<IndexedValue<Long>>
+fun FloatArray.withIndex(): Iterable<IndexedValue<Float>>
+fun DoubleArray.withIndex(): Iterable<IndexedValue<Double>>
+fun BooleanArray.withIndex(): Iterable<IndexedValue<Boolean>>
+fun CharArray.withIndex(): Iterable<IndexedValue<Char>>
+fun <T> Iterator<T>.withIndex(): Iterator<IndexedValue<T>>
+fun <T> Iterable<T>.withIndex(): Iterable<IndexedValue<T>>
+fun UIntArray.withIndex(): Iterable<IndexedValue<UInt>>
+fun ULongArray.withIndex(): Iterable<IndexedValue<ULong>>
+fun UByteArray.withIndex(): Iterable<IndexedValue<UByte>>
+fun UShortArray.withIndex(): Iterable<IndexedValue<UShort>>
+fun <T> Sequence<T>.withIndex(): Sequence<IndexedValue<T>>
+fun CharSequence.withIndex(): Iterable<IndexedValue<Char>>
+                for ((ordinal, elementIndex) in elements.withIndex()) {
+                                                         ^^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Projection.kt:300:65: error: unresolved reference 'kind'.
+                    val element = document.entity(elementIndex).kind as? EntityKind.Element
+                                                                ^^^^
+kotlin\src\main\kotlin\consema\toml\Projection.kt:300:74: error: unresolved reference 'EntityKind'.
+                    val element = document.entity(elementIndex).kind as? EntityKind.Element
+                                                                         ^^^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Projection.kt:305:27: error: unresolved reference 'add'.
+                    items.add(projectItem(element.element.item, childPath, depth + 1))
+                          ^^^
+kotlin\src\main\kotlin\consema\toml\Projection.kt:305:51: error: unresolved reference 'element'.
+                    items.add(projectItem(element.element.item, childPath, depth + 1))
+                                                  ^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Projection.kt:315:16: error: unresolved reference 'InternalItemKind'.
+            is InternalItemKind.InlineTable, is InternalItemKind.Table -> {
+               ^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Projection.kt:315:49: error: unresolved reference 'InternalItemKind'.
+            is InternalItemKind.InlineTable, is InternalItemKind.Table -> {
+                                                ^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Projection.kt:317:24: error: unresolved reference 'InternalItemKind'.
+                    is InternalItemKind.InlineTable -> kind.entries
+                       ^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Projection.kt:317:61: error: unresolved reference 'entries'.
+                    is InternalItemKind.InlineTable -> kind.entries
+                                                            ^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Projection.kt:318:24: error: unresolved reference 'InternalItemKind'.
+                    is InternalItemKind.Table -> kind.entries
+                       ^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Projection.kt:318:55: error: unresolved reference 'entries'.
+                    is InternalItemKind.Table -> kind.entries
+                                                      ^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Projection.kt:321:75: error: unresolved reference 'size'.
+                val objectEntries = ArrayList<consema.core.Entry>(entries.size)
+                                                                          ^^^^
+kotlin\src\main\kotlin\consema\toml\Projection.kt:322:36: error: method 'iterator()' is ambiguous for this expression. Applicable candidates:
+fun <T> Enumeration<T>.iterator(): Iterator<T>
+fun <T> Iterator<T>.iterator(): Iterator<T>
+fun <K, V> Map<out K, V>.iterator(): Iterator<Map.Entry<K, V>>
+fun <K, V> MutableMap<K, V>.iterator(): MutableIterator<MutableMap.MutableEntry<K, V>>
+fun CharSequence.iterator(): CharIterator
+fun BufferedInputStream.iterator(): ByteIterator
+                for (entryIndex in entries) {
+                                   ^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Projection.kt:323:61: error: unresolved reference 'kind'.
+                    val entry = document.entity(entryIndex).kind as? EntityKind.Entry
+                                                            ^^^^
+kotlin\src\main\kotlin\consema\toml\Projection.kt:323:70: error: unresolved reference 'EntityKind'.
+                    val entry = document.entity(entryIndex).kind as? EntityKind.Entry
+                                                                     ^^^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Projection.kt:325:53: error: unresolved reference 'entry'.
+                    val key = document.entity(entry.entry.key).kind as? EntityKind.Key
+                                                    ^^^^^
+kotlin\src\main\kotlin\consema\toml\Projection.kt:325:64: error: unresolved reference 'kind'.
+                    val key = document.entity(entry.entry.key).kind as? EntityKind.Key
+                                                               ^^^^
+kotlin\src\main\kotlin\consema\toml\Projection.kt:325:73: error: unresolved reference 'EntityKind'.
+                    val key = document.entity(entry.entry.key).kind as? EntityKind.Key
+                                                                        ^^^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Projection.kt:327:36: error: unresolved reference 'key'.
+                    val name = key.key.name
+                                   ^^^
+kotlin\src\main\kotlin\consema\toml\Projection.kt:329:51: error: unresolved reference 'entry'.
+                    val child = projectItem(entry.entry.item, childPath, depth + 1)
+                                                  ^^^^^
+kotlin\src\main\kotlin\consema\toml\Projection.kt:330:35: error: unresolved reference 'add'.
+                    objectEntries.add(consema.core.Entry(name, child))
+                                  ^^^
+kotlin\src\main\kotlin\consema\toml\Projection.kt:331:41: error: unresolved reference 'entry'.
+                    val ordinal = entry.entry.ordinal.toLong()
+                                        ^^^^^
+kotlin\src\main\kotlin\consema\toml\Projection.kt:344:31: error: unresolved reference 'entry'.
+                        entry.entry.key,
+                              ^^^^^
+kotlin\src\main\kotlin\consema\toml\Projection.kt:374:43: error: unresolved reference 'span'.
+            span = document.entity(index).span,
+                                          ^^^^
+kotlin\src\main\kotlin\consema\toml\Projection.kt:401:37: error: 'when' expression must be exhaustive. Add the 'null' branch or an 'else' branch.
+                val offsetSeconds = when (val offset = value.offset) {
+                                    ^^^^
+kotlin\src\main\kotlin\consema\toml\Query.kt:142:37: error: unresolved reference 'T'.
+        fun completed(matches: List<T>): TomlQueryExecution<T> =
+                                    ^
+kotlin\src\main\kotlin\consema\toml\Query.kt:142:61: error: unresolved reference 'T'.
+        fun completed(matches: List<T>): TomlQueryExecution<T> =
+                                                            ^
+kotlin\src\main\kotlin\consema\toml\Query.kt:143:13: error: cannot infer type for this parameter. Specify it explicitly.
+            TomlQueryExecution(matches, TomlQueryTerminal.Completed)
+            ^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Query.kt:143:32: error: argument type mismatch: actual type is 'List<ERROR CLASS: Symbol not found for T>', but 'List<uninferred T (of class TomlQueryExecution<T>)>' was expected.
+            TomlQueryExecution(matches, TomlQueryTerminal.Completed)
+                               ^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Query.kt:255:95: error: unresolved reference 'kind'.
+        TomlMatch.Item(document.nodeRef(index, NodeRole.TomlItem), document.itemEntity(index).kind.publicKind())
+                                                                                              ^^^^
+kotlin\src\main\kotlin\consema\toml\Query.kt:257:73: error: unresolved reference 'kind'.
+    fun itemKind(index: Int): TomlItemKind = document.itemEntity(index).kind.publicKind()
+                                                                        ^^^^
+kotlin\src\main\kotlin\consema\toml\Query.kt:261:36: error: unresolved reference 'ElementEntity'.
+    fun elementEntity(index: Int): ElementEntity =
+                                   ^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Query.kt:262:33: error: unresolved reference 'kind'.
+        (document.entity(index).kind as? EntityKind.Element)?.element
+                                ^^^^
+kotlin\src\main\kotlin\consema\toml\Query.kt:262:42: error: unresolved reference 'EntityKind'.
+        (document.entity(index).kind as? EntityKind.Element)?.element
+                                         ^^^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Query.kt:262:63: error: unresolved reference 'element'.
+        (document.entity(index).kind as? EntityKind.Element)?.element
+                                                              ^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Query.kt:293:25: error: cannot access 'val document: TomlDocument': it is private in 'consema/toml/TomlQueryContext'.
+                context.document.entity(index).span.startByte
+                        ^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Query.kt:293:48: error: unresolved reference 'span'.
+                context.document.entity(index).span.startByte
+                                               ^^^^
+kotlin\src\main\kotlin\consema\toml\Query.kt:296:25: error: cannot access 'val document: TomlDocument': it is private in 'consema/toml/TomlQueryContext'.
+                context.document.entity(index).span.endByte
+                        ^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Query.kt:296:48: error: unresolved reference 'span'.
+                context.document.entity(index).span.endByte
+                                               ^^^^
+kotlin\src\main\kotlin\consema\toml\Query.kt:307:13: error: cannot access 'val document: TomlDocument': it is private in 'consema/toml/TomlQueryContext'.
+    context.document.validateRef(match.identity(), match.identity().role)
+            ^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Query.kt:352:37: error: cannot access 'val document: TomlDocument': it is private in 'consema/toml/TomlQueryContext'.
+                val index = context.document.validateRef(match.node, NodeRole.TomlItem)
+                                    ^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Query.kt:353:36: error: cannot access 'val document: TomlDocument': it is private in 'consema/toml/TomlQueryContext'.
+                val kind = context.document.itemEntity(index).kind
+                                   ^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Query.kt:353:63: error: unresolved reference 'kind'.
+                val kind = context.document.itemEntity(index).kind
+                                                              ^^^^
+kotlin\src\main\kotlin\consema\toml\Query.kt:355:24: error: unresolved reference 'InternalItemKind'.
+                    is InternalItemKind.Table -> kind.entries
+                       ^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Query.kt:355:55: error: unresolved reference 'entries'.
+                    is InternalItemKind.Table -> kind.entries
+                                                      ^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Query.kt:356:24: error: unresolved reference 'InternalItemKind'.
+                    is InternalItemKind.InlineTable -> kind.entries
+                       ^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Query.kt:356:61: error: unresolved reference 'entries'.
+                    is InternalItemKind.InlineTable -> kind.entries
+                                                            ^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Query.kt:359:36: error: method 'iterator()' is ambiguous for this expression. Applicable candidates:
+fun <T> Enumeration<T>.iterator(): Iterator<T>
+fun <T> Iterator<T>.iterator(): Iterator<T>
+fun <K, V> Map<out K, V>.iterator(): Iterator<Map.Entry<K, V>>
+fun <K, V> MutableMap<K, V>.iterator(): MutableIterator<MutableMap.MutableEntry<K, V>>
+fun CharSequence.iterator(): CharIterator
+fun BufferedInputStream.iterator(): ByteIterator
+                for (entryIndex in entries) {
+                                   ^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Query.kt:382:41: error: cannot access 'val document: TomlDocument': it is private in 'consema/toml/TomlQueryContext'.
+                    val index = context.document.validateRef(match.item, NodeRole.TomlItem)
+                                        ^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Query.kt:392:37: error: cannot access 'val document: TomlDocument': it is private in 'consema/toml/TomlQueryContext'.
+                val index = context.document.validateRef(match.node, NodeRole.TomlItem)
+                                    ^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Query.kt:393:36: error: cannot access 'val document: TomlDocument': it is private in 'consema/toml/TomlQueryContext'.
+                val kind = context.document.itemEntity(index).kind
+                                   ^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Query.kt:393:63: error: unresolved reference 'kind'.
+                val kind = context.document.itemEntity(index).kind
+                                                              ^^^^
+kotlin\src\main\kotlin\consema\toml\Query.kt:395:24: error: unresolved reference 'InternalItemKind'.
+                    is InternalItemKind.Array -> kind.elements
+                       ^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Query.kt:395:55: error: unresolved reference 'elements'.
+                    is InternalItemKind.Array -> kind.elements
+                                                      ^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Query.kt:396:24: error: unresolved reference 'InternalItemKind'.
+                    is InternalItemKind.ArrayOfTables -> kind.elements
+                       ^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Query.kt:396:63: error: unresolved reference 'elements'.
+                    is InternalItemKind.ArrayOfTables -> kind.elements
+                                                              ^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Query.kt:399:38: error: method 'iterator()' is ambiguous for this expression. Applicable candidates:
+fun <T> Enumeration<T>.iterator(): Iterator<T>
+fun <T> Iterator<T>.iterator(): Iterator<T>
+fun <K, V> Map<out K, V>.iterator(): Iterator<Map.Entry<K, V>>
+fun <K, V> MutableMap<K, V>.iterator(): MutableIterator<MutableMap.MutableEntry<K, V>>
+fun CharSequence.iterator(): CharIterator
+fun BufferedInputStream.iterator(): ByteIterator
+                for (elementIndex in elements) {
+                                     ^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Query.kt:403:47: error: unresolved reference 'ordinal'.
+                            ordinal = element.ordinal,
+                                              ^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Query.kt:404:47: error: cannot access 'val document: TomlDocument': it is private in 'consema/toml/TomlQueryContext'.
+                            element = context.document.nodeRef(elementIndex, NodeRole.TomlArrayElement),
+                                              ^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Query.kt:405:44: error: cannot access 'val document: TomlDocument': it is private in 'consema/toml/TomlQueryContext'.
+                            item = context.document.nodeRef(element.item, NodeRole.TomlItem),
+                                           ^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Query.kt:405:69: error: unresolved reference 'item'.
+                            item = context.document.nodeRef(element.item, NodeRole.TomlItem),
+                                                                    ^^^^
+kotlin\src\main\kotlin\consema\toml\Query.kt:414:41: error: cannot access 'val document: TomlDocument': it is private in 'consema/toml/TomlQueryContext'.
+                    val index = context.document.validateRef(match.item, NodeRole.TomlItem)
+                                        ^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Query.kt:455:29: error: cannot access 'val document: TomlDocument': it is private in 'consema/toml/TomlQueryContext'.
+                    context.document.source.rawBytes()
+                            ^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Toml.kt:89:9: error: unresolved reference 'parseTree'.
+        parseTree(text.toByteArray(Charsets.UTF_8))
+        ^^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Toml.kt:90:14: error: throwable type mismatch: actual type is 'ParseError'.
+    } catch (e: ParseError) {
+             ^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Toml.kt:95:19: error: unresolved reference 'EntityBuilder'.
+    val builder = EntityBuilder(authority, snapshot.len, limits)
+                  ^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Toml.kt:98:14: error: throwable type mismatch: actual type is 'ParseError'.
+    } catch (e: ParseError) {
+             ^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Toml.kt:233:33: error: unresolved reference 'Entity'.
+    internal val entities: List<Entity>,
+                                ^^^^^^
+kotlin\src\main\kotlin\consema\toml\Toml.kt:281:29: error: unresolved reference 'kind'.
+        if (entities[index].kind !is EntityKind.Item) {
+                            ^^^^
+kotlin\src\main\kotlin\consema\toml\Toml.kt:281:38: error: unresolved reference 'EntityKind'.
+        if (entities[index].kind !is EntityKind.Item) {
+                                     ^^^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Toml.kt:287:38: error: unresolved reference 'Entity'.
+    internal fun entity(index: Int): Entity = entities[index]
+                                     ^^^^^^
+kotlin\src\main\kotlin\consema\toml\Toml.kt:289:42: error: unresolved reference 'ItemEntity'.
+    internal fun itemEntity(index: Int): ItemEntity =
+                                         ^^^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Toml.kt:290:26: error: unresolved reference 'kind'.
+        (entities[index].kind as? EntityKind.Item)?.item
+                         ^^^^
+kotlin\src\main\kotlin\consema\toml\Toml.kt:290:35: error: unresolved reference 'EntityKind'.
+        (entities[index].kind as? EntityKind.Item)?.item
+                                  ^^^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Toml.kt:290:53: error: unresolved reference 'item'.
+        (entities[index].kind as? EntityKind.Item)?.item
+                                                    ^^^^
+kotlin\src\main\kotlin\consema\toml\Toml.kt:332:40: error: unresolved reference 'span'.
+        get() = document.entity(index).span
+                                       ^^^^
+kotlin\src\main\kotlin\consema\toml\Toml.kt:336:44: error: unresolved reference 'kind'.
+        get() = document.itemEntity(index).kind.publicKind()
+                                           ^^^^
+kotlin\src\main\kotlin\consema\toml\Toml.kt:339:59: error: unresolved reference 'kind'.
+    fun asString(): String? = (document.itemEntity(index).kind as? InternalItemKind.String)?.value
+                                                          ^^^^
+kotlin\src\main\kotlin\consema\toml\Toml.kt:339:68: error: unresolved reference 'InternalItemKind'.
+    fun asString(): String? = (document.itemEntity(index).kind as? InternalItemKind.String)?.value
+                                                                   ^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Toml.kt:339:94: error: unresolved reference 'value'.
+    fun asString(): String? = (document.itemEntity(index).kind as? InternalItemKind.String)?.value
+                                                                                             ^^^^^
+kotlin\src\main\kotlin\consema\toml\Toml.kt:342:58: error: unresolved reference 'kind'.
+    fun asInteger(): Long? = (document.itemEntity(index).kind as? InternalItemKind.Integer)?.value
+                                                         ^^^^
+kotlin\src\main\kotlin\consema\toml\Toml.kt:342:67: error: unresolved reference 'InternalItemKind'.
+    fun asInteger(): Long? = (document.itemEntity(index).kind as? InternalItemKind.Integer)?.value
+                                                                  ^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Toml.kt:342:94: error: unresolved reference 'value'.
+    fun asInteger(): Long? = (document.itemEntity(index).kind as? InternalItemKind.Integer)?.value
+                                                                                             ^^^^^
+kotlin\src\main\kotlin\consema\toml\Toml.kt:345:56: error: unresolved reference 'kind'.
+    fun asFloat(): Long? = (document.itemEntity(index).kind as? InternalItemKind.Float)?.bits
+                                                       ^^^^
+kotlin\src\main\kotlin\consema\toml\Toml.kt:345:65: error: unresolved reference 'InternalItemKind'.
+    fun asFloat(): Long? = (document.itemEntity(index).kind as? InternalItemKind.Float)?.bits
+                                                                ^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Toml.kt:345:90: error: unresolved reference 'bits'.
+    fun asFloat(): Long? = (document.itemEntity(index).kind as? InternalItemKind.Float)?.bits
+                                                                                         ^^^^
+kotlin\src\main\kotlin\consema\toml\Toml.kt:349:37: error: unresolved reference 'kind'.
+        (document.itemEntity(index).kind as? InternalItemKind.Boolean)?.value
+                                    ^^^^
+kotlin\src\main\kotlin\consema\toml\Toml.kt:349:46: error: unresolved reference 'InternalItemKind'.
+        (document.itemEntity(index).kind as? InternalItemKind.Boolean)?.value
+                                             ^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Toml.kt:349:73: error: unresolved reference 'value'.
+        (document.itemEntity(index).kind as? InternalItemKind.Boolean)?.value
+                                                                        ^^^^^
+kotlin\src\main\kotlin\consema\toml\Toml.kt:354:37: error: unresolved reference 'kind'.
+        (document.itemEntity(index).kind as? InternalItemKind.DateTime)?.value
+                                    ^^^^
+kotlin\src\main\kotlin\consema\toml\Toml.kt:354:46: error: unresolved reference 'InternalItemKind'.
+        (document.itemEntity(index).kind as? InternalItemKind.DateTime)?.value
+                                             ^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Toml.kt:354:74: error: unresolved reference 'value'.
+        (document.itemEntity(index).kind as? InternalItemKind.DateTime)?.value
+                                                                         ^^^^^
+kotlin\src\main\kotlin\consema\toml\Toml.kt:359:47: error: unresolved reference 'kind'.
+        val kind = document.itemEntity(index).kind
+                                              ^^^^
+kotlin\src\main\kotlin\consema\toml\Toml.kt:361:16: error: unresolved reference 'InternalItemKind'.
+            is InternalItemKind.Table -> kind.entries
+               ^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Toml.kt:361:47: error: unresolved reference 'entries'.
+            is InternalItemKind.Table -> kind.entries
+                                              ^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Toml.kt:362:16: error: unresolved reference 'InternalItemKind'.
+            is InternalItemKind.InlineTable -> kind.entries
+               ^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Toml.kt:362:53: error: unresolved reference 'entries'.
+            is InternalItemKind.InlineTable -> kind.entries
+                                                    ^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Toml.kt:365:24: error: overload resolution ambiguity between candidates:
+fun <R, T> Result<T>.map(transform: (@ParameterName(...) T) -> R): Result<R>
+    [R|Contract description]
+     <
+        CallsInPlace(transform, AT_MOST_ONCE)
+    >
+fun <T, R> Array<out T>.map(transform: (T) -> R): List<R>
+fun <R> ByteArray.map(transform: (Byte) -> R): List<R>
+fun <R> ShortArray.map(transform: (Short) -> R): List<R>
+fun <R> IntArray.map(transform: (Int) -> R): List<R>
+fun <R> LongArray.map(transform: (Long) -> R): List<R>
+fun <R> FloatArray.map(transform: (Float) -> R): List<R>
+fun <R> DoubleArray.map(transform: (Double) -> R): List<R>
+fun <R> BooleanArray.map(transform: (Boolean) -> R): List<R>
+fun <R> CharArray.map(transform: (Char) -> R): List<R>
+fun <T, R> Iterable<T>.map(transform: (T) -> R): List<R>
+fun <K, V, R> Map<out K, V>.map(transform: (Map.Entry<K, V>) -> R): List<R>
+fun <R> UIntArray.map(transform: (UInt) -> R): List<R>
+fun <R> ULongArray.map(transform: (ULong) -> R): List<R>
+fun <R> UByteArray.map(transform: (UByte) -> R): List<R>
+fun <R> UShortArray.map(transform: (UShort) -> R): List<R>
+fun <T, R> Sequence<T>.map(transform: (T) -> R): Sequence<R>
+fun <R> CharSequence.map(transform: (Char) -> R): List<R>
+        return entries.map { TomlEntry(document, it) }
+                       ^^^
+kotlin\src\main\kotlin\consema\toml\Toml.kt:365:50: error: unresolved reference 'it'.
+        return entries.map { TomlEntry(document, it) }
+                                                 ^^
+kotlin\src\main\kotlin\consema\toml\Toml.kt:371:47: error: unresolved reference 'kind'.
+        val kind = document.itemEntity(index).kind
+                                              ^^^^
+kotlin\src\main\kotlin\consema\toml\Toml.kt:373:16: error: unresolved reference 'InternalItemKind'.
+            is InternalItemKind.Array -> kind.elements
+               ^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Toml.kt:373:47: error: unresolved reference 'elements'.
+            is InternalItemKind.Array -> kind.elements
+                                              ^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Toml.kt:374:16: error: unresolved reference 'InternalItemKind'.
+            is InternalItemKind.ArrayOfTables -> kind.elements
+               ^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Toml.kt:374:55: error: unresolved reference 'elements'.
+            is InternalItemKind.ArrayOfTables -> kind.elements
+                                                      ^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Toml.kt:377:25: error: overload resolution ambiguity between candidates:
+fun <R, T> Result<T>.map(transform: (@ParameterName(...) T) -> R): Result<R>
+    [R|Contract description]
+     <
+        CallsInPlace(transform, AT_MOST_ONCE)
+    >
+fun <T, R> Array<out T>.map(transform: (T) -> R): List<R>
+fun <R> ByteArray.map(transform: (Byte) -> R): List<R>
+fun <R> ShortArray.map(transform: (Short) -> R): List<R>
+fun <R> IntArray.map(transform: (Int) -> R): List<R>
+fun <R> LongArray.map(transform: (Long) -> R): List<R>
+fun <R> FloatArray.map(transform: (Float) -> R): List<R>
+fun <R> DoubleArray.map(transform: (Double) -> R): List<R>
+fun <R> BooleanArray.map(transform: (Boolean) -> R): List<R>
+fun <R> CharArray.map(transform: (Char) -> R): List<R>
+fun <T, R> Iterable<T>.map(transform: (T) -> R): List<R>
+fun <K, V, R> Map<out K, V>.map(transform: (Map.Entry<K, V>) -> R): List<R>
+fun <R> UIntArray.map(transform: (UInt) -> R): List<R>
+fun <R> ULongArray.map(transform: (ULong) -> R): List<R>
+fun <R> UByteArray.map(transform: (UByte) -> R): List<R>
+fun <R> UShortArray.map(transform: (UShort) -> R): List<R>
+fun <T, R> Sequence<T>.map(transform: (T) -> R): Sequence<R>
+fun <R> CharSequence.map(transform: (Char) -> R): List<R>
+        return elements.map { TomlArrayElement(document, it) }
+                        ^^^
+kotlin\src\main\kotlin\consema\toml\Toml.kt:377:58: error: unresolved reference 'it'.
+        return elements.map { TomlArrayElement(document, it) }
+                                                         ^^
+kotlin\src\main\kotlin\consema\toml\Toml.kt:388:27: error: unresolved reference 'EntryEntity'.
+    private fun entity(): EntryEntity =
+                          ^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Toml.kt:389:33: error: unresolved reference 'kind'.
+        (document.entity(index).kind as? EntityKind.Entry)?.entry
+                                ^^^^
+kotlin\src\main\kotlin\consema\toml\Toml.kt:389:42: error: unresolved reference 'EntityKind'.
+        (document.entity(index).kind as? EntityKind.Entry)?.entry
+                                         ^^^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Toml.kt:389:61: error: unresolved reference 'entry'.
+        (document.entity(index).kind as? EntityKind.Entry)?.entry
+                                                            ^^^^^
+kotlin\src\main\kotlin\consema\toml\Toml.kt:394:26: error: unresolved reference 'ordinal'.
+        get() = entity().ordinal
+                         ^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Toml.kt:402:43: error: unresolved reference 'key'.
+        get() = document.nodeRef(entity().key, NodeRole.TomlKey)
+                                          ^^^
+kotlin\src\main\kotlin\consema\toml\Toml.kt:406:43: error: unresolved reference 'item'.
+        get() = document.nodeRef(entity().item, NodeRole.TomlItem)
+                                          ^^^^
+kotlin\src\main\kotlin\consema\toml\Toml.kt:410:40: error: unresolved reference 'span'.
+        get() = document.entity(index).span
+                                       ^^^^
+kotlin\src\main\kotlin\consema\toml\Toml.kt:416:42: error: unresolved reference 'key'.
+        get() = document.entity(entity().key).span
+                                         ^^^
+kotlin\src\main\kotlin\consema\toml\Toml.kt:416:47: error: unresolved reference 'span'.
+        get() = document.entity(entity().key).span
+                                              ^^^^
+kotlin\src\main\kotlin\consema\toml\Toml.kt:420:44: error: unresolved reference 'key'.
+        val key = document.entity(entity().key).kind as? EntityKind.Key
+                                           ^^^
+kotlin\src\main\kotlin\consema\toml\Toml.kt:420:49: error: unresolved reference 'kind'.
+        val key = document.entity(entity().key).kind as? EntityKind.Key
+                                                ^^^^
+kotlin\src\main\kotlin\consema\toml\Toml.kt:420:58: error: unresolved reference 'EntityKind'.
+        val key = document.entity(entity().key).kind as? EntityKind.Key
+                                                         ^^^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Toml.kt:422:20: error: unresolved reference 'key'.
+        return key.key.name
+                   ^^^
+kotlin\src\main\kotlin\consema\toml\Toml.kt:426:56: error: unresolved reference 'item'.
+    fun item(): TomlItem = TomlItem(document, entity().item)
+                                                       ^^^^
+kotlin\src\main\kotlin\consema\toml\Toml.kt:434:27: error: unresolved reference 'ElementEntity'.
+    private fun entity(): ElementEntity =
+                          ^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Toml.kt:435:33: error: unresolved reference 'kind'.
+        (document.entity(index).kind as? EntityKind.Element)?.element
+                                ^^^^
+kotlin\src\main\kotlin\consema\toml\Toml.kt:435:42: error: unresolved reference 'EntityKind'.
+        (document.entity(index).kind as? EntityKind.Element)?.element
+                                         ^^^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Toml.kt:435:63: error: unresolved reference 'element'.
+        (document.entity(index).kind as? EntityKind.Element)?.element
+                                                              ^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Toml.kt:440:26: error: unresolved reference 'ordinal'.
+        get() = entity().ordinal
+                         ^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Toml.kt:448:43: error: unresolved reference 'item'.
+        get() = document.nodeRef(entity().item, NodeRole.TomlItem)
+                                          ^^^^
+kotlin\src\main\kotlin\consema\toml\Toml.kt:452:40: error: unresolved reference 'span'.
+        get() = document.entity(index).span
+                                       ^^^^
+kotlin\src\main\kotlin\consema\toml\Toml.kt:455:56: error: unresolved reference 'item'.
+    fun item(): TomlItem = TomlItem(document, entity().item)
+                                                       ^^^^
+kotlin\src\main\kotlin\consema\toml\Toml.kt:459:14: error: unresolved reference 'InternalItemKind'.
+internal fun InternalItemKind.publicKind(): TomlItemKind = when (this) {
+             ^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Toml.kt:459:60: error: 'when' expression must be exhaustive. Add an 'else' branch.
+internal fun InternalItemKind.publicKind(): TomlItemKind = when (this) {
+                                                           ^^^^
+kotlin\src\main\kotlin\consema\toml\Toml.kt:459:66: error: unresolved reference 'InternalItemKind'.
+internal fun InternalItemKind.publicKind(): TomlItemKind = when (this) {
+                                                                 ^^^^
+kotlin\src\main\kotlin\consema\toml\Toml.kt:460:8: error: unresolved reference 'InternalItemKind'.
+    is InternalItemKind.String -> TomlItemKind.String
+       ^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Toml.kt:461:8: error: unresolved reference 'InternalItemKind'.
+    is InternalItemKind.Integer -> TomlItemKind.Integer
+       ^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Toml.kt:462:8: error: unresolved reference 'InternalItemKind'.
+    is InternalItemKind.Float -> TomlItemKind.Float
+       ^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Toml.kt:463:8: error: unresolved reference 'InternalItemKind'.
+    is InternalItemKind.Boolean -> TomlItemKind.Boolean
+       ^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Toml.kt:464:8: error: unresolved reference 'InternalItemKind'.
+    is InternalItemKind.DateTime -> when {
+       ^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Toml.kt:465:9: error: unresolved reference 'value'.
+        value.date != null && value.time != null && value.offset != null ->
+        ^^^^^
+kotlin\src\main\kotlin\consema\toml\Toml.kt:465:31: error: unresolved reference 'value'.
+        value.date != null && value.time != null && value.offset != null ->
+                              ^^^^^
+kotlin\src\main\kotlin\consema\toml\Toml.kt:465:53: error: unresolved reference 'value'.
+        value.date != null && value.time != null && value.offset != null ->
+                                                    ^^^^^
+kotlin\src\main\kotlin\consema\toml\Toml.kt:467:9: error: unresolved reference 'value'.
+        value.date != null && value.time != null -> TomlItemKind.LocalDateTime
+        ^^^^^
+kotlin\src\main\kotlin\consema\toml\Toml.kt:467:31: error: unresolved reference 'value'.
+        value.date != null && value.time != null -> TomlItemKind.LocalDateTime
+                              ^^^^^
+kotlin\src\main\kotlin\consema\toml\Toml.kt:468:9: error: unresolved reference 'value'.
+        value.date != null -> TomlItemKind.LocalDate
+        ^^^^^
+kotlin\src\main\kotlin\consema\toml\Toml.kt:469:9: error: unresolved reference 'value'.
+        value.time != null -> TomlItemKind.LocalTime
+        ^^^^^
+kotlin\src\main\kotlin\consema\toml\Toml.kt:472:8: error: unresolved reference 'InternalItemKind'.
+    is InternalItemKind.Array -> TomlItemKind.Array
+       ^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Toml.kt:473:8: error: unresolved reference 'InternalItemKind'.
+    is InternalItemKind.InlineTable -> TomlItemKind.InlineTable
+       ^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Toml.kt:474:8: error: unresolved reference 'InternalItemKind'.
+    is InternalItemKind.Table -> when (flavor) {
+       ^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Toml.kt:474:34: error: 'when' expression must be exhaustive. Add an 'else' branch.
+    is InternalItemKind.Table -> when (flavor) {
+                                 ^^^^
+kotlin\src\main\kotlin\consema\toml\Toml.kt:474:40: error: unresolved reference 'flavor'.
+    is InternalItemKind.Table -> when (flavor) {
+                                       ^^^^^^
+kotlin\src\main\kotlin\consema\toml\Toml.kt:475:9: error: unresolved reference 'TableFlavor'.
+        TableFlavor.ROOT -> TomlItemKind.RootTable
+        ^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Toml.kt:476:9: error: unresolved reference 'TableFlavor'.
+        TableFlavor.STANDARD -> TomlItemKind.StandardTable
+        ^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Toml.kt:477:9: error: unresolved reference 'TableFlavor'.
+        TableFlavor.IMPLICIT -> TomlItemKind.ImplicitTable
+        ^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Toml.kt:478:9: error: unresolved reference 'TableFlavor'.
+        TableFlavor.DOTTED -> TomlItemKind.DottedTable
+        ^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Toml.kt:480:8: error: unresolved reference 'InternalItemKind'.
+    is InternalItemKind.ArrayOfTables -> TomlItemKind.ArrayOfTables
+       ^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\xml\Entity.kt:101:19: error: syntax error: Expecting ';' after the last enum entry or '}' to close enum class body.
+    Amplification,
+                  ^
+kotlin\src\main\kotlin\consema\xml\Errors.kt:54:9: error: 'cause' hides member of supertype 'Throwable' and needs an 'override' modifier.
+    val cause: Exception? = null,
+        ^^^^^
+kotlin\src\main\kotlin\consema\xml\Materialization.kt:53:25: error: unresolved reference 'AssociationLocation'.
+import consema.core.AssociationLocation
+                        ^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\xml\Materialization.kt:54:29: error: unresolved reference 'AssociationRole'.
+import consema.core.AssociationRole
+                            ^^^^^^^
+kotlin\src\main\kotlin\consema\xml\Materialization.kt:108:32: error: unresolved reference 'validate'.
+    val input = Record.validate(value, analyzed)
+                               ^^^^^^^^
+kotlin\src\main\kotlin\consema\xml\Materialization.kt:112:22: error: argument type mismatch: actual type is 'ByteArrayOutputStream', but 'ByteArray' was expected.
+    val bytes = encodeText(text, request.encoding, request.limits.maxOutputBytes)
+                     ^^^^
+kotlin\src\main\kotlin\consema\xml\Materialization.kt:229:9: error: redeclaration:
+object Record : Any
+private class XmlRecord(
+        ^^^^^^
+kotlin\src\main\kotlin\consema\xml\Materialization.kt:248:3: error: redeclaration:
+object ElementRecord : Any
+private class XmlElementRecord(
+  ^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\xml\Materialization.kt:292:60: error: redeclaration:
+class Record : Any
+/** Strict record validation (materialization.rs:238-500). */
+                                                           ^^
+kotlin\src\main\kotlin\consema\xml\Materialization.kt:297:1: error: unresolved reference 'expectStringField'.
+        val record = expectStringField(value, "record", ValuePath.root())
+^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\xml\Materialization.kt:304:4: error: unresolved reference 'expectField'.
+        val rootValue = expectField(value, "root", rootPath)
+   ^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\xml\Materialization.kt:305:23: error: unresolved reference 'expectOptionalObjectField'.
+        val declaration = when (val pair = expectOptionalObjectField(value, "declaration")) {
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\xml\Materialization.kt:308:27: error: destructuring of type 'Any' requires operator function 'component1()'.
+                val (declarationValue, path) = pair
+                          ^^^^
+kotlin\src\main\kotlin\consema\xml\Materialization.kt:308:27: error: destructuring of type 'Any' requires operator function 'component2()'.
+                val (declarationValue, path) = pair
+                          ^^^^
+kotlin\src\main\kotlin\consema\xml\Materialization.kt:309:10: error: unresolved reference 'expectStringField'.
+                val version = expectStringField(declarationValue, "version", path)
+         ^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\xml\Materialization.kt:317:11: error: unresolved reference 'expectOptionalStringField'.
+                val encoding = expectOptionalStringField(declarationValue, "encoding", path)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\xml\Materialization.kt:318:13: error: unresolved reference 'expectOptionalBooleanField'.
+                val standalone = expectOptionalBooleanField(declarationValue, "standalone", path)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\xml\Materialization.kt:319:14: error: argument type mismatch: actual type is 'Any', but 'String' was expected.
+                DeclarationRecord(version, encoding, standalone, path)
+             ^^^^^^^
+kotlin\src\main\kotlin\consema\xml\Materialization.kt:322:20: error: unresolved reference 'expectOptionalSequenceField'.
+        val entities = when (val pair = expectOptionalSequenceField(value, "entities")) {
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\xml\Materialization.kt:322:90: error: cannot infer type for this parameter. Specify it explicitly.
+        val entities = when (val pair = expectOptionalSequenceField(value, "entities")) {
+                                                                                         
+kotlin\src\main\kotlin\consema\xml\Materialization.kt:325:21: error: destructuring of type 'Any' requires operator function 'component1()'.
+                val (entityList, path) = pair
+                    ^^^^
+kotlin\src\main\kotlin\consema\xml\Materialization.kt:325:21: error: destructuring of type 'Any' requires operator function 'component2()'.
+                val (entityList, path) = pair
+                    ^^^^
+kotlin\src\main\kotlin\consema\xml\Materialization.kt:326:20: error: cannot infer type for this parameter. Specify it explicitly.
+                entityList.mapIndexed { index, entity ->
+                   ^^^^^
+kotlin\src\main\kotlin\consema\xml\Materialization.kt:326:27: error: cannot infer type for this parameter. Specify it explicitly.
+                entityList.mapIndexed { index, entity ->
+                          ^^^^^^
+kotlin\src\main\kotlin\consema\xml\Materialization.kt:328:11: error: unresolved reference 'expectStringField'.
+                    val name = expectStringField(entity, "name", entityPath)
+          ^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\xml\Materialization.kt:329:18: error: unresolved reference 'expectStringField'.
+                    val replacement = expectStringField(entity, "replacement", entityPath)
+                 ^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\xml\Materialization.kt:341:13: error: unresolved reference 'validate'.
+        val root = ElementRecord.validate(rootValue, rootPath, analyzed)
+            ^^^^^^^^
+kotlin\src\main\kotlin\consema\xml\Materialization.kt:346:3: error: unresolved reference 'asObject'.
+        val objectValue = asObject(value, path)
+  ^^^^^^^^
+kotlin\src\main\kotlin\consema\xml\Materialization.kt:356:11: error: unresolved reference 'kind'.
+                valueKind = field.kind,
+          ^^^^
+kotlin\src\main\kotlin\consema\xml\Materialization.kt:363:3: error: unresolved reference 'asObject'.
+        val objectValue = asObject(value, path)
+  ^^^^^^^^
+kotlin\src\main\kotlin\consema\xml\Materialization.kt:363:40: error: return type mismatch: expected 'PortableValue', actual 'MatchGroup'.
+        val objectValue = asObject(value, path)
+                                       ^^^^^^^^
+kotlin\src\main\kotlin\consema\xml\Materialization.kt:377:3: error: unresolved reference 'asObject'.
+        val objectValue = asObject(value, ValuePath.root())
+  ^^^^^^^^
+kotlin\src\main\kotlin\consema\xml\Materialization.kt:379:70: error: return type mismatch: expected 'Pair<PortableValue, ValuePath>?', actual 'Pair<MatchGroup, ValuePath>'.
+        val path = ValuePath.root().child(ValuePathSegment.ObjectValue(name))
+                                                                     ^^^^^^^^
+kotlin\src\main\kotlin\consema\xml\Materialization.kt:441:9: error: redeclaration:
+class ElementRecord : Any
+            )
+        ^^^^^
+kotlin\src\main\kotlin\consema\xml\Materialization.kt:451:7: error: unresolved reference 'expectExpandedName'.
+        val (namespace, local) = expectExpandedName(value, path)
+      ^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\xml\Materialization.kt:451:7: error: function 'component1()' is ambiguous for this expression: 
+fun <T> Array<out T>.component1(): T
+fun ByteArray.component1(): Byte
+fun ShortArray.component1(): Short
+fun IntArray.component1(): Int
+fun LongArray.component1(): Long
+fun FloatArray.component1(): Float
+fun DoubleArray.component1(): Double
+fun BooleanArray.component1(): Boolean
+fun CharArray.component1(): Char
+fun <T> List<T>.component1(): T
+fun <K, V> Map.Entry<K, V>.component1(): K
+fun UIntArray.component1(): UInt
+fun ULongArray.component1(): ULong
+fun UByteArray.component1(): UByte
+fun UShortArray.component1(): UShort.
+        val (namespace, local) = expectExpandedName(value, path)
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\xml\Materialization.kt:451:7: error: function 'component2()' is ambiguous for this expression: 
+fun <T> Array<out T>.component2(): T
+fun ByteArray.component2(): Byte
+fun ShortArray.component2(): Short
+fun IntArray.component2(): Int
+fun LongArray.component2(): Long
+fun FloatArray.component2(): Float
+fun DoubleArray.component2(): Double
+fun BooleanArray.component2(): Boolean
+fun CharArray.component2(): Char
+fun <T> List<T>.component2(): T
+fun <K, V> Map.Entry<K, V>.component2(): V
+fun UIntArray.component2(): UInt
+fun ULongArray.component2(): ULong
+fun UByteArray.component2(): UByte
+fun UShortArray.component2(): UShort.
+        val (namespace, local) = expectExpandedName(value, path)
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\xml\Materialization.kt:452:23: error: unresolved reference 'expectOptionalSequenceField'.
+        val namespaces = when (val pair = Record.expectOptionalSequenceField(value, "namespaces")) {
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\xml\Materialization.kt:452:95: error: cannot infer type for this parameter. Specify it explicitly.
+        val namespaces = when (val pair = Record.expectOptionalSequenceField(value, "namespaces")) {
+                                                                                              ^^^^^^
+kotlin\src\main\kotlin\consema\xml\Materialization.kt:455:21: error: destructuring of type 'Any' requires operator function 'component1()'.
+                val (bindings, bindingsPath) = pair
+                    ^^^^
+kotlin\src\main\kotlin\consema\xml\Materialization.kt:455:21: error: destructuring of type 'Any' requires operator function 'component2()'.
+                val (bindings, bindingsPath) = pair
+                    ^^^^
+kotlin\src\main\kotlin\consema\xml\Materialization.kt:456:12: error: cannot infer type for this parameter. Specify it explicitly.
+                bindings.mapIndexed { index, binding ->
+           ^^^^^
+kotlin\src\main\kotlin\consema\xml\Materialization.kt:456:19: error: cannot infer type for this parameter. Specify it explicitly.
+                bindings.mapIndexed { index, binding ->
+                  ^^^^^^^
+kotlin\src\main\kotlin\consema\xml\Materialization.kt:459:14: error: unresolved reference 'expectOptionalStringField'.
+                    val prefix = Record.expectOptionalStringField(binding, "prefix", bindingPath)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\xml\Materialization.kt:460:11: error: unresolved reference 'expectStringField'.
+                    val uri = Record.expectStringField(binding, "uri", bindingPath)
+          ^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\xml\Materialization.kt:461:1: error: cannot infer type for this parameter. Specify it explicitly.
+                    prefix to uri
+^^
+kotlin\src\main\kotlin\consema\xml\Materialization.kt:465:23: error: unresolved reference 'expectOptionalSequenceField'.
+        val attributes = when (val pair = Record.expectOptionalSequenceField(value, "attributes")) {
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\xml\Materialization.kt:465:95: error: cannot infer type for this parameter. Specify it explicitly.
+        val attributes = when (val pair = Record.expectOptionalSequenceField(value, "attributes")) {
+                                                                                              ^^^^^^
+kotlin\src\main\kotlin\consema\xml\Materialization.kt:468:28: error: destructuring of type 'Any' requires operator function 'component1()'.
+                val (attributeList, attributesPath) = pair
+                           ^^^^
+kotlin\src\main\kotlin\consema\xml\Materialization.kt:468:28: error: destructuring of type 'Any' requires operator function 'component2()'.
+                val (attributeList, attributesPath) = pair
+                           ^^^^
+kotlin\src\main\kotlin\consema\xml\Materialization.kt:469:17: error: cannot infer type for this parameter. Specify it explicitly.
+                attributeList.mapIndexed { index, attribute ->
+                ^^^^^
+kotlin\src\main\kotlin\consema\xml\Materialization.kt:469:24: error: cannot infer type for this parameter. Specify it explicitly.
+                attributeList.mapIndexed { index, attribute ->
+                       ^^^^^^^^^
+kotlin\src\main\kotlin\consema\xml\Materialization.kt:472:27: error: unresolved reference 'expectExpandedName'.
+                    val (attrNamespace, attrLocal) = expectExpandedName(attribute, attributePath)
+                          ^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\xml\Materialization.kt:472:27: error: function 'component1()' is ambiguous for this expression: 
+fun <T> Array<out T>.component1(): T
+fun ByteArray.component1(): Byte
+fun ShortArray.component1(): Short
+fun IntArray.component1(): Int
+fun LongArray.component1(): Long
+fun FloatArray.component1(): Float
+fun DoubleArray.component1(): Double
+fun BooleanArray.component1(): Boolean
+fun CharArray.component1(): Char
+fun <T> List<T>.component1(): T
+fun <K, V> Map.Entry<K, V>.component1(): K
+fun UIntArray.component1(): UInt
+fun ULongArray.component1(): ULong
+fun UByteArray.component1(): UByte
+fun UShortArray.component1(): UShort.
+                    val (attrNamespace, attrLocal) = expectExpandedName(attribute, attributePath)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\xml\Materialization.kt:472:27: error: function 'component2()' is ambiguous for this expression: 
+fun <T> Array<out T>.component2(): T
+fun ByteArray.component2(): Byte
+fun ShortArray.component2(): Short
+fun IntArray.component2(): Int
+fun LongArray.component2(): Long
+fun FloatArray.component2(): Float
+fun DoubleArray.component2(): Double
+fun BooleanArray.component2(): Boolean
+fun CharArray.component2(): Char
+fun <T> List<T>.component2(): T
+fun <K, V> Map.Entry<K, V>.component2(): V
+fun UIntArray.component2(): UInt
+fun ULongArray.component2(): ULong
+fun UByteArray.component2(): UByte
+fun UShortArray.component2(): UShort.
+                    val (attrNamespace, attrLocal) = expectExpandedName(attribute, attributePath)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\xml\Materialization.kt:473:17: error: unresolved reference 'expectStringField'.
+                    val valueText = Record.expectStringField(attribute, "value", attributePath)
+                ^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\xml\Materialization.kt:478:20: error: unresolved reference 'expectOptionalSequenceField'.
+        val content = when (val pair = Record.expectOptionalSequenceField(value, "content")) {
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\xml\Materialization.kt:478:89: error: cannot infer type for this parameter. Specify it explicitly.
+        val content = when (val pair = Record.expectOptionalSequenceField(value, "content")) {
+                                                                                        ^^^^^^
+kotlin\src\main\kotlin\consema\xml\Materialization.kt:481:23: error: destructuring of type 'Any' requires operator function 'component1()'.
+                val (contentList, contentPath) = pair
+                      ^^^^
+kotlin\src\main\kotlin\consema\xml\Materialization.kt:481:23: error: destructuring of type 'Any' requires operator function 'component2()'.
+                val (contentList, contentPath) = pair
+                      ^^^^
+kotlin\src\main\kotlin\consema\xml\Materialization.kt:482:15: error: cannot infer type for this parameter. Specify it explicitly.
+                contentList.mapIndexed { index, item ->
+              ^^^^^
+kotlin\src\main\kotlin\consema\xml\Materialization.kt:482:22: error: cannot infer type for this parameter. Specify it explicitly.
+                contentList.mapIndexed { index, item ->
+                     ^^^^
+kotlin\src\main\kotlin\consema\xml\Materialization.kt:485:11: error: unresolved reference 'asObject'.
+                    val itemObject = asObject(item, itemPath)
+          ^^^^^^^^
+kotlin\src\main\kotlin\consema\xml\Materialization.kt:488:2: error: unresolved reference 'validate'.
+                            validate(item, itemPath, analyzed),
+ ^^^^^^^^
+kotlin\src\main\kotlin\consema\xml\Materialization.kt:492:22: error: unresolved reference 'expectStringField'.
+                        when (val kind = Record.expectStringField(item, "kind", itemPath)) {
+                     ^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\xml\Materialization.kt:497:17: error: unresolved reference 'expectField'.
+                                    Record.expectField(item, "fragments", fragmentsPath)
+                ^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\xml\Materialization.kt:508:21: error: unresolved reference 'expectStringField'.
+                                        Record.expectStringField(fragment, "kind", fragmentPath)
+                    ^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\xml\Materialization.kt:511:25: error: unresolved reference 'expectStringField'.
+                                            Record.expectStringField(fragment, "text", fragmentPath),
+                        ^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\xml\Materialization.kt:515:29: error: unresolved reference 'expectStringField'.
+                                                Record.expectStringField(fragment, "resolved", fragmentPath)
+                            ^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\xml\Materialization.kt:523:52: error: argument type mismatch: actual type is 'V? (of fun <K, V> Map<out K, V>.get)', but 'Char' was expected.
+                                            FragmentRecord.CharacterReference(resolved[0])
+                                                   ^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\xml\Materialization.kt:523:52: error: cannot infer type for this parameter. Specify it explicitly.
+                                            FragmentRecord.CharacterReference(resolved[0])
+                                                   ^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\xml\Materialization.kt:526:25: error: unresolved reference 'expectStringField'.
+                                            Record.expectStringField(fragment, "name", fragmentPath),
+                        ^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\xml\Materialization.kt:527:25: error: unresolved reference 'expectStringField'.
+                                            Record.expectStringField(fragment, "resolved", fragmentPath),
+                        ^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\xml\Materialization.kt:530:25: error: unresolved reference 'expectStringField'.
+                                            Record.expectStringField(fragment, "name", fragmentPath),
+                        ^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\xml\Materialization.kt:531:25: error: unresolved reference 'expectStringField'.
+                                            Record.expectStringField(fragment, "resolved", fragmentPath),
+                        ^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\xml\Materialization.kt:543:13: error: unresolved reference 'expectStringField'.
+                                Record.expectStringField(item, "text", itemPath),
+            ^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\xml\Materialization.kt:547:13: error: unresolved reference 'expectStringField'.
+                                Record.expectStringField(item, "text", itemPath),
+            ^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\xml\Materialization.kt:551:13: error: unresolved reference 'expectStringField'.
+                                Record.expectStringField(item, "target", itemPath),
+            ^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\xml\Materialization.kt:552:13: error: unresolved reference 'expectOptionalStringField'.
+                                Record.expectOptionalStringField(itemObject, "content", itemPath),
+            ^^^^^^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\xml\Materialization.kt:558:23: error: unresolved reference 'kind'.
+                                valueKind = item.kind,
+                      ^^^^
+kotlin\src\main\kotlin\consema\xml\Materialization.kt:565:53: error: method 'iterator()' is ambiguous for this expression. Applicable candidates:
+fun <T> Enumeration<T>.iterator(): Iterator<T>
+fun <T> Iterator<T>.iterator(): Iterator<T>
+fun <K, V> Map<out K, V>.iterator(): Iterator<Map.Entry<K, V>>
+fun <K, V> MutableMap<K, V>.iterator(): MutableIterator<MutableMap.MutableEntry<K, V>>
+fun CharSequence.iterator(): CharIterator
+fun BufferedInputStream.iterator(): ByteIterator
+        val names = HashSet<Pair<String?, String>>()
+                                                    
+kotlin\src\main\kotlin\consema\xml\Materialization.kt:567:16: error: cannot infer type for this parameter. Specify it explicitly.
+            val key = attribute.namespace to attribute.local
+               ^^
+kotlin\src\main\kotlin\consema\xml\Materialization.kt:578:88: error: unresolved reference 'expectObjectField'.
+    fun expectExpandedName(value: PortableValue, path: ValuePath): Pair<String?, String> {
+                                                                                       ^^^
+kotlin\src\main\kotlin\consema\xml\Materialization.kt:581:2: error: unresolved reference 'expectOptionalStringField'.
+        val namespace = Record.expectOptionalStringField(name, "namespace", namePath)
+ ^^^^^^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\xml\Materialization.kt:581:84: error: unresolved reference 'expectStringField'.
+        val namespace = Record.expectOptionalStringField(name, "namespace", namePath)
+                                                                                   ^^
+kotlin\src\main\kotlin\consema\xml\Materialization.kt:582:66: error: cannot infer type for this parameter. Specify it explicitly.
+        val local = Record.expectStringField(name, "local", namePath)
+                                                                 ^^
+kotlin\src\main\kotlin\consema\xml\Materialization.kt:639:64: error: unresolved reference 'AssociationLocation'.
+            is NamespaceBinding -> MaterializationInputLocation.Association(
+                                                               ^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\xml\Materialization.kt:640:16: error: unresolved reference 'AssociationRole'.
+                AssociationLocation(path, 0, AssociationRole.ObjectEntry),
+               ^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\xml\Materialization.kt:871:6: error: unresolved reference 'truncate'.
+            push("/>")
+     ^^^^^^^^
+kotlin\src\main\kotlin\consema\xml\Materialization.kt:891:17: error: function invocation 'name()' expected.
+                                val entityName = when (fragment) {
+                ^^^^
+kotlin\src\main\kotlin\consema\xml\Materialization.kt:941:25: error: unresolved reference 'truncate'.
+                        push(content)
+                        ^^^^^^^^
+kotlin\src\main\kotlin\consema\xml\Materialization.kt:1165:11: error: unresolved reference 'resolved'.
+                    )
+          ^^^^^^^^
+kotlin\src\main\kotlin\consema\xml\Parser.kt:359:37: error: null cannot be a value of a non-null type 'XmlToken'.
+            return next() ?: return null
+                                    ^^^^
+kotlin\src\main\kotlin\consema\xml\Parser.kt:655:48: error: use '||' instead of commas in conditions of 'when' without a subject.
+                startsWith(cursor, "<!ELEMENT"),
+                                               ^
+kotlin\src\main\kotlin\consema\xml\Parser.kt:1244:48: error: argument type mismatch: actual type is 'ByteArray', but 'Int' was expected.
+                    val valueEnd = indexOfByte(decoded, valueStart + 1, quote!!)
+                                               ^^^^^^^
+kotlin\src\main\kotlin\consema\xml\Parser.kt:1244:57: error: argument type mismatch: actual type is 'Int', but 'Byte' was expected.
+                    val valueEnd = indexOfByte(decoded, valueStart + 1, quote!!)
+                                                        ^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\xml\Parser.kt:1244:73: error: too many arguments for 'fun indexOfByte(from: Int, needle: Byte): Int'.
+                    val valueEnd = indexOfByte(decoded, valueStart + 1, quote!!)
+                                                                        ^^^^^^^
+kotlin\src\main\kotlin\consema\xml\Parser.kt:1456:49: error: unresolved reference 'isAsciiWhitespace'.
+            text.substring(8).firstOrNull { !it.isAsciiWhitespace() } == '%'
+                                                ^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\xml\Parser.kt:1544:44: error: argument type mismatch: actual type is 'ByteArray', but 'Int' was expected.
+            val commentAt = indexOfBounded(decoded, searchStart, subsetEnd, "<!--")
+                                           ^^^^^^^
+kotlin\src\main\kotlin\consema\xml\Parser.kt:1544:66: error: argument type mismatch: actual type is 'Int', but 'String' was expected.
+            val commentAt = indexOfBounded(decoded, searchStart, subsetEnd, "<!--")
+                                                                 ^^^^^^^^^
+kotlin\src\main\kotlin\consema\xml\Parser.kt:1544:77: error: too many arguments for 'fun indexOfBounded(from: Int, until: Int, needle: String): Int'.
+            val commentAt = indexOfBounded(decoded, searchStart, subsetEnd, "<!--")
+                                                                            ^^^^^^
+kotlin\src\main\kotlin\consema\xml\Parser.kt:1547:41: error: argument type mismatch: actual type is 'ByteArray', but 'Int' was expected.
+                val at = indexOfBounded(decoded, searchStart, subsetEnd, marker)
+                                        ^^^^^^^
+kotlin\src\main\kotlin\consema\xml\Parser.kt:1547:63: error: argument type mismatch: actual type is 'Int', but 'String' was expected.
+                val at = indexOfBounded(decoded, searchStart, subsetEnd, marker)
+                                                              ^^^^^^^^^
+kotlin\src\main\kotlin\consema\xml\Parser.kt:1547:74: error: too many arguments for 'fun indexOfBounded(from: Int, until: Int, needle: String): Int'.
+                val at = indexOfBounded(decoded, searchStart, subsetEnd, marker)
+                                                                         ^^^^^^
+kotlin\src\main\kotlin\consema\xml\Parser.kt:1554:54: error: argument type mismatch: actual type is 'ByteArray', but 'Int' was expected.
+                    val relativeEnd = indexOfBounded(decoded, commentAt + 4, subsetEnd, "-->")
+                                                     ^^^^^^^
+kotlin\src\main\kotlin\consema\xml\Parser.kt:1554:78: error: argument type mismatch: actual type is 'Int', but 'String' was expected.
+                    val relativeEnd = indexOfBounded(decoded, commentAt + 4, subsetEnd, "-->")
+                                                                             ^^^^^^^^^
+kotlin\src\main\kotlin\consema\xml\Parser.kt:1554:89: error: too many arguments for 'fun indexOfBounded(from: Int, until: Int, needle: String): Int'.
+                    val relativeEnd = indexOfBounded(decoded, commentAt + 4, subsetEnd, "-->")
+                                                                                        ^^^^^
+kotlin\src\main\kotlin\consema\xml\Parser.kt:2144:34: error: destructuring of type 'Comparable<*>? & Serializable?' requires operator function 'component1()'.
+            val (isHex, value) = if (digits.startsWith('x') || digits.startsWith('X')) {
+                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\xml\Parser.kt:2144:34: error: destructuring of type 'Comparable<*>? & Serializable?' requires operator function 'component2()'.
+            val (isHex, value) = if (digits.startsWith('x') || digits.startsWith('X')) {
+                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\xml\Parser.kt:2147:101: error: syntax error: Expecting ')'.
+                    hex.isNotEmpty() && hex.all { it.isDigit() || it in 'a'..'f' || it in 'A'..'F' },
+                                                                                                    ^
+kotlin\src\main\kotlin\consema\xml\Parser.kt:2147:101: error: syntax error: Unexpected tokens (use ';' to separate expressions on the same line).
+                    hex.isNotEmpty() && hex.all { it.isDigit() || it in 'a'..'f' || it in 'A'..'F' },
+                                                                                                    ^
+kotlin\src\main\kotlin\consema\xml\Parser.kt:2148:40: error: syntax error: Unexpected tokens (use ';' to separate expressions on the same line).
+                    hex.toIntOrNull(16),
+                                       ^
+kotlin\src\main\kotlin\consema\xml\Parser.kt:2149:21: error: syntax error: Expecting an element.
+                    )
+                    ^
+kotlin\src\main\kotlin\consema\xml\Parser.kt:2151:68: error: syntax error: Expecting ')'.
+                (digits.isNotEmpty() && digits.all { it.isDigit() }, digits.toIntOrNull(10))
+                                                                   ^
+kotlin\src\main\kotlin\consema\xml\Parser.kt:2151:68: error: syntax error: Unexpected tokens (use ';' to separate expressions on the same line).
+                (digits.isNotEmpty() && digits.all { it.isDigit() }, digits.toIntOrNull(10))
+                                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\xml\Parser.kt:2154:17: error: argument type mismatch: actual type is 'R? (of fun <T, R> T.let)', but 'K (of fun <K> WHEN_CALL)' was expected.
+                value?.let { if (it in 0..0x10FFFF) it else null }
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\xml\Parser.kt:2154:24: error: cannot infer type for this parameter. Specify it explicitly.
+                value?.let { if (it in 0..0x10FFFF) it else null }
+                       ^^^
+kotlin\src\main\kotlin\consema\xml\Parser.kt:2154:24: error: unresolved reference. None of the following candidates is applicable because of a receiver type mismatch:
+fun <T, R> T.let(block: (T) -> R): R
+    [R|Contract description]
+     <
+        CallsInPlace(block, EXACTLY_ONCE)
+    >
+                value?.let { if (it in 0..0x10FFFF) it else null }
+                       ^^^
+kotlin\src\main\kotlin\consema\xml\Parser.kt:2154:28: error: cannot infer type for this parameter. Specify it explicitly.
+                value?.let { if (it in 0..0x10FFFF) it else null }
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\xml\Parser.kt:2157:16: error: cannot infer type for this parameter. Specify it explicitly.
+            }?.let { Char(it) }?.takeIf { isXmlChar(it) }
+               ^^^
+kotlin\src\main\kotlin\consema\xml\Parser.kt:2157:16: error: not enough information to infer type argument for 'T'.
+            }?.let { Char(it) }?.takeIf { isXmlChar(it) }
+               ^^^
+kotlin\src\main\kotlin\consema\xml\Parser.kt:2157:16: error: not enough information to infer type argument for 'R'.
+            }?.let { Char(it) }?.takeIf { isXmlChar(it) }
+               ^^^
+kotlin\src\main\kotlin\consema\xml\Parser.kt:2157:20: error: cannot infer type for this parameter. Specify it explicitly.
+            }?.let { Char(it) }?.takeIf { isXmlChar(it) }
+                   ^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\xml\Parser.kt:2157:34: error: cannot infer type for this parameter. Specify it explicitly.
+            }?.let { Char(it) }?.takeIf { isXmlChar(it) }
+                                 ^^^^^^
+kotlin\src\main\kotlin\consema\xml\Parser.kt:2157:34: error: not enough information to infer type argument for 'T'.
+            }?.let { Char(it) }?.takeIf { isXmlChar(it) }
+                                 ^^^^^^
+kotlin\src\main\kotlin\consema\xml\Parser.kt:2157:41: error: cannot infer type for this parameter. Specify it explicitly.
+            }?.let { Char(it) }?.takeIf { isXmlChar(it) }
+                                        ^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\xml\Parser.kt:2159:70: error: argument type mismatch: actual type is 'Any', but 'Char' was expected.
+                return ReferenceFragment.CharacterReference(refSpan, resolved)
+                                                                     ^^^^^^^^
+kotlin\src\main\kotlin\consema\xml\Parser.kt:2267:40: error: method 'iterator()' is ambiguous for this expression. Applicable candidates:
+fun <T> Enumeration<T>.iterator(): Iterator<T>
+fun <T> Iterator<T>.iterator(): Iterator<T>
+fun <K, V> Map<out K, V>.iterator(): Iterator<Map.Entry<K, V>>
+fun <K, V> MutableMap<K, V>.iterator(): MutableIterator<MutableMap.MutableEntry<K, V>>
+fun CharSequence.iterator(): CharIterator
+fun BufferedInputStream.iterator(): ByteIterator
+                    for (c in fragment.resolved) {
+                                       ^^^^^^^^
+kotlin\src\main\kotlin\consema\xml\Parser.kt:2267:40: error: unresolved reference 'resolved'.
+                    for (c in fragment.resolved) {
+                                       ^^^^^^^^
+kotlin\src\main\kotlin\consema\xml\Parser.kt:2465:25: error: argument type mismatch: actual type is 'Span?', but 'Span' was expected.
+            localSpan = rawSpanOffset(start + colon + 1, end),
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\xml\Projection.kt:519:38: error: cannot access 'constructor(events: List<ProjectionEvent>): ProjectionReport': it is private in 'consema/xml/ProjectionReport'.
+    fun report(): ProjectionReport = ProjectionReport(reportEvents.toList())
+                                     ^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\xml\Projection.kt:521:39: error: cannot access 'constructor(entries: List<ProvenanceEntry>): ProvenanceMap': it is private in 'consema/xml/ProvenanceMap'.
+    fun provenance(): ProvenanceMap = ProvenanceMap(provenanceEntries.toList())
+                                      ^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\xml\Projection.kt:526:19: error: type mismatch: inferred type is 'ProjectionFailure.ResourceLimit', but 'Throwable' was expected.
+            throw ProjectionFailure.ResourceLimit("max_source_nodes")
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\xml\Projection.kt:533:19: error: type mismatch: inferred type is 'ProjectionFailure.ResourceLimit', but 'Throwable' was expected.
+            throw ProjectionFailure.ResourceLimit("max_value_nodes")
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\xml\Projection.kt:539:19: error: type mismatch: inferred type is 'ProjectionFailure.ResourceLimit', but 'Throwable' was expected.
+            throw ProjectionFailure.ResourceLimit("max_report_entries")
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\xml\Projection.kt:551:19: error: type mismatch: inferred type is 'ProjectionFailure.ResourceLimit', but 'Throwable' was expected.
+            throw ProjectionFailure.ResourceLimit("max_provenance_units")
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\xml\Projection.kt:830:18: error: throwable type mismatch: actual type is 'ProjectionFailure'.
+        } catch (e: ProjectionFailure) {
+                 ^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\xml\Projection.kt:923:18: error: throwable type mismatch: actual type is 'ProjectionFailure'.
+        } catch (e: ProjectionFailure) {
+                 ^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\xml\Projection.kt:968:40: error: type mismatch: inferred type is 'ProjectionFailure.Collision', but 'Throwable' was expected.
+            KeepPolicy.Reject -> throw ProjectionFailure.Collision(origin, key)
+                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\xml\Projection.kt:1020:19: error: type mismatch: inferred type is 'ProjectionFailure.MappingAdmission', but 'Throwable' was expected.
+            throw ProjectionFailure.MappingAdmission("namespace declarations on the mapped element")
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\xml\Projection.kt:1025:59: error: type mismatch: inferred type is 'ProjectionFailure.MappingAdmission', but 'Throwable' was expected.
+                AttributePolicy.RejectAttributes -> throw ProjectionFailure.MappingAdmission(
+                                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\xml\Projection.kt:1106:39: error: type mismatch: inferred type is 'ProjectionFailure.MappingAdmission', but 'Throwable' was expected.
+                                throw ProjectionFailure.MappingAdmission(
+                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\xml\Projection.kt:1122:59: error: type mismatch: inferred type is 'ProjectionFailure.MappingAdmission', but 'Throwable' was expected.
+                        TextKeyPolicy.RejectText -> throw ProjectionFailure.MappingAdmission(
+                                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\xml\Projection.kt:1163:59: error: type mismatch: inferred type is 'ProjectionFailure.MappingAdmission', but 'Throwable' was expected.
+                        TextKeyPolicy.RejectText -> throw ProjectionFailure.MappingAdmission(
+                                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\xml\Query.kt:507:17: error: unresolved reference 'node'.
+        -> item.node.index.coerceAtMost(Int.MAX_VALUE.toLong()).toInt()
+                ^^^^
+kotlin\src\main\kotlin\consema\yaml\Edit.kt:356:34: error: 'name' hides member of supertype 'EditFailure' and needs an 'override' modifier.
+    data class ResourceLimit(val name: String) : EditFailure("ResourceLimit")
+                                 ^^^^
+kotlin\src\main\kotlin\consema\yaml\Edit.kt:843:70: error: unresolved reference 'anchor'.
+            val (container, ordinal) = resolveMappingEntry(placement.anchor)
+                                                                     ^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Edit.kt:860:70: error: unresolved reference 'anchor'.
+            val (container, ordinal) = resolveSequenceItem(placement.anchor)
+                                                                     ^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Edit.kt:976:16: error: return type mismatch: expected 'Int', actual 'Any'.
+        return if (spans.getOrNull(ordinal) != null) {
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Edit.kt:977:18: error: unresolved reference 'startByte'.
+            span.startByte
+                 ^^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Edit.kt:979:18: error: unresolved reference 'endByte'.
+            span.endByte
+                 ^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Edit.kt:1360:21: error: unresolved reference 'MaterializationFailureKind'.
+                    MaterializationFailureKind.UNREPRESENTABLE ->
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Edit.kt:1362:21: error: unresolved reference 'MaterializationFailureKind'.
+                    MaterializationFailureKind.RESOURCE_LIMIT ->
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Edit.kt:1404:21: error: unresolved reference 'MaterializationFailureKind'.
+                    MaterializationFailureKind.UNREPRESENTABLE ->
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Edit.kt:1406:21: error: unresolved reference 'MaterializationFailureKind'.
+                    MaterializationFailureKind.RESOURCE_LIMIT ->
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Edit.kt:1463:38: error: unresolved reference 'saturatingMul'.
+            val length = text.length.saturatingMul(2)
+                                     ^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Edit.kt:1678:21: error: unresolved reference 'MaterializationFailureKind'.
+                    MaterializationFailureKind.UNREPRESENTABLE ->
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Edit.kt:1680:21: error: unresolved reference 'MaterializationFailureKind'.
+                    MaterializationFailureKind.RESOURCE_LIMIT ->
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Edit.kt:1923:17: error: smart cast to 'ValidationAlias' is impossible, because 'alias' is a mutable property that could be mutated concurrently.
+                expected.alias.name == actual.alias.name -> {
+                ^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Edit.kt:1923:40: error: smart cast to 'ValidationAlias' is impossible, because 'alias' is a mutable property that could be mutated concurrently.
+                expected.alias.name == actual.alias.name -> {
+                                       ^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Edit.kt:1924:21: error: smart cast to 'ValidationAlias' is impossible, because 'alias' is a mutable property that could be mutated concurrently.
+                if (expected.alias.sourceAlias != null && actual.alias.sourceAlias != null) {
+                    ^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Edit.kt:1924:59: error: smart cast to 'ValidationAlias' is impossible, because 'alias' is a mutable property that could be mutated concurrently.
+                if (expected.alias.sourceAlias != null && actual.alias.sourceAlias != null) {
+                                                          ^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Edit.kt:1925:42: error: smart cast to 'ValidationAlias' is impossible, because 'alias' is a mutable property that could be mutated concurrently.
+                    state.output.aliases[expected.alias.sourceAlias!!] = actual.alias.sourceAlias!!
+                                         ^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Edit.kt:1925:74: error: smart cast to 'ValidationAlias' is impossible, because 'alias' is a mutable property that could be mutated concurrently.
+                    state.output.aliases[expected.alias.sourceAlias!!] = actual.alias.sourceAlias!!
+                                                                         ^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Edit.kt:2148:52: error: unresolved reference 'saturatingMul'.
+        maxProvenanceEntries = limits.maxNodeCount.saturatingMul(4),
+                                                   ^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Edit.kt:2158:57: error: unresolved reference 'saturatingMul'.
+            maxDecodedUtf8Bytes = limits.maxSourceBytes.saturatingMul(2),
+                                                        ^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Edit.kt:2162:47: error: unresolved reference 'saturatingMul'.
+        maxPatchBytes = limits.maxSourceBytes.saturatingMul(2),
+                                              ^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Errors.kt:68:9: error: 'cause' hides member of supertype 'Throwable' and needs an 'override' modifier.
+    val cause: Exception? = null,
+        ^^^^^
+kotlin\src\main\kotlin\consema\yaml\Errors.kt:121:30: error: unresolved reference 'RelatedSourceLocation'.
+    related: List<Diagnostic.RelatedSourceLocation> = emptyList(),
+                             ^^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Errors.kt:121:55: error: cannot infer type for this parameter. Specify it explicitly.
+    related: List<Diagnostic.RelatedSourceLocation> = emptyList(),
+                                                      ^^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Materialization.kt:310:41: error: unresolved reference 'saturatingMul'.
+    maxNodeCount = limits.maxInputNodes.saturatingMul(4),
+                                        ^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Materialization.kt:681:32: error: unresolved reference 'saturatingMul'.
+            val length = units.saturatingMul(2).saturatingAdd(2)
+                               ^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Materialization.kt:687:24: error: unresolved reference 'add'.
+                output.add(0xff.toByte())
+                       ^^^
+kotlin\src\main\kotlin\consema\yaml\Materialization.kt:688:24: error: unresolved reference 'add'.
+                output.add(0xfe.toByte())
+                       ^^^
+kotlin\src\main\kotlin\consema\yaml\Materialization.kt:690:24: error: unresolved reference 'add'.
+                output.add(0xfe.toByte())
+                       ^^^
+kotlin\src\main\kotlin\consema\yaml\Materialization.kt:691:24: error: unresolved reference 'add'.
+                output.add(0xff.toByte())
+                       ^^^
+kotlin\src\main\kotlin\consema\yaml\Materialization.kt:696:28: error: unresolved reference 'add'.
+                    output.add((unit and 0xff).toByte())
+                           ^^^
+kotlin\src\main\kotlin\consema\yaml\Materialization.kt:697:28: error: unresolved reference 'add'.
+                    output.add((unit shr 8).toByte())
+                           ^^^
+kotlin\src\main\kotlin\consema\yaml\Materialization.kt:699:28: error: unresolved reference 'add'.
+                    output.add((unit shr 8).toByte())
+                           ^^^
+kotlin\src\main\kotlin\consema\yaml\Materialization.kt:700:28: error: unresolved reference 'add'.
+                    output.add((unit and 0xff).toByte())
+                           ^^^
+kotlin\src\main\kotlin\consema\yaml\Materialization.kt:720:17: error: cannot access 'fun push(input: GraphMaterializationInputLocation, output: MaterializedOrigin): Unit': it is private in 'consema/yaml/GraphProvenanceBuilder'.
+        builder.push(
+                ^^^^
+kotlin\src\main\kotlin\consema\yaml\Materialization.kt:736:15: error: redeclaration:
+class GraphProvenanceBuilder : Any
+private class GraphProvenanceBuilder(
+              ^^^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Materialization.kt:865:39: error: unresolved reference 'add'.
+        entriesList[position].outputs.add(output)
+                                      ^^^
+kotlin\src\main\kotlin\consema\yaml\Materialization.kt:916:54: error: unresolved reference 'saturatingMul'.
+        maxInputNodes = request.limits.maxInputNodes.saturatingMul(2).saturatingAdd(1),
+                                                     ^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Materialization.kt:986:59: error: value out of range.
+            if (bits == 0x7ff0_0000_0000_0000L || bits == 0xfff0_0000_0000_0000L ||
+                                                          ^^^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Materialization.kt:1141:41: error: unresolved reference 'saturatingMul'.
+    val maxNodes = limits.maxInputNodes.saturatingMul(2).saturatingAdd(1)
+                                        ^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Materialization.kt:1180:17: error: value out of range.
+                0xfff0_0000_0000_0000L -> "-.inf"
+                ^^^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Materialization.kt:1234:27: error: unresolved reference 'toIntOrNull'.
+    val year = value.year.toIntOrNull() ?: return null
+                          ^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Materialization.kt:1280:35: error: unresolved reference 'toLongOrNull'.
+    val exponent = value.exponent.toLongOrNull()
+                                  ^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Materialization.kt:1288:16: error: unresolved reference 'saturatingAdd'.
+    if (places.saturatingAdd(1) > max) {
+               ^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Materialization.kt:1450:39: error: unresolved reference 'add'.
+        entriesList[position].outputs.add(output)
+                                      ^^^
+kotlin\src\main\kotlin\consema\yaml\Parser.kt:100:61: error: unresolved reference 'saturatingMul'.
+                maxDecodedUtf8Bytes = limits.maxSourceBytes.saturatingMul(2),
+                                                            ^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Parser.kt:132:61: error: unsupported escape sequence.
+        val line = rawLine.removeSuffix("\r").removePrefix("\u{feff}")
+                                                            ^^
+kotlin\src\main\kotlin\consema\yaml\Parser.kt:202:42: error: argument type mismatch: actual type is 'Char', but 'Int' was expected.
+            val explicit = consumeMarker('-', '-', '-')
+                                         ^^^
+kotlin\src\main\kotlin\consema\yaml\Parser.kt:202:47: error: argument type mismatch: actual type is 'Char', but 'Int' was expected.
+            val explicit = consumeMarker('-', '-', '-')
+                                              ^^^
+kotlin\src\main\kotlin\consema\yaml\Parser.kt:202:52: error: argument type mismatch: actual type is 'Char', but 'Int' was expected.
+            val explicit = consumeMarker('-', '-', '-')
+                                                   ^^^
+kotlin\src\main\kotlin\consema\yaml\Parser.kt:867:52: error: unresolved reference 'digitToIntOrNull'.
+            val digit = chars.getOrNull(position)?.digitToIntOrNull(16)
+                                                   ^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:545:19: error: cannot access 'class GraphProvenanceBuilder : Any': it is private in file.
+    val builder = GraphProvenanceBuilder(this, ids, request.limits.maxProvenanceEntries)
+                  ^^^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:546:13: error: unresolved reference 'build'.
+    builder.build()
+            ^^^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:547:51: error: unresolved reference 'map'.
+    return CompleteGraphProjection(graph, builder.map)
+                                                  ^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:561:36: error: argument type mismatch: actual type is 'List<GraphMaterializationProvenanceEntry>', but 'List<GraphProvenanceEntry>' was expected.
+        get() = GraphProvenanceMap(entries)
+                                   ^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:561:36: error: cannot access 'class GraphProvenanceBuilder : Any': it is private in file.
+        get() = GraphProvenanceMap(entries)
+                                   ^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:564:37: error: cannot access 'class GraphProvenanceBuilder : Any': it is private in file.
+        for ((ordinal, document) in document.native.documents.withIndex()) {
+                                    ^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:565:13: error: cannot access 'class GraphProvenanceBuilder : Any': it is private in file.
+            add(
+            ^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:568:41: error: unresolved reference 'snapshotIdentity'.
+                    snapshot = document.snapshotIdentity(),
+                                        ^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:569:37: error: unresolved reference 'authority'.
+                    node = document.authority.nodeRef(ordinal.toLong(), NodeRole.YamlDocument),
+                                    ^^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:575:31: error: cannot access 'class GraphProvenanceBuilder : Any': it is private in file.
+        for ((index, node) in document.native.nodes.withIndex()) {
+                              ^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:576:13: error: cannot access 'class GraphProvenanceBuilder : Any': it is private in file.
+            add(
+            ^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:577:45: error: unresolved reference 'ids'.
+                GraphProjectedLocation.Node(ids[index]),
+                                            ^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:577:45: error: argument type mismatch: actual type is 'V? (of fun <K, V> Map<out K, V>.get)', but 'NodeId' was expected.
+                GraphProjectedLocation.Node(ids[index]),
+                                            ^^^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:577:45: error: cannot infer type for this parameter. Specify it explicitly.
+                GraphProjectedLocation.Node(ids[index]),
+                                            ^^^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:579:32: error: cannot access 'class GraphProvenanceBuilder : Any': it is private in file.
+                    snapshot = document.snapshotIdentity(),
+                               ^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:579:41: error: expression 'snapshotIdentity' of type 'SnapshotIdentity' cannot be invoked as a function. Function 'invoke()' is not found.
+                    snapshot = document.snapshotIdentity(),
+                                        ^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:580:36: error: cannot access 'class GraphProvenanceBuilder : Any': it is private in file.
+                    node = nodeRef(document.authority, index),
+                                   ^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:590:38: error: unresolved reference 'ids'.
+                            parent = ids[index],
+                                     ^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:590:38: error: argument type mismatch: actual type is 'V? (of fun <K, V> Map<out K, V>.get)', but 'NodeId' was expected.
+                            parent = ids[index],
+                                     ^^^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:590:38: error: cannot infer type for this parameter. Specify it explicitly.
+                            parent = ids[index],
+                                     ^^^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:593:25: error: cannot access 'class GraphProvenanceBuilder : Any': it is private in file.
+                        add(
+                        ^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:596:44: error: cannot access 'class GraphProvenanceBuilder : Any': it is private in file.
+                                snapshot = document.snapshotIdentity(),
+                                           ^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:596:53: error: expression 'snapshotIdentity' of type 'SnapshotIdentity' cannot be invoked as a function. Function 'invoke()' is not found.
+                                snapshot = document.snapshotIdentity(),
+                                                    ^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:597:40: error: cannot access 'class GraphProvenanceBuilder : Any': it is private in file.
+                                node = document.authority.nodeRef(
+                                       ^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:606:29: error: unresolved reference 'addAlias'.
+                            addAlias(location, item.alias!!, ProvenanceRelation.Reference)
+                            ^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:614:42: error: unresolved reference 'ids'.
+                                parent = ids[index],
+                                         ^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:614:42: error: argument type mismatch: actual type is 'V? (of fun <K, V> Map<out K, V>.get)', but 'NodeId' was expected.
+                                parent = ids[index],
+                                         ^^^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:614:42: error: cannot infer type for this parameter. Specify it explicitly.
+                                parent = ids[index],
+                                         ^^^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:618:42: error: unresolved reference 'ids'.
+                                parent = ids[index],
+                                         ^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:618:42: error: argument type mismatch: actual type is 'V? (of fun <K, V> Map<out K, V>.get)', but 'NodeId' was expected.
+                                parent = ids[index],
+                                         ^^^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:618:42: error: cannot infer type for this parameter. Specify it explicitly.
+                                parent = ids[index],
+                                         ^^^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:622:29: error: cannot access 'class GraphProvenanceBuilder : Any': it is private in file.
+                            add(
+                            ^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:625:48: error: cannot access 'class GraphProvenanceBuilder : Any': it is private in file.
+                                    snapshot = document.snapshotIdentity(),
+                                               ^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:625:57: error: expression 'snapshotIdentity' of type 'SnapshotIdentity' cannot be invoked as a function. Function 'invoke()' is not found.
+                                    snapshot = document.snapshotIdentity(),
+                                                        ^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:626:44: error: cannot access 'class GraphProvenanceBuilder : Any': it is private in file.
+                                    node = document.authority.nodeRef(
+                                           ^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:635:33: error: unresolved reference 'addAlias'.
+                                addAlias(location, alias, ProvenanceRelation.Reference)
+                                ^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:649:21: error: cannot access 'class GraphProvenanceBuilder : Any': it is private in file.
+        val alias = document.native.aliases[ordinal]
+                    ^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:650:9: error: cannot access 'class GraphProvenanceBuilder : Any': it is private in file.
+        add(
+        ^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:653:28: error: cannot access 'class GraphProvenanceBuilder : Any': it is private in file.
+                snapshot = document.snapshotIdentity(),
+                           ^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:653:37: error: expression 'snapshotIdentity' of type 'SnapshotIdentity' cannot be invoked as a function. Function 'invoke()' is not found.
+                snapshot = document.snapshotIdentity(),
+                                    ^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:654:24: error: cannot access 'class GraphProvenanceBuilder : Any': it is private in file.
+                node = document.authority.nodeRef(alias.identity, NodeRole.YamlAlias),
+                       ^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:662:24: error: cannot access 'class GraphProvenanceBuilder : Any': it is private in file.
+        val existing = index[projected]
+                       ^^^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:662:24: error: type inference failed. The value of the type parameter 'K' must be mentioned in input types (argument types, receiver type, or expected type). Try to specify it explicitly.
+        val existing = index[projected]
+                       ^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:663:24: error: cannot access 'class GraphProvenanceBuilder : Any': it is private in file.
+        val observed = units + if (existing != null) 1 else 2
+                       ^^^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:664:24: error: unresolved reference 'maxEntries'.
+        if (observed > maxEntries) {
+                       ^^^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:667:9: error: cannot access 'class GraphProvenanceBuilder : Any': it is private in file.
+        units = observed
+        ^^^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:669:13: error: cannot access 'class GraphProvenanceBuilder : Any': it is private in file.
+            entries[existing].origins.add(origin)
+            ^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:669:31: error: unresolved reference 'origins'.
+            entries[existing].origins.add(origin)
+                              ^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:671:28: error: cannot access 'class GraphProvenanceBuilder : Any': it is private in file.
+            val position = entries.size
+                           ^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:672:13: error: cannot access 'class GraphProvenanceBuilder : Any': it is private in file.
+            entries.add(GraphProvenanceEntry(projected, mutableListOf(origin)))
+            ^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:672:21: error: unresolved reference 'add'.
+            entries.add(GraphProvenanceEntry(projected, mutableListOf(origin)))
+                    ^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:673:13: error: cannot access 'class GraphProvenanceBuilder : Any': it is private in file.
+            index[projected] = position
+            ^^^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:673:19: error: argument type mismatch: actual type is 'GraphProjectedLocation', but 'GraphMaterializationInputLocation' was expected.
+            index[projected] = position
+                  ^^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:695:41: error: unresolved reference 'saturatingMul'.
+        val maximum = context.seen.size.saturatingMul(request.limits.maxAmplificationRatio)
+                                        ^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:925:44: error: value out of range.
+                "-.inf" -> PvBinaryFloat64(0xfff0_0000_0000_0000L)
+                                           ^^^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:1032:44: error: expression 'snapshotIdentity' of type 'SnapshotIdentity' cannot be invoked as a function. Function 'invoke()' is not found.
+        val origin = SourceOrigin(document.snapshotIdentity(), node, span, relation)
+                                           ^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:1034:46: error: unresolved reference 'add'.
+            provenanceList[existing].origins.add(origin)
+                                             ^^^
+kotlin\src\main\kotlin\consema\yaml\Query.kt:646:42: error: unresolved reference 'and'.
+                bytes[index * 2] = (unit and 0xff).toByte()
+                                         ^^^
+kotlin\src\main\kotlin\consema\yaml\Query.kt:647:46: error: unresolved reference 'shr'.
+                bytes[index * 2 + 1] = (unit shr 8).toByte()
+                                             ^^^
+kotlin\src\main\kotlin\consema\yaml\Query.kt:655:42: error: unresolved reference 'shr'.
+                bytes[index * 2] = (unit shr 8).toByte()
+                                         ^^^
+kotlin\src\main\kotlin\consema\yaml\Query.kt:656:46: error: unresolved reference 'and'.
+                bytes[index * 2 + 1] = (unit and 0xff).toByte()
+                                             ^^^
+kotlin\src\main\kotlin\consema\yaml\Scalar.kt:119:41: error: argument type mismatch: actual type is 'String?', but 'String' was expected.
+    return tag to NativeScalar(decoded, canonical, kind, style)
+                                        ^^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Scalar.kt:466:16: error: unresolved reference 'isAscii'.
+    if (!value.isAscii() || value.length < 10) {
+               ^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Scanner.kt:173:37: error: argument type mismatch: actual type is 'Char', but 'Int' was expected.
+                atDocumentIndicator('-', '-', '-') -> {
+                                    ^^^
+kotlin\src\main\kotlin\consema\yaml\Scanner.kt:173:42: error: argument type mismatch: actual type is 'Char', but 'Int' was expected.
+                atDocumentIndicator('-', '-', '-') -> {
+                                         ^^^
+kotlin\src\main\kotlin\consema\yaml\Scanner.kt:173:47: error: argument type mismatch: actual type is 'Char', but 'Int' was expected.
+                atDocumentIndicator('-', '-', '-') -> {
+                                              ^^^
+kotlin\src\main\kotlin\consema\yaml\Scanner.kt:178:37: error: argument type mismatch: actual type is 'Char', but 'Int' was expected.
+                atDocumentIndicator('.', '.', '.') -> {
+                                    ^^^
+kotlin\src\main\kotlin\consema\yaml\Scanner.kt:178:42: error: argument type mismatch: actual type is 'Char', but 'Int' was expected.
+                atDocumentIndicator('.', '.', '.') -> {
+                                         ^^^
+kotlin\src\main\kotlin\consema\yaml\Scanner.kt:178:47: error: argument type mismatch: actual type is 'Char', but 'Int' was expected.
+                atDocumentIndicator('.', '.', '.') -> {
+                                              ^^^

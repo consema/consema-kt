@@ -1,0 +1,21 @@
+kotlin\build\work\DebugIni.kt:13:43: error: cannot access 'val sectionsList: List<IniSection>': it is internal in 'consema/ini/IniDocument'.
+        println("PARSE OK: sections=${doc.sectionsList.size} entries=${doc.entriesList.size} status=${doc.formationStatus}")
+                                          ^^^^^^^^^^^^
+kotlin\build\work\DebugIni.kt:13:76: error: cannot access 'val entriesList: List<IniEntry>': it is internal in 'consema/ini/IniDocument'.
+        println("PARSE OK: sections=${doc.sectionsList.size} entries=${doc.entriesList.size} status=${doc.formationStatus}")
+                                                                           ^^^^^^^^^^^
+kotlin\build\work\DebugIni.kt:13:107: error: cannot access 'val formationStatus: FormationStatus': it is internal in 'consema/ini/IniDocument'.
+        println("PARSE OK: sections=${doc.sectionsList.size} entries=${doc.entriesList.size} status=${doc.formationStatus}")
+                                                                                                          ^^^^^^^^^^^^^^^
+kotlin\build\work\DebugIni.kt:19:35: error: cannot access 'class IniEncodingRequest : Any': it is internal in file.
+        val request = consema.ini.IniEncodingRequest.new()
+                                  ^^^^^^^^^^^^^^^^^^
+kotlin\build\work\DebugIni.kt:19:54: error: cannot access 'class IniEncodingRequest : Any': it is internal in file.
+        val request = consema.ini.IniEncodingRequest.new()
+                                                     ^^^
+kotlin\build\work\DebugIni.kt:20:32: error: cannot access 'fun fromRaw(bytes: ByteArray, request: IniEncodingRequest, limits: SourceLimits): IniSource': it is internal in 'consema/ini/IniSource.Companion'.
+        val source = IniSource.fromRaw(bytes, request, SourceLimits.UNBOUNDED)
+                               ^^^^^^^
+kotlin\build\work\DebugIni.kt:21:41: error: unresolved reference 'rawLen'.
+        println("SOURCE OK raw=${source.rawLen()}")
+                                        ^^^^^^

@@ -1,0 +1,3 @@
+﻿kotlin\src\test\kotlin\consema\protocol\RecordsV5V6Test.kt:421:25: error: argument type mismatch: actual type is 'Int', but 'Byte' was expected.
+            byteArrayOf(0x80, 0x41),
+                        ^^^^

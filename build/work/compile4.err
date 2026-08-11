@@ -1,0 +1,844 @@
+kotlin\src\main\kotlin\consema\ini\Edit.kt:333:30: error: 'name' in 'EditFailure' is final and cannot be overridden.
+    data class ResourceLimit(override val name: String) : EditFailure("ResourceLimit")
+                             ^^^^^^^^
+kotlin\src\main\kotlin\consema\ini\Edit.kt:796:30: error: 'when' expression must be exhaustive. Add the 'is InsertEntry', 'is InsertSection', 'is RemoveSection', 'is RenameSection', 'is ReplaceValue' branches or an 'else' branch.
+                val target = when (operation) {
+                             ^^^^
+kotlin\src\main\kotlin\consema\ini\Parser.kt:1100:37: error: cannot infer type for this parameter. Specify it explicitly.
+        val entryGroups = java.util.TreeMap(
+                                    ^^^^^^^
+kotlin\src\main\kotlin\consema\ini\Parser.kt:1100:37: error: not enough information to infer type argument for 'V'.
+        val entryGroups = java.util.TreeMap(
+                                    ^^^^^^^
+kotlin\src\main\kotlin\consema\ini\Parser.kt:1110:25: error: cannot infer type for this parameter. Specify it explicitly.
+            entryGroups.getOrPut(sectionIdentity to entry.comparisonKey) { ArrayList() }.add(index)
+                        ^^^^^^^^
+kotlin\src\main\kotlin\consema\ini\Parser.kt:1110:25: error: not enough information to infer type argument for 'V'.
+            entryGroups.getOrPut(sectionIdentity to entry.comparisonKey) { ArrayList() }.add(index)
+                        ^^^^^^^^
+kotlin\src\main\kotlin\consema\ini\Parser.kt:1110:76: error: cannot infer type for this parameter. Specify it explicitly.
+            entryGroups.getOrPut(sectionIdentity to entry.comparisonKey) { ArrayList() }.add(index)
+                                                                           ^^^^^^^^^
+kotlin\src\main\kotlin\consema\ini\Parser.kt:1110:76: error: not enough information to infer type argument for 'E'.
+            entryGroups.getOrPut(sectionIdentity to entry.comparisonKey) { ArrayList() }.add(index)
+                                                                           ^^^^^^^^^
+kotlin\src\main\kotlin\consema\ini\Parser.kt:1110:90: error: unresolved reference 'add'.
+            entryGroups.getOrPut(sectionIdentity to entry.comparisonKey) { ArrayList() }.add(index)
+                                                                                         ^^^
+kotlin\src\main\kotlin\consema\ini\Parser.kt:1113:25: error: unresolved reference 'size'.
+            if (indices.size <= 1) continue
+                        ^^^^
+kotlin\src\main\kotlin\consema\ini\Parser.kt:1114:59: error: unresolved reference 'size'.
+            checkLimit("duplicate-group-members", indices.size, limits.maxDuplicateGroupMembers)
+                                                          ^^^^
+kotlin\src\main\kotlin\consema\ini\Parser.kt:1117:33: error: argument type mismatch: actual type is 'V? (of fun <K, V> Map<out K, V>.get)', but 'Int' was expected.
+            val first = entries[indices[0]]
+                                ^^^^^^^^^^
+kotlin\src\main\kotlin\consema\ini\Parser.kt:1117:33: error: cannot infer type for this parameter. Specify it explicitly.
+            val first = entries[indices[0]]
+                                ^^^^^^^^^^
+kotlin\src\main\kotlin\consema\ini\Parser.kt:1118:27: error: method 'iterator()' is ambiguous for this expression. Applicable candidates:
+fun <T> Enumeration<T>.iterator(): Iterator<T>
+fun <T> Iterator<T>.iterator(): Iterator<T>
+fun <K, V> Map<out K, V>.iterator(): Iterator<Map.Entry<K, V>>
+fun <K, V> MutableMap<K, V>.iterator(): MutableIterator<MutableMap.MutableEntry<K, V>>
+fun CharSequence.iterator(): CharIterator
+fun BufferedInputStream.iterator(): ByteIterator
+            for (index in indices) {
+                          ^^^^^^^
+kotlin\src\main\kotlin\consema\ini\Parser.kt:1121:35: error: method 'iterator()' is ambiguous for this expression. Applicable candidates:
+fun <T> Enumeration<T>.iterator(): Iterator<T>
+fun <T> Iterator<T>.iterator(): Iterator<T>
+fun <K, V> Map<out K, V>.iterator(): Iterator<Map.Entry<K, V>>
+fun <K, V> MutableMap<K, V>.iterator(): MutableIterator<MutableMap.MutableEntry<K, V>>
+fun CharSequence.iterator(): CharIterator
+fun BufferedInputStream.iterator(): ByteIterator
+            for (index in indices.drop(1)) {
+                                  ^^^^
+kotlin\src\main\kotlin\consema\json\Document.kt:110:35: error: unresolved reference 'PvDecimal'.
+    data class Decimal(val value: PvDecimal) : InternalValueKind()
+                                  ^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Document.kt:198:9: error: return type mismatch: expected 'SemanticAvailability<Boolean?>', actual 'SemanticAvailability<Any?>'.
+        when (val kind = document.valueEntity(index).kind) {
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Document.kt:213:43: error: unresolved reference 'PvDecimal'.
+    fun asDecimal(): SemanticAvailability<PvDecimal?> =
+                                          ^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Document.kt:231:9: error: return type mismatch: expected 'SemanticAvailability<String?>', actual 'SemanticAvailability<Any?>'.
+        when (val kind = document.valueEntity(index).kind) {
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Document.kt:286:9: error: return type mismatch: expected 'SemanticAvailability<String>', actual 'SemanticAvailability<InternalValueKind.String>'.
+        when (val kind = document.valueEntity(entity().key).kind) {
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Edit.kt:116:13: error: syntax error: Parameter name expected.
+        val object: NodeRef,
+            ^^^^^^
+kotlin\src\main\kotlin\consema\json\Edit.kt:321:34: error: 'name' hides member of supertype 'EditFailure' and needs an 'override' modifier.
+    data class ResourceLimit(val name: String) : EditFailure("ResourceLimit")
+                                 ^^^^
+kotlin\src\main\kotlin\consema\json\Edit.kt:474:68: error: argument type mismatch: actual type is '<anonymous>', but 'NodeRef' was expected.
+    is EditOperation.InsertMember -> prepareInsertMember(operation.object, operation.name, operation.value, operation.placement)
+                                                                   ^^^^^^
+kotlin\src\main\kotlin\consema\json\Edit.kt:474:68: error: the expression cannot be a selector (cannot occur after a dot).
+    is EditOperation.InsertMember -> prepareInsertMember(operation.object, operation.name, operation.value, operation.placement)
+                                                                   ^^^^^^
+kotlin\src\main\kotlin\consema\json\Edit.kt:474:74: error: syntax error: Expecting a class body.
+    is EditOperation.InsertMember -> prepareInsertMember(operation.object, operation.name, operation.value, operation.placement)
+                                                                         ^
+kotlin\src\main\kotlin\consema\json\Edit.kt:555:67: error: unresolved reference 'LeftBrace'.
+            InsertionSyntax(NodeRole.ObjectMember, JsonSyntaxKind.LeftBrace, JsonSyntaxKind.RightBrace),
+                                                                  ^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Edit.kt:555:93: error: unresolved reference 'RightBrace'.
+            InsertionSyntax(NodeRole.ObjectMember, JsonSyntaxKind.LeftBrace, JsonSyntaxKind.RightBrace),
+                                                                                            ^^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Edit.kt:581:67: error: unresolved reference 'LeftBracket'.
+            InsertionSyntax(NodeRole.ArrayElement, JsonSyntaxKind.LeftBracket, JsonSyntaxKind.RightBracket),
+                                                                  ^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Edit.kt:581:95: error: unresolved reference 'RightBracket'.
+            InsertionSyntax(NodeRole.ArrayElement, JsonSyntaxKind.LeftBracket, JsonSyntaxKind.RightBracket),
+                                                                                              ^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Edit.kt:679:27: error: unresolved reference 'anchor'.
+            if (placement.anchor == target) {
+                          ^^^^^^
+kotlin\src\main\kotlin\consema\json\Edit.kt:682:50: error: unresolved reference 'anchor'.
+            val anchor = resolveAnchor(placement.anchor, NodeRole.ObjectMember, remaining)
+                                                 ^^^^^^
+kotlin\src\main\kotlin\consema\json\Edit.kt:707:67: error: unresolved reference 'LeftBrace'.
+            InsertionSyntax(NodeRole.ObjectMember, JsonSyntaxKind.LeftBrace, JsonSyntaxKind.RightBrace),
+                                                                  ^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Edit.kt:707:93: error: unresolved reference 'RightBrace'.
+            InsertionSyntax(NodeRole.ObjectMember, JsonSyntaxKind.LeftBrace, JsonSyntaxKind.RightBrace),
+                                                                                            ^^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Edit.kt:877:24: error: unresolved reference 'Comma'.
+        JsonSyntaxKind.Comma,
+                       ^^^^^
+kotlin\src\main\kotlin\consema\json\Edit.kt:890:24: error: unresolved reference 'Comma'.
+        JsonSyntaxKind.Comma,
+                       ^^^^^
+kotlin\src\main\kotlin\consema\json\Edit.kt:943:39: error: unresolved reference 'target'.
+                removed.add(operation.target)
+                                      ^^^^^^
+kotlin\src\main\kotlin\consema\json\Edit.kt:946:41: error: unresolved reference 'placement'.
+                collectAnchor(operation.placement, anchors)
+                                        ^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Edit.kt:1211:12: error: return type mismatch: expected 'JsonScalarLexicalStyle?', actual 'Any?'.
+    return when (old) {
+           ^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Edit.kt:1265:49: error: syntax error: Expecting a when-condition.
+        is InternalValueKind.Unavailable -> null,
+                                                ^
+kotlin\src\main\kotlin\consema\json\Edit.kt:1266:5: error: syntax error: Expecting an expression, is-condition or in-condition.
+    }
+    ^
+kotlin\src\main\kotlin\consema\json\Edit.kt:1467:9: error: unresolved reference 'toLongExact'.
+        toLongExact()
+        ^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Edit.kt:1474:9: error: unresolved reference 'toIntExact'.
+        toIntExact()
+        ^^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Edit.kt:1481:9: error: unresolved reference 'toIntExact'.
+        toIntExact()
+        ^^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Edit.kt:1499:9: error: value out of range.
+        0xfff0_0000_0000_0000L -> "-Infinity"
+        ^^^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Edit.kt:1501:9: error: value out of range.
+        0xfff8_0000_0000_0000L -> "-NaN"
+        ^^^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Errors.kt:62:9: error: 'cause' hides member of supertype 'Throwable' and needs an 'override' modifier.
+    val cause: Exception? = null,
+        ^^^^^
+kotlin\src\main\kotlin\consema\json\Errors.kt:111:30: error: unresolved reference 'RelatedSourceLocation'.
+    related: List<Diagnostic.RelatedSourceLocation> = emptyList(),
+                             ^^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Errors.kt:111:55: error: cannot infer type for this parameter. Specify it explicitly.
+    related: List<Diagnostic.RelatedSourceLocation> = emptyList(),
+                                                      ^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Materialization.kt:292:13: error: value out of range.
+            0xfff0_0000_0000_0000L -> "-Infinity"
+            ^^^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Materialization.kt:294:13: error: value out of range.
+            0xfff8_0000_0000_0000L -> "-NaN"
+            ^^^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Parser.kt:91:34: error: cannot access 'val tokens: List<Token>': it is private in 'consema/json/Parser'.
+    if (parser.position < parser.tokens.size) {
+                                 ^^^^^^
+kotlin\src\main\kotlin\consema\json\Parser.kt:92:28: error: cannot access 'val tokens: List<Token>': it is private in 'consema/json/Parser'.
+        val token = parser.tokens[parser.position]
+                           ^^^^^^
+kotlin\src\main\kotlin\consema\json\Parser.kt:96:20: error: cannot access 'val tokens: List<Token>': it is private in 'consema/json/Parser'.
+            parser.tokens.last().end,
+                   ^^^^^^
+kotlin\src\main\kotlin\consema\json\Parser.kt:201:55: error: unresolved reference 'LeftBrace'.
+                TokenKind.LeftBrace -> JsonSyntaxKind.LeftBrace
+                                                      ^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Parser.kt:202:56: error: unresolved reference 'RightBrace'.
+                TokenKind.RightBrace -> JsonSyntaxKind.RightBrace
+                                                       ^^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Parser.kt:203:57: error: unresolved reference 'LeftBracket'.
+                TokenKind.LeftBracket -> JsonSyntaxKind.LeftBracket
+                                                        ^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Parser.kt:204:58: error: unresolved reference 'RightBracket'.
+                TokenKind.RightBracket -> JsonSyntaxKind.RightBracket
+                                                         ^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Parser.kt:205:51: error: unresolved reference 'Colon'.
+                TokenKind.Colon -> JsonSyntaxKind.Colon
+                                                  ^^^^^
+kotlin\src\main\kotlin\consema\json\Parser.kt:206:51: error: unresolved reference 'Comma'.
+                TokenKind.Comma -> JsonSyntaxKind.Comma
+                                                  ^^^^^
+kotlin\src\main\kotlin\consema\json\Parser.kt:207:52: error: unresolved reference 'String'.
+                TokenKind.String -> JsonSyntaxKind.String
+                                                   ^^^^^^
+kotlin\src\main\kotlin\consema\json\Parser.kt:208:56: error: unresolved reference 'Identifier'.
+                TokenKind.Identifier -> JsonSyntaxKind.Identifier
+                                                       ^^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Parser.kt:209:52: error: unresolved reference 'Number'.
+                TokenKind.Number -> JsonSyntaxKind.Number
+                                                   ^^^^^^
+kotlin\src\main\kotlin\consema\json\Parser.kt:210:50: error: unresolved reference 'True'.
+                TokenKind.True -> JsonSyntaxKind.True
+                                                 ^^^^
+kotlin\src\main\kotlin\consema\json\Parser.kt:211:51: error: unresolved reference 'False'.
+                TokenKind.False -> JsonSyntaxKind.False
+                                                  ^^^^^
+kotlin\src\main\kotlin\consema\json\Parser.kt:212:50: error: unresolved reference 'Null'.
+                TokenKind.Null -> JsonSyntaxKind.Null
+                                                 ^^^^
+kotlin\src\main\kotlin\consema\json\Parser.kt:216:37: error: unresolved reference 'ErrorRegion'.
+            Error -> JsonSyntaxKind.ErrorRegion
+                                    ^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Parser.kt:268:57: error: operator '==' cannot be applied to 'Byte' and 'Int'.
+            octet == 0x2f && offset + 1 < bytes.size && bytes[offset + 1] == 0x2f -> {
+                                                        ^^^^^^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Parser.kt:291:57: error: operator '==' cannot be applied to 'Byte' and 'Int'.
+            octet == 0x2f && offset + 1 < bytes.size && bytes[offset + 1] == 0x2a -> {
+                                                        ^^^^^^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Parser.kt:295:25: error: operator '==' cannot be applied to 'Byte' and 'Int'.
+                    if (bytes[offset] == 0x2a && bytes[offset + 1] == 0x2f) {
+                        ^^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Parser.kt:295:50: error: operator '==' cannot be applied to 'Byte' and 'Int'.
+                    if (bytes[offset] == 0x2a && bytes[offset + 1] == 0x2f) {
+                                                 ^^^^^^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Parser.kt:317:55: error: unresolved reference 'BlockComment'.
+                    LexemeClass.Trivia(JsonSyntaxKind.BlockComment)
+                                                      ^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Parser.kt:525:51: error: unresolved reference 'BlockComment'.
+                LexemeClass.Trivia(JsonSyntaxKind.BlockComment)
+                                                  ^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Parser.kt:781:13: error: return type mismatch: expected 'Pair<Int, Boolean>', actual 'Int'.
+    return (offset, valid && !first)
+            ^^^^^^
+kotlin\src\main\kotlin\consema\json\Parser.kt:781:19: error: syntax error: Expecting ')'.
+    return (offset, valid && !first)
+                  ^
+kotlin\src\main\kotlin\consema\json\Parser.kt:781:19: error: syntax error: Unexpected tokens (use ';' to separate expressions on the same line).
+    return (offset, valid && !first)
+                  ^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Parser.kt:804:9: error: operator '!=' cannot be applied to 'Byte' and 'Int'.
+    if (bytes[offset] != 0x5c || bytes[offset + 1] != 0x75) return null
+        ^^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Parser.kt:804:34: error: operator '!=' cannot be applied to 'Byte' and 'Int'.
+    if (bytes[offset] != 0x5c || bytes[offset + 1] != 0x75) return null
+                                 ^^^^^^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Parser.kt:834:24: error: operator '==' cannot be applied to 'Byte' and 'Int'.
+    if (index < end && bytes[index] == 0x2d) {
+                       ^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Parser.kt:838:24: error: operator '==' cannot be applied to 'Byte' and 'Int'.
+        index < end && bytes[index] == 0x30 -> index += 1
+                       ^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Parser.kt:847:24: error: operator '==' cannot be applied to 'Byte' and 'Int'.
+    if (index < end && bytes[index] == 0x2e) {
+                       ^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Parser.kt:855:25: error: operator '==' cannot be applied to 'Byte' and 'Int'.
+    if (index < end && (bytes[index] == 0x65 || bytes[index] == 0x45)) {
+                        ^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Parser.kt:855:49: error: operator '==' cannot be applied to 'Byte' and 'Int'.
+    if (index < end && (bytes[index] == 0x65 || bytes[index] == 0x45)) {
+                                                ^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Parser.kt:857:29: error: operator '==' cannot be applied to 'Byte' and 'Int'.
+        if (index < end && (bytes[index] == 0x2b || bytes[index] == 0x2d)) {
+                            ^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Parser.kt:857:53: error: operator '==' cannot be applied to 'Byte' and 'Int'.
+        if (index < end && (bytes[index] == 0x2b || bytes[index] == 0x2d)) {
+                                                    ^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Parser.kt:880:57: error: too many arguments for 'fun Char.isDigit(): Boolean'.
+        return hex.isNotEmpty() && hex.all { it.isDigit(16) }
+                                                        ^^
+kotlin\src\main\kotlin\consema\json\Parser.kt:976:62: error: argument type mismatch: actual type is 'Boolean', but 'InternalValueKind.Boolean' was expected.
+                allocScalar(token, InternalValueKind.Boolean(true))
+                                                             ^^^^
+kotlin\src\main\kotlin\consema\json\Parser.kt:980:62: error: argument type mismatch: actual type is 'Boolean', but 'InternalValueKind.Boolean' was expected.
+                allocScalar(token, InternalValueKind.Boolean(false))
+                                                             ^^^^^
+kotlin\src\main\kotlin\consema\json\Parser.kt:1011:65: error: argument type mismatch: actual type is 'String', but 'InternalValueKind.String' was expected.
+                    allocScalar(token, InternalValueKind.String(decoded.first))
+                                                                ^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Parser.kt:1044:61: error: argument type mismatch: actual type is 'Boolean', but 'InternalValueKind.Boolean' was expected.
+                        "true" -> InternalValueKind.Boolean(true)
+                                                            ^^^^
+kotlin\src\main\kotlin\consema\json\Parser.kt:1045:62: error: argument type mismatch: actual type is 'Boolean', but 'InternalValueKind.Boolean' was expected.
+                        "false" -> InternalValueKind.Boolean(false)
+                                                             ^^^^^
+kotlin\src\main\kotlin\consema\json\Parser.kt:1133:39: error: argument type mismatch: actual type is 'InternalValueKind.String', but 'String' was expected.
+                val first = names.put(name, member)
+                                      ^^^^
+kotlin\src\main\kotlin\consema\json\Parser.kt:1145:41: error: argument type mismatch: actual type is 'Map<String, InternalValueKind.String>', but 'Map<String, String>' was expected.
+                            arguments = mapOf("name" to name),
+                                        ^^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Parser.kt:1146:39: error: cannot infer type for this parameter. Specify it explicitly.
+                            related = listOf(
+                                      ^^^^^^
+kotlin\src\main\kotlin\consema\json\Parser.kt:1146:39: error: argument type mismatch: actual type is 'List<uninferred T (of fun <T> listOf)>', but 'List<ERROR CLASS: Symbol not found for Diagnostic.RelatedSourceLocation>' was expected.
+                            related = listOf(
+                                      ^^^^^^^
+kotlin\src\main\kotlin\consema\json\Parser.kt:1147:44: error: unresolved reference 'RelatedSourceLocation'.
+                                Diagnostic.RelatedSourceLocation(
+                                           ^^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Parser.kt:1149:48: error: unresolved reference 'SourceLocation'.
+                                    Diagnostic.SourceLocation.of(
+                                               ^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Parser.kt:1241:60: error: argument type mismatch: actual type is 'String', but 'InternalValueKind.String' was expected.
+        return allocScalar(token, InternalValueKind.String(name))
+                                                           ^^^^
+kotlin\src\main\kotlin\consema\json\Parser.kt:1503:38: error: value out of range.
+            val bits = if (negative) 0xfff0_0000_0000_0000L else 0x7ff0_0000_0000_0000L
+                                     ^^^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Parser.kt:1507:38: error: value out of range.
+            val bits = if (negative) 0xfff8_0000_0000_0000L else 0x7ff8_0000_0000_0000L
+                                     ^^^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Profile.kt:69:17: error: syntax error: Expecting ';' after the last enum entry or '}' to close enum class body.
+    LineComment,
+                ^
+kotlin\src\main\kotlin\consema\json\Profile.kt:71:49: error: syntax error: Expecting member declaration.
+    /** Closed slash-star block comment (the star-slash terminator). */
+                                                ^
+kotlin\src\main\kotlin\consema\json\Profile.kt:71:51: error: syntax error: Expecting member declaration.
+    /** Closed slash-star block comment (the star-slash terminator). */
+                                                  ^^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Profile.kt:71:61: error: syntax error: Expecting member declaration.
+    /** Closed slash-star block comment (the star-slash terminator). */
+                                                            ^
+kotlin\src\main\kotlin\consema\json\Profile.kt:71:62: error: syntax error: Expecting member declaration.
+    /** Closed slash-star block comment (the star-slash terminator). */
+                                                             ^
+kotlin\src\main\kotlin\consema\json\Profile.kt:71:64: error: syntax error: Expecting member declaration.
+    /** Closed slash-star block comment (the star-slash terminator). */
+                                                               ^
+kotlin\src\main\kotlin\consema\json\Profile.kt:71:65: error: syntax error: Expecting member declaration.
+    /** Closed slash-star block comment (the star-slash terminator). */
+                                                                ^
+kotlin\src\main\kotlin\consema\json\Profile.kt:71:71: error: syntax error: Expecting member declaration.
+    /** Closed slash-star block comment (the star-slash terminator). */
+                                                                      ^
+kotlin\src\main\kotlin\consema\json\Profile.kt:72:11: error: syntax error: Expecting member declaration.
+    BlockComment,
+          ^
+kotlin\src\main\kotlin\consema\json\Profile.kt:74:15: error: syntax error: Expecting member declaration.
+    /** `{`. */
+              ^
+kotlin\src\main\kotlin\consema\json\Profile.kt:75:8: error: syntax error: Expecting member declaration.
+    LeftBrace,
+       ^
+kotlin\src\main\kotlin\consema\json\Profile.kt:77:15: error: syntax error: Expecting member declaration.
+    /** `}`. */
+              ^
+kotlin\src\main\kotlin\consema\json\Profile.kt:78:9: error: syntax error: Expecting member declaration.
+    RightBrace,
+        ^
+kotlin\src\main\kotlin\consema\json\Profile.kt:80:15: error: syntax error: Expecting member declaration.
+    /** `[`. */
+              ^
+kotlin\src\main\kotlin\consema\json\Profile.kt:81:10: error: syntax error: Expecting member declaration.
+    LeftBracket,
+         ^
+kotlin\src\main\kotlin\consema\json\Profile.kt:83:15: error: syntax error: Expecting member declaration.
+    /** `]`. */
+              ^
+kotlin\src\main\kotlin\consema\json\Profile.kt:84:11: error: syntax error: Expecting member declaration.
+    RightBracket,
+          ^
+kotlin\src\main\kotlin\consema\json\Profile.kt:86:15: error: syntax error: Expecting member declaration.
+    /** `:`. */
+              ^
+kotlin\src\main\kotlin\consema\json\Profile.kt:87:4: error: syntax error: Expecting member declaration.
+    Colon,
+   ^
+kotlin\src\main\kotlin\consema\json\Profile.kt:89:15: error: syntax error: Expecting member declaration.
+    /** `,`. */
+              ^
+kotlin\src\main\kotlin\consema\json\Profile.kt:90:4: error: syntax error: Expecting member declaration.
+    Comma,
+   ^
+kotlin\src\main\kotlin\consema\json\Profile.kt:92:33: error: syntax error: Expecting member declaration.
+    /** Complete string token. */
+                                ^
+kotlin\src\main\kotlin\consema\json\Profile.kt:93:5: error: syntax error: Expecting member declaration.
+    String,
+    ^
+kotlin\src\main\kotlin\consema\json\Profile.kt:95:61: error: syntax error: Expecting member declaration.
+    /** Complete JSON5 IdentifierName token (RFC 0005 ¡ì4). */
+                                                            ^
+kotlin\src\main\kotlin\consema\json\Profile.kt:96:9: error: syntax error: Expecting member declaration.
+    Identifier,
+        ^
+kotlin\src\main\kotlin\consema\json\Profile.kt:98:35: error: syntax error: Expecting member declaration.
+    /** Valid JSON number token. */
+                                  ^
+kotlin\src\main\kotlin\consema\json\Profile.kt:99:5: error: syntax error: Expecting member declaration.
+    Number,
+    ^
+kotlin\src\main\kotlin\consema\json\Profile.kt:101:18: error: syntax error: Expecting member declaration.
+    /** `true`. */
+                 ^
+kotlin\src\main\kotlin\consema\json\Profile.kt:102:3: error: syntax error: Expecting member declaration.
+    True,
+  ^
+kotlin\src\main\kotlin\consema\json\Profile.kt:104:19: error: syntax error: Expecting member declaration.
+    /** `false`. */
+                  ^
+kotlin\src\main\kotlin\consema\json\Profile.kt:105:4: error: syntax error: Expecting member declaration.
+    False,
+   ^
+kotlin\src\main\kotlin\consema\json\Profile.kt:107:18: error: syntax error: Expecting member declaration.
+    /** `null`. */
+                 ^
+kotlin\src\main\kotlin\consema\json\Profile.kt:108:3: error: syntax error: Expecting member declaration.
+    Null,
+  ^
+kotlin\src\main\kotlin\consema\json\Profile.kt:110:57: error: syntax error: Expecting member declaration.
+    /** Bytes retained after bounded lexical recovery. */
+                                                        ^
+kotlin\src\main\kotlin\consema\json\Profile.kt:111:10: error: syntax error: Expecting member declaration.
+    ErrorRegion,
+         ^
+kotlin\src\main\kotlin\consema\json\Profile.kt:120:7: error: unresolved reference 'BlockComment'.
+            BlockComment -> "BlockComment"
+      ^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Profile.kt:121:7: error: unresolved reference 'LeftBrace'.
+            LeftBrace -> "LeftBrace"
+      ^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Profile.kt:122:7: error: unresolved reference 'RightBrace'.
+            RightBrace -> "RightBrace"
+      ^^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Profile.kt:123:7: error: unresolved reference 'LeftBracket'.
+            LeftBracket -> "LeftBracket"
+      ^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Profile.kt:124:7: error: unresolved reference 'RightBracket'.
+            RightBracket -> "RightBracket"
+      ^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Profile.kt:125:7: error: unresolved reference 'Colon'.
+            Colon -> "Colon"
+      ^^^^^
+kotlin\src\main\kotlin\consema\json\Profile.kt:126:7: error: unresolved reference 'Comma'.
+            Comma -> "Comma"
+      ^^^^^
+kotlin\src\main\kotlin\consema\json\Profile.kt:127:7: error: incompatible types 'JsonSyntaxKind' and 'String.Companion'.
+            String -> "String"
+      ^^^^^^
+kotlin\src\main\kotlin\consema\json\Profile.kt:128:7: error: unresolved reference 'Identifier'.
+            Identifier -> "Identifier"
+      ^^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Profile.kt:129:7: error: incompatible types 'JsonSyntaxKind' and 'Unit'.
+            Number -> "Number"
+      ^^^^^^
+kotlin\src\main\kotlin\consema\json\Profile.kt:129:7: error: classifier 'class Number : Any, Serializable' does not have a companion object, so it cannot be used as an expression.
+            Number -> "Number"
+      ^^^^^^
+kotlin\src\main\kotlin\consema\json\Profile.kt:130:7: error: unresolved reference 'True'.
+            True -> "True"
+      ^^^^
+kotlin\src\main\kotlin\consema\json\Profile.kt:131:7: error: unresolved reference 'False'.
+            False -> "False"
+      ^^^^^
+kotlin\src\main\kotlin\consema\json\Profile.kt:132:7: error: unresolved reference 'Null'.
+            Null -> "Null"
+      ^^^^
+kotlin\src\main\kotlin\consema\json\Profile.kt:133:7: error: unresolved reference 'ErrorRegion'.
+            ErrorRegion -> "ErrorRegion"
+      ^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Projection.kt:515:55: error: argument type mismatch: actual type is 'InternalValueKind.Boolean', but 'Boolean' was expected.
+            is InternalValueKind.Boolean -> PvBoolean(kind.value)
+                                                      ^^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Projection.kt:519:53: error: argument type mismatch: actual type is 'InternalValueKind.String', but 'String' was expected.
+            is InternalValueKind.String -> PvString(kind.value)
+                                                    ^^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Projection.kt:536:72: error: argument type mismatch: actual type is 'SemanticUnavailable', but 'ProjectionFailure.SemanticUnavailable' was expected.
+                ProjectionFailure.SemanticUnavailable(value.nodeRef(), kind.reason),
+                                                                       ^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\json\Projection.kt:551:80: error: argument type mismatch: actual type is 'SemanticUnavailable', but 'ProjectionFailure.SemanticUnavailable' was expected.
+                    ProjectionFailure.SemanticUnavailable(member.keyNodeRef(), name.reason),
+                                                                               ^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\properties\Edit.kt:236:30: error: 'name' in 'EditFailure' is final and cannot be overridden.
+    data class ResourceLimit(override val name: String) : EditFailure("ResourceLimit")
+                             ^^^^^^^^
+kotlin\src\main\kotlin\consema\toml\Materialization.kt:126:12: error: cannot access 'fun root(entries: List<RootEntry>, isMapping: Boolean): Unit': it is private in 'consema/toml/TomlWriter'.
+    writer.root(prepared.entries, prepared.isMapping)
+           ^^^^
+kotlin\src\main\kotlin\consema\xml\Parser.kt:1460:39: error: unresolved reference 'isAsciiSpace'.
+            text.substring(8).firstOrNull { !it.isAsciiSpace() } == '%'
+                                      ^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Edit.kt:356:34: error: 'name' hides member of supertype 'EditFailure' and needs an 'override' modifier.
+    data class ResourceLimit(val name: String) : EditFailure("ResourceLimit")
+                                 ^^^^
+kotlin\src\main\kotlin\consema\yaml\Edit.kt:843:70: error: unresolved reference 'anchor'.
+            val (container, ordinal) = resolveMappingEntry(placement.anchor)
+                                                                     ^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Edit.kt:860:70: error: unresolved reference 'anchor'.
+            val (container, ordinal) = resolveSequenceItem(placement.anchor)
+                                                                     ^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Edit.kt:976:16: error: return type mismatch: expected 'Int', actual 'Any'.
+        return if (spans.getOrNull(ordinal) != null) {
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Edit.kt:977:18: error: unresolved reference 'startByte'.
+            span.startByte
+                 ^^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Edit.kt:979:18: error: unresolved reference 'endByte'.
+            span.endByte
+                 ^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Edit.kt:1360:21: error: unresolved reference 'MaterializationFailureKind'.
+                    MaterializationFailureKind.UNREPRESENTABLE ->
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Edit.kt:1362:21: error: unresolved reference 'MaterializationFailureKind'.
+                    MaterializationFailureKind.RESOURCE_LIMIT ->
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Edit.kt:1404:21: error: unresolved reference 'MaterializationFailureKind'.
+                    MaterializationFailureKind.UNREPRESENTABLE ->
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Edit.kt:1406:21: error: unresolved reference 'MaterializationFailureKind'.
+                    MaterializationFailureKind.RESOURCE_LIMIT ->
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Edit.kt:1463:38: error: unresolved reference 'saturatingMul'.
+            val length = text.length.saturatingMul(2)
+                                     ^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Edit.kt:1678:21: error: unresolved reference 'MaterializationFailureKind'.
+                    MaterializationFailureKind.UNREPRESENTABLE ->
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Edit.kt:1680:21: error: unresolved reference 'MaterializationFailureKind'.
+                    MaterializationFailureKind.RESOURCE_LIMIT ->
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Edit.kt:1923:17: error: smart cast to 'ValidationAlias' is impossible, because 'alias' is a mutable property that could be mutated concurrently.
+                expected.alias.name == actual.alias.name -> {
+                ^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Edit.kt:1923:40: error: smart cast to 'ValidationAlias' is impossible, because 'alias' is a mutable property that could be mutated concurrently.
+                expected.alias.name == actual.alias.name -> {
+                                       ^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Edit.kt:1924:21: error: smart cast to 'ValidationAlias' is impossible, because 'alias' is a mutable property that could be mutated concurrently.
+                if (expected.alias.sourceAlias != null && actual.alias.sourceAlias != null) {
+                    ^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Edit.kt:1924:59: error: smart cast to 'ValidationAlias' is impossible, because 'alias' is a mutable property that could be mutated concurrently.
+                if (expected.alias.sourceAlias != null && actual.alias.sourceAlias != null) {
+                                                          ^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Edit.kt:1925:42: error: smart cast to 'ValidationAlias' is impossible, because 'alias' is a mutable property that could be mutated concurrently.
+                    state.output.aliases[expected.alias.sourceAlias!!] = actual.alias.sourceAlias!!
+                                         ^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Edit.kt:1925:74: error: smart cast to 'ValidationAlias' is impossible, because 'alias' is a mutable property that could be mutated concurrently.
+                    state.output.aliases[expected.alias.sourceAlias!!] = actual.alias.sourceAlias!!
+                                                                         ^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Edit.kt:2148:52: error: unresolved reference 'saturatingMul'.
+        maxProvenanceEntries = limits.maxNodeCount.saturatingMul(4),
+                                                   ^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Edit.kt:2158:57: error: unresolved reference 'saturatingMul'.
+            maxDecodedUtf8Bytes = limits.maxSourceBytes.saturatingMul(2),
+                                                        ^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Edit.kt:2162:47: error: unresolved reference 'saturatingMul'.
+        maxPatchBytes = limits.maxSourceBytes.saturatingMul(2),
+                                              ^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Errors.kt:68:9: error: 'cause' hides member of supertype 'Throwable' and needs an 'override' modifier.
+    val cause: Exception? = null,
+        ^^^^^
+kotlin\src\main\kotlin\consema\yaml\Errors.kt:121:30: error: unresolved reference 'RelatedSourceLocation'.
+    related: List<Diagnostic.RelatedSourceLocation> = emptyList(),
+                             ^^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Errors.kt:121:55: error: cannot infer type for this parameter. Specify it explicitly.
+    related: List<Diagnostic.RelatedSourceLocation> = emptyList(),
+                                                      ^^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Materialization.kt:310:41: error: unresolved reference 'saturatingMul'.
+    maxNodeCount = limits.maxInputNodes.saturatingMul(4),
+                                        ^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Materialization.kt:681:32: error: unresolved reference 'saturatingMul'.
+            val length = units.saturatingMul(2).saturatingAdd(2)
+                               ^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Materialization.kt:687:24: error: unresolved reference 'add'.
+                output.add(0xff.toByte())
+                       ^^^
+kotlin\src\main\kotlin\consema\yaml\Materialization.kt:688:24: error: unresolved reference 'add'.
+                output.add(0xfe.toByte())
+                       ^^^
+kotlin\src\main\kotlin\consema\yaml\Materialization.kt:690:24: error: unresolved reference 'add'.
+                output.add(0xfe.toByte())
+                       ^^^
+kotlin\src\main\kotlin\consema\yaml\Materialization.kt:691:24: error: unresolved reference 'add'.
+                output.add(0xff.toByte())
+                       ^^^
+kotlin\src\main\kotlin\consema\yaml\Materialization.kt:696:28: error: unresolved reference 'add'.
+                    output.add((unit and 0xff).toByte())
+                           ^^^
+kotlin\src\main\kotlin\consema\yaml\Materialization.kt:697:28: error: unresolved reference 'add'.
+                    output.add((unit shr 8).toByte())
+                           ^^^
+kotlin\src\main\kotlin\consema\yaml\Materialization.kt:699:28: error: unresolved reference 'add'.
+                    output.add((unit shr 8).toByte())
+                           ^^^
+kotlin\src\main\kotlin\consema\yaml\Materialization.kt:700:28: error: unresolved reference 'add'.
+                    output.add((unit and 0xff).toByte())
+                           ^^^
+kotlin\src\main\kotlin\consema\yaml\Materialization.kt:720:17: error: cannot access 'fun push(input: GraphMaterializationInputLocation, output: MaterializedOrigin): Unit': it is private in 'consema/yaml/GraphProvenanceBuilder'.
+        builder.push(
+                ^^^^
+kotlin\src\main\kotlin\consema\yaml\Materialization.kt:736:15: error: redeclaration:
+class GraphProvenanceBuilder : Any
+private class GraphProvenanceBuilder(
+              ^^^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Materialization.kt:865:39: error: unresolved reference 'add'.
+        entriesList[position].outputs.add(output)
+                                      ^^^
+kotlin\src\main\kotlin\consema\yaml\Materialization.kt:916:54: error: unresolved reference 'saturatingMul'.
+        maxInputNodes = request.limits.maxInputNodes.saturatingMul(2).saturatingAdd(1),
+                                                     ^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Materialization.kt:986:59: error: value out of range.
+            if (bits == 0x7ff0_0000_0000_0000L || bits == 0xfff0_0000_0000_0000L ||
+                                                          ^^^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Materialization.kt:1141:41: error: unresolved reference 'saturatingMul'.
+    val maxNodes = limits.maxInputNodes.saturatingMul(2).saturatingAdd(1)
+                                        ^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Materialization.kt:1180:17: error: value out of range.
+                0xfff0_0000_0000_0000L -> "-.inf"
+                ^^^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Materialization.kt:1234:27: error: unresolved reference 'toIntOrNull'.
+    val year = value.year.toIntOrNull() ?: return null
+                          ^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Materialization.kt:1280:35: error: unresolved reference 'toLongOrNull'.
+    val exponent = value.exponent.toLongOrNull()
+                                  ^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Materialization.kt:1288:16: error: unresolved reference 'saturatingAdd'.
+    if (places.saturatingAdd(1) > max) {
+               ^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Materialization.kt:1450:39: error: unresolved reference 'add'.
+        entriesList[position].outputs.add(output)
+                                      ^^^
+kotlin\src\main\kotlin\consema\yaml\Parser.kt:100:61: error: unresolved reference 'saturatingMul'.
+                maxDecodedUtf8Bytes = limits.maxSourceBytes.saturatingMul(2),
+                                                            ^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Parser.kt:132:61: error: unsupported escape sequence.
+        val line = rawLine.removeSuffix("\r").removePrefix("\u{feff}")
+                                                            ^^
+kotlin\src\main\kotlin\consema\yaml\Parser.kt:202:42: error: argument type mismatch: actual type is 'Char', but 'Int' was expected.
+            val explicit = consumeMarker('-', '-', '-')
+                                         ^^^
+kotlin\src\main\kotlin\consema\yaml\Parser.kt:202:47: error: argument type mismatch: actual type is 'Char', but 'Int' was expected.
+            val explicit = consumeMarker('-', '-', '-')
+                                              ^^^
+kotlin\src\main\kotlin\consema\yaml\Parser.kt:202:52: error: argument type mismatch: actual type is 'Char', but 'Int' was expected.
+            val explicit = consumeMarker('-', '-', '-')
+                                                   ^^^
+kotlin\src\main\kotlin\consema\yaml\Parser.kt:867:52: error: unresolved reference 'digitToIntOrNull'.
+            val digit = chars.getOrNull(position)?.digitToIntOrNull(16)
+                                                   ^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:545:19: error: cannot access 'class GraphProvenanceBuilder : Any': it is private in file.
+    val builder = GraphProvenanceBuilder(this, ids, request.limits.maxProvenanceEntries)
+                  ^^^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:546:13: error: unresolved reference 'build'.
+    builder.build()
+            ^^^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:547:51: error: unresolved reference 'map'.
+    return CompleteGraphProjection(graph, builder.map)
+                                                  ^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:561:36: error: argument type mismatch: actual type is 'List<GraphMaterializationProvenanceEntry>', but 'List<GraphProvenanceEntry>' was expected.
+        get() = GraphProvenanceMap(entries)
+                                   ^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:561:36: error: cannot access 'class GraphProvenanceBuilder : Any': it is private in file.
+        get() = GraphProvenanceMap(entries)
+                                   ^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:564:37: error: cannot access 'class GraphProvenanceBuilder : Any': it is private in file.
+        for ((ordinal, document) in document.native.documents.withIndex()) {
+                                    ^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:565:13: error: cannot access 'class GraphProvenanceBuilder : Any': it is private in file.
+            add(
+            ^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:568:41: error: unresolved reference 'snapshotIdentity'.
+                    snapshot = document.snapshotIdentity(),
+                                        ^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:569:37: error: unresolved reference 'authority'.
+                    node = document.authority.nodeRef(ordinal.toLong(), NodeRole.YamlDocument),
+                                    ^^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:575:31: error: cannot access 'class GraphProvenanceBuilder : Any': it is private in file.
+        for ((index, node) in document.native.nodes.withIndex()) {
+                              ^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:576:13: error: cannot access 'class GraphProvenanceBuilder : Any': it is private in file.
+            add(
+            ^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:577:45: error: unresolved reference 'ids'.
+                GraphProjectedLocation.Node(ids[index]),
+                                            ^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:577:45: error: argument type mismatch: actual type is 'V? (of fun <K, V> Map<out K, V>.get)', but 'NodeId' was expected.
+                GraphProjectedLocation.Node(ids[index]),
+                                            ^^^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:577:45: error: cannot infer type for this parameter. Specify it explicitly.
+                GraphProjectedLocation.Node(ids[index]),
+                                            ^^^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:579:32: error: cannot access 'class GraphProvenanceBuilder : Any': it is private in file.
+                    snapshot = document.snapshotIdentity(),
+                               ^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:579:41: error: expression 'snapshotIdentity' of type 'SnapshotIdentity' cannot be invoked as a function. Function 'invoke()' is not found.
+                    snapshot = document.snapshotIdentity(),
+                                        ^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:580:36: error: cannot access 'class GraphProvenanceBuilder : Any': it is private in file.
+                    node = nodeRef(document.authority, index),
+                                   ^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:590:38: error: unresolved reference 'ids'.
+                            parent = ids[index],
+                                     ^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:590:38: error: argument type mismatch: actual type is 'V? (of fun <K, V> Map<out K, V>.get)', but 'NodeId' was expected.
+                            parent = ids[index],
+                                     ^^^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:590:38: error: cannot infer type for this parameter. Specify it explicitly.
+                            parent = ids[index],
+                                     ^^^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:593:25: error: cannot access 'class GraphProvenanceBuilder : Any': it is private in file.
+                        add(
+                        ^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:596:44: error: cannot access 'class GraphProvenanceBuilder : Any': it is private in file.
+                                snapshot = document.snapshotIdentity(),
+                                           ^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:596:53: error: expression 'snapshotIdentity' of type 'SnapshotIdentity' cannot be invoked as a function. Function 'invoke()' is not found.
+                                snapshot = document.snapshotIdentity(),
+                                                    ^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:597:40: error: cannot access 'class GraphProvenanceBuilder : Any': it is private in file.
+                                node = document.authority.nodeRef(
+                                       ^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:606:29: error: unresolved reference 'addAlias'.
+                            addAlias(location, item.alias!!, ProvenanceRelation.Reference)
+                            ^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:614:42: error: unresolved reference 'ids'.
+                                parent = ids[index],
+                                         ^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:614:42: error: argument type mismatch: actual type is 'V? (of fun <K, V> Map<out K, V>.get)', but 'NodeId' was expected.
+                                parent = ids[index],
+                                         ^^^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:614:42: error: cannot infer type for this parameter. Specify it explicitly.
+                                parent = ids[index],
+                                         ^^^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:618:42: error: unresolved reference 'ids'.
+                                parent = ids[index],
+                                         ^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:618:42: error: argument type mismatch: actual type is 'V? (of fun <K, V> Map<out K, V>.get)', but 'NodeId' was expected.
+                                parent = ids[index],
+                                         ^^^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:618:42: error: cannot infer type for this parameter. Specify it explicitly.
+                                parent = ids[index],
+                                         ^^^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:622:29: error: cannot access 'class GraphProvenanceBuilder : Any': it is private in file.
+                            add(
+                            ^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:625:48: error: cannot access 'class GraphProvenanceBuilder : Any': it is private in file.
+                                    snapshot = document.snapshotIdentity(),
+                                               ^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:625:57: error: expression 'snapshotIdentity' of type 'SnapshotIdentity' cannot be invoked as a function. Function 'invoke()' is not found.
+                                    snapshot = document.snapshotIdentity(),
+                                                        ^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:626:44: error: cannot access 'class GraphProvenanceBuilder : Any': it is private in file.
+                                    node = document.authority.nodeRef(
+                                           ^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:635:33: error: unresolved reference 'addAlias'.
+                                addAlias(location, alias, ProvenanceRelation.Reference)
+                                ^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:649:21: error: cannot access 'class GraphProvenanceBuilder : Any': it is private in file.
+        val alias = document.native.aliases[ordinal]
+                    ^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:650:9: error: cannot access 'class GraphProvenanceBuilder : Any': it is private in file.
+        add(
+        ^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:653:28: error: cannot access 'class GraphProvenanceBuilder : Any': it is private in file.
+                snapshot = document.snapshotIdentity(),
+                           ^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:653:37: error: expression 'snapshotIdentity' of type 'SnapshotIdentity' cannot be invoked as a function. Function 'invoke()' is not found.
+                snapshot = document.snapshotIdentity(),
+                                    ^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:654:24: error: cannot access 'class GraphProvenanceBuilder : Any': it is private in file.
+                node = document.authority.nodeRef(alias.identity, NodeRole.YamlAlias),
+                       ^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:662:24: error: cannot access 'class GraphProvenanceBuilder : Any': it is private in file.
+        val existing = index[projected]
+                       ^^^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:662:24: error: type inference failed. The value of the type parameter 'K' must be mentioned in input types (argument types, receiver type, or expected type). Try to specify it explicitly.
+        val existing = index[projected]
+                       ^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:663:24: error: cannot access 'class GraphProvenanceBuilder : Any': it is private in file.
+        val observed = units + if (existing != null) 1 else 2
+                       ^^^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:664:24: error: unresolved reference 'maxEntries'.
+        if (observed > maxEntries) {
+                       ^^^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:667:9: error: cannot access 'class GraphProvenanceBuilder : Any': it is private in file.
+        units = observed
+        ^^^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:669:13: error: cannot access 'class GraphProvenanceBuilder : Any': it is private in file.
+            entries[existing].origins.add(origin)
+            ^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:669:31: error: unresolved reference 'origins'.
+            entries[existing].origins.add(origin)
+                              ^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:671:28: error: cannot access 'class GraphProvenanceBuilder : Any': it is private in file.
+            val position = entries.size
+                           ^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:672:13: error: cannot access 'class GraphProvenanceBuilder : Any': it is private in file.
+            entries.add(GraphProvenanceEntry(projected, mutableListOf(origin)))
+            ^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:672:21: error: unresolved reference 'add'.
+            entries.add(GraphProvenanceEntry(projected, mutableListOf(origin)))
+                    ^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:673:13: error: cannot access 'class GraphProvenanceBuilder : Any': it is private in file.
+            index[projected] = position
+            ^^^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:673:19: error: argument type mismatch: actual type is 'GraphProjectedLocation', but 'GraphMaterializationInputLocation' was expected.
+            index[projected] = position
+                  ^^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:695:41: error: unresolved reference 'saturatingMul'.
+        val maximum = context.seen.size.saturatingMul(request.limits.maxAmplificationRatio)
+                                        ^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:925:44: error: value out of range.
+                "-.inf" -> PvBinaryFloat64(0xfff0_0000_0000_0000L)
+                                           ^^^^^^^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:1032:44: error: expression 'snapshotIdentity' of type 'SnapshotIdentity' cannot be invoked as a function. Function 'invoke()' is not found.
+        val origin = SourceOrigin(document.snapshotIdentity(), node, span, relation)
+                                           ^^^^^^^^^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Projection.kt:1034:46: error: unresolved reference 'add'.
+            provenanceList[existing].origins.add(origin)
+                                             ^^^
+kotlin\src\main\kotlin\consema\yaml\Query.kt:646:42: error: unresolved reference 'and'.
+                bytes[index * 2] = (unit and 0xff).toByte()
+                                         ^^^
+kotlin\src\main\kotlin\consema\yaml\Query.kt:647:46: error: unresolved reference 'shr'.
+                bytes[index * 2 + 1] = (unit shr 8).toByte()
+                                             ^^^
+kotlin\src\main\kotlin\consema\yaml\Query.kt:655:42: error: unresolved reference 'shr'.
+                bytes[index * 2] = (unit shr 8).toByte()
+                                         ^^^
+kotlin\src\main\kotlin\consema\yaml\Query.kt:656:46: error: unresolved reference 'and'.
+                bytes[index * 2 + 1] = (unit and 0xff).toByte()
+                                             ^^^
+kotlin\src\main\kotlin\consema\yaml\Scalar.kt:119:41: error: argument type mismatch: actual type is 'String?', but 'String' was expected.
+    return tag to NativeScalar(decoded, canonical, kind, style)
+                                        ^^^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Scalar.kt:466:16: error: unresolved reference 'isAscii'.
+    if (!value.isAscii() || value.length < 10) {
+               ^^^^^^^
+kotlin\src\main\kotlin\consema\yaml\Scanner.kt:173:37: error: argument type mismatch: actual type is 'Char', but 'Int' was expected.
+                atDocumentIndicator('-', '-', '-') -> {
+                                    ^^^
+kotlin\src\main\kotlin\consema\yaml\Scanner.kt:173:42: error: argument type mismatch: actual type is 'Char', but 'Int' was expected.
+                atDocumentIndicator('-', '-', '-') -> {
+                                         ^^^
+kotlin\src\main\kotlin\consema\yaml\Scanner.kt:173:47: error: argument type mismatch: actual type is 'Char', but 'Int' was expected.
+                atDocumentIndicator('-', '-', '-') -> {
+                                              ^^^
+kotlin\src\main\kotlin\consema\yaml\Scanner.kt:178:37: error: argument type mismatch: actual type is 'Char', but 'Int' was expected.
+                atDocumentIndicator('.', '.', '.') -> {
+                                    ^^^
+kotlin\src\main\kotlin\consema\yaml\Scanner.kt:178:42: error: argument type mismatch: actual type is 'Char', but 'Int' was expected.
+                atDocumentIndicator('.', '.', '.') -> {
+                                         ^^^
+kotlin\src\main\kotlin\consema\yaml\Scanner.kt:178:47: error: argument type mismatch: actual type is 'Char', but 'Int' was expected.
+                atDocumentIndicator('.', '.', '.') -> {
+                                              ^^^

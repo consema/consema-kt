@@ -1,0 +1,57 @@
+kotlin\src\test\kotlin\ini\EditTest.kt:134:67: error: cannot access 'val v1Snapshot: SourceSnapshot?': it is internal in 'consema/ini/IniSource'.
+        val replay = commit.sourcePatch!!.apply(document.source().v1Snapshot!!)
+                                                                  ^^^^^^^^^^
+kotlin\src\test\kotlin\ini\EditTest.kt:137:31: error: cannot access 'val v1Snapshot: SourceSnapshot?': it is internal in 'consema/ini/IniSource'.
+            document.source().v1Snapshot!!,
+                              ^^^^^^^^^^
+kotlin\src\test\kotlin\ini\EditTest.kt:138:38: error: cannot access 'val v1Snapshot: SourceSnapshot?': it is internal in 'consema/ini/IniSource'.
+            commit.document.source().v1Snapshot!!,
+                                     ^^^^^^^^^^
+kotlin\src\test\kotlin\ini\MaterializationTest.kt:25:20: error: cannot access 'fun materializationFailureName(kind: MaterializationFailureKind): String': it is internal in file.
+import consema.ini.materializationFailureName
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+kotlin\src\test\kotlin\ini\MaterializationTest.kt:115:41: error: cannot access 'fun materializationFailureName(kind: MaterializationFailureKind): String': it is internal in file.
+        assertEquals("Unrepresentable", materializationFailureName(scalarFailed.attempt.failure.kind))
+                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+kotlin\src\test\kotlin\ini\MaterializationTest.kt:137:25: error: cannot access 'fun materializationFailureName(kind: MaterializationFailureKind): String': it is internal in file.
+                        materializationFailureName(result.attempt.failure.kind),
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+kotlin\src\test\kotlin\ini\QueryTest.kt:45:14: error: unresolved reference 'bind'.
+            .bind(capabilities())
+             ^^^^
+kotlin\src\test\kotlin\ini\QueryTest.kt:180:14: error: unresolved reference 'bind'.
+            .bind(capabilities())
+             ^^^^
+kotlin\src\test\kotlin\ini\QueryTest.kt:232:14: error: unresolved reference 'bind'.
+            .bind(capabilities())
+             ^^^^
+kotlin\src\test\kotlin\properties\EditTest.kt:21:27: error: cannot access 'fun editFailureCode(failure: EditFailure): String': it is internal in file.
+import consema.properties.editFailureCode
+                          ^^^^^^^^^^^^^^^
+kotlin\src\test\kotlin\properties\EditTest.kt:136:55: error: cannot access 'fun editFailureCode(failure: EditFailure): String': it is internal in file.
+        assertEquals("core.edit.conflicting-edits@1", editFailureCode(failure.failure))
+                                                      ^^^^^^^^^^^^^^^
+kotlin\src\test\kotlin\properties\ProjectionTest.kt:38:31: error: unresolved reference 'project'.
+        val result = document.project(ProjectionRequest.bestExactEntryMapping())
+                              ^^^^^^^
+kotlin\src\test\kotlin\properties\ProjectionTest.kt:80:33: error: unresolved reference 'project'.
+        val rejected = document.project(
+                                ^^^^^^^
+kotlin\src\test\kotlin\properties\ProjectionTest.kt:88:30: error: unresolved reference 'project'.
+        val first = document.project(
+                             ^^^^^^^
+kotlin\src\test\kotlin\properties\ProjectionTest.kt:107:29: error: unresolved reference 'project'.
+        val last = document.project(
+                            ^^^^^^^
+kotlin\src\test\kotlin\properties\ProjectionTest.kt:128:31: error: unresolved reference 'project'.
+        val failed = unpaired.project(
+                              ^^^^^^^
+kotlin\src\test\kotlin\properties\ProjectionTest.kt:142:41: error: unresolved reference 'project'.
+        val recoveredFailed = recovered.project(
+                                        ^^^^^^^
+kotlin\src\test\kotlin\properties\ProjectionTest.kt:168:35: error: unresolved reference 'project'.
+            val failed = complete.project(
+                                  ^^^^^^^
+kotlin\src\test\kotlin\properties\ProjectionTest.kt:182:39: error: unresolved reference 'project'.
+        val reportLimited = duplicate.project(
+                                      ^^^^^^^

@@ -1,0 +1,138 @@
+﻿kotlin\src\main\kotlin\consema\ini\Edit.kt:333:34: error: 'name' hides member of supertype 'EditFailure' and needs an 'override' modifier.
+kotlin\src\main\kotlin\consema\ini\Edit.kt:796:79: error: unresolved reference 'target'.
+kotlin\src\main\kotlin\consema\ini\Edit.kt:1384:59: error: unresolved reference 'saturatingMul'.
+kotlin\src\main\kotlin\consema\ini\Errors.kt:60:9: error: 'cause' hides member of supertype 'Throwable' and needs an 'override' modifier.
+kotlin\src\main\kotlin\consema\ini\Errors.kt:108:30: error: unresolved reference 'RelatedSourceLocation'.
+kotlin\src\main\kotlin\consema\ini\Errors.kt:108:55: error: cannot infer type for this parameter. Specify it explicitly.
+kotlin\src\main\kotlin\consema\ini\Materialization.kt:280:53: error: unresolved reference 'saturatingMul'.
+kotlin\src\main\kotlin\consema\ini\Materialization.kt:826:28: error: unresolved reference 'saturatingMul'.
+kotlin\src\main\kotlin\consema\ini\Materialization.kt:830:32: error: unresolved reference 'saturatingMul'.
+kotlin\src\main\kotlin\consema\ini\Materialization.kt:992:12: error: unresolved reference 'PvBoolean'.
+kotlin\src\main\kotlin\consema\ini\Materialization.kt:992:30: error: unresolved reference 'value'.
+kotlin\src\main\kotlin\consema\ini\Materialization.kt:992:49: error: unresolved reference 'PvBoolean'.
+kotlin\src\main\kotlin\consema\ini\Materialization.kt:992:60: error: unresolved reference 'value'.
+kotlin\src\main\kotlin\consema\ini\Parser.kt:165:17: error: no parameter with name 'byteOffset' found.
+kotlin\src\main\kotlin\consema\ini\Parser.kt:686:60: error: unresolved reference 'add'.
+kotlin\src\main\kotlin\consema\ini\Parser.kt:691:56: error: unresolved reference 'add'.
+kotlin\src\main\kotlin\consema\ini\Parser.kt:1096:39: error: type argument is not within its bounds: must be subtype of 'Comparable<Pair<String, String>>'.
+kotlin\src\main\kotlin\consema\ini\Projection.kt:355:15: error: redeclaration:
+kotlin\src\main\kotlin\consema\ini\Projection.kt:657:17: error: unresolved reference 'projectedOrdinalValue'.
+kotlin\src\main\kotlin\consema\ini\Query.kt:179:19: error: cannot access 'class Context : Any': it is private in file.
+kotlin\src\main\kotlin\consema\ini\Query.kt:180:13: error: unresolved reference 'step'.
+kotlin\src\main\kotlin\consema\ini\Query.kt:206:19: error: cannot access 'class Context : Any': it is private in file.
+kotlin\src\main\kotlin\consema\ini\Query.kt:209:13: error: unresolved reference 'step'.
+kotlin\src\main\kotlin\consema\ini\Query.kt:231:13: error: unresolved reference 'cancellation'.
+kotlin\src\main\kotlin\consema\ini\Query.kt:234:9: error: unresolved reference 'steps'.
+kotlin\src\main\kotlin\consema\ini\Query.kt:234:17: error: unresolved reference 'steps'.
+kotlin\src\main\kotlin\consema\ini\Query.kt:235:13: error: unresolved reference 'steps'.
+kotlin\src\main\kotlin\consema\ini\Query.kt:235:21: error: unresolved reference 'limits'.
+kotlin\src\main\kotlin\consema\ini\Query.kt:235:50: error: unresolved reference 'limits'.
+kotlin\src\main\kotlin\consema\ini\Query.kt:241:23: error: cannot access 'class Context : Any': it is private in file.
+kotlin\src\main\kotlin\consema\ini\Query.kt:253:21: error: cannot access 'class Context : Any': it is private in file.
+kotlin\src\main\kotlin\consema\ini\Query.kt:269:14: error: cannot access 'class Context : Any': it is private in file.
+kotlin\src\main\kotlin\consema\ini\Query.kt:280:21: error: unresolved reference 'step'.
+kotlin\src\main\kotlin\consema\ini\Query.kt:290:55: error: cannot access 'class Context : Any': it is private in file.
+kotlin\src\main\kotlin\consema\ini\Query.kt:291:47: error: cannot access 'class Context : Any': it is private in file.
+kotlin\src\main\kotlin\consema\ini\Query.kt:293:17: error: unresolved reference 'step'.
+kotlin\src\main\kotlin\consema\ini\Query.kt:301:14: error: cannot access 'class Context : Any': it is private in file.
+kotlin\src\main\kotlin\consema\ini\Query.kt:312:21: error: unresolved reference 'step'.
+kotlin\src\main\kotlin\consema\ini\Query.kt:322:17: error: unresolved reference 'step'.
+kotlin\src\main\kotlin\consema\ini\Query.kt:330:14: error: cannot access 'class Context : Any': it is private in file.
+kotlin\src\main\kotlin\consema\ini\Query.kt:342:25: error: cannot access 'class Context : Any': it is private in file.
+kotlin\src\main\kotlin\consema\ini\Query.kt:355:13: error: unresolved reference 'step'.
+kotlin\src\main\kotlin\consema\ini\Query.kt:362:14: error: cannot access 'class Context : Any': it is private in file.
+kotlin\src\main\kotlin\consema\ini\Query.kt:369:45: error: cannot access 'class Context : Any': it is private in file.
+kotlin\src\main\kotlin\consema\ini\Query.kt:370:60: error: unresolved reference 'sectionMatch'.
+kotlin\src\main\kotlin\consema\ini\Query.kt:378:54: error: cannot access 'class Context : Any': it is private in file.
+kotlin\src\main\kotlin\consema\ini\Query.kt:380:64: error: unresolved reference 'entryMatch'.
+kotlin\src\main\kotlin\consema\ini\Query.kt:389:45: error: cannot access 'class Context : Any': it is private in file.
+kotlin\src\main\kotlin\consema\ini\Query.kt:390:60: error: unresolved reference 'entryMatch'.
+kotlin\src\main\kotlin\consema\ini\Query.kt:398:43: error: cannot access 'class Context : Any': it is private in file.
+kotlin\src\main\kotlin\consema\ini\Query.kt:401:60: error: unresolved reference 'sectionMatch'.
+kotlin\src\main\kotlin\consema\ini\Query.kt:409:60: error: cannot access 'class Context : Any': it is private in file.
+kotlin\src\main\kotlin\consema\ini\Query.kt:429:56: error: cannot access 'class Context : Any': it is private in file.
+kotlin\src\main\kotlin\consema\ini\Query.kt:464:49: error: cannot access 'class Context : Any': it is private in file.
+kotlin\src\main\kotlin\consema\ini\Query.kt:465:41: error: cannot access 'class Context : Any': it is private in file.
+kotlin\src\main\kotlin\consema\ini\Query.kt:466:68: error: unresolved reference 'sectionMatch'.
+kotlin\src\main\kotlin\consema\ini\Query.kt:472:49: error: cannot access 'class Context : Any': it is private in file.
+kotlin\src\main\kotlin\consema\ini\Query.kt:473:41: error: cannot access 'class Context : Any': it is private in file.
+kotlin\src\main\kotlin\consema\ini\Query.kt:474:68: error: unresolved reference 'entryMatch'.
+kotlin\src\main\kotlin\consema\ini\Query.kt:485:53: error: cannot access 'class Context : Any': it is private in file.
+kotlin\src\main\kotlin\consema\ini\Query.kt:498:53: error: cannot access 'class Context : Any': it is private in file.
+kotlin\src\main\kotlin\consema\ini\Query.kt:522:13: error: unresolved reference 'step'.
+kotlin\src\main\kotlin\consema\ini\Query.kt:527:32: error: cannot access 'class Context : Any': it is private in file.
+kotlin\src\main\kotlin\consema\ini\Query.kt:529:28: error: unresolved reference 'limits'.
+kotlin\src\main\kotlin\consema\ini\Source.kt:161:13: error: 'public' function exposes its 'internal' parameter type 'IniEncodingRequest'.
+kotlin\src\main\kotlin\consema\ini\Source.kt:415:9: error: operator '==' cannot be applied to 'Byte' and 'Int'.
+kotlin\src\main\kotlin\consema\ini\Source.kt:415:29: error: operator '==' cannot be applied to 'Byte' and 'Int'.
+kotlin\src\main\kotlin\consema\ini\Source.kt:422:28: error: operator '==' cannot be applied to 'Byte' and 'Int'.
+kotlin\src\main\kotlin\consema\ini\Source.kt:422:48: error: operator '==' cannot be applied to 'Byte' and 'Int'.
+kotlin\src\main\kotlin\consema\ini\Source.kt:674:44: error: argument type mismatch: actual type is 'Number & Comparable<CapturedType(*)>', but 'Int' was expected.
+kotlin\src\main\kotlin\consema\properties\Edit.kt:235:34: error: 'name' hides member of supertype 'EditFailure' and needs an 'override' modifier.
+kotlin\src\main\kotlin\consema\properties\Edit.kt:378:22: error: unresolved reference 'TreeMap'.
+kotlin\src\main\kotlin\consema\properties\Edit.kt:865:17: error: unresolved reference 'TreeMap'.
+kotlin\src\main\kotlin\consema\properties\Edit.kt:867:68: error: unresolved reference 'size'.
+kotlin\src\main\kotlin\consema\properties\Edit.kt:869:38: error: cannot infer type for this parameter. Specify it explicitly.
+kotlin\src\main\kotlin\consema\properties\Edit.kt:869:38: error: unresolved reference. None of the following candidates is applicable because of a receiver type mismatch:
+kotlin\src\main\kotlin\consema\properties\Edit.kt:869:42: error: cannot infer type for this parameter. Specify it explicitly.
+kotlin\src\main\kotlin\consema\properties\Edit.kt:869:51: error: unresolved reference 'add'.
+kotlin\src\main\kotlin\consema\properties\Edit.kt:870:58: error: cannot infer type for this parameter. Specify it explicitly.
+kotlin\src\main\kotlin\consema\properties\Edit.kt:870:71: error: unresolved reference 'add'.
+kotlin\src\main\kotlin\consema\properties\Encoding.kt:369:9: error: operator '==' cannot be applied to 'Byte' and 'Int'.
+kotlin\src\main\kotlin\consema\properties\Encoding.kt:369:29: error: operator '==' cannot be applied to 'Byte' and 'Int'.
+kotlin\src\main\kotlin\consema\properties\Encoding.kt:376:28: error: operator '==' cannot be applied to 'Byte' and 'Int'.
+kotlin\src\main\kotlin\consema\properties\Encoding.kt:376:48: error: operator '==' cannot be applied to 'Byte' and 'Int'.
+kotlin\src\main\kotlin\consema\properties\Errors.kt:74:9: error: 'cause' hides member of supertype 'Throwable' and needs an 'override' modifier.
+kotlin\src\main\kotlin\consema\properties\Errors.kt:122:30: error: unresolved reference 'RelatedSourceLocation'.
+kotlin\src\main\kotlin\consema\properties\Errors.kt:122:55: error: cannot infer type for this parameter. Specify it explicitly.
+kotlin\src\main\kotlin\consema\properties\Parser.kt:772:29: error: syntax error: Type annotations are not allowed on destructuring declarations.
+kotlin\src\main\kotlin\consema\properties\Parser.kt:828:56: error: argument type mismatch: actual type is 'Unit', but 'CharArray' was expected.
+kotlin\src\main\kotlin\consema\properties\Parser.kt:828:73: error: no value passed for parameter 'destination'.
+kotlin\src\main\kotlin\consema\properties\Projection.kt:500:15: error: redeclaration:
+kotlin\src\main\kotlin\consema\properties\Query.kt:189:19: error: cannot access 'class Context : Any': it is private in file.
+kotlin\src\main\kotlin\consema\properties\Query.kt:190:13: error: unresolved reference 'step'.
+kotlin\src\main\kotlin\consema\properties\Query.kt:216:19: error: cannot access 'class Context : Any': it is private in file.
+kotlin\src\main\kotlin\consema\properties\Query.kt:219:13: error: unresolved reference 'step'.
+kotlin\src\main\kotlin\consema\properties\Query.kt:241:13: error: unresolved reference 'cancellation'.
+kotlin\src\main\kotlin\consema\properties\Query.kt:244:9: error: unresolved reference 'steps'.
+kotlin\src\main\kotlin\consema\properties\Query.kt:244:17: error: unresolved reference 'steps'.
+kotlin\src\main\kotlin\consema\properties\Query.kt:245:13: error: unresolved reference 'steps'.
+kotlin\src\main\kotlin\consema\properties\Query.kt:245:21: error: unresolved reference 'limits'.
+kotlin\src\main\kotlin\consema\properties\Query.kt:245:50: error: unresolved reference 'limits'.
+kotlin\src\main\kotlin\consema\properties\Query.kt:251:24: error: cannot access 'class Context : Any': it is private in file.
+kotlin\src\main\kotlin\consema\properties\Query.kt:256:17: error: cannot access 'class Context : Any': it is private in file.
+kotlin\src\main\kotlin\consema\properties\Query.kt:266:20: error: cannot access 'class Context : Any': it is private in file.
+kotlin\src\main\kotlin\consema\properties\Query.kt:275:20: error: cannot access 'class Context : Any': it is private in file.
+kotlin\src\main\kotlin\consema\properties\Query.kt:284:22: error: cannot access 'class Context : Any': it is private in file.
+kotlin\src\main\kotlin\consema\properties\Query.kt:288:24: error: cannot access 'class Context : Any': it is private in file.
+kotlin\src\main\kotlin\consema\properties\Query.kt:301:14: error: cannot access 'class Context : Any': it is private in file.
+kotlin\src\main\kotlin\consema\properties\Query.kt:312:21: error: unresolved reference 'step'.
+kotlin\src\main\kotlin\consema\properties\Query.kt:322:62: error: cannot access 'class Context : Any': it is private in file.
+kotlin\src\main\kotlin\consema\properties\Query.kt:323:47: error: cannot access 'class Context : Any': it is private in file.
+kotlin\src\main\kotlin\consema\properties\Query.kt:325:17: error: unresolved reference 'step'.
+kotlin\src\main\kotlin\consema\properties\Query.kt:333:14: error: cannot access 'class Context : Any': it is private in file.
+kotlin\src\main\kotlin\consema\properties\Query.kt:344:21: error: unresolved reference 'step'.
+kotlin\src\main\kotlin\consema\properties\Query.kt:354:17: error: unresolved reference 'step'.
+kotlin\src\main\kotlin\consema\properties\Query.kt:362:14: error: cannot access 'class Context : Any': it is private in file.
+kotlin\src\main\kotlin\consema\properties\Query.kt:374:25: error: cannot access 'class Context : Any': it is private in file.
+kotlin\src\main\kotlin\consema\properties\Query.kt:380:25: error: cannot access 'class Context : Any': it is private in file.
+kotlin\src\main\kotlin\consema\properties\Query.kt:389:29: error: cannot access 'class Context : Any': it is private in file.
+kotlin\src\main\kotlin\consema\properties\Query.kt:404:13: error: unresolved reference 'step'.
+kotlin\src\main\kotlin\consema\properties\Query.kt:411:14: error: cannot access 'class Context : Any': it is private in file.
+kotlin\src\main\kotlin\consema\properties\Query.kt:418:45: error: cannot access 'class Context : Any': it is private in file.
+kotlin\src\main\kotlin\consema\properties\Query.kt:419:52: error: unresolved reference 'propertyMatch'.
+kotlin\src\main\kotlin\consema\properties\Query.kt:427:45: error: cannot access 'class Context : Any': it is private in file.
+kotlin\src\main\kotlin\consema\properties\Query.kt:428:52: error: unresolved reference 'naturalLineMatch'.
+kotlin\src\main\kotlin\consema\properties\Query.kt:436:45: error: cannot access 'class Context : Any': it is private in file.
+kotlin\src\main\kotlin\consema\properties\Query.kt:437:52: error: unresolved reference 'logicalLineMatch'.
+kotlin\src\main\kotlin\consema\properties\Query.kt:445:43: error: cannot access 'class Context : Any': it is private in file.
+kotlin\src\main\kotlin\consema\properties\Query.kt:447:52: error: unresolved reference 'naturalLineMatch'.
+kotlin\src\main\kotlin\consema\properties\Query.kt:476:55: error: cannot access 'class Context : Any': it is private in file.
+kotlin\src\main\kotlin\consema\properties\Query.kt:477:37: error: cannot access 'class Context : Any': it is private in file.
+kotlin\src\main\kotlin\consema\properties\Query.kt:478:56: error: unresolved reference 'escapeMatch'.
+kotlin\src\main\kotlin\consema\properties\Query.kt:487:45: error: cannot access 'class Context : Any': it is private in file.
+kotlin\src\main\kotlin\consema\properties\Query.kt:488:37: error: cannot access 'class Context : Any': it is private in file.
+kotlin\src\main\kotlin\consema\properties\Query.kt:491:56: error: unresolved reference 'propertyMatch'.
+kotlin\src\main\kotlin\consema\properties\Query.kt:513:13: error: unresolved reference 'step'.
+kotlin\src\main\kotlin\consema\properties\Query.kt:517:93: error: cannot access 'class Context : Any': it is private in file.
+kotlin\src\main\kotlin\consema\properties\Query.kt:518:35: error: unresolved reference 'limits'.
