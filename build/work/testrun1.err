@@ -1,8 +1,0 @@
-Exception in thread "main" java.lang.NoClassDefFoundError: kotlin/collections/CollectionsKt
-	at IniPropsTestRunnerKt.main(IniPropsTestRunner.kt:8)
-	at IniPropsTestRunnerKt.main(IniPropsTestRunner.kt)
-Caused by: java.lang.ClassNotFoundException: kotlin.collections.CollectionsKt
-	at java.base/jdk.internal.loader.BuiltinClassLoader.loadClass(BuiltinClassLoader.java:641)
-	at java.base/jdk.internal.loader.ClassLoaders$AppClassLoader.loadClass(ClassLoaders.java:188)
-	at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:525)
-	... 2 more
