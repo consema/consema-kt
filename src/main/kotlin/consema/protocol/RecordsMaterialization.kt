@@ -265,7 +265,15 @@ internal fun parseProfile(value: PortableValue, path: String): ProfileId {
 
 internal fun parseReference(value: PortableValue, path: String): Pair<String, Int> {
     val fields = exactFields(value, listOf("id", "version"), path)
-    return stringOf(fields[0], "$path.id") to unsigned32(fields[1], "$path.version")
+    val id = stringOf(fields[0], "$path.id")
+    val version = unsigned32(fields[1], "$path.version")
+    // The Rust parse_reference builds a ContractId, whose constructor rejects
+    // a zero version (contract.rs:22-25); the wire codec must reject the same
+    // record instead of accepting it.
+    if (version == 0) {
+        throw invalid("$path.version", "version must be non-zero")
+    }
+    return id to version
 }
 
 internal fun limitsValue(limits: MaterializationLimits): PortableValue =
