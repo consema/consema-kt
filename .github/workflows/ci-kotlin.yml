@@ -149,7 +149,7 @@ jobs:
           Write-Output 'zero runtime dependencies: build.gradle.kts declares only test-scoped configurations'
 
   kotlin-conformance:
-    name: kotlin conformance runner (18 suites / 508 cases)
+    name: kotlin conformance runner (18 suites / 519 cases)
     runs-on: windows-latest
     timeout-minutes: 60
     steps:
@@ -248,7 +248,7 @@ jobs:
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           Write-Output "main sources compiled into $mainOut"
       # Compiles the runner test (ConformanceRunnerTest.kt — the digest and
-      # 18/508 hard pins) together with a temp main() test runner, the
+      # 18/519 hard pins) together with a temp main() test runner, the
       # pattern of scripts/kotlin-verify-byte-parity.ps1 (kotlin.test shim
       # not needed: the runner drives the @Test methods directly).
       - name: compile the conformance runner test + temp main() runner (K2JVMCompiler)
@@ -290,7 +290,7 @@ jobs:
               }
               val tests = mapOf(
                   "ConformanceRunnerTest.aggregateDigestMatchesTheManifest" to { ConformanceRunnerTest().aggregateDigestMatchesTheManifest() },
-                  "ConformanceRunnerTest.allEighteenSuitesPassFiveHundredEightCases" to { ConformanceRunnerTest().allEighteenSuitesPassFiveHundredEightCases() },
+                  "ConformanceRunnerTest.allEighteenSuitesPassFiveHundredNineteenCases" to { ConformanceRunnerTest().allEighteenSuitesPassFiveHundredNineteenCases() },
                   "ConformanceRunnerTest.everySuiteAssertsItsFrozenCaseCount" to { ConformanceRunnerTest().everySuiteAssertsItsFrozenCaseCount() },
               )
               for (arg in args) {
@@ -324,7 +324,7 @@ jobs:
           $stdlib = Join-Path $kotlinc 'lib\kotlin-stdlib.jar'
           $env:CONSEMA_REPO = $env:GITHUB_WORKSPACE
           $runCp = "$mainOut;$runnerOut;$stdlib;$kotlinTestJar"
-          & $java -Xmx2g -cp $runCp consema.conformance.ConformanceTestRunnerKt 'ConformanceRunnerTest.aggregateDigestMatchesTheManifest' 'ConformanceRunnerTest.allEighteenSuitesPassFiveHundredEightCases' 'ConformanceRunnerTest.everySuiteAssertsItsFrozenCaseCount'
+          & $java -Xmx2g -cp $runCp consema.conformance.ConformanceTestRunnerKt 'ConformanceRunnerTest.aggregateDigestMatchesTheManifest' 'ConformanceRunnerTest.allEighteenSuitesPassFiveHundredNineteenCases' 'ConformanceRunnerTest.everySuiteAssertsItsFrozenCaseCount'
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
   kotlin-differential:
