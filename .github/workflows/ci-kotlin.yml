@@ -21,6 +21,15 @@
 # §3.6/§7.2) lands with the runner-CLI batch and slots in as a fourth
 # differential step. No repository secrets are required.
 #
+# Coverage gate: DEFERRED to P2 — line coverage for the Kotlin/JVM side
+# requires a JVM coverage agent wired into the test run (JaCoCo via Gradle,
+# or kover), and with no Gradle wrapper (design §7.3, a later L0-batch
+# item) the jobs drive the direct K2JVMCompiler and cannot produce a line
+# coverage report. Introducing the wrapper is a large change and is tracked
+# as a P2 item in kotlin/README.md ("Coverage (P2)"); the Knit-style
+# doc-example gate is likewise deferred with the wrapper. Coverage 待
+# wrapper 落地后补.
+#
 # This repository carries the Kotlin implementation only, so every job uses
 # the multi-repo checkout mode: it checks out consema/consema (the spec
 # repository, whose conformance/vectors + conformance/differential case sets,
@@ -61,12 +70,12 @@ jobs:
     runs-on: windows-latest
     timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
           repository: consema/consema
           path: consema-repo
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@cf277c60eb25467037889841efdb72551f06f6c3 # v4.9.1
         with:
           distribution: temurin
           java-version: '17'
@@ -93,7 +102,7 @@ jobs:
           $count = @(Get-ChildItem -LiteralPath $target -Recurse -File).Count
           Write-Output "provisioned conformance/: $count files + docs/fc-manifest-0.13.0.json"
       - name: cache kotlinc 2.2.0 distribution
-        uses: actions/cache@v4
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
         with:
           path: ${{ runner.temp }}/kotlinc-2.2.0
           key: kotlinc-2.2.0
@@ -283,12 +292,12 @@ jobs:
     runs-on: windows-latest
     timeout-minutes: 60
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
           repository: consema/consema
           path: consema-repo
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@cf277c60eb25467037889841efdb72551f06f6c3 # v4.9.1
         with:
           distribution: temurin
           java-version: '17'
@@ -315,7 +324,7 @@ jobs:
           $count = @(Get-ChildItem -LiteralPath $target -Recurse -File).Count
           Write-Output "provisioned conformance/: $count files + docs/fc-manifest-0.13.0.json"
       - name: cache kotlinc 2.2.0 distribution
-        uses: actions/cache@v4
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
         with:
           path: ${{ runner.temp }}/kotlinc-2.2.0
           key: kotlinc-2.2.0
@@ -459,20 +468,22 @@ jobs:
     runs-on: windows-latest
     timeout-minutes: 60
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
           repository: consema/consema-rs
           path: consema-rs
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
           repository: consema/consema
           path: consema-repo
-      - uses: dtolnay/rust-toolchain@stable
-      - uses: swatinem/rust-cache@v2
+      - uses: dtolnay/rust-toolchain@4360b52568e2003a75bf9bc1d59f33a8e3fc893c # stable
+        with:
+          toolchain: stable
+      - uses: swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2.9.2
         with:
           workspaces: consema-rs
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@cf277c60eb25467037889841efdb72551f06f6c3 # v4.9.1
         with:
           distribution: temurin
           java-version: '17'
@@ -499,7 +510,7 @@ jobs:
           $count = @(Get-ChildItem -LiteralPath $target -Recurse -File).Count
           Write-Output "provisioned conformance/: $count files + docs/fc-manifest-0.13.0.json"
       - name: cache kotlinc 2.2.0 distribution
-        uses: actions/cache@v4
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
         with:
           path: ${{ runner.temp }}/kotlinc-2.2.0
           key: kotlinc-2.2.0
@@ -560,7 +571,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
       - name: assert build.gradle.kts version == README Version line
         shell: bash
         run: |
@@ -594,7 +605,7 @@ jobs:
       contents: read
     steps:
       - name: decide whether the needed jobs succeeded or failed
-        uses: re-actors/alls-green@v1.2.2
+        uses: re-actors/alls-green@05ac9388f0aebcb5727afa17fcccfecd6f8ec5fe # v1.2.2
         with:
           allowed-failures: ''
           jobs: ${{ toJSON(needs) }}

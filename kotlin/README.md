@@ -21,6 +21,16 @@ powershell -File ../scripts/kotlin-verify-normalized-differential.ps1
 powershell -File ../scripts/kotlin-verify-protocol-exchange.ps1
 ```
 
+## Coverage (P2)
+
+Line coverage is deferred to P2. The repository has no Gradle wrapper
+(design §7.3; a later L0-batch item) and drives the direct JVM
+K2JVMCompiler, so there is no Gradle/JaCoCo or kover path to produce a line
+coverage report today (the ci-kotlin.yml header carries the standing
+"coverage 待 wrapper 落地后补" note). A coverage gate (initial threshold 60%,
+tightened as coverage improves) and the Knit-style doc-example gate land
+together with the Gradle wrapper.
+
 ## Conformance
 
 18 suites / 508 cases / aggregate digest `35bebc8d…` are pinned in
