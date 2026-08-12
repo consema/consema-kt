@@ -1,0 +1,18 @@
+# Dependabot version updates: gradle ecosystem. The manifest is
+# kotlin/build.gradle.kts (single module, kotlin("jvm") 2.2.0, test-scoped
+# dependencies only).
+#
+# Limitation: this repository has no Gradle wrapper (design §7.3 lists
+# kotlin/gradlew as a later L0-batch item), so Dependabot resolves manifests
+# with the Gradle distribution bundled with the dependabot service rather
+# than the repo's own toolchain, and Gradle-wrapper updates are not possible
+# until a wrapper is committed. If the bundled-Gradle resolution cannot
+# materialize the kotlin plugin, updates surface as dependabot errors and
+# this entry should be re-evaluated when the wrapper lands.
+version: 2
+updates:
+  - package-ecosystem: gradle
+    directory: "/"
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
