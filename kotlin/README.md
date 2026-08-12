@@ -9,11 +9,11 @@ implementations.
 
 ## Verify
 
-CI still drives the direct JVM K2JVMCompiler (ci-kotlin.yml keeps the
-kotlin-gates / kotlin-conformance / kotlin-differential pattern; the Gradle
-wrapper landed on 2026-08-12 as design §7.3's later item but CI has NOT
-switched — see "Gradle wrapper exploration" below). Two equivalent paths
-exist:
+CI drives kotlin-gates through the committed Gradle wrapper (gradle 8.14:
+`.\gradlew.bat test koverVerify` — the kover 60% line-coverage gate, landed
+b640af6), and keeps kotlin-conformance / kotlin-differential on the direct
+JVM K2JVMCompiler (they rely on the one-module compile + shim + golden-env
+pattern; ci-kotlin.yml). Two equivalent paths exist locally:
 
 Gradle path (wrapper committed 2026-08-12):
 
@@ -29,7 +29,8 @@ repository, or the 10 such tests fail with "repository root not found" —
 same environment requirement as the direct-compile path, only without the
 reflective runner's SKIP logic.
 
-Direct-K2JVMCompiler path (what CI runs):
+Direct-K2JVMCompiler path (what kotlin-conformance / kotlin-differential
+run; the kotlin-gates pattern before b640af6):
 
 ```
 # compile + run every @Test via the kotlin.test shim (kotlin/verify/TestShim.kt)
@@ -47,11 +48,11 @@ koverReport` produces HTML/XML reports (build/reports/kover/) and the
 bound configured in build.gradle.kts). Measured with all 547 tests green
 (CONSEMA_REPO set): **line 77.6%** (40247/51861) · instruction 74.5% ·
 branch 55.6% · method 86.8% · class 87.5%. The 60% gate passes with
-comfortable headroom. CI has not switched to the wrapper (see below), so
-the coverage gate lands in CI together with the switch decision; the
-Knit-style doc-example gate remains deferred with it. The ci-kotlin.yml
-header's "coverage 待 wrapper 落地后补" note is now superseded by this
-section.
+comfortable headroom. The gate is live in CI: kotlin-gates runs
+`.\gradlew.bat test koverVerify` since b640af6 (kover 0.9.9, 60% minimum,
+build.gradle.kts:44-52). The Knit-style doc-example gate remains deferred
+(tracked in the ci-kotlin.yml header). The ci-kotlin.yml header's
+"coverage 待 wrapper 落地后补" note is now superseded by this section.
 
 ## Gradle wrapper exploration (2026-08-12)
 
@@ -74,13 +75,14 @@ switch:
   separate source sets (friend modules), the direct path compiles them into
   one module — the 547-green suite shows no dependence on the merged
   visibility.
-- **CI switch recommendation**: keep the current direct-K2JVMCompiler jobs
-  (kotlin-conformance / kotlin-differential rely on the one-module compile
-  + shim + golden-env pattern and are already green), and switch only the
-  kotlin-gates unit-test job (or add a fourth job) to
-  `./gradlew test koverVerify` to unblock the coverage gate, dependency
-  audit, and dependabot gradle resolution. Decision is deferred to the
-  owner (design §7.3).
+- **CI switch (landed)**: kotlin-gates switched to the committed Gradle
+  wrapper (b640af6: `.\gradlew.bat test koverVerify` — the kover 60%
+  coverage gate — plus the zero-dependency assertion); the Kotlin
+  dependency audit and dependabot gradle resolution were rewired to the
+  wrapper afterwards (9a64d85; .github/dependabot.yml now tracks the
+  gradle ecosystem at /kotlin). kotlin-conformance / kotlin-differential
+  keep the direct-K2JVMCompiler path (one-module compile + shim +
+  golden-env pattern, ci-kotlin.yml) — the recommendation above, executed.
 
 ## Conformance
 
