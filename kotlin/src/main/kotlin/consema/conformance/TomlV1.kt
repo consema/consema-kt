@@ -289,7 +289,7 @@ private fun runTomlV1Case(runner: Runner, case: CaseData) {
             }
             ensure(nodeFailed && depthFailed)
         }
-        "toml.corpus.cargo-manifest" -> corpusDocument(runner, File(runner.vectorsDir, "../../Cargo.toml").canonicalFile)
+        "toml.corpus.cargo-manifest" -> corpusDocument(runner, File(runner.fixturesDir, "toml/Cargo.toml"))
         "toml.corpus.pyproject" -> corpusDocument(runner, File(runner.fixturesDir, "toml/pyproject.toml"))
         else -> fail("runner does not recognize published TOML case")
     }

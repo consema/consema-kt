@@ -39,22 +39,6 @@ internal fun fixtureBytes(name: String, fallback: ByteArray): ByteArray {
     return fallback
 }
 
-/** Loads one repository-root file (the corpus Cargo.toml), preferring the
- * real file. */
-internal fun repoRootBytes(relative: String, fallback: ByteArray): ByteArray {
-    for (candidate in listOf(
-        File(relative),
-        File("../$relative"),
-        File("../../$relative"),
-        File("C:/Users/franck/Documents/consema/$relative"),
-    )) {
-        if (candidate.isFile) {
-            return candidate.readBytes()
-        }
-    }
-    return fallback
-}
-
 /** conformance/fixtures/toml/all-values.toml (320 bytes). */
 internal val ALL_VALUES_TOML: ByteArray = fixtureBytes(
     "all-values.toml",
@@ -167,29 +151,30 @@ internal val PYPROJECT_TOML: ByteArray = fixtureBytes(
     """.let { transcribed(it) },
 )
 
-/** The corpus Cargo.toml at the repository root (toml.corpus.cargo-
- * manifest). */
-internal val CORPUS_CARGO_TOML: ByteArray = repoRootBytes(
+/** The corpus Cargo.toml (toml.corpus.cargo-manifest): the committed
+ * fixture conformance/fixtures/toml/Cargo.toml (single authority since the
+ * six-repo split; the workspace root no longer carries a Cargo.toml). */
+internal val CORPUS_CARGO_TOML: ByteArray = fixtureBytes(
     "Cargo.toml",
     """
     [workspace]
     resolver = "3"
     members = [
-        "crates/consema-core",
-        "crates/consema-pvce",
-        "crates/consema-graph",
-        "crates/consema-document",
-        "crates/consema-json",
-        "crates/consema-toml",
-        "crates/consema-yaml",
-        "crates/consema-ini",
-        "crates/consema-properties",
-        "crates/consema-protocol",
-        "crates/consema-xml",
-        "crates/consema-plist",
-        "crates/consema-hcl",
-        "crates/consema-conformance",
-        "crates/consema",
+        "consema-core",
+        "consema-pvce",
+        "consema-graph",
+        "consema-document",
+        "consema-json",
+        "consema-toml",
+        "consema-yaml",
+        "consema-ini",
+        "consema-properties",
+        "consema-protocol",
+        "consema-xml",
+        "consema-plist",
+        "consema-hcl",
+        "consema-conformance",
+        "consema",
     ]
 
     [workspace.dependencies]
@@ -213,6 +198,7 @@ internal val CORPUS_CARGO_TOML: ByteArray = repoRootBytes(
 
     [workspace.lints.clippy]
     all = { level = "warn", priority = -1 }
+    pedantic = { level = "warn", priority = -1 }
     module_name_repetitions = "allow"
     cast_possible_truncation = "allow"
     cast_possible_wrap = "allow"

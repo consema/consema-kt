@@ -24,8 +24,8 @@
 # This repository carries the Kotlin implementation only, so every job uses
 # the multi-repo checkout mode: it checks out consema/consema (the spec
 # repository, whose conformance/vectors + conformance/differential case sets,
-# docs/fc-manifest-0.13.0.json and the workspace Cargo.toml — the
-# toml.corpus.cargo-manifest case — are the single authority) beside this
+# docs/fc-manifest-0.13.0.json and the toml.corpus.cargo-manifest fixture
+# conformance/fixtures/toml/Cargo.toml are the single authority) beside this
 # repository and copies the conformance data into the workspace root (the
 # runner resolves conformance/* and the manifest by repository-relative
 # path from CONSEMA_REPO=$GITHUB_WORKSPACE). The differential job
@@ -78,16 +78,12 @@ jobs:
             throw "fc-manifest not found in the consema checkout: $manifest"
           }
           Copy-Item -LiteralPath $manifest -Destination (Join-Path $env:GITHUB_WORKSPACE 'docs\fc-manifest-0.13.0.json') -Force
-          # The toml.corpus.cargo-manifest case reads the workspace-root
-          # Cargo.toml by repository-relative path (toml_v1 suites in every
-          # runner), so the workspace manifest is provisioned too.
-          $cargoToml = Join-Path $env:GITHUB_WORKSPACE 'consema-repo\Cargo.toml'
-          if (-not (Test-Path -LiteralPath $cargoToml)) {
-            throw "Cargo.toml not found in the consema checkout: $cargoToml"
-          }
-          Copy-Item -LiteralPath $cargoToml -Destination (Join-Path $env:GITHUB_WORKSPACE 'Cargo.toml') -Force
+          # The toml.corpus.cargo-manifest case reads the committed fixture
+          # conformance/fixtures/toml/Cargo.toml (single authority), which is
+          # included in the conformance/ copy above; no workspace-root
+          # Cargo.toml is provisioned anymore.
           $count = @(Get-ChildItem -LiteralPath $target -Recurse -File).Count
-          Write-Output "provisioned conformance/: $count files + docs/fc-manifest-0.13.0.json + Cargo.toml"
+          Write-Output "provisioned conformance/: $count files + docs/fc-manifest-0.13.0.json"
       - name: cache kotlinc 2.2.0 distribution
         uses: actions/cache@v4
         with:
@@ -304,16 +300,12 @@ jobs:
             throw "fc-manifest not found in the consema checkout: $manifest"
           }
           Copy-Item -LiteralPath $manifest -Destination (Join-Path $env:GITHUB_WORKSPACE 'docs\fc-manifest-0.13.0.json') -Force
-          # The toml.corpus.cargo-manifest case reads the workspace-root
-          # Cargo.toml by repository-relative path (toml_v1 suites in every
-          # runner), so the workspace manifest is provisioned too.
-          $cargoToml = Join-Path $env:GITHUB_WORKSPACE 'consema-repo\Cargo.toml'
-          if (-not (Test-Path -LiteralPath $cargoToml)) {
-            throw "Cargo.toml not found in the consema checkout: $cargoToml"
-          }
-          Copy-Item -LiteralPath $cargoToml -Destination (Join-Path $env:GITHUB_WORKSPACE 'Cargo.toml') -Force
+          # The toml.corpus.cargo-manifest case reads the committed fixture
+          # conformance/fixtures/toml/Cargo.toml (single authority), which is
+          # included in the conformance/ copy above; no workspace-root
+          # Cargo.toml is provisioned anymore.
           $count = @(Get-ChildItem -LiteralPath $target -Recurse -File).Count
-          Write-Output "provisioned conformance/: $count files + docs/fc-manifest-0.13.0.json + Cargo.toml"
+          Write-Output "provisioned conformance/: $count files + docs/fc-manifest-0.13.0.json"
       - name: cache kotlinc 2.2.0 distribution
         uses: actions/cache@v4
         with:
@@ -492,16 +484,12 @@ jobs:
             throw "fc-manifest not found in the consema checkout: $manifest"
           }
           Copy-Item -LiteralPath $manifest -Destination (Join-Path $env:GITHUB_WORKSPACE 'docs\fc-manifest-0.13.0.json') -Force
-          # The toml.corpus.cargo-manifest case reads the workspace-root
-          # Cargo.toml by repository-relative path (toml_v1 suites in every
-          # runner), so the workspace manifest is provisioned too.
-          $cargoToml = Join-Path $env:GITHUB_WORKSPACE 'consema-repo\Cargo.toml'
-          if (-not (Test-Path -LiteralPath $cargoToml)) {
-            throw "Cargo.toml not found in the consema checkout: $cargoToml"
-          }
-          Copy-Item -LiteralPath $cargoToml -Destination (Join-Path $env:GITHUB_WORKSPACE 'Cargo.toml') -Force
+          # The toml.corpus.cargo-manifest case reads the committed fixture
+          # conformance/fixtures/toml/Cargo.toml (single authority), which is
+          # included in the conformance/ copy above; no workspace-root
+          # Cargo.toml is provisioned anymore.
           $count = @(Get-ChildItem -LiteralPath $target -Recurse -File).Count
-          Write-Output "provisioned conformance/: $count files + docs/fc-manifest-0.13.0.json + Cargo.toml"
+          Write-Output "provisioned conformance/: $count files + docs/fc-manifest-0.13.0.json"
       - name: cache kotlinc 2.2.0 distribution
         uses: actions/cache@v4
         with:
