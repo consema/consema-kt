@@ -1,0 +1,52 @@
+# Consema Kotlin release: tag-triggered Maven Central publish of
+# dev.consema:consema-kotlin (top-tier bar: 半自动发布, kotlinx 凭证专人
+# precedent — credentials are user-side actions, see RELEASING.md §2).
+#
+# The repository has no Gradle wrapper (design docs/five-language-ci-design.md
+# §7.3 lists kotlin/gradlew as a later item; the CI jobs drive the direct
+# K2JVMCompiler), so this workflow provisions Gradle itself via
+# gradle/actions/setup-gradle (gradle-version 8.14 — the latest Gradle line
+# supported by Kotlin 2.2.0) and runs `gradle publish` in kotlin/.
+#
+# REQUIRED user configuration before the first tag push (the workflow is
+# complete but will fail without these; they are deliberately NOT
+# placeholder-secret gated so the failure is explicit):
+#   - OSSRH_USERNAME / OSSRH_PASSWORD: Sonatype Central Portal credentials
+#     (portal token name/value) — publish target is the portal deploy
+#     endpoint (build.gradle.kts publishing block).
+#   - SIGNING_KEY / SIGNING_PASSWORD: PGP key pair for artifact signing
+#     (ASCII-armored private key + passphrase; the matching public key must
+#     be registered on keys.openpgp.org / the portal).
+#   - The namespace dev.consema must be claimed on the Central Portal and
+#     the first publication verified once (see RELEASING.md).
+name: Release to Maven Central
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    name: gradle publish (dev.consema:consema-kotlin)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.14'
+      - name: gradle publish (portal deploy, signed artifacts)
+        working-directory: kotlin
+        env:
+          OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+          OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
+          SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
+          SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
+        run: gradle publish
