@@ -22,15 +22,6 @@
 // docs/fc-manifest-0.13.0.json); when the shared tree is not reachable
 // the tests are skipped (JUnit assumption). Fixtures are read-only; tests
 // never modify them.
-//
-// Known Kotlin YAML parser gaps (audit 2026-08-12; Rust/Go/TS/Py close
-// these fixtures byte-exactly): github-actions-ci.yaml fails because the
-// parser rejects `{`/`}` inside a block-context plain scalar
-// (`runs-on: ${{ matrix.os }}`), and anchor-heavy.yaml fails because an
-// alias used as a mapping value inside a block-sequence item
-// (`- name: ingest` / `settings: *defaults`) is rejected. The two
-// fixtures stay registered as disabled gates so they flip on when the
-// parser closes the gap.
 
 package consema.conformance
 
@@ -51,7 +42,6 @@ import consema.yaml.YamlProfile
 import consema.yaml.parse as parseYaml
 import java.io.File
 import org.junit.jupiter.api.Assumptions.assumeTrue
-import org.junit.jupiter.api.Disabled
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -224,7 +214,6 @@ class FixtureRoundTripTest {
     }
 
     @Test
-    @Disabled("Kotlin yaml parser rejects { } in a block-context plain scalar (runs-on: \${{ matrix.os }})")
     fun yamlGithubActionsCiRoundTripsByteExact() {
         assertYamlRoundTrip("yaml/github-actions-ci.yaml", documents = 1, aliases = 0)
     }
@@ -235,7 +224,6 @@ class FixtureRoundTripTest {
     }
 
     @Test
-    @Disabled("Kotlin yaml parser rejects an alias as a mapping value inside a block-sequence item (settings: *defaults)")
     fun yamlAnchorHeavyRoundTripsByteExact() {
         assertYamlRoundTrip("yaml/anchor-heavy.yaml", documents = 1, aliases = 5)
     }

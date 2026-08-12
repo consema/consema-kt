@@ -954,8 +954,10 @@ private class EventParser(
     }
 
     /** Whether a separation run is followed by content that continues the
-     * plain scalar (not a line end, comment, colon, or flow indicator in
-     * flow context). */
+     * plain scalar (not a line end, comment, or colon value indicator).
+     * Flow indicators are plain-scalar content in block context
+     * (`runs-on: ${{ matrix.os }}` is one scalar; parser.ts
+     * scanBlockPlainLine), so they never terminate the scalar here. */
     private fun plainResumesAfterSeparation(): Boolean {
         var probe = position
         while (probe < chars.size &&
@@ -973,7 +975,7 @@ private class EventParser(
         ) {
             return false
         }
-        return !isFlowIndicator(next)
+        return true
     }
 
     /** Probes the line after a consumed break for plain-scalar continuation.
@@ -1184,6 +1186,13 @@ private class EventParser(
             if (atEnd() || lineIndentAt(position) != blockIndent || atDocumentMarker()) {
                 break
             }
+            // Step past the line's indentation to the `-` indicator; the
+            // previous item's parse ends at the next line start, so without
+            // this the loop sees the leading spaces and ends the sequence
+            // after the first item (the trailing item then mis-parses as a
+            // new document and aliases registered in the first document are
+            // gone — `- name: ingest` / `settings: *defaults` fixtures).
+            skipInlineWhitespace()
             if (current() != '-'.code || !followedBySeparation(1)) {
                 break
             }

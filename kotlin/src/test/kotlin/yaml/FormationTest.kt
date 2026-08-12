@@ -253,4 +253,47 @@ class FormationTest {
         assertEquals("core.parse.resource-limit@1", error.code)
         assertEquals("source-bytes", error.name)
     }
+
+    /** Audit gap (fixture yaml/github-actions-ci.yaml): flow indicators
+     * (`{`/`}`) are plain-scalar content in block context, so
+     * `runs-on: ${{ matrix.os }}` forms one scalar and the stream
+     * round-trips byte-exactly (Rust/Go/TS/Py close the fixture).
+     * saphyr/libyaml only treat `,[]{}` as indicators in flow context. */
+    @Test
+    fun blockPlainScalarKeepsFlowIndicators() {
+        val source = "jobs:\n  test:\n    runs-on: \${{ matrix.os }}\n    strategy:\n      matrix:\n        os: [ubuntu-latest, windows-latest]\n"
+        val document = parse(source.toByteArray(Charsets.UTF_8), YamlProfile.Yaml12CoreV1)
+        assertEquals(FormationStatus.Complete, document.formationStatus())
+        assertEquals(source, document.render().toString(Charsets.UTF_8))
+        val root = document.document(0)!!.root()
+        val runsOn = root.mappingEntry(0)!!
+            .value().mappingEntry(0)!!
+            .value().mappingEntry(0)!!
+        assertEquals("\${{ matrix.os }}", runsOn.value().scalar()!!.decoded())
+    }
+
+    /** Audit gap (fixture yaml/anchor-heavy.yaml): an alias used as a
+     * mapping value inside a block-sequence item (`- name: ingest` /
+     * `settings: *defaults`) resolves against the anchors of the same
+     * document. The block-sequence item loop must step past the line
+     * indentation to the next `-` indicator, or the sequence ends after
+     * the first item and the remainder mis-parses as a new document whose
+     * anchor table was reset. */
+    @Test
+    fun aliasAsMappingValueInBlockSequenceItem() {
+        val source = "defaults: &defaults\n  retries: 3\n\nworkers:\n  - name: ingest\n    settings: *defaults\n  - name: export\n    settings: *defaults\n"
+        val document = parse(source.toByteArray(Charsets.UTF_8), YamlProfile.Yaml12CoreV1)
+        assertEquals(FormationStatus.Complete, document.formationStatus())
+        assertEquals(2, document.aliasCount())
+        assertEquals(source, document.render().toString(Charsets.UTF_8))
+        // The second item's alias resolves to the same anchored node.
+        val workers = document.document(0)!!.root().mappingEntry(1)!!
+        val exportSettings = workers.value().sequenceItem(1)!!
+            .node().mappingEntry(1)!!
+        val defaults = document.document(0)!!.root().mappingEntry(0)!!
+        assertEquals(
+            defaults.value().nodeRef(),
+            exportSettings.value().nodeRef(),
+        )
+    }
 }
