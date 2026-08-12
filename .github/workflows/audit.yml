@@ -1,22 +1,31 @@
-# Dependency audit for the Kotlin implementation — DEFERRED to P2.
+# Dependency audit for the Kotlin implementation. Gradle-ecosystem audit
+# strategy, three standing layers:
 #
-# Decision (2026-08-12): a full dependency audit (e.g. OWASP
-# dependency-check, or Gradle dependency verification) requires evaluating
-# Gradle configurations, and this repository has no Gradle wrapper
-# (design docs/five-language-ci-design.md §7.3 lists kotlin/gradlew as a
-# later L0-batch item; CI drives the direct K2JVMCompiler, and Dependabot
-# already covers kotlin/build.gradle.kts manifest updates — see
-# .github/dependabot.yml, which documents the same wrapper limitation).
-# Tracked in kotlin/README.md ("Coverage (P2)" / wrapper items). Until the
-# wrapper lands, this workflow runs the standing zero-runtime-dependency
-# assertion (build.gradle.kts keeps the runtime classpath empty; every
-# declared configuration is test-scoped) — the same source-level assertion
-# as the ci-kotlin.yml kotlin-gates job — on the daily cron so the policy
-# has an independent standing executor. The P2 item is to replace this
-# workflow's assertion with a real dependency audit once gradlew exists.
+#   1. Dependabot (gradle ecosystem, .github/dependabot.yml) tracks
+#      kotlin/build.gradle.kts manifest updates and the Gradle wrapper
+#      itself — the committed wrapper (kotlin/gradlew.bat, gradle 8.14,
+#      c60d31a) makes Dependabot resolve with the repo's own toolchain and
+#      enables gradle-wrapper updates.
+#   2. This workflow evaluates the real runtime classpath through the
+#      committed wrapper (`./gradlew dependencies --configuration
+#      runtimeClasspath`) and asserts it resolves nothing beyond the Kotlin
+#      platform (kotlin-stdlib + its transitive org.jetbrains:annotations —
+#      the language runtime, the same category as the Go stdlib). The
+#      zero-runtime-dependency policy (§1.3; build.gradle.kts:27-32 keeps
+#      every declared configuration test-scoped) is violated the moment any
+#      third-party group appears in runtimeClasspath. The source-level
+#      tripwire below (build.gradle.kts must not declare
+#      implementation/api/compileOnly/runtimeOnly) gates the same policy
+#      independently of the evaluation.
+#   3. Deeper SCA is deliberately NOT introduced: OWASP dependency-check's
+#      full-graph evaluation cost is disproportionate for a module whose
+#      runtime surface is the language platform alone and whose entire
+#      dependency graph is the test-scoped JUnit/Kotlin stack that Dependabot
+#      already tracks. Revisit (dependency-check, Gradle dependency
+#      verification, SBOM) only if a runtime dependency is ever added.
 #
 # No repository secrets are required.
-name: Dependency audit (deferred to Gradle wrapper, P2)
+name: Dependency audit
 
 on:
   schedule:
@@ -25,9 +34,13 @@ on:
     branches: [main]
     paths:
       - kotlin/build.gradle.kts
+      - kotlin/gradle.properties
+      - kotlin/gradle/wrapper/**
   pull_request:
     paths:
       - kotlin/build.gradle.kts
+      - kotlin/gradle.properties
+      - kotlin/gradle/wrapper/**
 
 concurrency:
   group: kotlin-audit-${{ github.ref }}
@@ -37,15 +50,54 @@ permissions:
   contents: read
 
 jobs:
-  zero-runtime-deps:
-    name: zero-runtime-dependency assertion (full audit deferred, P2)
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
+  runtime-classpath:
+    name: runtimeClasspath audit (gradlew dependencies, zero runtime deps)
+    runs-on: windows-latest
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
           persist-credentials: false
-      - name: zero-dependency assertion (build.gradle.kts runtime classpath empty)
+      - uses: actions/setup-java@cf277c60eb25467037889841efdb72551f06f6c3 # v4.9.1
+        with:
+          distribution: temurin
+          java-version: '17'
+      # Cache the Gradle user home (wrapper distribution + dependency
+      # caches), the same setup-gradle pattern as the ci-kotlin.yml
+      # kotlin-gates job.
+      - name: cache gradle user home (wrapper dist + dependency caches)
+        uses: gradle/actions/setup-gradle@ed408507eac070d1f99cc633dbcf757c94c7933a # v4.4.3
+      # Evaluates the actual runtime classpath through the committed
+      # wrapper. The Kotlin Gradle plugin adds kotlin-stdlib (2.2.0, with
+      # its transitive org.jetbrains:annotations) to runtimeClasspath by
+      # default — the language runtime, not a dependency — so the assertion
+      # allows exactly the org.jetbrains.kotlin / org.jetbrains groups (and
+      # the self-reference line) and fails on any other group.
+      - name: gradlew dependencies --configuration runtimeClasspath (zero third-party runtime deps)
+        shell: pwsh
+        working-directory: kotlin
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $output = .\gradlew.bat dependencies --configuration runtimeClasspath
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          $allowed = @('org.jetbrains.kotlin', 'org.jetbrains', 'project')
+          $violations = @()
+          foreach ($line in $output) {
+            if ($line -match '^\s*[+\\]---\s+([^:\s]+):') {
+              $group = $Matches[1]
+              if ($allowed -notcontains $group) { $violations += $line }
+            }
+          }
+          if ($violations.Count -gt 0) {
+            throw "runtimeClasspath resolved third-party dependencies (zero-runtime-dependency policy violated):`n" + ($violations -join "`n")
+          }
+          Write-Output 'runtimeClasspath: only the Kotlin platform (kotlin-stdlib) — zero third-party runtime dependencies'
+      # Source-level tripwire, kept as the documented check: build.gradle.kts
+      # must keep the runtime classpath empty of declared runtime-scoped
+      # configurations (evaluating configurations.runtimeClasspath would
+      # resolve the entire dependency graph; the source-level tripwire is
+      # the standing gate, identical to the ci-kotlin.yml kotlin-gates job).
+      - name: zero-dependency source-level assertion (build.gradle.kts runtime classpath empty)
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
