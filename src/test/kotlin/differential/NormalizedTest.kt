@@ -46,7 +46,7 @@ class NormalizedTest {
     @Test
     fun caseFileIntegrity() {
         val cases = loadNormalizedCaseFile(caseFile())
-        assertTrue(cases.size >= 104, "case count ${cases.size} must stay >= 104")
+        assertEquals(108, cases.size, "case count must stay 108 (frozen test data, measured from cases.json)")
         // Sanity: every case runs without goldens and emits a well-formed
         // fact set (the integrity run keeps the input set honest).
         for (case in cases) {

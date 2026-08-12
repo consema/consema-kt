@@ -25,6 +25,7 @@ import consema.differential.loadExchangeCaseFile
 import consema.differential.runExchange
 import java.io.File
 import kotlin.test.Test
+import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 import kotlin.test.fail
 
@@ -39,7 +40,7 @@ class ExchangeTest {
     @Test
     fun caseFileIntegrity() {
         val cases = loadExchangeCaseFile(caseFile())
-        assertTrue(cases.size >= 40, "case count ${cases.size} must stay >= 40")
+        assertEquals(83, cases.size, "case count must stay 83 (frozen test data, measured from cases.json)")
         // The loader already verified the canonicality and the per-record
         // accept/reject coverage; the integrity run keeps the input set
         // honest without golden bytes.

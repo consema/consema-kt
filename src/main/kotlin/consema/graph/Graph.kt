@@ -168,6 +168,12 @@ class Graph internal constructor(
     }
 }
 
+/** The RFC 0006 contract name of the immutable graph value; aliases [Graph]
+ * so the API freezes the same vocabulary across languages (RFC 0006 §2; the
+ * Go `type PortableGraph = Graph` and TS `export type PortableGraph = Graph`
+ * counterparts). */
+typealias PortableGraph = Graph
+
 /**
  * The mutable reservation/definition lifecycle for one immutable [Graph]
  * (RFC 0006 §3): reserve node identities, define each exactly once as a

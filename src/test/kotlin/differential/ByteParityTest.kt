@@ -37,7 +37,7 @@ class ByteParityTest {
     @Test
     fun caseFileIntegrity() {
         val cases = loadParityCaseFile(caseFile())
-        assertTrue(cases.size >= 40, "case count ${cases.size} must stay >= 40")
+        assertEquals(68, cases.size, "case count must stay 68 (frozen test data, measured from cases.json)")
         val kinds = cases.flatMap { it.kinds }.toSet()
         for (kind in allKindNames) {
             assertTrue(kind in kinds, "case set must cover kind $kind")
