@@ -1,5 +1,6 @@
 # consema-kt: minimal .gitignore for the split repository.
 build/
+.gradle/
 *.class
 *.jar
 

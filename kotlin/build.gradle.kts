@@ -6,6 +6,7 @@ plugins {
     kotlin("jvm") version "2.2.0"
     `maven-publish`
     `signing`
+    id("org.jetbrains.kotlinx.kover") version "0.9.9"
 }
 
 // Maven coordinates: dev.consema:consema-kotlin:<version>.
@@ -32,6 +33,22 @@ dependencies {
 
 tasks.test {
     useJUnitPlatform()
+}
+
+// Line-coverage gate (P2 item "Coverage", kotlin/README.md): kover wires
+// the IntelliJ engine into the JUnit test run and verifies the 60% line
+// threshold (the documented initial gate; tightened as coverage improves).
+// The report tasks are `koverHtmlReport` / `koverXmlReport`
+// (build/reports/kover/); the threshold is enforced by `koverVerify`
+// (wired into `check`).
+kover {
+    reports {
+        verify {
+            rule {
+                minBound(60)
+            }
+        }
+    }
 }
 
 // Maven Central publishing (top-tier bar; credentials are user-side actions,
