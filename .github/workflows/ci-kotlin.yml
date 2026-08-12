@@ -587,6 +587,78 @@ jobs:
           }
           echo "README version consistent with build.gradle.kts: $version"
 
+  # SDK examples gate: kotlin/examples/SdkChain.kt is the committed
+  # five-language SDK chain example (parse -> native query -> best-exact
+  # projection -> semantic edit -> canonical materialization -> TOML
+  # conversion; language-neutral contract reference: consema repository
+  # docs/cookbook.md). kotlinc compiles the main sources and the example
+  # together (the kotlin-gates K2JVMCompiler pattern), and the example is
+  # actually run with java. The example is a pure SDK chain (no conformance
+  # data), so no multi-repo checkout or provision step is needed.
+  examples:
+    name: examples (kotlinc + run SdkChain.kt)
+    runs-on: windows-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - uses: actions/setup-java@cf277c60eb25467037889841efdb72551f06f6c3 # v4.9.1
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: cache kotlinc 2.2.0 distribution
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+        with:
+          path: ${{ runner.temp }}/kotlinc-2.2.0
+          key: kotlinc-2.2.0
+      - name: provision kotlinc 2.2.0 + CONSEMA_* environment
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $ProgressPreference = 'SilentlyContinue'
+          $dist = Join-Path $env:RUNNER_TEMP 'kotlinc-2.2.0'
+          if (-not (Test-Path (Join-Path $dist 'lib\kotlin-compiler.jar'))) {
+            $zip = Join-Path $env:RUNNER_TEMP 'kotlin-compiler-2.2.0.zip'
+            if (-not (Test-Path $zip)) {
+              Invoke-WebRequest -UseBasicParsing -Uri 'https://github.com/JetBrains/kotlin/releases/download/v2.2.0/kotlin-compiler-2.2.0.zip' -OutFile $zip
+            }
+            Expand-Archive -LiteralPath $zip -DestinationPath $dist -Force
+          }
+          $compiler = Get-ChildItem -Path $dist -Recurse -Filter 'kotlin-compiler.jar' | Select-Object -First 1
+          if (-not $compiler) {
+            throw 'kotlinc distribution not found after extraction'
+          }
+          $kotlincRoot = $compiler.Directory.Parent.FullName
+          [System.IO.File]::AppendAllText($env:GITHUB_ENV, "CONSEMA_KOTLINC=$kotlincRoot`r`n")
+          [System.IO.File]::AppendAllText($env:GITHUB_ENV, "CONSEMA_JAVA_HOME=$env:JAVA_HOME`r`n")
+          [System.IO.File]::AppendAllText($env:GITHUB_ENV, "KOTLIN_WORK=$env:RUNNER_TEMP\kotlin-work`r`n")
+          Write-Output "kotlinc 2.2.0 provisioned at $kotlincRoot"
+      # Compiles every main source into one module (internal visibility),
+      # then compiles the example against it and runs it with java.
+      - name: compile main sources + example (K2JVMCompiler) and run
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $java = Join-Path $env:CONSEMA_JAVA_HOME 'bin\java.exe'
+          if (-not (Test-Path $java)) { throw "JDK 17 not found at $java" }
+          $kotlinc = $env:CONSEMA_KOTLINC
+          $kotlinDir = Join-Path $env:GITHUB_WORKSPACE 'kotlin'
+          $work = Join-Path $env:RUNNER_TEMP 'kotlin-example-work'
+          if (Test-Path $work) { Remove-Item -Recurse -Force $work }
+          New-Item -ItemType Directory -Force $work | Out-Null
+          $mainOut = Join-Path $work 'main'
+          $exampleOut = Join-Path $work 'example'
+          New-Item -ItemType Directory -Force $mainOut | Out-Null
+          New-Item -ItemType Directory -Force $exampleOut | Out-Null
+          & $java -Xmx2g -cp "$kotlinc\lib\*" org.jetbrains.kotlin.cli.jvm.K2JVMCompiler -jvm-target 17 -d $mainOut (Join-Path $kotlinDir 'src\main\kotlin')
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          $stdlib = Join-Path $kotlinc 'lib\kotlin-stdlib.jar'
+          & $java -Xmx2g -cp "$kotlinc\lib\*" org.jetbrains.kotlin.cli.jvm.K2JVMCompiler -jvm-target 17 -classpath "$mainOut;$stdlib" -d $exampleOut (Join-Path $kotlinDir 'examples\SdkChain.kt')
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          & $java -Xmx2g -cp "$exampleOut;$mainOut;$stdlib" consema.examples.SdkChainKt
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
   # Alls-green aggregate gate (tokio/pydantic pattern): `check (all gates
   # green)` is the SINGLE required check for branch protection on this
   # repository; every other job stays non-required. `if: always()` is
@@ -598,7 +670,7 @@ jobs:
   check:
     name: check (all gates green)
     if: always()
-    needs: [kotlin-gates, kotlin-conformance, kotlin-differential, check-version-consistency]
+    needs: [kotlin-gates, kotlin-conformance, kotlin-differential, check-version-consistency, examples]
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
