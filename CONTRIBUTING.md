@@ -43,7 +43,7 @@ powershell -File scripts/kotlin-verify-protocol-exchange.ps1
 ## CI 门禁
 
 `.github/workflows/ci-kotlin.yml`：K2JVMCompiler 直驱编译 + 单测 + 零依赖
-门禁、conformance runner 门禁（18 suites / 508 cases）与 Kotlin-Rust 差分
+门禁、conformance runner 门禁（18 suites / 519 cases）与 Kotlin-Rust 差分
 门禁（windows-latest 多仓 checkout）。push 到 main 或 PR 均触发；PR 另受
 pr-labels.yml 的 kind 标签门禁约束（标签见规范仓 .github/LABELS.md）。
 
