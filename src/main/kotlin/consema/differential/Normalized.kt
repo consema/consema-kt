@@ -3,7 +3,7 @@
 // docs/five-language-ci-design.md §3.3).
 //
 // The harness compares the language-neutral normalized results of the same
-// data-driven input set (go/conformance/differential/normalized/cases.json,
+// data-driven input set (conformance/differential/normalized/cases.json,
 // 108 cases) executed by the Rust SDK
 // (crates/consema-conformance/examples/emit_normalized_results.rs) and by
 // this file. Kotlin never imports or calls Rust: the Rust side emits one

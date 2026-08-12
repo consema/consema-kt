@@ -35,7 +35,7 @@ class ExchangeTest {
         File(consema.conformance.resolveRepoRoot())
 
     private fun caseFile(): File =
-        File(repoRoot(), "go/conformance/differential/protocol-exchange/cases.json")
+        File(repoRoot(), "conformance/differential/protocol-exchange/cases.json")
 
     @Test
     fun caseFileIntegrity() {

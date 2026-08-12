@@ -32,7 +32,7 @@ class ByteParityTest {
         File(consema.conformance.resolveRepoRoot())
 
     private fun caseFile(): File =
-        File(repoRoot(), "go/conformance/differential/cases.json")
+        File(repoRoot(), "conformance/differential/cases.json")
 
     @Test
     fun caseFileIntegrity() {

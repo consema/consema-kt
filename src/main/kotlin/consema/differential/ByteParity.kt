@@ -3,7 +3,7 @@
 //
 // The Rust encoder is the single byte authority (crates/consema-pvce,
 // crates/consema-graph). The Kotlin side never imports or calls Rust: the
-// shared input set (go/conformance/differential/cases.json) is encoded with
+// shared input set (conformance/differential/cases.json) is encoded with
 // the Kotlin codecs (consema.core.Pvce / consema.graph.Pgce) and compared
 // byte for byte with the Rust golden files produced by the Rust example
 // (crates/consema-conformance/examples/emit_parity_bytes.rs) — one

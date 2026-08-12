@@ -1,10 +1,12 @@
 ﻿// Shared case-file loading and fact-vocabulary helpers of the cross-language
 // differential harnesses (byte parity / normalized / protocol exchange).
 //
-// The differential input sets live at go/conformance/differential/
-// (cases.json 68, normalized/cases.json 108, protocol-exchange/cases.json
-// 83; manifest ids consema.differential.byte-parity@1 / normalized@1 /
-// protocol-exchange@1). They are language-neutral JSON documents, so every
+// The differential input sets live at conformance/differential/ of the
+// consema repository (single authority, docs/five-language-ci-design.md
+// §3.5: cases.json 68, normalized/cases.json 108, protocol-exchange/
+// cases.json 83; manifest ids consema.differential.byte-parity@1 /
+// normalized@1 / protocol-exchange@1). They are language-neutral JSON
+// documents, so every
 // side reads the same text: like the Rust examples
 // (crates/consema-conformance/examples/emit_parity_bytes.rs:49-64), this
 // harness parses the case file with the strict JSON parser and projects it

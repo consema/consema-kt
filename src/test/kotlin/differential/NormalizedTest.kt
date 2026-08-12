@@ -41,7 +41,7 @@ class NormalizedTest {
         File(consema.conformance.resolveRepoRoot())
 
     private fun caseFile(): File =
-        File(repoRoot(), "go/conformance/differential/normalized/cases.json")
+        File(repoRoot(), "conformance/differential/normalized/cases.json")
 
     @Test
     fun caseFileIntegrity() {
