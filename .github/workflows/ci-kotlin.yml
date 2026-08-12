@@ -1,16 +1,17 @@
 # Consema Kotlin CI (docs/five-language-ci-design.md §1.2, §7.1): the
 # Kotlin implementation joins the release gate with three explicit jobs
-# (the design rejects a single shared matrix, §5.2). The repository has no
-# Gradle wrapper (design §7.3 lists kotlin/gradlew as a later L0-batch
-# item), so the jobs drive the direct JVM K2JVMCompiler exactly like the
-# committed verification scripts (scripts/kotlin-verify-*.ps1) and the
-# tracked kotlin/verify/TestShim.kt shim (kotlin/build/ is gitignored and
-# does not exist in a clean checkout), with CONSEMA_JAVA_HOME /
-# CONSEMA_KOTLINC environment overrides. Every job provisions the pinned
-# kotlinc 2.2.0 distribution (cached) on top of the Temurin 17 JDK.
-# kotlin-gates compiles all sources and runs the full unit-test suite via
-# the kotlin.test shim + reflective runner, then asserts the
-# zero-runtime-dependency policy; kotlin-conformance runs the Kotlin runner
+# (the design rejects a single shared matrix, §5.2). kotlin-gates runs the
+# full unit-test suite and the kover 60% line-coverage gate through the
+# committed Gradle wrapper (kotlin/gradlew.bat, gradle 8.14 — the design
+# §7.3 L0-batch item landed with the wrapper batch, c60d31a);
+# kotlin-conformance and kotlin-differential keep driving the direct JVM
+# K2JVMCompiler exactly like the committed verification scripts
+# (scripts/kotlin-verify-*.ps1) and the tracked kotlin/verify/TestShim.kt
+# shim (kotlin/build/ is gitignored and does not exist in a clean
+# checkout) — those jobs depend on the single-module compile + shim +
+# golden-env mode, with CONSEMA_JAVA_HOME / CONSEMA_KOTLINC environment
+# overrides, and provision the pinned kotlinc 2.2.0 distribution (cached)
+# on top of the Temurin 17 JDK. kotlin-conformance runs the Kotlin runner
 # (kotlin/src/test/kotlin/consema/conformance/ConformanceRunnerTest.kt —
 # the aggregate digest 35bebc8d… and the 18/508 inventory are pinned inside
 # it, §2.2/§4.2); kotlin-differential runs the bidirectional
@@ -21,14 +22,11 @@
 # §3.6/§7.2) lands with the runner-CLI batch and slots in as a fourth
 # differential step. No repository secrets are required.
 #
-# Coverage gate: DEFERRED to P2 — line coverage for the Kotlin/JVM side
-# requires a JVM coverage agent wired into the test run (JaCoCo via Gradle,
-# or kover), and with no Gradle wrapper (design §7.3, a later L0-batch
-# item) the jobs drive the direct K2JVMCompiler and cannot produce a line
-# coverage report. Introducing the wrapper is a large change and is tracked
-# as a P2 item in kotlin/README.md ("Coverage (P2)"); the Knit-style
-# doc-example gate is likewise deferred with the wrapper. Coverage 待
-# wrapper 落地后补.
+# Coverage gate: the Gradle wrapper landed (kotlin/gradlew.bat, gradle 8.14;
+# c60d31a), so kotlin-gates enforces the kover 0.9.9 line-coverage threshold
+# (koverVerify, 60% minimum, build.gradle.kts:44-52; report tasks
+# koverHtmlReport/koverXmlReport). The Knit-style doc-example gate stays
+# deferred (tracked in kotlin/README.md).
 #
 # This repository carries the Kotlin implementation only, so every job uses
 # the multi-repo checkout mode: it checks out consema/consema (the spec
@@ -104,179 +102,39 @@ jobs:
           # Cargo.toml is provisioned anymore.
           $count = @(Get-ChildItem -LiteralPath $target -Recurse -File).Count
           Write-Output "provisioned conformance/: $count files + docs/fc-manifest-0.13.0.json"
-      - name: cache kotlinc 2.2.0 distribution
-        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
-        with:
-          path: ${{ runner.temp }}/kotlinc-2.2.0
-          key: kotlinc-2.2.0
-      - name: provision kotlinc 2.2.0 + CONSEMA_* environment
+      # The committed Gradle wrapper (kotlin/gradlew.bat, gradle 8.14 — the
+      # design §7.3 L0-batch item landed with the wrapper batch, c60d31a)
+      # drives the unit-test run. setup-gradle caches the Gradle user home:
+      # the wrapper distribution (gradle-8.14-bin.zip is ~137 MB — a restore
+      # skips that download) plus the dependency/Kotlin caches. The cache key
+      # is bound to the Gradle version and a hash of the build files, so a
+      # build-config change invalidates the cache (no poisoning across
+      # configurations).
+      - name: cache gradle user home (wrapper dist + dependency caches)
+        uses: gradle/actions/setup-gradle@ed408507eac070d1f99cc633dbcf757c94c7933a # v4.4.3
+      # Runs every @Test method (JUnit5 platform, kotlin.test assertions)
+      # and enforces the kover 0.9.9 line-coverage threshold (koverVerify,
+      # 60% minimum, build.gradle.kts:44-52) — a below-threshold run fails
+      # the job. CONSEMA_REPO points the conformance tests at the
+      # provisioned conformance/ + docs/fc-manifest-0.13.0.json at the
+      # workspace root (Runner.kt resolveRepoRoot, CONSEMA_REPO first). The
+      # differential tests without their golden env vars print a documented
+      # [SKIP] line and pass (§0.2 skip discipline; the verify scripts are
+      # what assert RUN not SKIP).
+      - name: run unit tests + kover 60% coverage gate
         shell: pwsh
+        working-directory: kotlin
+        env:
+          CONSEMA_REPO: ${{ github.workspace }}
         run: |
           $ErrorActionPreference = 'Stop'
-          $ProgressPreference = 'SilentlyContinue'
-          $dist = Join-Path $env:RUNNER_TEMP 'kotlinc-2.2.0'
-          if (-not (Test-Path (Join-Path $dist 'lib\kotlin-compiler.jar'))) {
-            $zip = Join-Path $env:RUNNER_TEMP 'kotlin-compiler-2.2.0.zip'
-            if (-not (Test-Path $zip)) {
-              Invoke-WebRequest -UseBasicParsing -Uri 'https://github.com/JetBrains/kotlin/releases/download/v2.2.0/kotlin-compiler-2.2.0.zip' -OutFile $zip
-            }
-            Expand-Archive -LiteralPath $zip -DestinationPath $dist -Force
-          }
-          $compiler = Get-ChildItem -Path $dist -Recurse -Filter 'kotlin-compiler.jar' | Select-Object -First 1
-          if (-not $compiler) {
-            throw 'kotlinc distribution not found after extraction'
-          }
-          $kotlincRoot = $compiler.Directory.Parent.FullName
-          [System.IO.File]::AppendAllText($env:GITHUB_ENV, "CONSEMA_KOTLINC=$kotlincRoot`r`n")
-          [System.IO.File]::AppendAllText($env:GITHUB_ENV, "CONSEMA_JAVA_HOME=$env:JAVA_HOME`r`n")
-          [System.IO.File]::AppendAllText($env:GITHUB_ENV, "KOTLIN_WORK=$env:RUNNER_TEMP\kotlin-work`r`n")
-          Write-Output "kotlinc 2.2.0 provisioned at $kotlincRoot"
-      # kotlin-test-2.2.0.jar is not bundled with the kotlinc distribution
-      # (kotlinc ships the unversioned lib\kotlin-test.jar instead), so the
-      # gates module compile provisions the pinned version into the
-      # repo-local verify lib (the scripts/kotlin-verify-*.ps1 download
-      # idiom; the run-tests step below consumes the same jar).
-      - name: provision kotlin-test 2.2.0 jar (repo verify lib)
-        shell: pwsh
-        run: |
-          $ErrorActionPreference = 'Stop'
-          $ProgressPreference = 'SilentlyContinue'
-          $lib = Join-Path $env:GITHUB_WORKSPACE 'kotlin\build\verify\lib'
-          New-Item -ItemType Directory -Force $lib | Out-Null
-          $kotlinTestJar = Join-Path $lib 'kotlin-test-2.2.0.jar'
-          if (-not (Test-Path $kotlinTestJar)) {
-            Write-Output 'downloading kotlin-test-2.2.0.jar (not bundled with kotlinc)...'
-            Invoke-WebRequest -UseBasicParsing -Uri 'https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-test/2.2.0/kotlin-test-2.2.0.jar' -OutFile $kotlinTestJar
-          }
-          Write-Output "kotlin-test-2.2.0.jar provisioned at $kotlinTestJar"
-      # Compiles every main and test source into one module (internal
-      # visibility) together with the module-local kotlin.test.Test shim
-      # (kotlin/verify/TestShim.kt), the pattern of the committed
-      # scripts/kotlin-verify-*.ps1 harnesses (kotlin/build/ is a
-      # runtime-created, gitignored work area).
-      - name: compile main + test sources (K2JVMCompiler, single module + shim)
-        shell: pwsh
-        run: |
-          $ErrorActionPreference = 'Stop'
-          $java = Join-Path $env:CONSEMA_JAVA_HOME 'bin\java.exe'
-          if (-not (Test-Path $java)) { throw "JDK 17 not found at $java" }
-          $kotlinc = $env:CONSEMA_KOTLINC
-          $kotlinDir = Join-Path $env:GITHUB_WORKSPACE 'kotlin'
-          $work = $env:KOTLIN_WORK
-          $moduleOut = Join-Path $work 'module'
-          $shimOut = Join-Path $work 'shim'
-          if (Test-Path $work) { Remove-Item -Recurse -Force $work }
-          New-Item -ItemType Directory -Force $moduleOut | Out-Null
-          New-Item -ItemType Directory -Force $shimOut | Out-Null
-          $lib = Join-Path $kotlinDir 'build\verify\lib'
-          $kotlinTestJar = Join-Path $lib 'kotlin-test-2.2.0.jar'
-          $shim = Join-Path $kotlinDir 'verify\TestShim.kt'
-          if (-not (Test-Path $kotlinTestJar)) { throw "kotlin-test jar not found: $kotlinTestJar" }
-          if (-not (Test-Path $shim)) { throw "TestShim.kt not found: $shim" }
-          $stdlib = Join-Path $kotlinc 'lib\kotlin-stdlib.jar'
-          & $java -Xmx2g -cp "$kotlinc\lib\*" org.jetbrains.kotlin.cli.jvm.K2JVMCompiler -no-stdlib -no-reflect -Xallow-kotlin-package -classpath $stdlib -d $shimOut $shim
-          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-          $allSources = @((Get-ChildItem (Join-Path $kotlinDir 'src\main\kotlin') -Recurse -Filter *.kt).FullName) + @((Get-ChildItem (Join-Path $kotlinDir 'src\test\kotlin') -Recurse -Filter *.kt).FullName)
-          if (@($allSources).Count -eq 0) { throw 'no kotlin sources found' }
-          $list = Join-Path $work 'all_sources.txt'
-          $allSources | Set-Content -Path $list -Encoding ascii
-          & $java -Xmx2g -cp "$kotlinc\lib\*" org.jetbrains.kotlin.cli.jvm.K2JVMCompiler -no-stdlib -no-reflect -classpath "$stdlib;$kotlinTestJar;$shimOut" -d $moduleOut "@$list"
-          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-          Write-Output "compiled $($allSources.Count) kotlin sources into $moduleOut"
-      # The reflective runner enumerates the compiled test classes and
-      # drives every @Test method (kotlin.test shim); PASS/FAIL per method,
-      # non-zero exit on any failure. Differential tests without their
-      # golden env vars print a documented [SKIP] line and pass (§0.2 skip
-      # discipline; the verify scripts are what assert RUN not SKIP). The
-      # conformance runner test resolves conformance/* and the manifest
-      # against the provisioned data at the workspace root via
-      # CONSEMA_REPO=$GITHUB_WORKSPACE.
-      - name: run unit tests (reflective runner over all @Test methods)
-        shell: pwsh
-        run: |
-          $ErrorActionPreference = 'Stop'
-          $java = Join-Path $env:CONSEMA_JAVA_HOME 'bin\java.exe'
-          $kotlinc = $env:CONSEMA_KOTLINC
-          $work = $env:KOTLIN_WORK
-          $moduleOut = Join-Path $work 'module'
-          $shimOut = Join-Path $work 'shim'
-          $runnerOut = Join-Path $work 'runner'
-          New-Item -ItemType Directory -Force $runnerOut | Out-Null
-          $kotlinTestJar = Join-Path $env:GITHUB_WORKSPACE 'kotlin\build\verify\lib\kotlin-test-2.2.0.jar'
-          $stdlib = Join-Path $kotlinc 'lib\kotlin-stdlib.jar'
-          $classes = Get-ChildItem $moduleOut -Recurse -Filter *.class | Where-Object {
-              $_.Name -notmatch '\$' -and $_.Name -notmatch 'Kt\.class$' -and
-              $_.Name -ne 'TestShim.class' -and $_.Name -match 'Test'
-          } | ForEach-Object {
-              $relative = $_.FullName.Substring($moduleOut.Length + 1)
-              ($relative -replace '\\', '.' -replace '\.class$', '')
-          } | Sort-Object -Unique
-          if (@($classes).Count -eq 0) { throw 'no test classes found in the compiled module' }
-          $classLines = ($classes | ForEach-Object { "        `"$_`"," }) -join "`n"
-          $runnerSrc = Join-Path $work 'TestRunner.kt'
-          $runnerBody = @"
-          import java.lang.reflect.Method
-          fun main() {
-              val classes = listOf(
-          $classLines
-              )
-              var passed = 0
-              var failed = 0
-              var skipped = 0
-              val failures = mutableListOf<String>()
-              for (name in classes) {
-                  val clazz = try {
-                      Class.forName(name)
-                  } catch (e: Throwable) {
-                      skipped++
-                      println("SKIP `$name (class not loadable: `$e)")
-                      continue
-                  }
-                  val methods: List<Method> = clazz.methods.filter { it.isAnnotationPresent(kotlin.test.Test::class.java) }
-                  if (methods.isEmpty()) {
-                      skipped++
-                      println("SKIP `$name (no test methods)")
-                      continue
-                  }
-                  val instance = try {
-                      clazz.getDeclaredConstructor().newInstance()
-                  } catch (e: Throwable) {
-                      skipped++
-                      println("SKIP `$name (no default constructor: `$e)")
-                      continue
-                  }
-                  for (method in methods) {
-                      try {
-                          method.invoke(instance)
-                          passed++
-                          println("PASS `$name.`${method.name}")
-                      } catch (t: Throwable) {
-                          failed++
-                          val cause = t.cause ?: t
-                          println("FAIL `$name.`${method.name}: `$cause")
-                          failures.add("`$name.`${method.name}: `$cause")
-                      }
-                  }
-              }
-              println("=== `$passed passed, `$failed failed, `$skipped skipped-classes ===")
-              if (failures.isNotEmpty()) {
-                  println("Failures:")
-                  failures.forEach { println("  `$it") }
-              }
-              kotlin.system.exitProcess(if (failed == 0) 0 else 1)
-          }
-          "@
-          $runnerBody | Set-Content -Path $runnerSrc -Encoding ascii
-          & $java -Xmx2g -cp "$kotlinc\lib\*" org.jetbrains.kotlin.cli.jvm.K2JVMCompiler -no-stdlib -no-reflect -classpath "$stdlib;$kotlinTestJar;$shimOut" -d $runnerOut $runnerSrc
-          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-          $env:CONSEMA_REPO = $env:GITHUB_WORKSPACE
-          $runCp = "$moduleOut;$runnerOut;$shimOut;$kotlinTestJar;$stdlib"
-          & $java -Xmx2g -cp $runCp TestRunnerKt
+          .\gradlew.bat test koverVerify
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
       # Zero-runtime-dependency policy (§1.3): build.gradle.kts:18-22 keeps
       # the runtime classpath empty — every declared configuration is
-      # test-scoped. Asserted at the source level because the repository has
-      # no Gradle wrapper to evaluate configurations.runtimeClasspath.
+      # test-scoped. Asserted at the source level (evaluating
+      # configurations.runtimeClasspath would resolve the entire dependency
+      # graph; the source-level tripwire is the documented check).
       - name: zero-dependency assertion (build.gradle.kts runtime classpath empty)
         shell: pwsh
         run: |
