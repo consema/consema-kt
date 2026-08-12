@@ -1,0 +1,4 @@
+# consema-kt: minimal .gitignore for the split repository.
+build/
+*.class
+*.jar

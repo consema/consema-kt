@@ -1,0 +1,532 @@
+# Consema Kotlin CI (docs/five-language-ci-design.md §1.2, §7.1): the
+# Kotlin implementation joins the release gate with three explicit jobs
+# (the design rejects a single shared matrix, §5.2). The repository has no
+# Gradle wrapper (design §7.3 lists kotlin/gradlew as a later L0-batch
+# item), so the jobs drive the direct JVM K2JVMCompiler exactly like the
+# committed verification scripts (scripts/kotlin-verify-*.ps1) and the
+# tracked kotlin/verify/TestShim.kt shim (kotlin/build/ is gitignored and
+# does not exist in a clean checkout), with CONSEMA_JAVA_HOME /
+# CONSEMA_KOTLINC environment overrides. Every job provisions the pinned
+# kotlinc 2.2.0 distribution (cached) on top of the Temurin 17 JDK.
+# kotlin-gates compiles all sources and runs the full unit-test suite via
+# the kotlin.test shim + reflective runner, then asserts the
+# zero-runtime-dependency policy; kotlin-conformance runs the Kotlin runner
+# (kotlin/src/test/kotlin/consema/conformance/ConformanceRunnerTest.kt —
+# the aggregate digest 35bebc8d… and the 18/508 inventory are pinned inside
+# it, §2.2/§4.2); kotlin-differential runs the bidirectional
+# scripts/kotlin-verify-*.ps1 harnesses against the Rust emitters. The
+# verify scripts and the toolchain layout are Windows-native (bin\java.exe,
+# debug\examples\*.exe), so all kotlin jobs run on windows-latest. The
+# shared-conformance script (scripts/kotlin-verify-shared-conformance.ps1,
+# §3.6/§7.2) lands with the runner-CLI batch and slots in as a fourth
+# differential step. No repository secrets are required.
+#
+# This repository carries the Kotlin implementation only, so every job uses
+# the multi-repo checkout mode: it checks out consema/consema (the spec
+# repository, whose conformance/vectors + conformance/differential case sets
+# and docs/fc-manifest-0.13.0.json are the single authority) beside this
+# repository and copies the conformance data into the workspace root (the
+# runner resolves conformance/* and the manifest by repository-relative
+# path from CONSEMA_REPO=$GITHUB_WORKSPACE). The differential job
+# additionally checks out consema/consema-rs (the Rust emitter workspace;
+# the kotlin-verify-*.ps1 scripts default to <repo root>\consema-rs) and
+# the scripts build the pinned emitter examples (cargo build --locked -p
+# consema-conformance --example …) there.
+name: Kotlin CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: kotlin-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  kotlin-gates:
+    name: kotlin gates (fmt/type + unit tests + zero-dep)
+    runs-on: windows-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: consema/consema
+          path: consema-repo
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: provision conformance data from the consema spec repository
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $source = Join-Path $env:GITHUB_WORKSPACE 'consema-repo\conformance'
+          $target = Join-Path $env:GITHUB_WORKSPACE 'conformance'
+          if (-not (Test-Path -LiteralPath $source)) {
+            throw "conformance data not found in the consema checkout: $source"
+          }
+          Copy-Item -LiteralPath $source -Destination $target -Recurse -Force
+          New-Item -ItemType Directory -Force (Join-Path $env:GITHUB_WORKSPACE 'docs') | Out-Null
+          $manifest = Join-Path $env:GITHUB_WORKSPACE 'consema-repo\docs\fc-manifest-0.13.0.json'
+          if (-not (Test-Path -LiteralPath $manifest)) {
+            throw "fc-manifest not found in the consema checkout: $manifest"
+          }
+          Copy-Item -LiteralPath $manifest -Destination (Join-Path $env:GITHUB_WORKSPACE 'docs\fc-manifest-0.13.0.json') -Force
+          $count = @(Get-ChildItem -LiteralPath $target -Recurse -File).Count
+          Write-Output "provisioned conformance/: $count files + docs/fc-manifest-0.13.0.json"
+      - name: cache kotlinc 2.2.0 distribution
+        uses: actions/cache@v4
+        with:
+          path: ${{ runner.temp }}/kotlinc-2.2.0
+          key: kotlinc-2.2.0
+      - name: provision kotlinc 2.2.0 + CONSEMA_* environment
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $ProgressPreference = 'SilentlyContinue'
+          $dist = Join-Path $env:RUNNER_TEMP 'kotlinc-2.2.0'
+          if (-not (Test-Path (Join-Path $dist 'lib\kotlin-compiler.jar'))) {
+            $zip = Join-Path $env:RUNNER_TEMP 'kotlin-compiler-2.2.0.zip'
+            if (-not (Test-Path $zip)) {
+              Invoke-WebRequest -UseBasicParsing -Uri 'https://github.com/JetBrains/kotlin/releases/download/v2.2.0/kotlin-compiler-2.2.0.zip' -OutFile $zip
+            }
+            Expand-Archive -LiteralPath $zip -DestinationPath $dist -Force
+          }
+          $compiler = Get-ChildItem -Path $dist -Recurse -Filter 'kotlin-compiler.jar' | Select-Object -First 1
+          if (-not $compiler) {
+            throw 'kotlinc distribution not found after extraction'
+          }
+          $kotlincRoot = $compiler.Directory.Parent.FullName
+          [System.IO.File]::AppendAllText($env:GITHUB_ENV, "CONSEMA_KOTLINC=$kotlincRoot`r`n")
+          [System.IO.File]::AppendAllText($env:GITHUB_ENV, "CONSEMA_JAVA_HOME=$env:JAVA_HOME`r`n")
+          [System.IO.File]::AppendAllText($env:GITHUB_ENV, "KOTLIN_WORK=$env:RUNNER_TEMP\kotlin-work`r`n")
+          Write-Output "kotlinc 2.2.0 provisioned at $kotlincRoot"
+      # kotlin-test-2.2.0.jar is not bundled with the kotlinc distribution
+      # (kotlinc ships the unversioned lib\kotlin-test.jar instead), so the
+      # gates module compile provisions the pinned version into the
+      # repo-local verify lib (the scripts/kotlin-verify-*.ps1 download
+      # idiom; the run-tests step below consumes the same jar).
+      - name: provision kotlin-test 2.2.0 jar (repo verify lib)
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $ProgressPreference = 'SilentlyContinue'
+          $lib = Join-Path $env:GITHUB_WORKSPACE 'kotlin\build\verify\lib'
+          New-Item -ItemType Directory -Force $lib | Out-Null
+          $kotlinTestJar = Join-Path $lib 'kotlin-test-2.2.0.jar'
+          if (-not (Test-Path $kotlinTestJar)) {
+            Write-Output 'downloading kotlin-test-2.2.0.jar (not bundled with kotlinc)...'
+            Invoke-WebRequest -UseBasicParsing -Uri 'https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-test/2.2.0/kotlin-test-2.2.0.jar' -OutFile $kotlinTestJar
+          }
+          Write-Output "kotlin-test-2.2.0.jar provisioned at $kotlinTestJar"
+      # Compiles every main and test source into one module (internal
+      # visibility) together with the module-local kotlin.test.Test shim
+      # (kotlin/verify/TestShim.kt), the pattern of the committed
+      # scripts/kotlin-verify-*.ps1 harnesses (kotlin/build/ is a
+      # runtime-created, gitignored work area).
+      - name: compile main + test sources (K2JVMCompiler, single module + shim)
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $java = Join-Path $env:CONSEMA_JAVA_HOME 'bin\java.exe'
+          if (-not (Test-Path $java)) { throw "JDK 17 not found at $java" }
+          $kotlinc = $env:CONSEMA_KOTLINC
+          $kotlinDir = Join-Path $env:GITHUB_WORKSPACE 'kotlin'
+          $work = $env:KOTLIN_WORK
+          $moduleOut = Join-Path $work 'module'
+          $shimOut = Join-Path $work 'shim'
+          if (Test-Path $work) { Remove-Item -Recurse -Force $work }
+          New-Item -ItemType Directory -Force $moduleOut | Out-Null
+          New-Item -ItemType Directory -Force $shimOut | Out-Null
+          $lib = Join-Path $kotlinDir 'build\verify\lib'
+          $kotlinTestJar = Join-Path $lib 'kotlin-test-2.2.0.jar'
+          $shim = Join-Path $kotlinDir 'verify\TestShim.kt'
+          if (-not (Test-Path $kotlinTestJar)) { throw "kotlin-test jar not found: $kotlinTestJar" }
+          if (-not (Test-Path $shim)) { throw "TestShim.kt not found: $shim" }
+          $stdlib = Join-Path $kotlinc 'lib\kotlin-stdlib.jar'
+          & $java -Xmx2g -cp "$kotlinc\lib\*" org.jetbrains.kotlin.cli.jvm.K2JVMCompiler -no-stdlib -no-reflect -Xallow-kotlin-package -classpath $stdlib -d $shimOut $shim
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          $allSources = @((Get-ChildItem (Join-Path $kotlinDir 'src\main\kotlin') -Recurse -Filter *.kt).FullName) + @((Get-ChildItem (Join-Path $kotlinDir 'src\test\kotlin') -Recurse -Filter *.kt).FullName)
+          if (@($allSources).Count -eq 0) { throw 'no kotlin sources found' }
+          $list = Join-Path $work 'all_sources.txt'
+          $allSources | Set-Content -Path $list -Encoding ascii
+          & $java -Xmx2g -cp "$kotlinc\lib\*" org.jetbrains.kotlin.cli.jvm.K2JVMCompiler -no-stdlib -no-reflect -classpath "$stdlib;$kotlinTestJar;$shimOut" -d $moduleOut "@$list"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          Write-Output "compiled $($allSources.Count) kotlin sources into $moduleOut"
+      # The reflective runner enumerates the compiled test classes and
+      # drives every @Test method (kotlin.test shim); PASS/FAIL per method,
+      # non-zero exit on any failure. Differential tests without their
+      # golden env vars print a documented [SKIP] line and pass (§0.2 skip
+      # discipline; the verify scripts are what assert RUN not SKIP). The
+      # conformance runner test resolves conformance/* and the manifest
+      # against the provisioned data at the workspace root via
+      # CONSEMA_REPO=$GITHUB_WORKSPACE.
+      - name: run unit tests (reflective runner over all @Test methods)
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $java = Join-Path $env:CONSEMA_JAVA_HOME 'bin\java.exe'
+          $kotlinc = $env:CONSEMA_KOTLINC
+          $work = $env:KOTLIN_WORK
+          $moduleOut = Join-Path $work 'module'
+          $shimOut = Join-Path $work 'shim'
+          $runnerOut = Join-Path $work 'runner'
+          New-Item -ItemType Directory -Force $runnerOut | Out-Null
+          $kotlinTestJar = Join-Path $env:GITHUB_WORKSPACE 'kotlin\build\verify\lib\kotlin-test-2.2.0.jar'
+          $stdlib = Join-Path $kotlinc 'lib\kotlin-stdlib.jar'
+          $classes = Get-ChildItem $moduleOut -Recurse -Filter *.class | Where-Object {
+              $_.Name -notmatch '\$' -and $_.Name -notmatch 'Kt\.class$' -and
+              $_.Name -ne 'TestShim.class' -and $_.Name -match 'Test'
+          } | ForEach-Object {
+              $relative = $_.FullName.Substring($moduleOut.Length + 1)
+              ($relative -replace '\\', '.' -replace '\.class$', '')
+          } | Sort-Object -Unique
+          if (@($classes).Count -eq 0) { throw 'no test classes found in the compiled module' }
+          $classLines = ($classes | ForEach-Object { "        `"$_`"," }) -join "`n"
+          $runnerSrc = Join-Path $work 'TestRunner.kt'
+          $runnerBody = @"
+          import java.lang.reflect.Method
+          fun main() {
+              val classes = listOf(
+          $classLines
+              )
+              var passed = 0
+              var failed = 0
+              var skipped = 0
+              val failures = mutableListOf<String>()
+              for (name in classes) {
+                  val clazz = try {
+                      Class.forName(name)
+                  } catch (e: Throwable) {
+                      skipped++
+                      println("SKIP `$name (class not loadable: `$e)")
+                      continue
+                  }
+                  val methods: List<Method> = clazz.methods.filter { it.isAnnotationPresent(kotlin.test.Test::class.java) }
+                  if (methods.isEmpty()) {
+                      skipped++
+                      println("SKIP `$name (no test methods)")
+                      continue
+                  }
+                  val instance = try {
+                      clazz.getDeclaredConstructor().newInstance()
+                  } catch (e: Throwable) {
+                      skipped++
+                      println("SKIP `$name (no default constructor: `$e)")
+                      continue
+                  }
+                  for (method in methods) {
+                      try {
+                          method.invoke(instance)
+                          passed++
+                          println("PASS `$name.`${method.name}")
+                      } catch (t: Throwable) {
+                          failed++
+                          val cause = t.cause ?: t
+                          println("FAIL `$name.`${method.name}: `$cause")
+                          failures.add("`$name.`${method.name}: `$cause")
+                      }
+                  }
+              }
+              println("=== `$passed passed, `$failed failed, `$skipped skipped-classes ===")
+              if (failures.isNotEmpty()) {
+                  println("Failures:")
+                  failures.forEach { println("  `$it") }
+              }
+              kotlin.system.exitProcess(if (failed == 0) 0 else 1)
+          }
+          "@
+          $runnerBody | Set-Content -Path $runnerSrc -Encoding ascii
+          & $java -Xmx2g -cp "$kotlinc\lib\*" org.jetbrains.kotlin.cli.jvm.K2JVMCompiler -no-stdlib -no-reflect -classpath "$stdlib;$kotlinTestJar;$shimOut" -d $runnerOut $runnerSrc
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          $env:CONSEMA_REPO = $env:GITHUB_WORKSPACE
+          $runCp = "$moduleOut;$runnerOut;$shimOut;$kotlinTestJar;$stdlib"
+          & $java -Xmx2g -cp $runCp TestRunnerKt
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      # Zero-runtime-dependency policy (§1.3): build.gradle.kts:18-22 keeps
+      # the runtime classpath empty — every declared configuration is
+      # test-scoped. Asserted at the source level because the repository has
+      # no Gradle wrapper to evaluate configurations.runtimeClasspath.
+      - name: zero-dependency assertion (build.gradle.kts runtime classpath empty)
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $buildFile = Get-Content (Join-Path $env:GITHUB_WORKSPACE 'kotlin\build.gradle.kts') -Raw
+          if ($buildFile -match '(?m)^\s*(implementation|api|compileOnly|runtimeOnly)\s*\(') {
+            throw 'build.gradle.kts must keep the runtime classpath empty (runtime-scoped dependency found)'
+          }
+          if ($buildFile -notmatch '(?m)^\s*testImplementation\s*\(' -or $buildFile -notmatch '(?m)^\s*testRuntimeOnly\s*\(') {
+            throw 'build.gradle.kts must declare its test-scoped dependencies (testImplementation/testRuntimeOnly)'
+          }
+          Write-Output 'zero runtime dependencies: build.gradle.kts declares only test-scoped configurations'
+
+  kotlin-conformance:
+    name: kotlin conformance runner (18 suites / 508 cases)
+    runs-on: windows-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: consema/consema
+          path: consema-repo
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: provision conformance data from the consema spec repository
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $source = Join-Path $env:GITHUB_WORKSPACE 'consema-repo\conformance'
+          $target = Join-Path $env:GITHUB_WORKSPACE 'conformance'
+          if (-not (Test-Path -LiteralPath $source)) {
+            throw "conformance data not found in the consema checkout: $source"
+          }
+          Copy-Item -LiteralPath $source -Destination $target -Recurse -Force
+          New-Item -ItemType Directory -Force (Join-Path $env:GITHUB_WORKSPACE 'docs') | Out-Null
+          $manifest = Join-Path $env:GITHUB_WORKSPACE 'consema-repo\docs\fc-manifest-0.13.0.json'
+          if (-not (Test-Path -LiteralPath $manifest)) {
+            throw "fc-manifest not found in the consema checkout: $manifest"
+          }
+          Copy-Item -LiteralPath $manifest -Destination (Join-Path $env:GITHUB_WORKSPACE 'docs\fc-manifest-0.13.0.json') -Force
+          $count = @(Get-ChildItem -LiteralPath $target -Recurse -File).Count
+          Write-Output "provisioned conformance/: $count files + docs/fc-manifest-0.13.0.json"
+      - name: cache kotlinc 2.2.0 distribution
+        uses: actions/cache@v4
+        with:
+          path: ${{ runner.temp }}/kotlinc-2.2.0
+          key: kotlinc-2.2.0
+      - name: provision kotlinc 2.2.0 + CONSEMA_* environment
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $ProgressPreference = 'SilentlyContinue'
+          $dist = Join-Path $env:RUNNER_TEMP 'kotlinc-2.2.0'
+          if (-not (Test-Path (Join-Path $dist 'lib\kotlin-compiler.jar'))) {
+            $zip = Join-Path $env:RUNNER_TEMP 'kotlin-compiler-2.2.0.zip'
+            if (-not (Test-Path $zip)) {
+              Invoke-WebRequest -UseBasicParsing -Uri 'https://github.com/JetBrains/kotlin/releases/download/v2.2.0/kotlin-compiler-2.2.0.zip' -OutFile $zip
+            }
+            Expand-Archive -LiteralPath $zip -DestinationPath $dist -Force
+          }
+          $compiler = Get-ChildItem -Path $dist -Recurse -Filter 'kotlin-compiler.jar' | Select-Object -First 1
+          if (-not $compiler) {
+            throw 'kotlinc distribution not found after extraction'
+          }
+          $kotlincRoot = $compiler.Directory.Parent.FullName
+          [System.IO.File]::AppendAllText($env:GITHUB_ENV, "CONSEMA_KOTLINC=$kotlincRoot`r`n")
+          [System.IO.File]::AppendAllText($env:GITHUB_ENV, "CONSEMA_JAVA_HOME=$env:JAVA_HOME`r`n")
+          [System.IO.File]::AppendAllText($env:GITHUB_ENV, "KOTLIN_WORK=$env:RUNNER_TEMP\kotlin-work`r`n")
+          Write-Output "kotlinc 2.2.0 provisioned at $kotlincRoot"
+      # junit-jupiter-api-5.10.2.jar is required at test compile time
+      # (kotlin.test resolves @Test through the kotlin-test-junit5 typealias
+      # to org.junit.jupiter.api.Test). kotlinc bundles kotlin-test.jar and
+      # kotlin-test-junit5.jar, so only this jar is provisioned into the
+      # repo-local verify lib (the scripts/kotlin-verify-*.ps1 download
+      # idiom; the compile step below guards on the same path).
+      - name: provision junit-jupiter-api 5.10.2 jar (repo verify lib)
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $ProgressPreference = 'SilentlyContinue'
+          $lib = Join-Path $env:GITHUB_WORKSPACE 'kotlin\build\verify\lib'
+          New-Item -ItemType Directory -Force $lib | Out-Null
+          $junitJar = Join-Path $lib 'junit-jupiter-api-5.10.2.jar'
+          if (-not (Test-Path $junitJar)) {
+            Write-Output 'downloading junit-jupiter-api-5.10.2.jar (needed by kotlin-test-junit5)...'
+            Invoke-WebRequest -UseBasicParsing -Uri 'https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-api/5.10.2/junit-jupiter-api-5.10.2.jar' -OutFile $junitJar
+          }
+          Write-Output "junit-jupiter-api-5.10.2.jar provisioned at $junitJar"
+      - name: compile main sources (K2JVMCompiler)
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $java = Join-Path $env:CONSEMA_JAVA_HOME 'bin\java.exe'
+          $kotlinc = $env:CONSEMA_KOTLINC
+          $kotlinDir = Join-Path $env:GITHUB_WORKSPACE 'kotlin'
+          $work = $env:KOTLIN_WORK
+          $mainOut = Join-Path $work 'main'
+          if (Test-Path $work) { Remove-Item -Recurse -Force $work }
+          New-Item -ItemType Directory -Force $mainOut | Out-Null
+          & $java -Xmx2g -cp "$kotlinc\lib\*" org.jetbrains.kotlin.cli.jvm.K2JVMCompiler -jvm-target 17 -d $mainOut (Join-Path $kotlinDir 'src\main\kotlin')
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          Write-Output "main sources compiled into $mainOut"
+      # Compiles the runner test (ConformanceRunnerTest.kt — the digest and
+      # 18/508 hard pins) together with a temp main() test runner, the
+      # pattern of scripts/kotlin-verify-byte-parity.ps1 (kotlin.test shim
+      # not needed: the runner drives the @Test methods directly).
+      - name: compile the conformance runner test + temp main() runner (K2JVMCompiler)
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $java = Join-Path $env:CONSEMA_JAVA_HOME 'bin\java.exe'
+          $kotlinc = $env:CONSEMA_KOTLINC
+          $kotlinDir = Join-Path $env:GITHUB_WORKSPACE 'kotlin'
+          $work = $env:KOTLIN_WORK
+          $mainOut = Join-Path $work 'main'
+          $runnerOut = Join-Path $work 'runner'
+          New-Item -ItemType Directory -Force $runnerOut | Out-Null
+          $kotlinTestJar = Join-Path $kotlinc 'lib\kotlin-test.jar'
+          $kotlinTestJunit5Jar = Join-Path $kotlinc 'lib\kotlin-test-junit5.jar'
+          $junitJar = Join-Path $kotlinDir 'build\verify\lib\junit-jupiter-api-5.10.2.jar'
+          if (-not (Test-Path $kotlinTestJar)) { throw "kotlin-test.jar not found: $kotlinTestJar" }
+          if (-not (Test-Path $kotlinTestJunit5Jar)) { throw "kotlin-test-junit5.jar not found: $kotlinTestJunit5Jar" }
+          if (-not (Test-Path $junitJar)) { throw "junit-jupiter-api jar not found: $junitJar" }
+          $runnerSource = Join-Path $work 'ConformanceTestRunner.kt'
+          @'
+          package consema.conformance
+
+          import kotlin.system.exitProcess
+
+          fun main(args: Array<String>) {
+              var failures = 0
+              var runs = 0
+              fun run(name: String, block: () -> Unit) {
+                  runs++
+                  try {
+                      block()
+                      println("PASS $name")
+                  } catch (e: Throwable) {
+                      failures++
+                      println("FAIL $name: ${e.message}")
+                      e.printStackTrace()
+                  }
+              }
+              val tests = mapOf(
+                  "ConformanceRunnerTest.aggregateDigestMatchesTheManifest" to { ConformanceRunnerTest().aggregateDigestMatchesTheManifest() },
+                  "ConformanceRunnerTest.allEighteenSuitesPassFiveHundredEightCases" to { ConformanceRunnerTest().allEighteenSuitesPassFiveHundredEightCases() },
+                  "ConformanceRunnerTest.everySuiteAssertsItsFrozenCaseCount" to { ConformanceRunnerTest().everySuiteAssertsItsFrozenCaseCount() },
+              )
+              for (arg in args) {
+                  val block = tests[arg] ?: error("unknown test $arg")
+                  run(arg, block)
+              }
+              println("tests: $runs run, $failures failed")
+              if (failures > 0) exitProcess(1)
+          }
+          '@ | Set-Content -Path $runnerSource -Encoding utf8
+          $testClasspath = "$mainOut;$kotlinTestJar;$kotlinTestJunit5Jar;$junitJar"
+          & $java -Xmx2g -cp "$kotlinc\lib\*" org.jetbrains.kotlin.cli.jvm.K2JVMCompiler -jvm-target 17 -classpath $testClasspath -d $runnerOut (Join-Path $kotlinDir 'src\test\kotlin\consema\conformance') $runnerSource
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          Write-Output "conformance runner test compiled into $runnerOut"
+      # ConformanceRunnerTest verifies the aggregate digest
+      # 35bebc8d384d71740f7c1a886bc50f4e095ff52fe05d2a407f04b842ee6922fa
+      # (fc-manifest-0.13.0.json:38), the 18 suites / 508 cases inventory,
+      # the per-suite counts, and zero failures (§4.2 hard pins in the
+      # runner). CONSEMA_REPO points the runner at the checkout, where the
+      # provision step placed conformance/ and docs/fc-manifest-0.13.0.json.
+      - name: run the conformance runner (digest + 18/508 pins)
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $java = Join-Path $env:CONSEMA_JAVA_HOME 'bin\java.exe'
+          $kotlinc = $env:CONSEMA_KOTLINC
+          $work = $env:KOTLIN_WORK
+          $mainOut = Join-Path $work 'main'
+          $runnerOut = Join-Path $work 'runner'
+          $kotlinTestJar = Join-Path $kotlinc 'lib\kotlin-test.jar'
+          $stdlib = Join-Path $kotlinc 'lib\kotlin-stdlib.jar'
+          $env:CONSEMA_REPO = $env:GITHUB_WORKSPACE
+          $runCp = "$mainOut;$runnerOut;$stdlib;$kotlinTestJar"
+          & $java -Xmx2g -cp $runCp consema.conformance.ConformanceTestRunnerKt 'ConformanceRunnerTest.aggregateDigestMatchesTheManifest' 'ConformanceRunnerTest.allEighteenSuitesPassFiveHundredEightCases' 'ConformanceRunnerTest.everySuiteAssertsItsFrozenCaseCount'
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+  kotlin-differential:
+    name: kotlin differential vs Rust (byte parity + normalized + protocol exchange)
+    runs-on: windows-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: consema/consema-rs
+          path: consema-rs
+      - uses: actions/checkout@v4
+        with:
+          repository: consema/consema
+          path: consema-repo
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: swatinem/rust-cache@v2
+        with:
+          workspaces: consema-rs
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: provision conformance data from the consema spec repository
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $source = Join-Path $env:GITHUB_WORKSPACE 'consema-repo\conformance'
+          $target = Join-Path $env:GITHUB_WORKSPACE 'conformance'
+          if (-not (Test-Path -LiteralPath $source)) {
+            throw "conformance data not found in the consema checkout: $source"
+          }
+          Copy-Item -LiteralPath $source -Destination $target -Recurse -Force
+          New-Item -ItemType Directory -Force (Join-Path $env:GITHUB_WORKSPACE 'docs') | Out-Null
+          $manifest = Join-Path $env:GITHUB_WORKSPACE 'consema-repo\docs\fc-manifest-0.13.0.json'
+          if (-not (Test-Path -LiteralPath $manifest)) {
+            throw "fc-manifest not found in the consema checkout: $manifest"
+          }
+          Copy-Item -LiteralPath $manifest -Destination (Join-Path $env:GITHUB_WORKSPACE 'docs\fc-manifest-0.13.0.json') -Force
+          $count = @(Get-ChildItem -LiteralPath $target -Recurse -File).Count
+          Write-Output "provisioned conformance/: $count files + docs/fc-manifest-0.13.0.json"
+      - name: cache kotlinc 2.2.0 distribution
+        uses: actions/cache@v4
+        with:
+          path: ${{ runner.temp }}/kotlinc-2.2.0
+          key: kotlinc-2.2.0
+      - name: provision kotlinc 2.2.0 + CONSEMA_* environment
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $ProgressPreference = 'SilentlyContinue'
+          $dist = Join-Path $env:RUNNER_TEMP 'kotlinc-2.2.0'
+          if (-not (Test-Path (Join-Path $dist 'lib\kotlin-compiler.jar'))) {
+            $zip = Join-Path $env:RUNNER_TEMP 'kotlin-compiler-2.2.0.zip'
+            if (-not (Test-Path $zip)) {
+              Invoke-WebRequest -UseBasicParsing -Uri 'https://github.com/JetBrains/kotlin/releases/download/v2.2.0/kotlin-compiler-2.2.0.zip' -OutFile $zip
+            }
+            Expand-Archive -LiteralPath $zip -DestinationPath $dist -Force
+          }
+          $compiler = Get-ChildItem -Path $dist -Recurse -Filter 'kotlin-compiler.jar' | Select-Object -First 1
+          if (-not $compiler) {
+            throw 'kotlinc distribution not found after extraction'
+          }
+          $kotlincRoot = $compiler.Directory.Parent.FullName
+          [System.IO.File]::AppendAllText($env:GITHUB_ENV, "CONSEMA_KOTLINC=$kotlincRoot`r`n")
+          [System.IO.File]::AppendAllText($env:GITHUB_ENV, "CONSEMA_JAVA_HOME=$env:JAVA_HOME`r`n")
+          Write-Output "kotlinc 2.2.0 provisioned at $kotlincRoot"
+      # Each script builds the pinned Rust emitter inside the consema-rs
+      # checkout (cargo build --locked -p consema-conformance --example …;
+      # the scripts default to <repo root>\consema-rs), compiles the Kotlin
+      # side with the direct K2JVMCompiler, provisions the golden/evidence
+      # directories, runs the tests with the golden env vars set, closes the
+      # reverse direction, and asserts the tests RAN (not skipped).
+      - name: scripts/kotlin-verify-byte-parity.ps1
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $script = Join-Path $env:GITHUB_WORKSPACE 'scripts/kotlin-verify-byte-parity.ps1'
+          & $script
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: scripts/kotlin-verify-normalized-differential.ps1
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $script = Join-Path $env:GITHUB_WORKSPACE 'scripts/kotlin-verify-normalized-differential.ps1'
+          & $script
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: scripts/kotlin-verify-protocol-exchange.ps1
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $script = Join-Path $env:GITHUB_WORKSPACE 'scripts/kotlin-verify-protocol-exchange.ps1'
+          & $script
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
