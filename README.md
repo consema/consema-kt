@@ -5,6 +5,9 @@ Consema 语言中立契约（RFC 0016）的 **Kotlin/JVM 实现**仓库。本仓
 [github.com/consema/consema](https://github.com/consema/consema)；本仓承载
 Kotlin 实现与跨语言差分验证工具。
 
+Version: 1.0.0-rc.1（`kotlin/build.gradle.kts` rootProject version；CI
+check-version-consistency job 断言与 README 一致）。
+
 ## 布局
 
 - `kotlin/`：Kotlin/JVM 包（运行时零依赖——build.gradle.kts 的 runtime

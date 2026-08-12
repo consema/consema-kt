@@ -6,6 +6,10 @@ plugins {
     kotlin("jvm") version "2.2.0"
 }
 
+// rootProject version (rides the release train; CI check-version-consistency
+// asserts README.md parity).
+version = "1.0.0-rc.1"
+
 repositories {
     mavenCentral()
 }

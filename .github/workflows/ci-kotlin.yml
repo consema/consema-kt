@@ -44,6 +44,14 @@ concurrency:
   group: kotlin-ci-${{ github.ref }}
   cancel-in-progress: true
 
+# Top-tier P0: minimal token scope. Every job here only reads repository
+# contents (checkout + multi-repo checkouts + running repo scripts); none
+# uploads artifacts or writes check runs, so the global minimum suffices
+# (cache restore works with contents: read; cache save denial is a warning
+# only, per the actions/cache contract).
+permissions:
+  contents: read
+
 env:
   CARGO_TERM_COLOR: always
 
@@ -543,3 +551,50 @@ jobs:
           $script = Join-Path $env:GITHUB_WORKSPACE 'scripts/kotlin-verify-protocol-exchange.ps1'
           & $script
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+  # Version-consistency gate (tokio check-readme pattern): the README
+  # "Version:" line must equal the kotlin/build.gradle.kts rootProject
+  # version, so a version bump that forgets the README fails CI.
+  check-version-consistency:
+    name: check README version vs build.gradle.kts (version consistency)
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: assert build.gradle.kts version == README Version line
+        shell: bash
+        run: |
+          set -euo pipefail
+          version=$(grep -m1 '^version' kotlin/build.gradle.kts | sed -E 's/^version[[:space:]]*=[[:space:]]*"([^"]+)".*/\1/')
+          if [ -z "$version" ]; then
+            echo "::error::no 'version' found in kotlin/build.gradle.kts"
+            exit 1
+          fi
+          grep -qF "Version: $version" README.md || {
+            echo "::error::README.md does not declare 'Version: $version'"
+            exit 1
+          }
+          echo "README version consistent with build.gradle.kts: $version"
+
+  # Alls-green aggregate gate (tokio/pydantic pattern): `check (all gates
+  # green)` is the SINGLE required check for branch protection on this
+  # repository; every other job stays non-required. `if: always()` is
+  # mandatory — otherwise GitHub skips this job when a dependency fails and
+  # a skipped check can be treated as success. `jobs: ${{ toJSON(needs) }}`
+  # is the action's mandatory input (it does not read the needs context
+  # automatically). No job here uses continue-on-error, so the
+  # allowed-failures list is empty.
+  check:
+    name: check (all gates green)
+    if: always()
+    needs: [kotlin-gates, kotlin-conformance, kotlin-differential, check-version-consistency]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - name: decide whether the needed jobs succeeded or failed
+        uses: re-actors/alls-green@v1
+        with:
+          allowed-failures: ''
+          jobs: ${{ toJSON(needs) }}
