@@ -2,3 +2,10 @@
 build/
 *.class
 *.jar
+
+# IDE / OS artifacts
+.idea/
+.vscode/
+*.swp
+.DS_Store
+Thumbs.db
