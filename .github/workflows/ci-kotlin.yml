@@ -14,7 +14,9 @@
 # on top of the Temurin 17 JDK. kotlin-conformance runs the Kotlin runner
 # (kotlin/src/test/kotlin/consema/conformance/ConformanceRunnerTest.kt —
 # the aggregate digest cfd6e296… and the 18/519 inventory are pinned inside
-# it, §2.2/§4.2); kotlin-differential runs the bidirectional
+# it, §2.2/§4.2); kotlin-package runs the L5 packaging gate (gradlew jar —
+# the library jar must be produced, §1.1 package row / §5.3 L5 row);
+# kotlin-differential runs the bidirectional
 # scripts/kotlin-verify-*.ps1 harnesses against the Rust emitters. The
 # verify scripts and the toolchain layout are Windows-native (bin\java.exe,
 # debug\examples\*.exe), so all kotlin jobs run on windows-latest. The
@@ -531,6 +533,43 @@ jobs:
           & $java -Xmx2g -cp "$exampleOut;$mainOut;$stdlib" consema.examples.SdkChainKt
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
+  # L5 packaging gate (five-language-ci-design.md §1.1 package row / §5.3
+  # L5 row): `gradlew jar` must produce the library jar under
+  # kotlin/build/libs/. The committed Gradle wrapper (gradle 8.14) drives
+  # the build; setup-gradle caches the Gradle user home (wrapper dist +
+  # dependency/Kotlin caches). Nothing is published here, no repository
+  # secrets are used, and no conformance data is needed (packaging is
+  # data-independent). The gradlew script is committed without the
+  # executable bit (100644), so it is invoked through bash on the ubuntu
+  # runner.
+  kotlin-package:
+    name: kotlin package (gradlew jar, jar built)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
+      - uses: actions/setup-java@cf277c60eb25467037889841efdb72551f06f6c3 # v4.9.1
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: cache gradle user home (wrapper dist + dependency caches)
+        uses: gradle/actions/setup-gradle@ed408507eac070d1f99cc633dbcf757c94c7933a # v4.4.3
+      - name: gradlew jar (JAR task, gradle 8.14 wrapper)
+        working-directory: kotlin
+        run: bash gradlew jar --no-daemon
+      - name: verify the jar artifact (kotlin/build/libs/)
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $libs = Join-Path $env:GITHUB_WORKSPACE 'kotlin\build\libs'
+          $jar = Get-ChildItem -LiteralPath $libs -Filter '*.jar' | Select-Object -First 1
+          if (-not $jar) {
+            throw 'no jar produced by gradlew jar'
+          }
+          Write-Output "jar verified: $($jar.Name) ($($jar.Length) bytes)"
+
   # Alls-green aggregate gate (tokio/pydantic pattern): `check (all gates
   # green)` is the SINGLE required check for branch protection on this
   # repository; every other job stays non-required. `if: always()` is
@@ -542,7 +581,7 @@ jobs:
   check:
     name: check (all gates green)
     if: always()
-    needs: [kotlin-gates, kotlin-conformance, kotlin-differential, check-version-consistency, examples]
+    needs: [kotlin-gates, kotlin-conformance, kotlin-differential, check-version-consistency, examples, kotlin-package]
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
