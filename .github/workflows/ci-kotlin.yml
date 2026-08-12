@@ -13,7 +13,7 @@
 # overrides, and provision the pinned kotlinc 2.2.0 distribution (cached)
 # on top of the Temurin 17 JDK. kotlin-conformance runs the Kotlin runner
 # (kotlin/src/test/kotlin/consema/conformance/ConformanceRunnerTest.kt —
-# the aggregate digest 35bebc8d… and the 18/508 inventory are pinned inside
+# the aggregate digest cfd6e296… and the 18/519 inventory are pinned inside
 # it, §2.2/§4.2); kotlin-differential runs the bidirectional
 # scripts/kotlin-verify-*.ps1 harnesses against the Rust emitters. The
 # verify scripts and the toolchain layout are Windows-native (bin\java.exe,
@@ -306,12 +306,12 @@ jobs:
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           Write-Output "conformance runner test compiled into $runnerOut"
       # ConformanceRunnerTest verifies the aggregate digest
-      # 35bebc8d384d71740f7c1a886bc50f4e095ff52fe05d2a407f04b842ee6922fa
-      # (fc-manifest-0.13.0.json:38), the 18 suites / 508 cases inventory,
+      # cfd6e296da5b22b62d37b076d35bf6bbf58b0678ceddb37eea51a8b47200ab6a
+      # (fc-manifest-0.13.0.json:38), the 18 suites / 519 cases inventory,
       # the per-suite counts, and zero failures (§4.2 hard pins in the
       # runner). CONSEMA_REPO points the runner at the checkout, where the
       # provision step placed conformance/ and docs/fc-manifest-0.13.0.json.
-      - name: run the conformance runner (digest + 18/508 pins)
+      - name: run the conformance runner (digest + 18/519 pins)
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'

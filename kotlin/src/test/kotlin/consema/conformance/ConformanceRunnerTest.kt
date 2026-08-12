@@ -1,11 +1,11 @@
-// The L4 conformance runner test: 18 suites / 508 cases / aggregate digest.
+// The L4 conformance runner test: 18 suites / 519 cases / aggregate digest.
 //
 // Data authority (language-neutral sources first):
 //   - docs/fc-manifest-0.13.0.json:35-40 (conformance_suite: 18 suites /
-//     508 cases / aggregate_sha256 35bebc8d384d71740f7c1a886bc50f4e095ff52f
-//     e05d2a407f04b842ee6922fa over the byte-order filename digest lines).
+//     519 cases / aggregate_sha256 cfd6e296da5b22b62d37b076d35bf6bbf58b0678
+//     ceddb37eea51a8b47200ab6a over the byte-order filename digest lines).
 //   - docs/five-language-ci-design.md §2.2 (each runner must assert the
-//     case count 18/508 and the aggregate digest inside the runner; the
+//     case count 18/519 and the aggregate digest inside the runner; the
 //     suite-count assertion is per suite).
 //   - conformance/README.md:81-82 (rule 4: every suite must validate its
 //     case count).
@@ -43,19 +43,19 @@ class ConformanceRunnerTest {
                 "suites=${digest.suites} cases=${digest.cases}",
         )
         assertEquals(18, digest.suites, "eighteen vector files")
-        assertEquals(508, digest.cases, "five hundred eight cases")
+        assertEquals(519, digest.cases, "five hundred nineteen cases")
     }
 
     @Test
-    fun allEighteenSuitesPassFiveHundredEightCases() {
+    fun allEighteenSuitesPassFiveHundredNineteenCases() {
         val report = runner().run()
         assertTrue(
             report.digest.ok,
             "digest mismatch: computed=${report.digest.computed} recorded=${report.digest.recorded}",
         )
         assertEquals(18, report.suites.size, "eighteen suites")
-        assertEquals(508, report.total, "five hundred eight cases total")
-        assertEquals(508, report.passed, "every case passed (no skips)")
+        assertEquals(519, report.total, "five hundred nineteen cases total")
+        assertEquals(519, report.passed, "every case passed (no skips)")
         assertEquals(0, report.skipped, "no documented skips")
         assertEquals(0, report.failed, "no failures")
         assertTrue(report.conformant(), "conformance run must be conformant")
@@ -75,6 +75,6 @@ class ConformanceRunnerTest {
             assertEquals(suite.expectedCases, suite.passed.size + suite.skipped.size + suite.failed.size)
         }
         // The per-suite counts sum to the frozen total.
-        assertEquals(508, report.suites.sumOf { it.passed.size + it.skipped.size + it.failed.size })
+        assertEquals(519, report.suites.sumOf { it.passed.size + it.skipped.size + it.failed.size })
     }
 }

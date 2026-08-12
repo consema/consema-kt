@@ -56,6 +56,7 @@ import consema.yaml.QueryLimits as YamlQueryLimits
 import consema.yaml.RepresentationPolicy
 import consema.yaml.SharingPolicy
 import consema.yaml.TagPolicy
+import consema.yaml.ValueProjectionLimits
 import consema.yaml.ValueProjectionRequest
 import consema.yaml.ValueProjectionResult
 import consema.yaml.YamlFormationException
@@ -125,7 +126,9 @@ private fun runYamlV1Case(case: CaseData) {
         "stream.empty", "stream.multi-document" -> streamFacts(case)
         "syntax.styles-and-trivia" -> syntaxFacts(case)
         "native.arbitrary-duplicate-mapping" -> mappingFacts(case)
-        "formation.undefined-alias" -> formationRejection(case)
+        "formation.undefined-alias",
+        "formation.undefined-anchor-block",
+        "formation.version-directive-rejection" -> formationRejection(case)
         "graph.shared-cycle" -> graphFacts(case)
         "query.mapping-entries", "query.alias-target" -> nativeQuery(case)
         "query.syntax-comments" -> syntaxQuery(case)
@@ -142,7 +145,9 @@ private fun runYamlV1Case(case: CaseData) {
         "edit.structural-insert" -> editStructural(case)
         "edit.anchor-dependency" -> editAnchorDependency(case)
         "resource.parse-source-bytes" -> parseLimit(case)
+        "resource.parse-nesting-depth" -> parseDepthLimit(case)
         "resource.graph-provenance" -> graphProvenanceLimit(case)
+        "projection.alias-amplification" -> projectionAmplificationLimit(case)
         "regression.plain-property-characters" -> plainPropertyRegression(case)
         else -> fail("runner does not recognize published YAML case")
     }
@@ -607,6 +612,45 @@ private fun parseLimit(case: CaseData) {
         e
     }
     ensure(error.code == expectedString(case, "code"))
+}
+
+/** resource.parse-nesting-depth (yaml_v1.rs:639-654). */
+private fun parseDepthLimit(case: CaseData) {
+    val source = inputString(case, "source") ?: fail("missing input.source")
+    val limits = ParseLimits(
+        maxSourceBytes = ParseLimits.default.maxSourceBytes,
+        maxNestingDepth = inputInt(case, "max_nesting_depth"),
+        maxTokenCount = ParseLimits.default.maxTokenCount,
+        maxNodeCount = ParseLimits.default.maxNodeCount,
+        maxDiagnostics = ParseLimits.default.maxDiagnostics,
+    )
+    val error = try {
+        parse(source.toByteArray(Charsets.UTF_8), yamlProfile(case), limits)
+        fail("parse unexpectedly completed")
+    } catch (e: YamlFormationException) {
+        e
+    }
+    ensure(error.code == expectedString(case, "code"))
+}
+
+/**
+ * projection.alias-amplification (yaml_v1.rs:656-670): the alias-
+ * amplification budget (`max_alias_amplification_ratio`, RFC 0007 §9) is
+ * checked before any node is visited, so a zero budget is a hard denial of
+ * the value projection.
+ */
+private fun projectionAmplificationLimit(case: CaseData) {
+    val document = parseYaml(case)
+    val limits = ValueProjectionLimits(
+        maxValueNodes = ValueProjectionLimits.default.maxValueNodes,
+        maxDepth = ValueProjectionLimits.default.maxDepth,
+        maxReportEntries = ValueProjectionLimits.default.maxReportEntries,
+        maxProvenanceEntries = ValueProjectionLimits.default.maxProvenanceEntries,
+        maxAmplificationRatio = inputInt(case, "max_amplification_ratio"),
+    )
+    val result = document.projectValue(ValueProjectionRequest.bestExactV1().withLimits(limits))
+    val failure = (result as? ValueProjectionResult.Failed)?.failure ?: fail("projection unexpectedly completed")
+    ensure(valueProjectionCode(failure) == expectedString(case, "code"))
 }
 
 /** resource.graph-provenance (yaml_v1.rs:656-670). */

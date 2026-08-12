@@ -86,9 +86,9 @@ switch:
 
 ## Conformance
 
-18 suites / 508 cases / aggregate digest `35bebc8d…` are pinned in
-`src/test/kotlin/consema/conformance/ConformanceRunnerTest.kt` (508 passed /
-0 skipped / 0 failed explicitly asserted); 508/508 pass in CI
+18 suites / 519 cases / aggregate digest `cfd6e296…` are pinned in
+`src/test/kotlin/consema/conformance/ConformanceRunnerTest.kt` (519 passed /
+0 skipped / 0 failed explicitly asserted); 519/519 pass in CI
 (ci-kotlin.yml, kotlin-conformance job).
 
 ## References

@@ -12,13 +12,13 @@
 //   - docs/five-language-ci-design.md §2 (the five-runner contract: vector
 //     files read by explicit repository-relative path, no embedded copies;
 //     per-runner fixed validations — suite id prefix `consema.*`, case-id
-//     dedupe, 18/508 count assertion, aggregate digest assertion, unknown
+//     dedupe, 18/519 count assertion, aggregate digest assertion, unknown
 //     case rejection; skip discipline).
 //   - docs/fc-manifest-0.13.0.json:35-40 (the aggregate digest algorithm:
 //     file-name byte-order sort, per-file sha256 lowercase hex, lines
 //     `{basename}:{digest}` joined with '\n' without a trailing newline,
 //     then sha256 of that UTF-8 string; recorded value
-//     35bebc8d384d71740f7c1a886bc50f4e095ff52fe05d2a407f04b842ee6922fa).
+//     cfd6e296da5b22b62d37b076d35bf6bbf58b0678ceddb37eea51a8b47200ab6a).
 //   - go/conformance/conformance.go (cross-reference only).
 //
 // Kotlin-idiomatic design: immutable report data classes, a Runner with
@@ -127,7 +127,7 @@ data class RunReport(
     }
 }
 
-/** One frozen vector suite definition (fc-manifest 508 inventory). */
+/** One frozen vector suite definition (fc-manifest 519 inventory). */
 data class SuiteDefinition(
     /** The vector file basename. */
     val file: String,
@@ -179,7 +179,7 @@ val ALL_SUITES: List<SuiteDefinition> = listOf(
         22,
         ::runSemanticModelV5,
     ),
-    SuiteDefinition("yaml-v1.json", "consema.yaml.conformance@1", "", 27, ::runYamlV1),
+    SuiteDefinition("yaml-v1.json", "consema.yaml.conformance@1", "", 31, ::runYamlV1),
     SuiteDefinition(
         "semantic-model-v6.json",
         "consema.semantic-model-v6.conformance@1",
@@ -192,11 +192,11 @@ val ALL_SUITES: List<SuiteDefinition> = listOf(
         "java-properties-v1.json",
         "consema.java-properties.conformance@1",
         "",
-        22,
+        25,
         ::runJavaPropertiesV1,
     ),
     SuiteDefinition("xml-1-0-safe-v1.json", "consema.xml-1-0-safe.conformance@1", "", 34, ::runXml10SafeV1),
-    SuiteDefinition("plist-v1.json", "consema.plist.conformance@1", "", 45, ::runPlistV1),
+    SuiteDefinition("plist-v1.json", "consema.plist.conformance@1", "", 49, ::runPlistV1),
     SuiteDefinition("hcl-v1.json", "consema.hcl.conformance@1", "", 57, ::runHclV1),
     SuiteDefinition("cli-v1.json", "consema.cli.conformance@1", "", 40, ::runCliV1),
 )

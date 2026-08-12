@@ -144,6 +144,11 @@ private fun runPlistV1Case(runner: Runner, case: CaseData) {
         "plist.binary-formation.extended-size-and-cycle",
         "plist.binary-formation.value-integrity",
         -> runBinaryFormation(case)
+        "plist.limit.container-depth",
+        "plist.limit.object-count",
+        "plist.limit.string-code-units",
+        "plist.limit.data-bytes",
+        -> runLimit(case)
         "plist.query.dict-entries-order",
         "plist.query.typed-accessors",
         "plist.query.binary-structure",
@@ -324,6 +329,49 @@ private fun formSample(case: CaseData, sample: PortableValue): Document {
     } catch (e: PlistFormationException) {
         fail("formation failed: ${e.code}")
     }
+}
+
+/**
+ * plist.limit.container-depth / object-count / string-code-units / data-bytes
+ * (plist_v1.rs run_limit; RFC 0013 §11): the parse must fail fatally under
+ * the declared limits and the failure must carry the expected
+ * `plist.limit.*@1` code.
+ */
+private fun runLimit(case: CaseData) {
+    val limits = plistLimitsOf(case.input)
+    val error = try {
+        parse(sourceBytes(case.input), profileOf(case.input), PlistEncodingSelection.ProfileDefault, limits)
+        fail("parse must fail fatally under the declared limits")
+    } catch (e: PlistFormationException) {
+        e
+    }
+    expectedStringField(case.expected, "status")?.let { status ->
+        ensure(status == "FatalFormationFailure")
+    }
+    val diagnostic = expectedStringField(case.expected, "diagnostic")
+        ?: fail("missing expected.diagnostic")
+    ensure(error.code == diagnostic)
+}
+
+/** Reads the `input.limits` object into a PlistParseLimits; every vector
+ * limit name is the Kotlin limits field spelling. */
+private fun plistLimitsOf(value: PortableValue?): PlistParseLimits {
+    var limits = PlistParseLimits.default
+    val declared = objectField(value, "limits") ?: return limits
+    val objectValue = declared as? PvObject ?: fail("input.limits must be an object")
+    for (entry in objectValue.entries()) {
+        val name = entry.key
+        val raw = (entry.value as? PvInteger)?.value?.toLong() ?: fail("limit $name must be a non-negative integer")
+        if (raw < 0) fail("limit $name must be a non-negative integer")
+        limits = when (name) {
+            "max_container_depth" -> limits.copy(maxContainerDepth = raw.toInt())
+            "max_object_count" -> limits.copy(maxObjectCount = raw.toInt())
+            "max_string_code_units" -> limits.copy(maxStringCodeUnits = raw.toInt())
+            "max_data_bytes" -> limits.copy(maxDataBytes = raw.toInt())
+            else -> fail("unknown plist limit $name")
+        }
+    }
+    return limits
 }
 
 /** Asserts the `expected.status` and optional `expected.diagnostic` facts. */

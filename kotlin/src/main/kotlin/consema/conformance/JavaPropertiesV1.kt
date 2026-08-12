@@ -103,6 +103,9 @@ private fun runJavaPropertiesV1Case(case: CaseData) {
         "formation.reader-explicit-encodings" -> formationReaderEncodings(case)
         "formation.latin1-byte-and-bom-content" -> formationLatin1(case)
         "formation.recovery-never-publishes-partial-operation" -> recoveredIsAtomic(case)
+        "formation.malformed-escape-in-key" -> malformedEscapeInKey(case)
+        "formation.invalid-encoding-sequence",
+        "formation.bom-conflict" -> fatalEncoding(case)
         "query.native-duplicates-and-escape-ownership" -> nativeQuery(case)
         "query.logical-and-syntax-order" -> logicalSyntaxQuery(case)
         "query.validation-limit-cancellation" -> queryFailures(case)
@@ -281,6 +284,48 @@ private fun formationLatin1(case: CaseData) {
             (PropertiesSyntaxKind.Bom in document.losslessSyntaxKinds()) == expectedBool(case, "bom_syntax") &&
             exactCoverage(document) == expectedBool(case, "exact_coverage"),
     )
+}
+
+/**
+ * formation.malformed-escape-in-key (parser.rs:626-666): a malformed
+ * `\uXXXX` escape in the KEY position recovers the logical line without a
+ * partial property and the error line carries the family parse code.
+ */
+private fun malformedEscapeInKey(case: CaseData) {
+    val document = parseCaseDocument(case)
+    ensure(
+        document.formationStatus().name == expectedString(case, "formation") &&
+            document.properties().size == expectedInt(case, "properties") &&
+            document.errorLines().size == expectedInt(case, "error_lines") &&
+            document.errorLines()[0].code() == expectedString(case, "code"),
+    )
+}
+
+/**
+ * formation.invalid-encoding-sequence / formation.bom-conflict
+ * (parser.rs:17-36): bytes that cannot be decoded under the explicit Reader
+ * encoding (`core.source.invalid-sequence@1`) or a BOM that contradicts it
+ * (`core.source.encoding-conflict@1`) fail the whole parse fatally before
+ * any document forms.
+ */
+private fun fatalEncoding(case: CaseData) {
+    val encodingName = inputString(case, "encoding") ?: fail("missing input.encoding")
+    val sourceHex = inputString(case, "source_hex") ?: fail("missing input.source_hex")
+    val bytes = decodeHex(sourceHex) ?: fail("invalid input.source_hex")
+    val expectedCode = expectedString(case, "code") ?: fail("missing expected.code")
+    val encoding = when (encodingName) {
+        "Utf8" -> SourceEncoding.Utf8
+        "Utf16Le" -> SourceEncoding.Utf16Le
+        "Utf16Be" -> SourceEncoding.Utf16Be
+        else -> fail("unsupported encoding $encodingName")
+    }
+    val error = try {
+        parseReader(bytes, encoding)
+        fail("parse must fail fatally")
+    } catch (e: PropertiesFormationException) {
+        e
+    }
+    ensure(error.code == expectedCode)
 }
 
 private fun recoveredIsAtomic(case: CaseData) {

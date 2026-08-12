@@ -3,7 +3,7 @@
 // and entity-denial intent checks required by the L3 xml milestone.
 //
 // Data authority: conformance/vectors/xml-1-0-safe-v1.json is the
-// language-neutral pinned suite (aggregate digest 35bebc8d across Rust and
+// language-neutral pinned suite (aggregate digest cfd6e296 across Rust and
 // Go); every case id below is cited verbatim. The recovery diagnostics are
 // the frozen xml.* codes of crates/consema-xml/src/parser.rs (each cited in
 // the test). The UTF-16 golden bytes are transcribed VERBATIM from the
