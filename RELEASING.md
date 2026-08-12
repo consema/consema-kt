@@ -73,3 +73,14 @@ Maven Central 要求所有 artifact（含 pom、module、sources/javadoc jar）
    渲染正常。
 4. 跨语言同步：按 consema 仓 RELEASING.md 的检查单核对其他语言仓的发布
    状态。
+
+## 4. API reference 文档与依赖审计（决策：P2，待 Gradle wrapper 落地）
+
+- **dokka 文档构建**：dokka 是 Gradle 插件，本仓无 Gradle wrapper
+  （设计 §7.3 的后续 L0-batch 项），CI 直驱 K2JVMCompiler，无法产出
+  dokka 报告。API reference 的 docs CI job **待 wrapper 落地后引入**（P2）。
+- **依赖审计**：完整依赖审计（如 OWASP dependency-check 或 Gradle
+  dependency verification）需要求值 Gradle 配置，同样依赖 wrapper。
+  `.github/workflows/audit.yml` 目前只跑零运行时依赖断言并注明该 P2
+  决策；Dependabot 已覆盖 `kotlin/build.gradle.kts` 的清单更新（同样
+  记录 wrapper 限制，见 .github/dependabot.yml）。

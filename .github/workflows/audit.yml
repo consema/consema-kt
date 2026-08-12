@@ -1,0 +1,59 @@
+# Dependency audit for the Kotlin implementation — DEFERRED to P2.
+#
+# Decision (2026-08-12): a full dependency audit (e.g. OWASP
+# dependency-check, or Gradle dependency verification) requires evaluating
+# Gradle configurations, and this repository has no Gradle wrapper
+# (design docs/five-language-ci-design.md §7.3 lists kotlin/gradlew as a
+# later L0-batch item; CI drives the direct K2JVMCompiler, and Dependabot
+# already covers kotlin/build.gradle.kts manifest updates — see
+# .github/dependabot.yml, which documents the same wrapper limitation).
+# Tracked in kotlin/README.md ("Coverage (P2)" / wrapper items). Until the
+# wrapper lands, this workflow runs the standing zero-runtime-dependency
+# assertion (build.gradle.kts keeps the runtime classpath empty; every
+# declared configuration is test-scoped) — the same source-level assertion
+# as the ci-kotlin.yml kotlin-gates job — on the daily cron so the policy
+# has an independent standing executor. The P2 item is to replace this
+# workflow's assertion with a real dependency audit once gradlew exists.
+#
+# No repository secrets are required.
+name: Dependency audit (deferred to Gradle wrapper, P2)
+
+on:
+  schedule:
+    - cron: '37 3 * * *'
+  push:
+    branches: [main]
+    paths:
+      - kotlin/build.gradle.kts
+  pull_request:
+    paths:
+      - kotlin/build.gradle.kts
+
+concurrency:
+  group: kotlin-audit-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  zero-runtime-deps:
+    name: zero-runtime-dependency assertion (full audit deferred, P2)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
+      - name: zero-dependency assertion (build.gradle.kts runtime classpath empty)
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $buildFile = Get-Content (Join-Path $env:GITHUB_WORKSPACE 'kotlin\build.gradle.kts') -Raw
+          if ($buildFile -match '(?m)^\s*(implementation|api|compileOnly|runtimeOnly)\s*\(') {
+            throw 'build.gradle.kts must keep the runtime classpath empty (runtime-scoped dependency found)'
+          }
+          if ($buildFile -notmatch '(?m)^\s*testImplementation\s*\(' -or $buildFile -notmatch '(?m)^\s*testRuntimeOnly\s*\(') {
+            throw 'build.gradle.kts must declare its test-scoped dependencies (testImplementation/testRuntimeOnly)'
+          }
+          Write-Output 'zero runtime dependencies: build.gradle.kts declares only test-scoped configurations'
