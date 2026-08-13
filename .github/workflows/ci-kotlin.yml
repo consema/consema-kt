@@ -11,8 +11,9 @@
 # (scripts/kotlin-verify-*.ps1): they compile the tests with the
 # kotlinc-bundled kotlin-test.jar + kotlin-test-junit5.jar (+ the
 # provisioned junit-jupiter-api-5.10.2.jar) and drive the @Test methods
-# through a temp main() runner (the tracked kotlin/verify/TestShim.kt is
-# historical, 2026-08-12 audit — no longer referenced by CI or scripts) —
+# through a temp main() runner (the kotlin/verify/TestShim.kt shim was
+# removed 2026-08-13 — its dead `package kotlin.test` annotation class
+# would clash with kotlin-test.jar on any classpath; git history keeps it) —
 # those jobs depend on the single-module compile + temp-runner + golden-env
 # mode, with CONSEMA_JAVA_HOME / CONSEMA_KOTLINC environment
 # overrides, and provision the pinned kotlinc 2.2.0 distribution (cached)
