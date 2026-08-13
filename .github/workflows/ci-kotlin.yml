@@ -211,6 +211,14 @@ jobs:
             if (-not (Test-Path $zip)) {
               Invoke-WebRequest -UseBasicParsing -Uri 'https://github.com/JetBrains/kotlin/releases/download/v2.2.0/kotlin-compiler-2.2.0.zip' -OutFile $zip
             }
+            # Pinned upstream artifact (JetBrains kotlinc 2.2.0 release):
+            # verify the sha256 so an upstream drift or a poisoned cache
+            # entry fails the job instead of being used.
+            $expectedKotlincSha256 = '1adb6f1a5845ba0aa5a59e412e44c8e405236b957de1a9683619f1dca3b16932'
+            $actualKotlincSha256 = (Get-FileHash -Algorithm SHA256 -LiteralPath $zip).Hash
+            if ($actualKotlincSha256 -ne $expectedKotlincSha256) {
+              throw "kotlin-compiler-2.2.0.zip sha256 mismatch (got $actualKotlincSha256, want $expectedKotlincSha256)"
+            }
             Expand-Archive -LiteralPath $zip -DestinationPath $dist -Force
           }
           $compiler = Get-ChildItem -Path $dist -Recurse -Filter 'kotlin-compiler.jar' | Select-Object -First 1
@@ -239,6 +247,13 @@ jobs:
           if (-not (Test-Path $junitJar)) {
             Write-Output 'downloading junit-jupiter-api-5.10.2.jar (needed by kotlin-test-junit5)...'
             Invoke-WebRequest -UseBasicParsing -Uri 'https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-api/5.10.2/junit-jupiter-api-5.10.2.jar' -OutFile $junitJar
+          }
+          # Pinned upstream artifact (Maven Central, 5.10.2): verify the
+          # sha256 so an upstream drift fails the job instead of being used.
+          $expectedJunitSha256 = 'afff77c186cd317275803872fa5133aa801fd6ac40bd91c78a6cf8009b4b17cc'
+          $actualJunitSha256 = (Get-FileHash -Algorithm SHA256 -LiteralPath $junitJar).Hash
+          if ($actualJunitSha256 -ne $expectedJunitSha256) {
+            throw "junit-jupiter-api-5.10.2.jar sha256 mismatch (got $actualJunitSha256, want $expectedJunitSha256)"
           }
           Write-Output "junit-jupiter-api-5.10.2.jar provisioned at $junitJar"
       - name: compile main sources (K2JVMCompiler)
@@ -401,6 +416,14 @@ jobs:
             if (-not (Test-Path $zip)) {
               Invoke-WebRequest -UseBasicParsing -Uri 'https://github.com/JetBrains/kotlin/releases/download/v2.2.0/kotlin-compiler-2.2.0.zip' -OutFile $zip
             }
+            # Pinned upstream artifact (JetBrains kotlinc 2.2.0 release):
+            # verify the sha256 so an upstream drift or a poisoned cache
+            # entry fails the job instead of being used.
+            $expectedKotlincSha256 = '1adb6f1a5845ba0aa5a59e412e44c8e405236b957de1a9683619f1dca3b16932'
+            $actualKotlincSha256 = (Get-FileHash -Algorithm SHA256 -LiteralPath $zip).Hash
+            if ($actualKotlincSha256 -ne $expectedKotlincSha256) {
+              throw "kotlin-compiler-2.2.0.zip sha256 mismatch (got $actualKotlincSha256, want $expectedKotlincSha256)"
+            }
             Expand-Archive -LiteralPath $zip -DestinationPath $dist -Force
           }
           $compiler = Get-ChildItem -Path $dist -Recurse -Filter 'kotlin-compiler.jar' | Select-Object -First 1
@@ -502,6 +525,14 @@ jobs:
             $zip = Join-Path $env:RUNNER_TEMP 'kotlin-compiler-2.2.0.zip'
             if (-not (Test-Path $zip)) {
               Invoke-WebRequest -UseBasicParsing -Uri 'https://github.com/JetBrains/kotlin/releases/download/v2.2.0/kotlin-compiler-2.2.0.zip' -OutFile $zip
+            }
+            # Pinned upstream artifact (JetBrains kotlinc 2.2.0 release):
+            # verify the sha256 so an upstream drift or a poisoned cache
+            # entry fails the job instead of being used.
+            $expectedKotlincSha256 = '1adb6f1a5845ba0aa5a59e412e44c8e405236b957de1a9683619f1dca3b16932'
+            $actualKotlincSha256 = (Get-FileHash -Algorithm SHA256 -LiteralPath $zip).Hash
+            if ($actualKotlincSha256 -ne $expectedKotlincSha256) {
+              throw "kotlin-compiler-2.2.0.zip sha256 mismatch (got $actualKotlincSha256, want $expectedKotlincSha256)"
             }
             Expand-Archive -LiteralPath $zip -DestinationPath $dist -Force
           }

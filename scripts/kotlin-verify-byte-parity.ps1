@@ -153,6 +153,15 @@ if (-not (Test-Path $junitJar)) {
             Write-Error 'cannot fetch junit-jupiter-api-5.10.2.jar (set up kotlin/build/verify/lib or a network path)'
             exit 1
         }
+        # Pinned upstream artifact (Maven Central, 5.10.2): verify the
+        # download against the pinned sha256 so an upstream drift fails the
+        # script instead of being silently used.
+        $expectedJunitSha256 = 'afff77c186cd317275803872fa5133aa801fd6ac40bd91c78a6cf8009b4b17cc'
+        $actualJunitSha256 = (Get-FileHash -Algorithm SHA256 -LiteralPath $junitJar).Hash
+        if ($actualJunitSha256 -ne $expectedJunitSha256) {
+            Write-Error "junit-jupiter-api-5.10.2.jar sha256 mismatch (got $actualJunitSha256, want $expectedJunitSha256)"
+            exit 1
+        }
     }
 }
 
