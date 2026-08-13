@@ -15,7 +15,7 @@ Consema 将资源上限作为执行策略，不把截断包装成成功：
 
 超限分别返回 `FatalFormationFailure`、`DecodeError::ResourceLimit`、`QueryFailure::ResourceLimitExceeded` 或 failed projection。取消不会被报告为完成。
 
-解析器和 decoder 禁止 `unsafe`，严格检查 UTF‑8、长度溢出、非最短 varint、非规范整数/Decimal、容器计数和嵌套深度。`consema-conformance` 包含 55 个恶意/边界 property tests（hardening.rs 12 个、yaml_hardening.rs 5 个、line_formats_hardening.rs 6 个、xml_hardening.rs 10 个、xml_encoding_corpus.rs 7 个、plist_hardening.rs 7 个、hcl_hardening.rs 8 个）；如果发现 panic、无界分配或规范绕过，请附最小输入与触发的 capability contract 报告。
+解析器和 decoder 无 unsafe 概念（JVM 内存安全；本实现不调用任何 native/unsafe API），严格检查 UTF‑8、长度溢出、非最短 varint、非规范整数/Decimal、容器计数和嵌套深度，行为由 conformance/vectors 与 differential case 集逐字节钉住。恶意/边界覆盖在单元套件中：`plist/BinaryHardeningTest`（16 个：trailer-limit、offset/object-reference 越界、marker 排除、扩展尺寸、cycle、非字符串字典键）、`xml/SecurityAndSpanTest`（7 个：entity deny-by-default、span 精确性）、`json/FormationClosureTest`（13 个：formation/恢复边界）、`hcl/NoEvaluationTest`（6 个：不求值契约）、`properties/ResourceTest`（1 个：resource-limit 矩阵）+ `document/LimitsTest`（4 个：冻结 limit 默认值）；资源上限违反返回 typed formation/query failure，不伪装成成功。如果发现 panic、无界分配或规范绕过，请附最小输入与触发的 capability contract 报告。
 
 canonical protocol JSON 拒绝空白、替代 escape、重排/未知字段和非最短数字表示；PVCE 继续拒绝非规范 varint 与整数。默认协议任意精度整数 magnitude 上限为 1 KiB，避免十进制转换的 CPU 放大；调用方提高上限时必须同时评估输入可信度和工作预算。任何 v1-v6 envelope payload 都会进入对应 typed decoder，不能只靠匹配 `schema` 绕过字段与交叉约束。v1-v5 registry 保持冻结；JSON5 专属 diagnostic 从 semantic-model v4 起可外部化（92/132/166-code registry 均含对应代码）。
 
@@ -37,7 +37,7 @@ raw `NodeRef`、snapshot handle、cursor 与 `CancellationToken` 不可序列化
 
 `hcl.native@1`/`hcl.tfvars@1` 的 parse/query/project/edit 全程不求值：无 variable/function/template 求值与展开，`hcl.expression@1` 只承载语法事实、永不执行，无 application schema 与 Terraform/cty 语义。formation 只消费调用方提供的完整文档字节，不访问文件、网络、registry 或环境。表达式/模板/heredoc depth、number digits、item/label/attribute counts 与 recovery regions 等全部尺寸算术在分配前 checked，limit 失败绝不伪装成空 body、截断表达式或缩短查询。恢复文档可查询、不可 project/materialize/commit；`hcl.canonical-document@1` materialization 生成字节必先重解析并逐节点比较闭包语义，失败返回无目标 Document、无 partial bytes、无 partial provenance。对抗门禁覆盖 expression depth、template/heredoc size、number digits、body nesting 与 item counts 的极限输入，验证无 panic、无无界分配。
 
-依赖门禁由 `Cargo.lock`、精确锁定的 TOML/Unicode 依赖、RustSec `cargo audit` 和仓库级 `deny.toml` 共同执行。`cargo deny check` 拒绝已知公告、未知 registry/Git 来源、通配版本和重复版本，并只允许当前实际使用的 MIT/Apache-2.0/Unicode-3.0 许可证；任何例外都必须携带可审计理由进入版本控制。
+运行时零依赖：`kotlin/build.gradle.kts` 的全部依赖声明均为 test-scoped（testImplementation/testRuntimeOnly），runtime classpath 为空。依赖门禁由 `.github/workflows/audit.yml` 执行：经已入库的 Gradle wrapper（gradle 8.14，c60d31a）求值 `runtimeClasspath`，断言除语言运行时（kotlin-stdlib 及其传递的 org.jetbrains:annotations）外不解析任何第三方 group；同一策略的源码级 tripwire（禁止 implementation/api/compileOnly/runtimeOnly 声明）在 audit.yml 与 ci-kotlin.yml kotlin-gates 双重断言。Dependabot（gradle ecosystem）跟踪 build.gradle.kts 清单与 wrapper 更新；覆盖门禁为 kover 60% 行覆盖（koverVerify，kotlin-gates job）。下载供给（kotlinc 2.2.0 zip、junit-jupiter-api-5.10.2.jar）均钉 sha256，下载后校验，校验失败即失败。
 
 ## 安全披露与支持周期
 
@@ -47,4 +47,4 @@ raw `NodeRef`、snapshot handle、cursor 与 `CancellationToken` 不可序列化
 
 **响应 SLA（按缺陷等级）。** P0（数据破坏、静默损失、RCE/外部访问、错误写文件、跨快照误编辑）：24 小时内确认，7 天内给出修复或缓解方案。P1（panic/crash/hang、错误完成状态、明显语义不一致、limit bypass）：72 小时内确认，14 天内修复。P2（有安全替代路径的功能缺陷、非核心性能回退、诊断位置错误）：随下一个发布窗口修复，发布判断逐项记录。P3（文档、易用性、非稳定 message、低风险边角）：尽力而为。任何等级都不得用降级测试或截断包装来"修复"；资源上限与完成状态语义是安全边界（见本文档开头部分），不能因披露而放松。
 
-**支持窗口。** 1.0.0 发布前，安全修复只承诺两个窗口：最新稳定版本与其上一 minor（当前为最新发布 tag 与其前一版本）；更早版本不承诺修复，除非影响面证明必须回移。正式支持的目标是 CI 矩阵（windows-latest / ubuntu-latest / macos-latest，x86_64）；MSRV 窗口为 manifest 声明的 `rust-version`（当前 1.85）起的所有版本，MSRV 提升必须走 manifest 变更记录。Go 实现（0.14.0 起）的版本窗口在 Go RC 时按当时稳定生态冻结。公共 API 与 CLI 命令的弃用期至少一个 minor；contract/Profile 退役必须走 RFC 进程，已冻结的 v1-v6 registry 永不删除 code，退役只改变新输入的接受行为并在发布记录中列明。
+**支持窗口。** 1.0.0 发布前，安全修复只承诺两个窗口：最新稳定版本与其上一 minor（当前为最新发布 tag 与其前一版本）；更早版本不承诺修复，除非影响面证明必须回移。正式支持的目标是 CI 运行环境（windows-latest；Temurin 17 JDK），工具链锁定为 Kotlin 2.2.0 + JVM 17（build.gradle.kts `kotlin("jvm") version "2.2.0"` + jvmToolchain(17)；直驱 K2JVMCompiler 路径钉 kotlinc 2.2.0 发行版 zip 并 sha256 校验）。按五语言 CI 设计 §1.2，CI 钉的版本就是最低支持版本（"really verified in CI" 由构造满足）；工具链提升必须走清单变更记录。公共 API 与 CLI 命令的弃用期至少一个 minor；contract/Profile 退役必须走 RFC 进程，已冻结的 v1-v6 registry 永不删除 code，退役只改变新输入的接受行为并在发布记录中列明。

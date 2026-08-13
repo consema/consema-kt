@@ -7,9 +7,9 @@
 //
 // TestDifferentialByteParity skips without the environment variable
 // (documented skip, never silent) and runs only when the Rust encoder's
-// golden byte files were provisioned (scripts/go-verify-byte-parity.ps1
-// builds crates/consema-conformance/examples/emit_parity_bytes.rs and runs
-// it over the case set into CONSEMA_DIFFERENTIAL_RUST_DIR): the Kotlin
+// golden byte files were provisioned (scripts/kotlin-verify-byte-parity.ps1
+// builds the consema-rs emit_parity_bytes example and runs it over the
+// case set into CONSEMA_DIFFERENTIAL_RUST_DIR): the Kotlin
 // codecs encode the same input set, and the bytes are compared byte for
 // byte with the Rust golden files, plus the bidirectional direction (Rust
 // bytes decode under the Kotlin decoders and re-encode byte-identically).
@@ -56,7 +56,7 @@ class ByteParityTest {
         if (rustDir.isNullOrEmpty()) {
             println(
                 "[SKIP] CONSEMA_DIFFERENTIAL_RUST_DIR is not set: " +
-                    "run scripts/go-verify-byte-parity.ps1 to provision the Rust encoder bytes",
+                    "run scripts/kotlin-verify-byte-parity.ps1 to provision the Rust encoder bytes",
             )
             return
         }

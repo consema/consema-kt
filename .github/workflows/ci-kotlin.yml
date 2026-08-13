@@ -26,9 +26,11 @@
 # scripts/kotlin-verify-*.ps1 harnesses against the Rust emitters. The
 # verify scripts and the toolchain layout are Windows-native (bin\java.exe,
 # debug\examples\*.exe), so all kotlin jobs run on windows-latest. The
-# shared-conformance script (scripts/kotlin-verify-shared-conformance.ps1,
-# §3.6/§7.2) lands with the runner-CLI batch and slots in as a fourth
-# differential step. No repository secrets are required.
+# runner-CLI entry point (kotlin/src/main/kotlin/consema/conformance/Cli.kt)
+# landed with the runner batch (613ae2f), while the shared-conformance
+# script (scripts/kotlin-verify-shared-conformance.ps1, §3.6/§7.2) is not
+# committed yet — the fourth differential step stays deferred. No repository
+# secrets are required.
 #
 # Coverage gate: the Gradle wrapper landed (kotlin/gradlew.bat, gradle 8.14;
 # c60d31a), so kotlin-gates enforces the kover 0.9.9 line-coverage threshold
@@ -72,7 +74,7 @@ env:
 
 jobs:
   kotlin-gates:
-    name: kotlin gates (fmt/type + unit tests + zero-dep)
+    name: kotlin gates (unit tests + kover 60% + zero-dep)
     runs-on: windows-latest
     timeout-minutes: 30
     steps:
@@ -138,7 +140,7 @@ jobs:
           $ErrorActionPreference = 'Stop'
           .\gradlew.bat test koverVerify
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-      # Zero-runtime-dependency policy (§1.3): build.gradle.kts:18-22 keeps
+      # Zero-runtime-dependency policy (§1.3): build.gradle.kts:27-32 keeps
       # the runtime classpath empty — every declared configuration is
       # test-scoped. Asserted at the source level (evaluating
       # configurations.runtimeClasspath would resolve the entire dependency
@@ -330,7 +332,7 @@ jobs:
           Write-Output "conformance runner test compiled into $runnerOut"
       # ConformanceRunnerTest verifies the aggregate digest
       # cfd6e296da5b22b62d37b076d35bf6bbf58b0678ceddb37eea51a8b47200ab6a
-      # (fc-manifest-0.13.0.json:38), the 18 suites / 519 cases inventory,
+      # (fc-manifest-0.13.0.json:39), the 18 suites / 519 cases inventory,
       # the per-suite counts, and zero failures (§4.2 hard pins in the
       # runner). CONSEMA_REPO points the runner at the checkout, where the
       # provision step placed conformance/ and docs/fc-manifest-0.13.0.json.

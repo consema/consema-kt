@@ -2,11 +2,13 @@
 # dev.consema:consema-kotlin (top-tier bar: 半自动发布, kotlinx 凭证专人
 # precedent — credentials are user-side actions, see RELEASING.md §2).
 #
-# The repository has no Gradle wrapper (design docs/five-language-ci-design.md
-# §7.3 lists kotlin/gradlew as a later item; the CI jobs drive the direct
-# K2JVMCompiler), so this workflow provisions Gradle itself via
-# gradle/actions/setup-gradle (gradle-version 8.14 — the latest Gradle line
-# supported by Kotlin 2.2.0) and runs `gradle publish` in kotlin/.
+# The committed Gradle wrapper (kotlin/gradlew.bat, gradle 8.14 — landed
+# c60d31a/b640af6) drives the CI gates and Dependabot resolution, while this
+# workflow provisions Gradle itself via gradle/actions/setup-gradle
+# (gradle-version 8.14 — the latest Gradle line supported by Kotlin 2.2.0)
+# and runs `gradle publish` in kotlin/: the tag-triggered publish path is
+# deliberately independent of the wrapper's pinned distribution download
+# (setup-gradle uses the same 8.14 line).
 #
 # REQUIRED user configuration before the first tag push (the workflow is
 # complete but will fail without these; they are deliberately NOT
@@ -59,7 +61,7 @@ jobs:
         with:
           distribution: temurin
           java-version: '17'
-      - uses: gradle/actions/setup-gradle@ed408507eac070d1f99cc633dbcf757c94c7933a # v4
+      - uses: gradle/actions/setup-gradle@ed408507eac070d1f99cc633dbcf757c94c7933a # v4.4.3
         with:
           gradle-version: '8.14'
           # setup-gradle enables Gradle caching by default; a poisoned cache

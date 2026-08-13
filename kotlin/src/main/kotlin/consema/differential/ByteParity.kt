@@ -9,7 +9,7 @@
 // (crates/consema-conformance/examples/emit_parity_bytes.rs) — one
 // `<case-id>.hex` per case — plus the bidirectional direction (Rust bytes
 // decode under the Kotlin decoders and re-encode byte-identically).
-// Orchestration: scripts/go-verify-byte-parity.ps1 provisions the golden
+// Orchestration: scripts/kotlin-verify-byte-parity.ps1 provisions the golden
 // directory; the test reads it via CONSEMA_DIFFERENTIAL_RUST_DIR.
 //
 // Mirrors go/conformance/differential/differential_test.go (the Go harness
