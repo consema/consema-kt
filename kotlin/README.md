@@ -25,7 +25,7 @@ Gradle path (wrapper committed 2026-08-12):
 The conformance/differential tests resolve `conformance/*` and
 `docs/fc-manifest-0.13.0.json` from `CONSEMA_REPO` (the pattern of
 ci-kotlin.yml's provision step): set it to a checkout of the consema spec
-repository, or the 10 such tests fail with "repository root not found" —
+repository, or the 21 such tests fail with "repository root not found" —
 same environment requirement as the direct-compile path, only without the
 reflective runner's SKIP logic.
 
@@ -46,11 +46,11 @@ powershell -File ../scripts/kotlin-verify-protocol-exchange.ps1
 ## Coverage
 
 Landing check (2026-08-12, Gradle wrapper exploration): `./gradlew
-koverReport` produces HTML/XML reports (build/reports/kover/) and the
+koverHtmlReport koverXmlReport` produces HTML/XML reports (build/reports/kover/) and the
 `koverVerify` task enforces the documented 60% line threshold (kover 0.9.9,
 bound configured in build.gradle.kts). Measured with all 572 tests green
-(2026-08-12 静态计数；CONSEMA_REPO set): **line 77.6%** (40247/51861) · instruction 74.5% ·
-branch 55.6% · method 86.8% · class 87.5%. The 60% gate passes with
+(2026-08-13 静态计数；CONSEMA_REPO set): **line 77.8%** (40385/51934) · instruction 74.6% ·
+branch 55.8% · method 86.9% · class 87.6%. The 60% gate passes with
 comfortable headroom. The gate is live in CI: kotlin-gates runs
 `.\gradlew.bat test koverVerify` since b640af6 (kover 0.9.9, 60% minimum,
 build.gradle.kts:44-52). The Knit-style doc-example gate remains deferred
