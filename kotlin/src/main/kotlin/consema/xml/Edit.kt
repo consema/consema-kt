@@ -26,7 +26,8 @@
 //     (edit.rs:1346-1370), operation summaries (edit.rs:1385-1435).
 //   - The Kotlin document package owns SourcePatch (Patch.kt:147-296),
 //     UntouchedByteProof (UntouchedProof.kt:83-138), and EditPlan
-//     (EditPlan.kt:123-232). ChangeSet is an L4 milestone; this L3 commit
+//     (EditPlan.kt:123-232). ChangeSet is a post-1.0.0
+//     (冻结前评估项，见五要素终审 F-28.3-1 处置) milestone; this L3 commit
 //     carries the ordered edit diagnostics instead (the json family
 //     precedent, kotlin/.../json/Edit.kt:244-255).
 //   - conformance/vectors/xml-1-0-safe-v1.json cases xml.edit.* pin the
@@ -283,9 +284,10 @@ class EditTransactionBuilder internal constructor(private val base: SnapshotIden
     fun build(): EditTransaction = EditTransaction(base, operations.toList())
 }
 
-/** Atomic edit success (edit.rs:306-317). ChangeSet is an L4 milestone in
- * Kotlin; this L3 commit carries the ordered edit diagnostics instead (the
- * json family precedent, kotlin/.../json/Edit.kt:244-255). */
+/** Atomic edit success (edit.rs:306-317). ChangeSet is a post-1.0.0
+ * (冻结前评估项，见五要素终审 F-28.3-1 处置) milestone in Kotlin; this L3
+ * commit carries the ordered edit diagnostics instead (the json family
+ * precedent, kotlin/.../json/Edit.kt:244-255). */
 class EditCommit(
     /** New immutable document. */
     val document: Document,

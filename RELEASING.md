@@ -26,8 +26,9 @@ workflow 已写完整，但**凭证未配置前推送 tag 会明确失败**（po
    ```
    发布 workflow 会先校验 tag↔版本一致（tag 去掉 `v` 前缀必须等于
    `kotlin/build.gradle.kts` 的 rootProject version，不一致即 exit 1
-   中止），随后用 Temurin 17 + Gradle 8.14（本仓无 wrapper，Gradle 由
-   `gradle/actions/setup-gradle` 在 CI 中安装）执行 `gradle publish`。
+   中止），随后用 Temurin 17 + Gradle 8.14（Gradle wrapper 已入库（gradle 8.14，
+   commit c60d31a/b640af6）；Gradle 由 `gradle/actions/setup-gradle` 安装）执行
+   `gradle publish`。
 
 ## 2. 凭证配置（用户侧一次性动作）
 
@@ -77,7 +78,7 @@ Maven Central 要求所有 artifact（含 pom、module、sources/javadoc jar）
 
 ## 4. API reference 文档与依赖审计（决策：P2，待 Gradle wrapper 落地）
 
-- **dokka 文档构建**：dokka 是 Gradle 插件，本仓无 Gradle wrapper
+- **dokka 文档构建**：dokka 是 Gradle 插件；Gradle wrapper 已入库（gradle 8.14，commit c60d31a/b640af6）
   （设计 §7.3 的后续 L0-batch 项），CI 直驱 K2JVMCompiler，无法产出
   dokka 报告。API reference 的 docs CI job **待 wrapper 落地后引入**（P2）。
 - **依赖审计**：完整依赖审计（如 OWASP dependency-check 或 Gradle

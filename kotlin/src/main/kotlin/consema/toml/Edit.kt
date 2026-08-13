@@ -26,7 +26,8 @@
 //
 // Kotlin-idiomatic design: failures are typed exceptions carrying the
 // frozen core.edit.*@1 code and the stable kind name (the vector
-// `"failure": "UnsupportedSemanticValue"` fact); ChangeSet lands in L4, so
+// `"failure": "UnsupportedSemanticValue"` fact); ChangeSet is a post-1.0.0
+// (冻结前评估项，见五要素终审 F-28.3-1 处置) milestone, so
 // the commit exposes the derived node mappings and fallback diagnostics as
 // family records ready for that integration.
 
@@ -343,9 +344,10 @@ class TomlEditException(val kind: EditFailureKind) :
         get() = kind.code
 }
 
-/** Atomic edit success (edit.rs:229-240). ChangeSet is an L4 document
- * milestone; this L1 commit exposes the equivalent facts ([diagnostics],
- * [nodeMappings]) as family records. */
+/** Atomic edit success (edit.rs:229-240). ChangeSet is a post-1.0.0
+ * (冻结前评估项，见五要素终审 F-28.3-1 处置) document milestone; this L1
+ * commit exposes the equivalent facts ([diagnostics], [nodeMappings]) as
+ * family records. */
 class EditCommit(
     /** New immutable document. */
     val document: TomlDocument,
@@ -361,8 +363,9 @@ class EditCommit(
     val nodeMappings: List<TomlNodeMapping>,
 )
 
-/** One old-to-new node mapping fact (the Rust NodeMapping of the L4
- * ChangeSet; edit.rs:368-393). */
+/** One old-to-new node mapping fact (the Rust NodeMapping of the
+ * post-1.0.0 (冻结前评估项，见五要素终审 F-28.3-1 处置) ChangeSet;
+ * edit.rs:368-393). */
 data class TomlNodeMapping(
     /** Old structural identity. */
     val old: NodeRef,

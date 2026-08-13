@@ -24,7 +24,8 @@
 //     1095-1267, scalar style edit.rs:1346-1862).
 //   - Kotlin document owns SourcePatch (create/apply, kotlin/.../document/
 //     Patch.kt:147-296) and UntouchedByteProof (kotlin/.../document/
-//     UntouchedProof.kt:83-138). ChangeSet is an L4 milestone; this L1
+//     UntouchedProof.kt:83-138). ChangeSet is a post-1.0.0
+//     (冻结前评估项，见五要素终审 F-28.3-1 处置) milestone; this L1
 //     commit carries the ordered diagnostics instead.
 //
 // Kotlin-idiomatic design: failures are a sealed hierarchy whose [name] is
@@ -241,8 +242,9 @@ class EditTransactionBuilder internal constructor(private val base: SnapshotIden
     fun build(): EditTransaction = EditTransaction(base, operations.toList())
 }
 
-/** Atomic edit success (edit.rs:246-256). ChangeSet is an L4 milestone in
- * Kotlin; this L1 commit carries the ordered edit diagnostics instead. */
+/** Atomic edit success (edit.rs:246-256). ChangeSet is a post-1.0.0
+ * (冻结前评估项，见五要素终审 F-28.3-1 处置) milestone in Kotlin; this L1
+ * commit carries the ordered edit diagnostics instead. */
 class EditCommit(
     /** New immutable document. */
     val document: Document,

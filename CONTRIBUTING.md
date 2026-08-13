@@ -12,8 +12,10 @@ Consema 六仓拆分的 Kotlin 仓：本仓承载 Kotlin/JVM 实现（`kotlin/` 
 ## 开发环境
 
 - JDK（CI 用 Temurin 17）+ Kotlin K2JVMCompiler（CI 用 kotlinc 2.2.0）。
-- 本仓库无 Gradle wrapper（设计 §7.3 的后续 L0-batch 项），验证直驱 JVM
-  K2JVMCompiler，与提交的验证脚本和 CI 完全一致。
+- Gradle wrapper 已入库（gradle 8.14；kotlin/gradlew、gradlew.bat、
+  gradle/wrapper/）：kotlin-gates 经 gradlew 跑单测与 kover 60% 覆盖率门禁；
+  conformance / differential 验证仍直驱 JVM K2JVMCompiler，与提交的验证脚本
+  和 CI 完全一致。
 - 运行时零依赖（runtime classpath 为空，依赖全部 test-scoped）。
 
 ## 构建与测试

@@ -59,7 +59,7 @@ body:
       label: 环境信息
       description: |
         - `java -version`（CI 用 Temurin 17）
-        - kotlinc 版本（CI 用 K2JVMCompiler 2.2.0，无 Gradle wrapper）
+        - kotlinc 版本（CI 用 K2JVMCompiler 2.2.0；Gradle wrapper 已入库，gradle 8.14，c60d31a/b640af6）
         - `kotlin/build.gradle.kts` rootProject version（当前 1.0.0-rc.1）
         - OS / 平台
       placeholder: |

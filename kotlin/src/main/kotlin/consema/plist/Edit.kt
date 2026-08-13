@@ -27,9 +27,10 @@
 //     (operation shapes edit.rs:83-251, failures edit.rs:389-455).
 //   - Kotlin document owns SourcePatch (create/apply,
 //     kotlin/.../document/Patch.kt:147-296) and UntouchedByteProof
-//     (kotlin/.../document/UntouchedProof.kt:83-138); ChangeSet is an L4
-//     milestone (the json-family precedent, kotlin/.../json/Edit.kt:27-28),
-//     so this L3 commit carries the ordered diagnostics instead.
+//     (kotlin/.../document/UntouchedProof.kt:83-138); ChangeSet is a
+//     post-1.0.0 (冻结前评估项，见五要素终审 F-28.3-1 处置) milestone (the
+//     json-family precedent, kotlin/.../json/Edit.kt:27-28), so this L3
+//     commit carries the ordered diagnostics instead.
 //
 // Kotlin-idiomatic design: failures are a sealed hierarchy whose [code] is
 // the frozen registered mapping (edit.rs:442-453); commit/dry-run throw the
@@ -334,9 +335,10 @@ class EditTransactionBuilder internal constructor(private val base: SnapshotIden
     fun build(): EditTransaction = EditTransaction(base, operations.toList())
 }
 
-/** Atomic edit success (edit.rs:378-387). ChangeSet is an L4 milestone in
- * Kotlin (the json-family precedent, kotlin/.../json/Edit.kt:27-28); this
- * L3 commit carries the ordered edit diagnostics instead. */
+/** Atomic edit success (edit.rs:378-387). ChangeSet is a post-1.0.0
+ * (冻结前评估项，见五要素终审 F-28.3-1 处置) milestone in Kotlin (the
+ * json-family precedent, kotlin/.../json/Edit.kt:27-28); this L3 commit
+ * carries the ordered edit diagnostics instead. */
 class EditCommit(
     /** New immutable document. */
     val document: Document,

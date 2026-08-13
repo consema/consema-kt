@@ -14,7 +14,7 @@ check-version-consistency job 断言与 README 一致）。
 
 ## 快速开始（30 秒跑通）
 
-Maven Central 坐标：`dev.consema:consema-kotlin:1.0.0-rc.1`（Gradle：`implementation("dev.consema:consema-kotlin:1.0.0-rc.1")`）。
+Maven Central 坐标（发布后可用）：`dev.consema:consema-kotlin:1.0.0-rc.1`（Gradle：`implementation("dev.consema:consema-kotlin:1.0.0-rc.1")`）。
 
 把下面内容保存为 `kotlin/quickstart.kt`，与主源码一起编译后运行（一个 JSON 文档走完 parse → query → edit → render 四条链）：
 
@@ -87,13 +87,16 @@ fun main() {
 - `scripts/`：跨语言差分验证脚本（byte parity / normalized differential /
   protocol exchange）。脚本构建 consema-rs 的 Rust emitter 并对拍 Kotlin 实现；
   Rust 侧来自 consema-rs 仓 checkout（CI 多仓模式），conformance 数据来自规范仓 checkout。
-- `.github/workflows/ci-kotlin.yml`：Kotlin 门禁（K2JVMCompiler 直驱 + 单测 +
-  零依赖）、conformance runner 门禁（18 suites / 519 cases）与 Kotlin-Rust 差分
-  门禁（windows-latest 多仓 checkout）。
+- `.github/workflows/ci-kotlin.yml`：Kotlin 门禁（gradlew 单测 + kover 60%
+  覆盖率 + 零依赖）、conformance runner 门禁（18 suites / 519 cases，直驱
+  K2JVMCompiler）与 Kotlin-Rust 差分门禁（直驱 K2JVMCompiler；windows-latest
+  多仓 checkout）。
 
 ## 构建与测试
 
-本仓库无 Gradle wrapper（设计 §7.3 的后续 L0-batch 项），验证直驱 JVM
+Gradle wrapper 已入库（gradle 8.14；kotlin/gradlew、gradlew.bat、
+gradle/wrapper/，commit c60d31a/b640af6）：kotlin-gates 经 gradlew 跑单测
+与 kover 60% 覆盖率门禁；conformance / differential 验证仍直驱 JVM
 K2JVMCompiler，与提交的验证脚本和 CI 完全一致：
 
 ```text

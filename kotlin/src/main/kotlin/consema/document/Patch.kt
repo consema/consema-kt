@@ -314,7 +314,8 @@ enum class SourcePatchErrorKind(val code: String) {
     DUPLICATE_INSERTION("core.protocol.invalid-value@1"),
 
     /** A document-level source edit disagrees with its snapshots or
-     * replacement bytes (unreachable until ChangeSet lands in L4). */
+     * replacement bytes (unreachable until ChangeSet lands — post-1.0.0
+     * (冻结前评估项，见五要素终审 F-28.3-1 处置)). */
     CHANGE_SET_MISMATCH("core.protocol.invalid-value@1"),
 
     /** Base raw bytes do not have the declared digest. */

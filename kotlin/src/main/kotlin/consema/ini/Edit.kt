@@ -29,8 +29,9 @@
 //     ownership edit.rs:1445-1475, failure codes edit.rs:1754-1779).
 //   - Kotlin document owns SourcePatch (kotlin/.../document/Patch.kt:147-296)
 //     and UntouchedByteProof (kotlin/.../document/UntouchedProof.kt). The
-//     ChangeSet is an L4 milestone in Kotlin (document/Patch.kt:31-33); this
-//     L2 commit carries the ordered edit diagnostics instead.
+//     ChangeSet is a post-1.0.0 (冻结前评估项，见五要素终审 F-28.3-1 处置)
+//     milestone in Kotlin (document/Patch.kt:31-33); this L2 commit carries
+//     the ordered edit diagnostics instead.
 //
 // Kotlin-idiomatic design: failures are a sealed hierarchy whose [name] is
 // the exact Rust variant spelling and whose [diagnosticCode] is the frozen
@@ -246,8 +247,9 @@ class EditTransactionBuilder internal constructor(private val base: SnapshotIden
 }
 
 /**
- * Atomic edit success (edit.rs:245-256). The ChangeSet is an L4 milestone in
- * Kotlin; this L2 commit carries the ordered edit diagnostics instead. For
+ * Atomic edit success (edit.rs:245-256). The ChangeSet is a post-1.0.0
+ * (冻结前评估项，见五要素终审 F-28.3-1 处置) milestone in Kotlin; this
+ * L2 commit carries the ordered edit diagnostics instead. For
  * base documents whose selected encoding is a Windows code page, the
  * document-contract artifacts are unavailable until the source-v2 extension
  * (kotlin/.../document/Encoding.kt:18-25) and are null.

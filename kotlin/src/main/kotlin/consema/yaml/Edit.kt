@@ -29,8 +29,9 @@
 // Kotlin-idiomatic design: failures are a sealed hierarchy whose [name] is
 // the exact vector spelling; commit/dry-run throw the typed
 // [EditFailureException] so callers match exhaustively on the failure class.
-// ChangeSet is an L4 document milestone in Kotlin (json/Edit.kt:244-255,
-// toml/Edit.kt:349-369), so this commit carries the ordered diagnostics and
+// ChangeSet is a post-1.0.0 (冻结前评估项，见五要素终审 F-28.3-1 处置)
+// document milestone in Kotlin (json/Edit.kt:244-255, toml/Edit.kt:349-369),
+// so this commit carries the ordered diagnostics and
 // the old-to-new node mapping facts instead.
 
 package consema.yaml
@@ -248,9 +249,10 @@ class EditTransactionBuilder internal constructor(private val base: SnapshotIden
     fun build(): EditTransaction = EditTransaction(base, operations.toList())
 }
 
-/** Atomic edit success (edit.rs:260-271). ChangeSet is an L4 milestone in
- * Kotlin; this commit carries the ordered edit diagnostics and the
- * old-to-new node mapping facts instead (json/Edit.kt:244-255). */
+/** Atomic edit success (edit.rs:260-271). ChangeSet is a post-1.0.0
+ * (冻结前评估项，见五要素终审 F-28.3-1 处置) milestone in Kotlin; this
+ * commit carries the ordered edit diagnostics and the old-to-new node
+ * mapping facts instead (json/Edit.kt:244-255). */
 class EditCommit(
     /** New immutable document. */
     val document: Document,
@@ -261,12 +263,14 @@ class EditCommit(
     /** Ordered edit diagnostics (fallback events). */
     val diagnostics: List<Diagnostic>,
     /** Old-to-new node mapping facts (the Rust ChangeSet node mappings of
-     * the L4 milestone; edit.rs:444-523). */
+     * the post-1.0.0 (冻结前评估项，见五要素终审 F-28.3-1 处置) milestone;
+     * edit.rs:444-523). */
     val nodeMappings: List<YamlNodeMapping>,
 )
 
-/** One old-to-new node mapping fact (the Rust NodeMapping of the L4
- * ChangeSet; edit.rs:498-513). */
+/** One old-to-new node mapping fact (the Rust NodeMapping of the
+ * post-1.0.0 (冻结前评估项，见五要素终审 F-28.3-1 处置) ChangeSet;
+ * edit.rs:498-513). */
 data class YamlNodeMapping(
     /** Base structural identity. */
     val old: NodeRef,

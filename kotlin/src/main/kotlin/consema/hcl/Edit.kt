@@ -402,9 +402,9 @@ class HclEditException(val kind: HclEditFailureKind) :
         get() = kind.code
 }
 
-/** Atomic edit success (edit.rs:229-240). ChangeSet is an L4 document
- * milestone; this L3 commit exposes the equivalent facts as family
- * records. */
+/** Atomic edit success (edit.rs:229-240). ChangeSet is a post-1.0.0
+ * (冻结前评估项，见五要素终审 F-28.3-1 处置) document milestone; this L3
+ * commit exposes the equivalent facts as family records. */
 class HclEditCommit(
     /** New immutable document. */
     val document: HclDocument,

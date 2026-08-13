@@ -1,15 +1,20 @@
 # Consema Kotlin CI (docs/five-language-ci-design.md §1.2, §7.1): the
-# Kotlin implementation joins the release gate with three explicit jobs
-# (the design rejects a single shared matrix, §5.2). kotlin-gates runs the
+# Kotlin implementation joins the release gate with seven explicit jobs —
+# kotlin-gates, kotlin-conformance, kotlin-differential,
+# check-version-consistency, examples, kotlin-package and the aggregate
+# check (the design rejects a single shared matrix, §5.2). kotlin-gates runs the
 # full unit-test suite and the kover 60% line-coverage gate through the
 # committed Gradle wrapper (kotlin/gradlew.bat, gradle 8.14 — the design
 # §7.3 L0-batch item landed with the wrapper batch, c60d31a);
 # kotlin-conformance and kotlin-differential keep driving the direct JVM
 # K2JVMCompiler exactly like the committed verification scripts
-# (scripts/kotlin-verify-*.ps1) and the tracked kotlin/verify/TestShim.kt
-# shim (kotlin/build/ is gitignored and does not exist in a clean
-# checkout) — those jobs depend on the single-module compile + shim +
-# golden-env mode, with CONSEMA_JAVA_HOME / CONSEMA_KOTLINC environment
+# (scripts/kotlin-verify-*.ps1): they compile the tests with the
+# kotlinc-bundled kotlin-test.jar + kotlin-test-junit5.jar (+ the
+# provisioned junit-jupiter-api-5.10.2.jar) and drive the @Test methods
+# through a temp main() runner (the tracked kotlin/verify/TestShim.kt is
+# historical, 2026-08-12 audit — no longer referenced by CI or scripts) —
+# those jobs depend on the single-module compile + temp-runner + golden-env
+# mode, with CONSEMA_JAVA_HOME / CONSEMA_KOTLINC environment
 # overrides, and provision the pinned kotlinc 2.2.0 distribution (cached)
 # on top of the Temurin 17 JDK. kotlin-conformance runs the Kotlin runner
 # (kotlin/src/test/kotlin/consema/conformance/ConformanceRunnerTest.kt —

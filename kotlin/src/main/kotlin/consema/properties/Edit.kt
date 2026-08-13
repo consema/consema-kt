@@ -34,8 +34,9 @@
 //     (crates/consema-document/src/lib.rs:800-899: SourceEdit, NodeMapping,
 //     NodeMappingStatus, ChangeSet); the Kotlin document layer does not own
 //     ChangeSet yet (the L4 structural-edit milestone), so this package
-//     defines the same immutable records locally and the L4 milestone can
-//     promote them into the shared layer unchanged.
+//     defines the same immutable records locally and the post-1.0.0
+//     (冻结前评估项，见五要素终审 F-28.3-1 处置) milestone can promote
+//     them into the shared layer unchanged.
 //
 // Kotlin-idiomatic design: failures are a sealed hierarchy whose [name] is
 // the exact vector spelling and whose registered code follows the Rust
