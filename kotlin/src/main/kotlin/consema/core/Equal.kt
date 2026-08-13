@@ -1,12 +1,12 @@
 // Strict PortableValue equality and deterministic hashing.
 //
-// Data authority: RFC 0016 §4.1 (docs/rfcs/0016-go-api-mapping-v1.md:151-154):
+// Data authority: RFC 0016 §4.1 (https://github.com/consema/consema/blob/main/docs/rfcs/0016-go-api-mapping-v1.md:151-154):
 // strict equality is kind identity plus canonical content equality, order-
 // dependent for containers; Hash is consistent with Equal and order-
 // dependent. conformance/vectors/v1.json pins the contract
 // (value.decimal-normalization: "1.00" == "10e-1"; value.float-signed-zero:
 // +0.0 != -0.0). The hashing contract (FNV-1a over the canonical PVCE/1
-// bytes) follows go/core/equal.go:127-138 as cross-reference.
+// bytes) follows consema-go/go/core/equal.go:127-138 as cross-reference.
 //
 // Kotlin-idiomatic design: top-level functions [equal] and [hash] (the
 // canonical contract), total over nulls, never recursing through container
@@ -97,7 +97,7 @@ fun equal(a: PortableValue?, b: PortableValue?): Boolean {
 }
 
 // FNV-1a 64-bit constants (the standard FNV-1a parameters used by
-// go/core/equal.go via hash/fnv).
+// consema-go/go/core/equal.go via hash/fnv).
 private const val FNV_OFFSET_BASIS: ULong = 0xcbf29ce484222325uL
 private const val FNV_PRIME: ULong = 0x100000001b3uL
 

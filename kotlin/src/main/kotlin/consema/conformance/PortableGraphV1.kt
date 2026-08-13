@@ -1,7 +1,7 @@
 // The `consema.portable-graph.conformance@1` suite runner
 // (conformance/vectors/portable-graph-v1.json).
 //
-// Data authority: crates/consema-conformance/src/portable_graph_v1.rs (the
+// Data authority: consema-rs/consema-conformance/src/portable_graph_v1.rs (the
 // per-case dispatch and every assertion are transcribed from the Rust
 // handlers); the vector file itself drives every input and expectation
 // (conformance/README.md rules 3-4). The graph model, strict equality,
@@ -10,7 +10,7 @@
 // bytes). The two portable-graph-query cases execute through the
 // conformance graph-query executor (PortableGraphQuery.kt) over the same
 // operator semantics the protocol validation table publishes.
-// go/graph is a cross-reference only.
+// consema-go/go/graph is a cross-reference only.
 
 package consema.conformance
 

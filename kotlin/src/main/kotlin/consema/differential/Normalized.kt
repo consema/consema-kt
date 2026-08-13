@@ -1,11 +1,11 @@
 // The Kotlin side of the cross-language normalized-result differential
-// harness (milestone 0.15.0 G1.5, bidirectional since 0.19.0 G5.2;
-// docs/five-language-ci-design.md §3.3).
+// harness (L5, bidirectional;
+// https://github.com/consema/consema/blob/main/docs/five-language-ci-design.md §3.3).
 //
 // The harness compares the language-neutral normalized results of the same
 // data-driven input set (conformance/differential/normalized/cases.json,
 // 108 cases) executed by the Rust SDK
-// (crates/consema-conformance/examples/emit_normalized_results.rs) and by
+// (consema-rs/consema-conformance/examples/emit_normalized_results.rs) and by
 // this file. Kotlin never imports or calls Rust: the Rust side emits one
 // `<case-id>.txt` evidence file per case, the Kotlin test computes the same
 // normalized facts and compares them field by field, and the reverse
@@ -17,7 +17,7 @@
 // count/identity/order, projection/materialization reports, edit result
 // bytes or failure codes, and resource-limit completion semantics. The
 // output vocabulary is mirrored verbatim by the Rust example and the Go
-// harness (go/conformance/differential/normalized/runner.go + source.go);
+// harness (consema-go/go/conformance/differential/normalized/runner.go + source.go);
 // it contains no Rust internal type names. Error texts never participate in
 // the comparison (RFC 0016 §6).
 
@@ -178,7 +178,7 @@ data class PatchDesc(val replacements: List<PatchReplacementDesc>, val applyTo: 
 
 data class PatchReplacementDesc(val oldStart: Int, val oldEnd: Int, val replacementHex: String)
 
-/** Loads and validates the checked-in case set (manifest, count, unique ids,
+/** Loads and validates the provisioned case set (manifest, count, unique ids,
  * schema validity). Throws [IllegalArgumentException] on any violation. */
 fun loadNormalizedCaseFile(file: File): List<NormalizedCase> {
     val root = loadCaseFile(file)

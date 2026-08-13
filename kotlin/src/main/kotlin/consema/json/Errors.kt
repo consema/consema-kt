@@ -2,18 +2,18 @@
 // diagnostic factory.
 //
 // Data authority:
-//   - crates/consema-document/src/lib.rs:643-790 pins FatalFormationFailure
+//   - consema-rs/consema-document/src/lib.rs:643-790 pins FatalFormationFailure
 //     and its code mapping: resource limits use "core.parse.resource-limit@1"
 //     (lib.rs:771-776), source construction failures map through
 //     FatalFormationFailure::source_error (lib.rs:676-707) to
 //     core.source.invalid-utf8@1 / invalid-sequence@1 / encoding-conflict@1 /
 //     unsupported-bom@1 / resource-limit@1.
-//   - crates/consema-json/src/lib.rs:612-621 pins JsonAccessError
+//   - consema-rs/consema-json/src/lib.rs:612-621 pins JsonAccessError
 //     (WrongSnapshot, WrongRole, UnknownNode).
 //   - The registered codes are transcribed in
 //     kotlin/.../protocol/ErrorRegistry.kt (core.parse.resource-limit@1 at
 //     ErrorRegistry.kt:178; core.source.* at ErrorRegistry.kt:206, 236-242).
-//   - RFC 0016 §6 (docs/rfcs/0016-go-api-mapping-v1.md:194-200): SDK errors
+//   - RFC 0016 §6 (https://github.com/consema/consema/blob/main/docs/rfcs/0016-go-api-mapping-v1.md:194-200): SDK errors
 //     carry the stable registered code; error text is human presentation only.
 //
 // Kotlin-idiomatic design: fatal formation failure is a typed exception
@@ -46,7 +46,7 @@ internal val JSON_DIAGNOSTIC_REGISTRY: ErrorCodeRegistry =
 /**
  * The fatal formation failure (lib.rs:643-663). Exceeding a parse limit is a
  * ResourceLimit failure carrying the frozen limit code
- * (RFC 0016 §5.1, docs/rfcs/0016-go-api-mapping-v1.md:176). A fatal failure
+ * (RFC 0016 §5.1, https://github.com/consema/consema/blob/main/docs/rfcs/0016-go-api-mapping-v1.md:176). A fatal failure
  * returns no Document and no partial snapshot (RFC 0003 §12).
  */
 class JsonFormationException(

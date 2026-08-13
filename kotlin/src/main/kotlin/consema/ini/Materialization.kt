@@ -1,11 +1,11 @@
 // Deterministic PortableValue materialization for explicit INI profiles.
 //
 // Data authority:
-//   - RFC 0004 §3-§8 (docs/rfcs/0004-materialization-conversion-and-
+//   - RFC 0004 §3-§8 (https://github.com/consema/consema/blob/main/docs/rfcs/0004-materialization-conversion-and-
 //     structural-edit-v1.md:56-218): the common MaterializationRequest v1,
 //     ExactOnly representability, the completion algebra, and the
 //     provenance direction (portable input locations to the new Document).
-//   - RFC 0009 §11 (docs/rfcs/0009-ini-family-profiles-v1.md:387-435): the
+//   - RFC 0009 §11 (https://github.com/consema/consema/blob/main/docs/rfcs/0009-ini-family-profiles-v1.md:387-435): the
 //     canonical styles ini.portable-canonical@1 / ini.windows-canonical@1 /
 //     ini.python-configparser-canonical@1; the exact request combinations
 //     (portable UTF-8 + LF, windows UTF-16LE + BOM or one explicit
@@ -18,7 +18,7 @@
 //     unrepresentable; all styles reparse under the exact target profile and
 //     reproject under the request's policy before success.
 //   - conformance/vectors/ini-v1.json (materialization.*) pins the golden
-//     output bytes and failure names; crates/consema-ini/src/
+//     output bytes and failure names; consema-rs/consema-ini/src/
 //     materialization.rs is the byte-arbitration authority (writer
 //     materialization.rs:191-461, encoding materialization.rs:724-850,
 //     closure materialization.rs:489-535, provenance materialization.rs:

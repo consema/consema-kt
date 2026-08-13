@@ -3,7 +3,7 @@
 // the deterministic recovery boundaries of RFC 0014 §3.
 //
 // Data authority:
-//   - RFC 0014 §3-§6 (docs/rfcs/0014-hcl-family-profiles-v1.md:94-446):
+//   - RFC 0014 §3-§6 (https://github.com/consema/consema/blob/main/docs/rfcs/0014-hcl-family-profiles-v1.md:94-446):
 //     Complete/Recovered/FatalFormationFailure; recovery happens only at
 //     deterministic boundaries and never asserts unproven semantics; the
 //     per-body duplicate-attribute rule makes formation Recovered with the
@@ -11,14 +11,14 @@
 //     (§4.2), expression grammar and precedence (§4.3), templates (§4.4),
 //     heredocs (§4.5), and constructors/for-expressions (§4.6); the native
 //     semantic model (§6).
-//   - crates/consema-hcl/src/parser.rs pins the parse structure: parse_body
+//   - consema-rs/consema-hcl/src/parser.rs pins the parse structure: parse_body
 //     (parser.rs:620-727), parse_attribute (parser.rs:729-767), parse_block
 //     (parser.rs:769-864), the expression ladder (parser.rs:982-1259), the
 //     term layer (parser.rs:1263-1382), traversal steps (parser.rs:1351-
 //     1560), call/tuple/object/paren forms, the recovery scan (parser.rs:
 //     533-616), and the limit checks (parser.rs:620-863).
 //   - The failure codes are pinned in Errors.kt (parser.rs:80-97).
-//   - go/hcl is a cross-reference only.
+//   - consema-go/go/hcl is a cross-reference only.
 //
 // Kotlin-idiomatic design: a single-pass cursor parser over immutable
 // tokens; outcomes are sealed result types so exhaustive `when` can never

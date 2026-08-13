@@ -2,7 +2,7 @@
 // placement validation, dry-run plans, untouched-byte proofs, and the
 // derived SourcePatch.
 //
-// Data authority: RFC 0007 §12 (docs/rfcs/0007-yaml-family-profiles-and-
+// Data authority: RFC 0007 §12 (https://github.com/consema/consema/blob/main/docs/rfcs/0007-yaml-family-profiles-and-
 // safety-v1.md:355-399) pins the operation registry, the anchor-safe rules
 // (renaming updates dependent aliases in one transaction; removing an
 // anchored definition while aliases remain is rejected; removing an alias
@@ -12,8 +12,9 @@
 // vectors edit.scalar-atomic / edit.anchor-rename / edit.structural-insert /
 // edit.anchor-dependency are transcribed in GoldenTranscriptionTest.kt.
 //
-// This file is an intent document: the toolchain is not verified yet, so
-// these tests pin the intent; they run at the L2 verification gate.
+// This file runs in the verified toolchain gate (kotlin-gates gradlew
+// test / the scripts/kotlin-verify-*.ps1 direct path): the toolchain is
+// verified and this file is executed.
 
 package yaml
 

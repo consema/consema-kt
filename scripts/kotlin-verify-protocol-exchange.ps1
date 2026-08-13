@@ -7,13 +7,13 @@ param(
 
 # ---------------------------------------------------------------------------
 # Cross-language protocol exchange verification — Kotlin side
-# (milestone 0.19.0 G5.3; docs/five-language-ci-design.md §3.4; the Go
+# (L5; https://github.com/consema/consema/blob/main/docs/five-language-ci-design.md §3.4; the Go
 # precedent scripts/go-verify-protocol-exchange.ps1).
 #
 # Bidirectional pipeline (Kotlin never imports or calls Rust, RFC 0016 §1.1):
 #   1. builds the minimal Rust example
 #      (consema-conformance/examples/emit_protocol_exchange.rs);
-#   2. emit direction: runs it over the checked-in case set
+#   2. emit direction: runs it over the provisioned case set
 #      (conformance/differential/protocol-exchange/cases.json, the shared
 #      single-authority case directory of the consema repository) into
 #      <OutDir> as `<case-id>.json.hex` / `<case-id>.pvce.hex` (accept
@@ -101,8 +101,8 @@ if (-not (Test-Path $CaseFile)) {
 # UTF8 explicit: PowerShell 5.1 Get-Content defaults to the ANSI codepage.
 $cases = Get-Content $CaseFile -Raw -Encoding UTF8 | ConvertFrom-Json
 $caseCount = @($cases.cases).Count
-if ($caseCount -lt 40) {
-    Write-Error "protocol-exchange case file has $caseCount cases, want >= 40"
+if ($caseCount -ne 83) {
+    Write-Error "protocol-exchange case file has $caseCount cases, want exactly 83 (the frozen ExchangeTest.caseFileIntegrity count)"
     exit 1
 }
 
@@ -173,23 +173,26 @@ if (-not (Test-Path $junitJar)) {
     $junitJar = Join-Path $junitDir 'junit-jupiter-api-5.10.2.jar'
     if (-not (Test-Path $junitJar)) {
         Write-Host "downloading junit-jupiter-api-5.10.2.jar (needed by kotlin-test-junit5)..."
-        Invoke-WebRequest -UseBasicParsing `
-            'https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-api/5.10.2/junit-jupiter-api-5.10.2.jar' `
-            -OutFile $junitJar
-        if ($LASTEXITCODE -ne 0) {
+        try {
+            Invoke-WebRequest -UseBasicParsing `
+                'https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-api/5.10.2/junit-jupiter-api-5.10.2.jar' `
+                -OutFile $junitJar
+        }
+        catch {
             Write-Error 'cannot fetch junit-jupiter-api-5.10.2.jar (set up kotlin/build/verify/lib or a network path)'
             exit 1
         }
-        # Pinned upstream artifact (Maven Central, 5.10.2): verify the
-        # download against the pinned sha256 so an upstream drift fails the
-        # script instead of being silently used.
-        $expectedJunitSha256 = 'afff77c186cd317275803872fa5133aa801fd6ac40bd91c78a6cf8009b4b17cc'
-        $actualJunitSha256 = (Get-FileHash -Algorithm SHA256 -LiteralPath $junitJar).Hash
-        if ($actualJunitSha256 -ne $expectedJunitSha256) {
-            Write-Error "junit-jupiter-api-5.10.2.jar sha256 mismatch (got $actualJunitSha256, want $expectedJunitSha256)"
-            exit 1
-        }
     }
+}
+# Pinned upstream artifact (Maven Central, 5.10.2): verify the jar against
+# the pinned sha256 on every use — a reused local copy (e.g. an existing
+# kotlin/build/verify/lib jar) or a poisoned one fails the script instead of
+# being silently used.
+$expectedJunitSha256 = 'afff77c186cd317275803872fa5133aa801fd6ac40bd91c78a6cf8009b4b17cc'
+$actualJunitSha256 = (Get-FileHash -Algorithm SHA256 -LiteralPath $junitJar).Hash
+if ($actualJunitSha256 -ne $expectedJunitSha256) {
+    Write-Error "junit-jupiter-api-5.10.2.jar sha256 mismatch (got $actualJunitSha256, want $expectedJunitSha256)"
+    exit 1
 }
 
 $env:CONSEMA_REPO = $workspaceRoot
@@ -239,6 +242,10 @@ fun main(args: Array<String>) {
         run(arg, block)
     }
     println("tests: $runs run, $failures failed")
+    if (runs == 0) {
+        println("no tests ran — refusing to pass")
+        exitProcess(1)
+    }
     if (failures > 0) exitProcess(1)
 }
 '@ | Set-Content -Path $runnerSource -Encoding UTF8
@@ -298,8 +305,15 @@ Write-Host "RESULT (emit): $($summary.Value)"
 Write-Host "[4/4] reverse: running the Rust --verify mode against the Kotlin encoder files ($ktOutDir)"
 $reverseLog = Join-Path $workDir 'rust-verify.stdout.txt'
 $reverseErr = Join-Path $workDir 'rust-verify.stderr.txt'
+# Windows PowerShell 5.1 routes native stderr through the error stream under
+# $ErrorActionPreference='Stop' and a 2> redirection turns it into a
+# NativeCommandError terminating error — exactly on the failure path whose
+# diagnostics we want to capture; relax around the --verify call.
+$previousEap = $ErrorActionPreference
+$ErrorActionPreference = 'Continue'
 & $example --verify $CaseFile $ktOutDir 1> $reverseLog 2> $reverseErr
 $verifyCode = $LASTEXITCODE
+$ErrorActionPreference = $previousEap
 Get-Content $reverseLog | ForEach-Object { Write-Host $_ }
 if (Test-Path $reverseErr) {
     Get-Content $reverseErr | ForEach-Object { Write-Host $_ }

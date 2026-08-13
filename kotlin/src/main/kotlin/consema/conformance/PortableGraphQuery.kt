@@ -1,7 +1,7 @@
 // The conformance-runner portable-graph query executor.
 //
 // Data authority (language-neutral sources first):
-//   - crates/consema-conformance/src/portable_graph_v1.rs:184-219 (the
+//   - consema-rs/consema-conformance/src/portable_graph_v1.rs:184-219 (the
 //     graph.query cases: the Input expression over a graph yields the root
 //     nodes, the pipeline operators run in order, and the final matches are
 //     compared by builder node ID).

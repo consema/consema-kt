@@ -1,6 +1,6 @@
 // The PVCE/1 canonical byte codec.
 //
-// Byte layout authority: crates/consema-pvce/src/lib.rs (the frozen Rust
+// Byte layout authority: consema-rs/consema-pvce/src/lib.rs (the frozen Rust
 // reference codec), pinned byte-for-byte by conformance/vectors/v1.json:
 //   - stream magic is the ASCII octets "PVCE" (lib.rs:23);
 //   - version is minimal unsigned LEB128 1 (lib.rs:25);
@@ -32,13 +32,13 @@ package consema.core
 
 import java.math.BigInteger
 
-/** The PVCE/1 stream magic (ASCII "PVCE", crates/consema-pvce/src/lib.rs:23). */
+/** The PVCE/1 stream magic (ASCII "PVCE", consema-rs/consema-pvce/src/lib.rs:23). */
 internal val PVCE_MAGIC = byteArrayOf('P'.code.toByte(), 'V'.code.toByte(), 'C'.code.toByte(), 'E'.code.toByte())
 
-/** The frozen PVCE/1 version (crates/consema-pvce/src/lib.rs:25). */
+/** The frozen PVCE/1 version (consema-rs/consema-pvce/src/lib.rs:25). */
 internal const val PVCE_VERSION: ULong = 1uL
 
-// Record tags (crates/consema-pvce/src/lib.rs:27-43).
+// Record tags (consema-rs/consema-pvce/src/lib.rs:27-43).
 internal const val TAG_NULL: ULong = 0x00uL
 internal const val TAG_FALSE: ULong = 0x01uL
 internal const val TAG_TRUE: ULong = 0x02uL
@@ -56,7 +56,7 @@ internal const val TAG_SEQUENCE: ULong = 0x40uL
 internal const val TAG_OBJECT: ULong = 0x41uL
 internal const val TAG_ENTRY_MAPPING: ULong = 0x42uL
 
-// Default resource limits (crates/consema-pvce/src/lib.rs:71-82, 127-138).
+// Default resource limits (consema-rs/consema-pvce/src/lib.rs:71-82, 127-138).
 private const val DEFAULT_MAX_BYTES = 64 shl 20 // 64 MiB
 private const val DEFAULT_MAX_DEPTH = 256
 private const val DEFAULT_MAX_NODES = 1_000_000
@@ -66,7 +66,7 @@ private const val DEFAULT_MAX_BLOB_BYTES = 64 shl 20 // 64 MiB
 
 /**
  * The strict PVCE/1 decoder resource limits (the Rust DecodeLimits,
- * crates/consema-pvce/src/lib.rs:56-82). The zero value rejects every
+ * consema-rs/consema-pvce/src/lib.rs:56-82). The zero value rejects every
  * stream; use [DecodeLimits.default].
  */
 data class DecodeLimits(
@@ -100,7 +100,7 @@ data class DecodeLimits(
 
 /**
  * The bounded PVCE/1 encoder resource limits (the Rust EncodeLimits,
- * crates/consema-pvce/src/lib.rs:111-138). The zero value rejects every
+ * consema-rs/consema-pvce/src/lib.rs:111-138). The zero value rejects every
  * value; use [EncodeLimits.default].
  */
 data class EncodeLimits(
@@ -141,7 +141,7 @@ fun encodePvce(value: PortableValue): ByteArray {
 }
 
 /** Encodes one value after measuring it against explicit resource limits
- * (the Rust encode_bounded, crates/consema-pvce/src/lib.rs:150-156). It
+ * (the Rust encode_bounded, consema-rs/consema-pvce/src/lib.rs:150-156). It
  * never truncates: exceeding any limit throws a resource-limit exception
  * with no partial output. */
 fun encodePvceBounded(value: PortableValue, limits: EncodeLimits): ByteArray {
@@ -184,7 +184,7 @@ fun decodePvce(stream: ByteArray, limits: DecodeLimits): PortableValue {
 }
 
 /** Writes one tag-length-prefixed record (the Rust write_record,
- * crates/consema-pvce/src/lib.rs:610-614). */
+ * consema-rs/consema-pvce/src/lib.rs:610-614). */
 private fun encodeRecordInto(out: MutableList<Byte>, value: PortableValue) {
     val (tag, payload) = encodePayload(value)
     appendVarint(out, tag)
@@ -283,7 +283,7 @@ private fun encodePayload(value: PortableValue): Pair<ULong, ByteArray> {
 
 /** Writes the sign octet, the magnitude length varint, and the minimal
  * big-endian magnitude (the Rust encode_integer_payload,
- * crates/consema-pvce/src/lib.rs:545-554). */
+ * consema-rs/consema-pvce/src/lib.rs:545-554). */
 private fun appendIntegerPayload(out: MutableList<Byte>, value: BigInteger) {
     out.add(
         when (value.signum()) {
@@ -315,7 +315,7 @@ internal fun minimalMagnitude(value: BigInteger): ByteArray {
 }
 
 /** Writes a length-prefixed integer payload (the Rust encode_integer_field,
- * crates/consema-pvce/src/lib.rs:556-561). */
+ * consema-rs/consema-pvce/src/lib.rs:556-561). */
 private fun appendIntegerField(out: MutableList<Byte>, value: BigInteger) {
     val field = ArrayList<Byte>(8)
     appendIntegerPayload(field, value)
@@ -324,7 +324,7 @@ private fun appendIntegerField(out: MutableList<Byte>, value: BigInteger) {
 }
 
 /** Writes a length-prefixed decimal payload (the Rust encode_decimal_field,
- * crates/consema-pvce/src/lib.rs:568-573). */
+ * consema-rs/consema-pvce/src/lib.rs:568-573). */
 private fun appendDecimalField(out: MutableList<Byte>, value: PvDecimal) {
     val field = ArrayList<Byte>(16)
     appendIntegerField(field, value.coefficient)
@@ -334,7 +334,7 @@ private fun appendDecimalField(out: MutableList<Byte>, value: PvDecimal) {
 }
 
 /** Writes a length-prefixed date payload (the Rust encode_date_field,
- * crates/consema-pvce/src/lib.rs:586-591). */
+ * consema-rs/consema-pvce/src/lib.rs:586-591). */
 private fun appendDateField(out: MutableList<Byte>, value: PvDate) {
     val field = ArrayList<Byte>(8)
     appendIntegerField(field, value.year)
@@ -345,7 +345,7 @@ private fun appendDateField(out: MutableList<Byte>, value: PvDate) {
 }
 
 /** Writes a length-prefixed time payload (the Rust encode_time_field,
- * crates/consema-pvce/src/lib.rs:598-603). */
+ * consema-rs/consema-pvce/src/lib.rs:598-603). */
 private fun appendTimeField(out: MutableList<Byte>, value: PvTime) {
     val field = ArrayList<Byte>(16)
     field.add(value.hour.toByte())
@@ -357,14 +357,14 @@ private fun appendTimeField(out: MutableList<Byte>, value: PvTime) {
 }
 
 /** Writes a length-prefixed byte string (the Rust encode_blob,
- * crates/consema-pvce/src/lib.rs:575-578). */
+ * consema-rs/consema-pvce/src/lib.rs:575-578). */
 private fun appendBlob(out: MutableList<Byte>, bytes: ByteArray) {
     appendVarint(out, bytes.size.toULong())
     for (octet in bytes) out.add(octet)
 }
 
 /** Writes the minimal unsigned LEB128 encoding of [value] (the Rust
- * write_varint, crates/consema-pvce/src/lib.rs:616-628). */
+ * write_varint, consema-rs/consema-pvce/src/lib.rs:616-628). */
 private fun appendVarint(out: MutableList<Byte>, value: ULong) {
     var remaining = value
     while (true) {
@@ -381,7 +381,7 @@ private fun appendVarint(out: MutableList<Byte>, value: ULong) {
 }
 
 /** Returns the encoded length of [value] as a minimal unsigned LEB128 (the
- * Rust const varint_size, crates/consema-pvce/src/lib.rs:370-377). */
+ * Rust const varint_size, consema-rs/consema-pvce/src/lib.rs:370-377). */
 internal fun varintSize(value: ULong): Int {
     var size = 1
     var remaining = value
@@ -393,7 +393,7 @@ internal fun varintSize(value: ULong): Int {
 }
 
 /** The strict streaming decoder over one PVCE/1 stream or payload (the Rust
- * Reader, crates/consema-pvce/src/lib.rs:630-723). */
+ * Reader, consema-rs/consema-pvce/src/lib.rs:630-723). */
 internal class Reader(val bytes: ByteArray, val limits: DecodeLimits) {
     var offset = 0
         private set
@@ -462,7 +462,7 @@ internal class Reader(val bytes: ByteArray, val limits: DecodeLimits) {
     }
 
     /** Decodes one record whose payload is already delimited (the Rust
-     * decode_core_record, crates/consema-pvce/src/lib.rs:725-833): it
+     * decode_core_record, consema-rs/consema-pvce/src/lib.rs:725-833): it
      * enforces the depth and node limits, decodes the payload, and rejects
      * trailing payload bytes. */
     fun decodeRecord(tag: ULong, payload: ByteArray, depth: Int): PortableValue {
@@ -619,7 +619,7 @@ internal class Reader(val bytes: ByteArray, val limits: DecodeLimits) {
         )
 
     /** Decodes one integer payload (the Rust decode_integer_payload,
-     * crates/consema-pvce/src/lib.rs:835-846). */
+     * consema-rs/consema-pvce/src/lib.rs:835-846). */
     private fun decodeInteger(): PvInteger {
         val sign = octet()
         val n = length(limits.maxIntegerBytes, "integer-bytes")
@@ -650,7 +650,7 @@ internal class Reader(val bytes: ByteArray, val limits: DecodeLimits) {
     }
 
     /** Decodes one length-prefixed integer field (the Rust
-     * decode_integer_field, crates/consema-pvce/src/lib.rs:848-860). */
+     * decode_integer_field, consema-rs/consema-pvce/src/lib.rs:848-860). */
     private fun decodeIntegerField(): PvInteger {
         val n = length(limits.maxIntegerBytes + 16, "integer-field")
         val payload = take(n)
@@ -666,7 +666,7 @@ internal class Reader(val bytes: ByteArray, val limits: DecodeLimits) {
 
     /** Decodes one decimal payload and rejects unnormalized
      * coefficient/exponent pairs (the Rust decode_decimal_payload,
-     * crates/consema-pvce/src/lib.rs:862-870). */
+     * consema-rs/consema-pvce/src/lib.rs:862-870). */
     private fun decodeDecimal(): PvDecimal {
         val coefficient = decodeIntegerField()
         val exponent = decodeIntegerField()
@@ -681,7 +681,7 @@ internal class Reader(val bytes: ByteArray, val limits: DecodeLimits) {
     }
 
     /** Decodes one length-prefixed decimal field (the Rust
-     * decode_decimal_field, crates/consema-pvce/src/lib.rs:872-888). */
+     * decode_decimal_field, consema-rs/consema-pvce/src/lib.rs:872-888). */
     private fun decodeDecimalField(): PvDecimal {
         val n = length(limits.maxIntegerBytes * 2 + 32, "decimal-field")
         val payload = take(n)
@@ -696,7 +696,7 @@ internal class Reader(val bytes: ByteArray, val limits: DecodeLimits) {
     }
 
     /** Decodes one date payload (the Rust decode_date_payload,
-     * crates/consema-pvce/src/lib.rs:895-900). Invalid calendar fields map
+     * consema-rs/consema-pvce/src/lib.rs:895-900). Invalid calendar fields map
      * to INVALID_TEMPORAL. */
     private fun decodeDate(): PvDate {
         val year = decodeIntegerField()
@@ -713,7 +713,7 @@ internal class Reader(val bytes: ByteArray, val limits: DecodeLimits) {
     }
 
     /** Decodes one length-prefixed date field (the Rust decode_date_field,
-     * crates/consema-pvce/src/lib.rs:902-914). */
+     * consema-rs/consema-pvce/src/lib.rs:902-914). */
     private fun decodeDateField(): PvDate {
         val n = length(limits.maxIntegerBytes + 32, "date-field")
         val payload = take(n)
@@ -728,7 +728,7 @@ internal class Reader(val bytes: ByteArray, val limits: DecodeLimits) {
     }
 
     /** Decodes one time payload (the Rust decode_time_payload,
-     * crates/consema-pvce/src/lib.rs:916-922). */
+     * consema-rs/consema-pvce/src/lib.rs:916-922). */
     private fun decodeTime(): PvTime {
         val hour = octet()
         val minute = octet()
@@ -745,7 +745,7 @@ internal class Reader(val bytes: ByteArray, val limits: DecodeLimits) {
     }
 
     /** Decodes one length-prefixed time field (the Rust decode_time_field,
-     * crates/consema-pvce/src/lib.rs:924-940). */
+     * consema-rs/consema-pvce/src/lib.rs:924-940). */
     private fun decodeTimeField(): PvTime {
         val n = length(limits.maxIntegerBytes * 2 + 64, "time-field")
         val payload = take(n)
@@ -760,7 +760,7 @@ internal class Reader(val bytes: ByteArray, val limits: DecodeLimits) {
     }
 
     /** Decodes one length-prefixed byte string (the Rust decode_blob,
-     * crates/consema-pvce/src/lib.rs:890-893). */
+     * consema-rs/consema-pvce/src/lib.rs:890-893). */
     private fun decodeBlob(): ByteArray {
         val n = length(limits.maxBlobBytes, "blob-bytes")
         return take(n)
@@ -768,7 +768,7 @@ internal class Reader(val bytes: ByteArray, val limits: DecodeLimits) {
 }
 
 /** Converts a decoded offset integer to an Int (the Rust
- * to_i64().and_then(i32::try_from), crates/consema-pvce/src/lib.rs:768-771). */
+ * to_i64().and_then(i32::try_from), consema-rs/consema-pvce/src/lib.rs:768-771). */
 private fun offsetToI32(offset: PvInteger): Int? {
     val value = offset.value
     if (value.bitLength() > 31) {
@@ -778,7 +778,7 @@ private fun offsetToI32(offset: PvInteger): Int? {
 }
 
 /** Measures a value's canonical PVCE/1 stream size under encode limits
- * without producing bytes (the Rust Sizer, crates/consema-pvce/src/lib.rs:
+ * without producing bytes (the Rust Sizer, consema-rs/consema-pvce/src/lib.rs:
  * 170-364). */
 private class Sizer(private val limits: EncodeLimits) {
     private var nodes = 0

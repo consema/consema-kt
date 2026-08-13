@@ -1,7 +1,7 @@
 // Transferable dry-run facts for one fully validated edit transaction.
 //
 // Data authority:
-//   - RFC 0004 §14 (docs/rfcs/0004-materialization-conversion-and-structural-
+//   - RFC 0004 §14 (https://github.com/consema/consema/blob/main/docs/rfcs/0004-materialization-conversion-and-structural-
 //     edit-v1.md:338-356) freezes the dry-run EditPlan v1: dry-run performs
 //     every deterministic validation and byte-planning step except publishing
 //     a new Document; its transferable form contains schema
@@ -10,17 +10,19 @@
 //     ordered report; a dry-run plan is not authority to write a file and is
 //     never applied without rechecking base digest and every original-byte
 //     precondition.
-//   - crates/consema-document/src/edit_plan.rs:1-273 pins the shapes and
+//   - consema-rs/consema-document/src/edit_plan.rs:1-273 pins the shapes and
 //     the validation bounds (source_id non-empty and <= 1024 characters;
 //     summary argument names lowercase/digit/underscore <= 64, values
 //     non-empty <= 1024, at most 64 arguments; operation metadata
 //     "operation.{index}" keys must match the ordered operation IDs).
-//   - go/document/edit_plan.go is a cross-reference only.
+//   - consema-go/go/document/edit_plan.go is a cross-reference only.
 //
 // The operation IDs referenced by [EditOperationSummary] are the frozen
 // format operation registrations of RFC 0004 §10 (json.edit.*@1,
-// toml.edit.*@1, docs/rfcs/0004-...md:247-266); the full
-// FormatOperationRegistry belongs to the L4 structural-edit milestone.
+// toml.edit.*@1, https://github.com/consema/consema/blob/main/docs/rfcs/0004-...md:247-266); the full
+// FormatOperationRegistry is not shipped in Kotlin (recorded gap, six-repo
+// audit G090; the facade publishes per-profile operation registries,
+// CapabilityParity.kt).
 
 package consema.document
 

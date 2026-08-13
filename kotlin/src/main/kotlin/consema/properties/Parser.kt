@@ -1,7 +1,7 @@
 // The byte-exact Java Properties Reader/Latin-1 scanner and recovery parser.
 //
 // Data authority:
-//   - RFC 0010 §5-§8 (docs/rfcs/0010-java-properties-profiles-v1.md:132-235):
+//   - RFC 0010 §5-§8 (https://github.com/consema/consema/blob/main/docs/rfcs/0010-java-properties-profiles-v1.md:132-235):
 //     natural/logical lines; continuation by an odd run of terminal
 //     backslashes with the JDK end-of-source rule; the key/separator/element
 //     grammar (leading whitespace, unescaped `=`/`:`/whitespace terminates
@@ -10,12 +10,12 @@
 //     records and never publish a partial property.
 //   - conformance/vectors/java-properties-v1.json pins the per-case
 //     formations, counts, hex values, statuses, and codes.
-//   - crates/consema-properties/src/parser.rs is the byte-arbitration
+//   - consema-rs/consema-properties/src/parser.rs is the byte-arbitration
 //     authority (atoms parser.rs:93-99, natural-line scan parser.rs:230-298,
 //     logical-line assembly parser.rs:352-469, key/split parser.rs:471-507,
 //     escape decoding parser.rs:909-996, recovery parser.rs:626-666,
 //     duplicate groups parser.rs:668-696, coverage parser.rs:698-729).
-//     go/properties/parser.go is a cross-reference only.
+//     consema-go/go/properties/parser.go is a cross-reference only.
 //
 // Kotlin-idiomatic design (NOT a translation): the parser works over
 // immutable atom records (decoded scalar + exact raw span) with a mutable

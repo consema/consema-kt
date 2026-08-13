@@ -1,7 +1,7 @@
 // The frozen HCL format operation registry (RFC 0014 §10, RFC 0004 §10).
 //
 // Data authority:
-//   - crates/consema-hcl/src/operation_registry.rs:16-99 pins every id,
+//   - consema-rs/consema-hcl/src/operation_registry.rs:16-99 pins every id,
 //     target role, argument, and support classification: `hcl.native@1`
 //     publishes all six structural operations
 //     (operation_registry.rs:105-127: hcl.edit.insert-attribute@1,
@@ -10,10 +10,10 @@
 //     hcl.edit.set-attribute-value@1); `hcl.tfvars@1` publishes the four
 //     attribute operations only (operation_registry.rs:129-156), because
 //     the tfvars restriction admits no block (RFC 0014 §5, §10).
-//   - RFC 0014 §10 (docs/rfcs/0014-hcl-family-profiles-v1.md:630-671)
+//   - RFC 0014 §10 (https://github.com/consema/consema/blob/main/docs/rfcs/0014-hcl-family-profiles-v1.md:630-671)
 //     freezes the six operation semantics; RFC 0004 §10 (:244-269) freezes
 //     the registry discipline.
-//   - go/hcl is a cross-reference only.
+//   - consema-go/go/hcl is a cross-reference only.
 //
 // Kotlin-idiomatic design: the full FormatOperationRegistry type belongs to
 // the L4 structural-edit milestone (document/EditPlan.kt:22-23); this L3

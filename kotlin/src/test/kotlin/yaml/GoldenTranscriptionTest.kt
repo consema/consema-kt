@@ -3,12 +3,13 @@
 // Each test transcribes one vector case (input.source / expected.*) VERBATIM
 // from conformance/vectors/yaml-v1.json and asserts the language-neutral
 // facts the Rust/Go differential runners assert
-// (crates/consema-conformance/src/yaml_v1.rs:167-186 for scalar profiles,
+// (consema-rs/consema-conformance/src/yaml_v1.rs:167-186 for scalar profiles,
 // :385-405 for syntax facts, :407-460 for materialization, :470-530 for
 // edits). The case id is cited on every test.
 //
-// This file is an intent document: the toolchain is not verified yet, so
-// these tests pin the intent; they run at the L2 verification gate.
+// This file runs in the verified toolchain gate (kotlin-gates gradlew
+// test / the scripts/kotlin-verify-*.ps1 direct path): the toolchain is
+// verified and this file is executed.
 
 package yaml
 

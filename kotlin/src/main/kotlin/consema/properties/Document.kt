@@ -3,7 +3,7 @@
 // comments, escapes, recovery records, and the lossless coverage index.
 //
 // Data authority:
-//   - RFC 0010 §2, §5, §9 (docs/rfcs/0010-java-properties-profiles-v1.md:
+//   - RFC 0010 §2, §5, §9 (https://github.com/consema/consema/blob/main/docs/rfcs/0010-java-properties-profiles-v1.md:
 //     37-63, 132-159, 236-267): the Document ends at the native layer; the
 //     native roles are PropertiesDocument / PropertiesNaturalLine /
 //     PropertiesLogicalLine / PropertiesProperty / PropertiesComment /
@@ -11,9 +11,9 @@
 //     the immutable Document retains exact terminators, continuation
 //     markers, escape identity/spelling/output ranges, and exhaustive
 //     non-overlapping syntax coverage.
-//   - crates/consema-properties/src/lib.rs:309-589 (the entity shapes and
+//   - consema-rs/consema-properties/src/lib.rs:309-589 (the entity shapes and
 //     accessors) and lib.rs:590-775 (Document) are the byte-arbitration
-//     authority. go/properties/document.go is a cross-reference only.
+//     authority. consema-go/go/properties/document.go is a cross-reference only.
 //   - The node roles are pinned in kotlin/.../document/Location.kt:119-141
 //     (PropertiesDocument .. PropertiesSyntaxPiece).
 //

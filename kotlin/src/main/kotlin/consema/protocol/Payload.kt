@@ -1,6 +1,6 @@
 // Registered-payload validation dispatch.
 //
-// Data authority: crates/consema-protocol/src/payload.rs — NewProtocolMessage
+// Data authority: consema-rs/consema-protocol/src/payload.rs — NewProtocolMessage
 // dispatches every registered contract to its full record decoder. This
 // package implements those record types in stages (L0): core.cli-output@1,
 // core.batch-plan@1, core.batch-result@1, core.diagnostic@1,
@@ -10,7 +10,7 @@
 // contracts are validated to the schema-discriminator level until their
 // owning milestone ships the record type (documented reachable-code
 // difference; the shared vectors exercise only the implemented records).
-// go/protocol/payload.go is a cross-reference.
+// consema-go/go/protocol/payload.go is a cross-reference.
 
 package consema.protocol
 

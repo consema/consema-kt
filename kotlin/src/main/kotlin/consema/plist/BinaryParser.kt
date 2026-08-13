@@ -1,9 +1,9 @@
-﻿// Formation of `plist.binary@1` documents: the `bplist00` object-table
+// Formation of `plist.binary@1` documents: the `bplist00` object-table
 // representation with offset-table and trailer facts, byte-exact spans, and
 // Complete/Recovered outcomes.
 //
 // Data authority:
-//   - RFC 0013 §2.2, §3, §5 (docs/rfcs/0013-plist-family-profiles-v1.md:
+//   - RFC 0013 §2.2, §3, §5 (https://github.com/consema/consema/blob/main/docs/rfcs/0013-plist-family-profiles-v1.md:
 //     78-89, 90-124, 276-460): the 42-byte minimum, the header, the admitted
 //     marker table, the integer width rules, extended sizes, real/date/
 //     string/data/UID payloads, array/dictionary references, the offset
@@ -11,16 +11,16 @@
 //     §5.11 (no false Complete: every check runs before any object is
 //     decoded, and every offset/ref/size arithmetic is checked before
 //     allocation).
-//   - RFC 0013 §5.12 (docs/rfcs/0013-...md:451-460): non-minimal widths,
+//   - RFC 0013 §5.12 (https://github.com/consema/consema/blob/main/docs/rfcs/0013-...md:451-460): non-minimal widths,
 //     extended-size spellings, and duplicated scalars are legal input
 //     facts, preserved and normalized only by canonical materialization.
 //   - conformance/vectors/plist-v1.json (plist.binary-formation.*) pins the
 //     recover/complete outcomes and the diagnostic codes case by case.
-//   - crates/consema-plist/src/parser_binary.rs is the byte-arbitration
+//   - consema-rs/consema-plist/src/parser_binary.rs is the byte-arbitration
 //     authority (trailer checks parser_binary.rs:776-917, offset table
 //     parser_binary.rs:919-972, object scan parser_binary.rs:976-1252,
 //     extended sizes parser_binary.rs:1254-1324, dict keys parser_binary.rs:
-//     1326-1354, region assembly parser_binary.rs:703-730); go/plist is a
+//     1326-1354, region assembly parser_binary.rs:703-730); consema-go/go/plist is a
 //     cross-reference only.
 //
 // Kotlin-idiomatic design (NOT a translation): the parser is a single

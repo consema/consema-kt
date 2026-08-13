@@ -4,7 +4,7 @@
 // Data authority:
 //   - The registered properties-family codes are transcribed in
 //     kotlin/.../protocol/ErrorRegistry.kt:351-362 from
-//     crates/consema-protocol/src/error_registry.rs:1099-1169 (the twelve
+//     consema-rs/consema-protocol/src/error_registry.rs:1099-1169 (the twelve
 //     0.8.0 codes: java-properties.edit.canonical-fallback@1,
 //     java-properties.edit.invalid-placement@1,
 //     java-properties.java-string.invalid-wire@1,
@@ -25,7 +25,7 @@
 //   - Fatal formation failures use the frozen core.parse.resource-limit@1
 //     (error_registry.rs:39-42) and core.source.* codes (source_v1.rs:
 //     410-421), mapped in Encoding.kt.
-//   - RFC 0016 §6 (docs/rfcs/0016-go-api-mapping-v1.md:194-200): SDK errors
+//   - RFC 0016 §6 (https://github.com/consema/consema/blob/main/docs/rfcs/0016-go-api-mapping-v1.md:194-200): SDK errors
 //     carry the stable registered code; error text is human presentation only.
 //
 // Kotlin-idiomatic design: fatal formation failure is a typed exception

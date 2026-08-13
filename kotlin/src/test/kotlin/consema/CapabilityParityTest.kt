@@ -4,9 +4,9 @@
 // mandatory behavior is Rust-only (multi-language-implementation-plan.md
 // §6 capability parity gate).
 //
-// Data authority: docs/fc-manifest-0.13.0.json:30-34 (capability_set
+// Data authority: https://github.com/consema/consema/blob/main/docs/fc-manifest-0.13.0.json:30-34 (capability_set
 // record); crates/consema/src/lib.rs:317-488 (the Rust facade's own
-// registry tests this test mirrors); go/capability_parity_test.go is a
+// registry tests this test mirrors); consema-go/go/capability_parity_test.go is a
 // cross-reference only.
 
 package consema

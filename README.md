@@ -9,8 +9,10 @@ Consema 语言中立契约（RFC 0016）的 **Kotlin/JVM 实现**仓库。本仓
 [github.com/consema/consema](https://github.com/consema/consema)；本仓承载
 Kotlin 实现与跨语言差分验证工具。
 
-Version: 1.0.0-rc.1（`kotlin/build.gradle.kts` rootProject version；CI
-check-version-consistency job 断言与 README 一致）。
+Version: 1.0.0-rc.1
+
+（版本行：`kotlin/build.gradle.kts` rootProject version；CI
+check-version-consistency job 断言与 README 整行一致。）
 
 ## 快速开始（30 秒跑通）
 
@@ -19,11 +21,15 @@ Maven Central 坐标（发布后可用）：`dev.consema:consema-kotlin:1.0.0-rc
 把下面内容保存为 `kotlin/quickstart.kt`，与主源码一起编译后运行（一个 JSON 文档走完 parse → query → edit → render 四条链）：
 
 ```text
-kotlinc -jvm-target 17 -d out src/main/kotlin quickstart.kt
+kotlinc -J-Xmx2g -jvm-target 17 -d out src/main/kotlin quickstart.kt
 java -cp "out;<kotlinc>\lib\kotlin-stdlib.jar" QuickstartKt
 ```
 
-同一示例已入库为 [`kotlin/examples/Quickstart.kt`](kotlin/examples/Quickstart.kt)（带 `package consema.examples`，运行类 `consema.examples.QuickstartKt`），由 CI examples job 与 SdkChain.kt 一起编译并运行验证；粘贴版与入库版必须保持一致。
+注：kotlinc 2.2.0 启动器默认堆为 512 MiB，对 163 个主源文件的 K2 编译会在
+IR 阶段耗尽堆——必须加 `-J-Xmx2g`（与 CI 直驱路径的内存档位一致，见
+kotlin/gradle.properties 与 ci-kotlin.yml）。
+
+同一示例已入库为 [`kotlin/examples/Quickstart.kt`](kotlin/examples/Quickstart.kt)（带 `package consema.examples`，运行类 `consema.examples.QuickstartKt`），由 CI examples job 与 SdkChain.kt 一起编译并运行验证；CI examples job 还逐字节比对 README 栅栏与入库文件（粘贴版与入库版必须保持一致，由门禁强制）。
 
 ```kotlin
 import consema.core.PvInteger
@@ -70,7 +76,7 @@ fun main() {
 
 ## API 摘要
 
-核心面一行式（完整签名见 [kotlin/README.md](kotlin/README.md)；八个格式家族各有独立的 `parse*` / `execute*Query` / `project` / `materialize` / `convert*` 入口）：
+核心面一行式（完整签名见 [kotlin/README.md](kotlin/README.md)；`parse*` / `execute*Query` / `project` / `materialize` 按格式家族分布，`convert*` 是根级统一入口）：
 
 | 操作 | facade 入口 |
 | --- | --- |
@@ -80,20 +86,22 @@ fun main() {
 | edit | `consema.json.EditTransactionBuilder.new(document)` + `Document.commit(transaction: EditTransaction): EditCommit`（`commit.document` 为编辑后文档） |
 | materialize | `consema.json.materialize(value: PortableValue, request: MaterializationRequest): MaterializationResult` |
 | convert | `consema.convertJson(source: json.Document, projectionRequest: json.ProjectionRequest, materializationRequest: MaterializationRequest): ConversionResult`（另有 convertIni / convertProperties / convertToml / convertYaml / convertXml / convertPlist / convertHcl） |
-| registry | `consema.formatFamilies()` / `consema.profiles()` / `consema.queryDomains()` / `consema.operationRegistry(profile)`（8 家族 / 16 profiles / 21 查询域 / 16 操作注册表） |
+| registry | `consema.formatFamilies()` / `consema.profiles()` / `consema.queryDomains()` / `consema.operationRegistry(profile: ProfileId)`（8 家族 / 16 profiles / 21 查询域 / 16 操作注册表；组合示例：`profiles().map { operationRegistry(it.profile) }`） |
 
 ## 布局
 
-- `kotlin/`：Kotlin/JVM 包（运行时零依赖——build.gradle.kts 的 runtime
-  classpath 为空，全部依赖 test-scoped）。完整文档见
+- `kotlin/`：Kotlin/JVM 包（运行时仅 kotlin-stdlib 及 KGP 注入的传递
+  org.jetbrains:annotations——build.gradle.kts 自身声明全部 test-scoped）。完整文档见
   [kotlin/README.md](kotlin/README.md)。
 - `scripts/`：跨语言差分验证脚本（byte parity / normalized differential /
   protocol exchange）。脚本构建 consema-rs 的 Rust emitter 并对拍 Kotlin 实现；
   Rust 侧来自 consema-rs 仓 checkout（CI 多仓模式），conformance 数据来自规范仓 checkout。
-- `.github/workflows/ci-kotlin.yml`：Kotlin 门禁（gradlew 单测 + kover 60%
-  覆盖率 + 零依赖）、conformance runner 门禁（18 suites / 519 cases，直驱
-  K2JVMCompiler）与 Kotlin-Rust 差分门禁（直驱 K2JVMCompiler；windows-latest
-  多仓 checkout）。
+- `.github/workflows/ci-kotlin.yml`：七个 job 的 Kotlin CI——kotlin-gates
+  （gradlew 单测 + kover 60% 覆盖率 + 依赖面断言）、kotlin-conformance
+  （18 suites / 519 cases，聚合 digest 字面量钉 + 直驱 K2JVMCompiler）、
+  kotlin-differential（Kotlin-Rust 差分门禁，直驱 K2JVMCompiler；多仓
+  checkout）、check-version-consistency、examples、kotlin-package 与聚合
+  check（windows-latest 4 job + ubuntu-latest 3 job）。
 
 ## 构建与测试
 
@@ -113,8 +121,8 @@ powershell -File scripts/kotlin-verify-protocol-exchange.ps1
 
 - **支持哪些配置格式？** 八个格式家族、16 个 profiles：JSON（`json.strict@1` / `jsonc.bounded@1` / `json5.standard@1`）、TOML（`toml.1.0@1`）、YAML（`yaml.1.2-core@1` / `yaml.1.1-compat@1`）、INI（`ini.portable@1` / `ini.windows@1` / `ini.python-configparser@1`）、Java Properties（`java-properties.reader@1` / `java-properties.latin1@1`）、XML（`xml.1.0-safe@1`）、Property List（`plist.xml@1` / `plist.binary@1`）、HCL（`hcl.native@1` / `hcl.tfvars@1`）。完整面枚举见 `consema.profiles()`。
 - **与 Jackson / kotlinx.serialization 的关系？** 互补而非竞争：Jackson/kotlinx.serialization 做 JVM 对象与数据格式间的类型编解码，Consema 做格式内容处理（无损文档、查询、投影、原子编辑、跨格式转换）；Consema 明确不做业务 schema 校验（平台接入指南）。
-- **性能如何？** 行为一致性由 18 suites / 519 cases conformance 门禁与跨语言差分门禁保证；解析/渲染基准基线见规范仓 `docs/BENCHMARKS-0.13.0.md` 与 Go 仓 [go/README.md](https://github.com/consema/consema-go/blob/main/go/README.md)。
-- **零依赖吗？** 是——runtime classpath 为空（build.gradle.kts 全部依赖 test-scoped）。
+- **性能如何？** 行为一致性由 18 suites / 519 cases conformance 门禁与跨语言差分门禁保证；解析/渲染基准基线见规范仓 `https://github.com/consema/consema/blob/main/docs/BENCHMARKS-0.13.0.md` 与 Go 仓 [consema-go/go/README.md](https://github.com/consema/consema-go/blob/main/go/README.md)。
+- **依赖面？** 运行时仅 kotlin-stdlib（KGP 默认注入）及其传递的 `org.jetbrains:annotations`——build.gradle.kts 自身声明全部 test-scoped，依赖门禁断言 runtimeClasspath 不含任何第三方 group。
 - **跨语言一致性如何保证？** 18 套语言无关 conformance suite 共 519/519 cases（聚合 digest `cfd6e296…`）由规范仓维护、五仓共享；CI 多仓 checkout 跑 conformance runner 与 Kotlin-Rust 差分门禁（byte parity / normalized differential / protocol-exchange）。
 - **兼容承诺？** 语义化版本；`check-version-consistency` 门禁断言 README 版本行与 `build.gradle.kts` 一致；kover 60% 行覆盖门禁；兼容与支持政策见 RFC 0020。
 - **如何贡献？** 见本仓 [CONTRIBUTING.md](CONTRIBUTING.md)（规范仓为权威版）；conformance 向量/夹具/oracle/差分数据权威在规范仓——向量变更是五仓同步事件，必须先回规范仓提交再同步五个语言仓。

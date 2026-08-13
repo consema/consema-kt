@@ -1,7 +1,7 @@
 // Deterministic PortableValue materialization for TOML 1.0.
 //
 // Data authority:
-//   - RFC 0004 §3-§4, §6-§8 (docs/rfcs/0004-materialization-conversion-and-
+//   - RFC 0004 §3-§4, §6-§8 (https://github.com/consema/consema/blob/main/docs/rfcs/0004-materialization-conversion-and-
 //     structural-edit-v1.md): the common MaterializationRequest, the frozen
 //     target profile toml.1.0@1 and style toml.canonical-document@1 (one
 //     assignment per root object entry, nested objects as deterministic
@@ -12,7 +12,7 @@
 //     satisfy TOML precision/offset constraints exactly), the completion
 //     algebra (Complete | Failed with no partial bytes), and the
 //     provenance directions.
-//   - crates/consema-toml/src/materialization.rs:19-34 (materialize), :53-99
+//   - consema-rs/consema-toml/src/materialization.rs:19-34 (materialize), :53-99
 //     (materialize_complete and requested_contract), :101-176 (PreparedRoot
 //     and the explicit UniqueStringEntriesToObject conversion with the
 //     core.materialization.mapping-transformed@1 event), :178-186 (the
@@ -22,7 +22,7 @@
 //     toml-* (lines 60-94) pin the canonical outputs, the Transformed
 //     conversion event, and the rejection codes; toml-v1.json
 //     toml.corpus.* pins reparse-and-project closure.
-//   - go/toml/materialization.go is a cross-reference only.
+//   - consema-go/go/toml/materialization.go is a cross-reference only.
 //
 // Kotlin-idiomatic design: the family consumes the document-domain
 // MaterializationResult algebra; failures are the typed

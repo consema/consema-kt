@@ -3,11 +3,12 @@
 // Each test transcribes one vector case (input.source / expected.*) VERBATIM
 // from conformance/vectors/json-family-v2.json and asserts the language-
 // neutral facts the Rust/Go differential runners assert
-// (crates/consema-conformance/src/json_family_v2.rs:344-444 for parse cases,
+// (consema-rs/consema-conformance/src/json_family_v2.rs:344-444 for parse cases,
 // :582-602 for materialization cases). The case id is cited on every test.
 //
-// This file is an intent document: the toolchain is not verified yet, so
-// these tests pin the intent; they run at the L1 verification gate.
+// This file runs in the verified toolchain gate (kotlin-gates gradlew
+// test / the scripts/kotlin-verify-*.ps1 direct path): the toolchain is
+// verified and this file is executed.
 
 package json
 

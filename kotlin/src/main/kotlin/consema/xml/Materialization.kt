@@ -1,7 +1,7 @@
 // Canonical `xml.safe-canonical-document@1` materialization (RFC 0012 §10).
 //
 // Data authority:
-//   - RFC 0012 §10 (docs/rfcs/0012-xml-1.0-safe-profile-v1.md:350-373):
+//   - RFC 0012 §10 (https://github.com/consema/consema/blob/main/docs/rfcs/0012-xml-1.0-safe-profile-v1.md:350-373):
 //     the canonical style consumes one fully validated `xml.element-tree@1`
 //     value and creates a new `xml.1.0-safe@1` Document; it is not W3C
 //     Canonical XML; the style deterministically chooses declaration
@@ -16,20 +16,20 @@
 //     Document and no partial output bytes.
 //   - conformance/vectors/xml-1-0-safe-v1.json cases xml.materialization.*
 //     pin the render bytes and the `"invalid-record"` failure spelling.
-//   - crates/consema-xml/src/materialization.rs is the byte-arbitration
+//   - consema-rs/consema-xml/src/materialization.rs is the byte-arbitration
 //     authority: entry (materialization.rs:36-88), request validation
 //     (materialization.rs:90-107), reparse limits (materialization.rs:
 //     109-140), encoding (materialization.rs:142-172), record validation
 //     (materialization.rs:174-500), the prefix table (materialization.rs:
 //     502-526), the writer (materialization.rs:565-900), and the closure
 //     verification (materialization.rs:902-1100).
-//   - RFC 0004 §3/§7 (docs/rfcs/0004-...md:57-84, 171-186) pins the common
+//   - RFC 0004 §3/§7 (https://github.com/consema/consema/blob/main/docs/rfcs/0004-...md:57-84, 171-186) pins the common
 //     MaterializationRequest and the completion algebra; the Kotlin common
 //     contracts live in consema.document (Materialization.kt).
 //
 // The failure spellings used by the vectors are the stable
 // `materialization_failure_code` mapping of the conformance runner
-// (crates/consema-conformance/src/xml_v1.rs:855-871): `"invalid-record"`
+// (consema-rs/consema-conformance/src/xml_v1.rs:855-871): `"invalid-record"`
 // for InvalidRequest, plus unsupported-profile / unsupported-style /
 // unsupported-encoding / unsupported-newline / unrepresentable /
 // resource-limit / formation-failed.

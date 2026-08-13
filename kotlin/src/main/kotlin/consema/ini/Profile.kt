@@ -1,26 +1,26 @@
 // The frozen INI-family language profiles and their closed vocabularies.
 //
 // Data authority (language-neutral sources first):
-//   - RFC 0009 §1 (docs/rfcs/0009-ini-family-profiles-v1.md:16-36): Consema
+//   - RFC 0009 §1 (https://github.com/consema/consema/blob/main/docs/rfcs/0009-ini-family-profiles-v1.md:16-36): Consema
 //     publishes exactly three independent profiles `ini.portable@1`,
 //     `ini.windows@1`, `ini.python-configparser@1`; the caller selects one
 //     profile before formation; there is no auto-detection.
-//   - RFC 0009 §8 (docs/rfcs/0009-...md:254-283): the lossless Document
+//   - RFC 0009 §8 (https://github.com/consema/consema/blob/main/docs/rfcs/0009-...md:254-283): the lossless Document
 //     retains value states Missing | Empty | Present, quote facts, and
 //     duplicate/case-collision groups; the snapshot-bound handles are named
 //     IniDocument / IniPhysicalLine / IniLogicalLine / IniSection /
 //     IniDefaultSection / IniEntry / IniErrorLine.
 //   - conformance/vectors/ini-v1.json pins the profile spellings and the
 //     syntax-kind names the vectors assert (case.formation.*, query.*).
-//   - crates/consema-ini/src/lib.rs:35-56 (IniProfile and its ProfileId),
+//   - consema-rs/consema-ini/src/lib.rs:35-56 (IniProfile and its ProfileId),
 //     lib.rs:121-195 (IniSyntaxKind and the exact as_str names), lib.rs:197-
 //     228 (IniValueState, IniQuoteStyle, IniLogicalLineKind), lib.rs:58-65
-//     (IniEncodingSelection). crates/consema-ini/src/parser.rs:37-59 pins the
+//     (IniEncodingSelection). consema-rs/consema-ini/src/parser.rs:37-59 pins the
 //     encoding-request construction.
-//   - RFC 0009 §3.2 (docs/rfcs/0009-...md:83-104) pins the mandatory v1
+//   - RFC 0009 §3.2 (https://github.com/consema/consema/blob/main/docs/rfcs/0009-...md:83-104) pins the mandatory v1
 //     Windows code-page set: 874, 932, 936, 949, 950, 1250 through 1258, and
 //     65001; no-BOM bytes never imply the machine's active code page.
-//   - go/ini/profile.go and go/ini/parser.go are cross-references only.
+//   - consema-go/go/ini/profile.go and consema-go/go/ini/parser.go are cross-references only.
 //
 // Kotlin-idiomatic design (NOT a translation): the profile is a closed enum;
 // the syntax-kind names and value-state spellings ARE the language-neutral

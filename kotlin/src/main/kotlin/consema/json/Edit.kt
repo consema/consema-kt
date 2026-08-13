@@ -2,14 +2,14 @@
 // commit, dry-run plan, untouched-byte proof, and SourcePatch derivation.
 //
 // Data authority:
-//   - RFC 0004 §11-§16 (docs/rfcs/0004-materialization-conversion-and-
+//   - RFC 0004 §11-§16 (https://github.com/consema/consema/blob/main/docs/rfcs/0004-materialization-conversion-and-
 //     structural-edit-v1.md:271-384): snapshot-bound operations; inserted
 //     values use the target profile's canonical materialization fragment;
 //     delimiter edits own only the necessary comma plus inserted/removed
 //     association span; JSONC comment ownership is explicit; the conflict
 //     algebra; the dry-run plan; the untouched-byte proof; the derived
 //     SourcePatch.
-//   - RFC 0005 §10 (docs/rfcs/0005-json-family-production-v1.md:220-241):
+//   - RFC 0005 §10 (https://github.com/consema/consema/blob/main/docs/rfcs/0005-json-family-production-v1.md:220-241):
 //     move-member supports Start/End/Before/After within one Object, moves
 //     only the exact member association span, owns the required source and
 //     destination comma edits explicitly, and rejects cross-object anchors;
@@ -18,15 +18,15 @@
 //     output bytes and failure names; conformance/vectors/v1.json
 //     (edit.*, lines 107-141, 173-177) pins the PreserveCompatible /
 //     CanonicalForProfile / PreserveElseCanonical scalar behaviors.
-//   - crates/consema-json/src/edit.rs is the byte-arbitration authority
+//   - consema-rs/consema-json/src/edit.rs is the byte-arbitration authority
 //     (commit edit.rs:301-451, dry-run edit.rs:453-468, prepare edit.rs:
 //     472-1023, dependencies edit.rs:1025-1078, metadata/summaries edit.rs:
 //     1095-1267, scalar style edit.rs:1346-1862).
 //   - Kotlin document owns SourcePatch (create/apply, kotlin/.../document/
 //     Patch.kt:147-296) and UntouchedByteProof (kotlin/.../document/
-//     UntouchedProof.kt:83-138). ChangeSet is a post-1.0.0
-//     (冻结前评估项，见五要素终审 F-28.3-1 处置) milestone; this L1
-//     commit carries the ordered diagnostics instead.
+//     UntouchedProof.kt:83-138). ChangeSet is not shipped in the Kotlin
+//     JSON family (recorded gap, six-repo audit G090); the commit carries
+//     the ordered diagnostics instead.
 //
 // Kotlin-idiomatic design: failures are a sealed hierarchy whose [name] is
 // the exact vector spelling (edit_failure_name, json_family_v2.rs:900-922);
@@ -242,9 +242,9 @@ class EditTransactionBuilder internal constructor(private val base: SnapshotIden
     fun build(): EditTransaction = EditTransaction(base, operations.toList())
 }
 
-/** Atomic edit success (edit.rs:246-256). ChangeSet is a post-1.0.0
- * (冻结前评估项，见五要素终审 F-28.3-1 处置) milestone in Kotlin; this L1
- * commit carries the ordered edit diagnostics instead. */
+/** Atomic edit success (edit.rs:246-256). ChangeSet is not shipped in the
+ * Kotlin JSON family (recorded gap, six-repo audit G090); the commit
+ * carries the ordered edit diagnostics instead. */
 class EditCommit(
     /** New immutable document. */
     val document: Document,

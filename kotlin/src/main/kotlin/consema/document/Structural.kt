@@ -1,16 +1,16 @@
 // Formation status and the exhaustive structural coverage indexes.
 //
 // Data authority:
-//   - RFC 0016 §5.1 F10 (docs/rfcs/0016-go-api-mapping-v1.md:172-176):
+//   - RFC 0016 §5.1 F10 (https://github.com/consema/consema/blob/main/docs/rfcs/0016-go-api-mapping-v1.md:172-176):
 //     FormationStatus is a closed two-value enum (Complete, Recovered).
-//   - RFC 0003 §7 (docs/rfcs/0003-source-syntax-query-and-patch-v1.md:163-171):
+//   - RFC 0003 §7 (https://github.com/consema/consema/blob/main/docs/rfcs/0003-source-syntax-query-and-patch-v1.md:163-171):
 //     text and binary coverage obey the same no-gap/no-overlap/final-length
 //     invariant; empty source has an empty valid index; non-empty source
 //     requires at least one non-empty region.
-//   - crates/consema-document/src/lib.rs:404-579 pins the shapes and the
+//   - consema-rs/consema-document/src/lib.rs:404-579 pins the shapes and the
 //     LocationError validation outcomes; conformance/vectors/source-v1.json
 //     cases source.binary.* (lines 102-118) pin the coverage semantics.
-//   - go/document/structural.go and go/document/formation.go are
+//   - consema-go/go/document/structural.go and consema-go/go/document/formation.go are
 //     cross-references only.
 
 package consema.document

@@ -1,18 +1,18 @@
 // Cross-language PVCE/PGCE byte-parity harness (roadmap §16.1 hard gate:
 // "Rust 与 Go 的 PVCE/PGCE bytes 完全一致", extended to Kotlin).
 //
-// The Rust encoder is the single byte authority (crates/consema-pvce,
-// crates/consema-graph). The Kotlin side never imports or calls Rust: the
+// The Rust encoder is the single byte authority (consema-rs/consema-pvce,
+// consema-rs/consema-graph). The Kotlin side never imports or calls Rust: the
 // shared input set (conformance/differential/cases.json) is encoded with
 // the Kotlin codecs (consema.core.Pvce / consema.graph.Pgce) and compared
 // byte for byte with the Rust golden files produced by the Rust example
-// (crates/consema-conformance/examples/emit_parity_bytes.rs) — one
+// (consema-rs/consema-conformance/examples/emit_parity_bytes.rs) — one
 // `<case-id>.hex` per case — plus the bidirectional direction (Rust bytes
 // decode under the Kotlin decoders and re-encode byte-identically).
 // Orchestration: scripts/kotlin-verify-byte-parity.ps1 provisions the golden
 // directory; the test reads it via CONSEMA_DIFFERENTIAL_RUST_DIR.
 //
-// Mirrors go/conformance/differential/differential_test.go (the Go harness
+// Mirrors consema-go/go/conformance/differential/differential_test.go (the Go harness
 // is the cross-reference; the Kotlin encoder API is the Kotlin-idiomatic
 // surface of the same codecs).
 
@@ -79,7 +79,7 @@ data class ParityReport(
 }
 
 /**
- * Loads and validates the checked-in case set: manifest id, case count
+ * Loads and validates the provisioned case set: manifest id, case count
  * lower bound, unique ids, known codecs, decodable PVCE values, buildable
  * PGCE graphs, and fifteen-kind coverage. Throws [IllegalArgumentException]
  * on any violation.

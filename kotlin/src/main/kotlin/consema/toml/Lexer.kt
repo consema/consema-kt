@@ -1,20 +1,20 @@
 // The lossless TOML tokenizer: exhaustive token/trivia byte coverage.
 //
 // Data authority:
-//   - crates/consema-toml/src/parser.rs:360-431 (tokenize): whitespace
+//   - consema-rs/consema-toml/src/parser.rs:360-431 (tokenize): whitespace
 //     (space/tab), newline (LF, CRLF, or bare CR), `#` comment to EOL,
 //     single String piece per `'`/`"` token (the string_end approximation,
 //     parser.rs:480-499), one piece per punctuation byte, and Bare runs
 //     otherwise; every piece is checked against max_token_count BEFORE it is
 //     pushed (parser.rs:413-420).
-//   - crates/consema-toml/src/parser.rs:433-461 (preflight_delimiter_nesting):
+//   - consema-rs/consema-toml/src/parser.rs:433-461 (preflight_delimiter_nesting):
 //     `[`/`{` increment and `]`/`}` decrement a depth counter over Token
 //     pieces only; exceeding max_nesting_depth fails with
 //     resource_limit("nesting_depth", depth, max) BEFORE any syntax parse.
 //   - conformance/vectors/syntax-query-v1.json syntax.toml.* cases pin the
 //     piece ordinal arithmetic ("a = 1 # note\nb = 2\n": Comment ordinal 6,
 //     Newline ordinals 7 and 13) and the kind spellings.
-//   - go/toml is a cross-reference only.
+//   - consema-go/go/toml is a cross-reference only.
 //
 // Kotlin-idiomatic design: the lexer is a pure function over the decoded
 // text returning paired piece spans and kinds; validation of the lossless

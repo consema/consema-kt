@@ -2,7 +2,7 @@
 // diagnostic factory, and the frozen plist-family diagnostic codes.
 //
 // Data authority:
-//   - RFC 0013 §12 (docs/rfcs/0013-plist-family-profiles-v1.md:716-753):
+//   - RFC 0013 §12 (https://github.com/consema/consema/blob/main/docs/rfcs/0013-plist-family-profiles-v1.md:716-753):
 //     stable diagnostics cover source/declaration conflicts, DOCTYPE
 //     mismatch, element/attribute violations, integer and real grammar, date
 //     grammar and calendar validity, base64, XML reference errors, binary
@@ -12,23 +12,23 @@
 //     Codes follow the plist.<phase>.<name>@1 pattern; `plist.parse.*@1`
 //     covers XML grammar diagnostics, `plist.binary.*@1` binary structure
 //     integrity, and `plist.limit.*@1` resource limits. Per RFC 0013 §12
-//     (docs/rfcs/0013-...md:748-753) plist-family diagnostics do NOT enter
+//     (https://github.com/consema/consema/blob/main/docs/rfcs/0013-...md:748-753) plist-family diagnostics do NOT enter
 //     the consema-protocol core error registry, which covers only core/
 //     protocol and line-format contract codes (RFC 0011 §10); the core codes
-//     referenced below are registered in crates/consema-protocol/src/
+//     referenced below are registered in consema-rs/consema-protocol/src/
 //     error_registry.rs (core.parse.resource-limit@1 at error_registry.rs:
 //     38-43; core.edit.* at error_registry.rs:507-543; core.materialization.*
 //     at error_registry.rs:556-604) and transcribed in
 //     kotlin/.../protocol/ErrorRegistry.kt (178, 262-270, 280-288).
-//   - crates/consema-plist/src/parser_xml.rs and parser_binary.rs are the
+//   - consema-rs/consema-plist/src/parser_xml.rs and parser_binary.rs are the
 //     byte-arbitration sources for every plist.parse.* / plist.binary.* code
 //     (each code is cited at its emission site below); projection.rs:393-401
 //     pins the plist.projection.* codes; edit.rs:442-453 pins the edit codes;
 //     materialization.rs:81-88 pins the plist.materialization.* codes;
 //     document.rs:252-289, 718 pins the conversion codes;
-//     crates/consema-conformance/src/plist_v1.rs:1143-1153 pins the
+//     consema-rs/consema-conformance/src/plist_v1.rs:1143-1153 pins the
 //     plist.query.* codes.
-//   - RFC 0016 §6 (docs/rfcs/0016-go-api-mapping-v1.md:194-200): SDK errors
+//   - RFC 0016 §6 (https://github.com/consema/consema/blob/main/docs/rfcs/0016-go-api-mapping-v1.md:194-200): SDK errors
 //     carry the stable registered code; error text is human presentation only.
 //
 // Kotlin-idiomatic design: the family carries its own immutable diagnostic
@@ -54,7 +54,7 @@ import consema.protocol.SourceLocation
 
 /** The frozen plist-family diagnostic codes (RFC 0013 §12; cited per code
  * below). These are NOT part of the core error registry (RFC 0013 §12,
- * docs/rfcs/0013-...md:748-753). */
+ * https://github.com/consema/consema/blob/main/docs/rfcs/0013-...md:748-753). */
 object PlistCodes {
     // -- XML grammar (plist.parse.*@1; parser_xml.rs emission sites) --
     /** Declaration version is not exactly 1.0 (parser_xml.rs:821-828). */
@@ -242,7 +242,7 @@ object PlistCodes {
     const val BINARY_INTERNAL = "plist.binary.internal@1"
 
     /** The caller selected an encoding inconsistent with the profile
-     * (crates/consema-plist/src/lib.rs:246-257 for binary,
+     * (consema-rs/consema-plist/src/lib.rs:246-257 for binary,
      * lib.rs:284-298 for XML). Fatal. */
     const val BINARY_ENCODING = "plist.binary.encoding@1"
 
@@ -399,7 +399,7 @@ data class PlistDiagnostic(
 /**
  * The fatal formation failure of the plist family. Exceeding a parse limit is
  * a ResourceLimit failure carrying the frozen limit code (RFC 0016 §5.1,
- * docs/rfcs/0016-go-api-mapping-v1.md:176); source-construction and encoding
+ * https://github.com/consema/consema/blob/main/docs/rfcs/0016-go-api-mapping-v1.md:176); source-construction and encoding
  * conflicts carry their core.source.* codes (RFC 0003 §12). A fatal failure
  * returns no Document and no partial snapshot.
  */

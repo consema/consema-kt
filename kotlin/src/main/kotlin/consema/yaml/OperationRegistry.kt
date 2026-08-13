@@ -1,17 +1,17 @@
 // The frozen YAML format operation registry.
 //
 // Data authority:
-//   - RFC 0004 §10 (docs/rfcs/0004-materialization-conversion-and-
+//   - RFC 0004 §10 (https://github.com/consema/consema/blob/main/docs/rfcs/0004-materialization-conversion-and-
 //     structural-edit-v1.md:244-269): every structural operation has an
 //     immutable ID/version, target role, argument schema, and support
 //     classification; the registry does not claim that operations with
 //     similar names have identical format semantics.
-//   - RFC 0007 §12 (docs/rfcs/0007-yaml-family-profiles-and-safety-v1.md:
+//   - RFC 0007 §12 (https://github.com/consema/consema/blob/main/docs/rfcs/0007-yaml-family-profiles-and-safety-v1.md:
 //     355-368) freezes the eight YAML operation ids (yaml.edit.
 //     replace-scalar-semantic, replace-scalar-literal, insert-mapping-entry,
 //     remove-mapping-entry, insert-sequence-element, remove-sequence-element,
 //     rename-anchor, insert-alias).
-//   - crates/consema-yaml/src/operation_registry.rs:16-97 is the exact
+//   - consema-rs/consema-yaml/src/operation_registry.rs:16-97 is the exact
 //     byte-arbitration source of the eight descriptor records (ids, target
 //     roles, argument names/kinds, support classes); the frozen surface test
 //     (operation_registry.rs:103-136) pins the six Supported operations and

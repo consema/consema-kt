@@ -1,7 +1,7 @@
 // Typed failures of XML formation and the diagnostic factory.
 //
 // Data authority:
-//   - crates/consema-xml/src/parser.rs:44-45 (source_failure), parser.rs:73
+//   - consema-rs/consema-xml/src/parser.rs:44-45 (source_failure), parser.rs:73
 //     and 106-108 (profile_failure), parser.rs:110-128 (the two fatal
 //     failure constructors), parser.rs:1731-1749 (recover), parser.rs:
 //     1759-1786 (recover_error_region), parser.rs:1792-1811 (finish
@@ -9,12 +9,12 @@
 //     frozen xml.* codes (`xml.source.decoding@1`, `xml.profile.encoding@1`,
 //     `xml.profile.unknown@1`, `xml.limit.*`, `xml.source.span@1`, ...) and
 //     source construction failures map through
-//     FatalFormationFailure::source_error (crates/consema-document/src/
+//     FatalFormationFailure::source_error (consema-rs/consema-document/src/
 //     lib.rs:676-707) to the registered core.source.* codes.
-//   - RFC 0016 §6 (docs/rfcs/0016-go-api-mapping-v1.md:194-200): SDK errors
+//   - RFC 0016 §6 (https://github.com/consema/consema/blob/main/docs/rfcs/0016-go-api-mapping-v1.md:194-200): SDK errors
 //     carry the stable registered code; error text is human presentation
 //     only.
-//   - crates/consema-core/src/diagnostic.rs:107-123 pins the deterministic
+//   - consema-rs/consema-core/src/diagnostic.rs:107-123 pins the deterministic
 //     diagnostic sort: (primary.start_byte or u64::MAX, category, code,
 //     occurrence); the Kotlin DiagnosticCategory enum order
 //     (protocol/ErrorRegistry.kt:22-34) is identical to the Rust declaration

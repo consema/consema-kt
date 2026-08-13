@@ -1,12 +1,12 @@
 // The L4 capability parity surface (Kotlin).
 //
 // Data authority (language-neutral sources first):
-//   - docs/fc-manifest-0.13.0.json:30-34 (capability_set: "8 families /
+//   - https://github.com/consema/consema/blob/main/docs/fc-manifest-0.13.0.json:32 (capability_set: "8 families /
 //     16 profiles / 21 query domains / 16 operation registries / 187 error
 //     codes"; the manifest records the machine-readable capability facts
 //     the Rust CLI derives from the facade registry).
 //   - RFC 0015 §6.2 (the `families`, `profiles`, `query_domains`,
-//     `operations` facts) and docs/multi-language-implementation-plan.md §6
+//     `operations` facts) and https://github.com/consema/consema/blob/main/docs/multi-language-implementation-plan.md §6
 //     (the capability parity gate: the Kotlin mandatory capability set
 //     matches the manifest; no "Rust only" mandatory behavior).
 //   - crates/consema/src/lib.rs:42-489 (the facade registry this surface
@@ -34,7 +34,7 @@ data class FamilyFact(
 )
 
 /** One capability-parity fact group: the counts the Feature-Complete
- * Manifest pins (fc-manifest-0.13.0.json:31). */
+ * Manifest pins (fc-manifest-0.13.0.json:32). */
 data class CapabilityParity(
     /** The eight format families. */
     val families: List<FamilyFact>,

@@ -7,7 +7,7 @@
 // .source-contract (:387-430), .recovery-matrix (:432-492), .leading-digit-
 // rejection (:1684-1707), .invalid-escapes (:1709-1737), .for-key-ambiguity
 // (:1751-1779), and the assertion semantics of
-// crates/consema-conformance/src/hcl_v1.rs:464-516 (status exact; the
+// consema-rs/consema-conformance/src/hcl_v1.rs:464-516 (status exact; the
 // expected diagnostic code present; canonical value of the first attribute
 // expression; proven attribute names exact).
 

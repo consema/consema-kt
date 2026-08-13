@@ -2,7 +2,7 @@
 // commit, dry-run plan, untouched-byte proof, and SourcePatch derivation.
 //
 // Data authority:
-//   - RFC 0007 §12 (docs/rfcs/0007-yaml-family-profiles-and-safety-v1.md:
+//   - RFC 0007 §12 (https://github.com/consema/consema/blob/main/docs/rfcs/0007-yaml-family-profiles-and-safety-v1.md:
 //     355-399): the eight operation ids; transactions are snapshot-bound and
 //     validate all operations before publishing a candidate; common edits
 //     retain indentation, flow/block style, scalar style, comments, line
@@ -14,13 +14,13 @@
 //     rejected; removing an alias does not remove its target; inserting an
 //     alias requires an earlier visible anchor; scalar edits of anchored
 //     nodes change the shared graph node).
-//   - RFC 0004 §13-§16 (docs/rfcs/0004-materialization-conversion-and-
+//   - RFC 0004 §13-§16 (https://github.com/consema/consema/blob/main/docs/rfcs/0004-materialization-conversion-and-
 //     structural-edit-v1.md:271-386): the conflict algebra, the dry-run
 //     plan, the untouched-byte proof, the derived SourcePatch.
 //   - conformance/vectors/yaml-v1.json pins the golden outputs
 //     (edit.scalar-atomic, edit.anchor-rename, edit.structural-insert,
 //     edit.anchor-dependency at lines 106-124).
-//   - crates/consema-yaml/src/edit.rs is the byte-arbitration authority
+//   - consema-rs/consema-yaml/src/edit.rs is the byte-arbitration authority
 //     (commit edit.rs:401-551, dry-run edit.rs:554-568, prepare edit.rs:
 //     570-1344, anchor rules edit.rs:1346-1442, validation edit.rs:
 //     1444-2014, candidate model edit.rs:2017-2324, literal preservation
@@ -29,8 +29,8 @@
 // Kotlin-idiomatic design: failures are a sealed hierarchy whose [name] is
 // the exact vector spelling; commit/dry-run throw the typed
 // [EditFailureException] so callers match exhaustively on the failure class.
-// ChangeSet is a post-1.0.0 (冻结前评估项，见五要素终审 F-28.3-1 处置)
-// document milestone in Kotlin (json/Edit.kt:244-255, toml/Edit.kt:349-369),
+// ChangeSet is not shipped in the Kotlin YAML family (recorded gap,
+// six-repo audit G090; json/Edit.kt:244-255, toml/Edit.kt:349-369),
 // so this commit carries the ordered diagnostics and
 // the old-to-new node mapping facts instead.
 
@@ -249,10 +249,10 @@ class EditTransactionBuilder internal constructor(private val base: SnapshotIden
     fun build(): EditTransaction = EditTransaction(base, operations.toList())
 }
 
-/** Atomic edit success (edit.rs:260-271). ChangeSet is a post-1.0.0
- * (冻结前评估项，见五要素终审 F-28.3-1 处置) milestone in Kotlin; this
- * commit carries the ordered edit diagnostics and the old-to-new node
- * mapping facts instead (json/Edit.kt:244-255). */
+/** Atomic edit success (edit.rs:260-271). ChangeSet is not shipped in the
+ * Kotlin YAML family (recorded gap, six-repo audit G090); the commit
+ * carries the ordered edit diagnostics and the old-to-new node mapping
+ * facts instead (json/Edit.kt:244-255). */
 class EditCommit(
     /** New immutable document. */
     val document: Document,
@@ -263,13 +263,13 @@ class EditCommit(
     /** Ordered edit diagnostics (fallback events). */
     val diagnostics: List<Diagnostic>,
     /** Old-to-new node mapping facts (the Rust ChangeSet node mappings of
-     * the post-1.0.0 (冻结前评估项，见五要素终审 F-28.3-1 处置) milestone;
-     * edit.rs:444-523). */
+     * the not-shipped-in-Kotlin ChangeSet, recorded gap, six-repo audit
+     * G090; edit.rs:444-523). */
     val nodeMappings: List<YamlNodeMapping>,
 )
 
 /** One old-to-new node mapping fact (the Rust NodeMapping of the
- * post-1.0.0 (冻结前评估项，见五要素终审 F-28.3-1 处置) ChangeSet;
+ * not-shipped-in-Kotlin ChangeSet, recorded gap, six-repo audit G090;
  * edit.rs:498-513). */
 data class YamlNodeMapping(
     /** Base structural identity. */

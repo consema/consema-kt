@@ -1,12 +1,12 @@
 // The frozen TOML format operation registry.
 //
 // Data authority:
-//   - crates/consema-toml/src/operation_registry.rs:16-74 (descriptors) and
+//   - consema-rs/consema-toml/src/operation_registry.rs:16-74 (descriptors) and
 //     :94-119 (the pinned registry facts: exactly seven operations, five
 //     Supported structural operations in sorted id order, two
 //     ExistingTypedCapability scalar replacements) pin every id, target
 //     role, argument, and support classification; RFC 0004 §10
-//     (docs/rfcs/0004-materialization-conversion-and-structural-edit-v1.md:
+//     (https://github.com/consema/consema/blob/main/docs/rfcs/0004-materialization-conversion-and-structural-edit-v1.md:
 //     244-269) freezes the five structural IDs in the language-neutral
 //     contract.
 //   - conformance/vectors/operations-v1.json operations.v1.operation-

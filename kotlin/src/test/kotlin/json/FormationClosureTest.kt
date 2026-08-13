@@ -1,7 +1,7 @@
 // Formation closure and recovery tests transcribed from
 // conformance/vectors/json-family-v2.json.
 //
-// RFC 0016 §5.1 F10 (docs/rfcs/0016-go-api-mapping-v1.md:172-176):
+// RFC 0016 §5.1 F10 (https://github.com/consema/consema/blob/main/docs/rfcs/0016-go-api-mapping-v1.md:172-176):
 // FormationStatus is a closed two-value enum (Complete, Recovered); a valid
 // strict JSON document is valid under JSON5, and every Complete
 // jsonc.bounded@1 document is also valid under JSON5 (RFC 0005 §2).

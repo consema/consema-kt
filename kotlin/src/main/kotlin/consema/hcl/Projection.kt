@@ -3,7 +3,7 @@
 // §7-§8).
 //
 // Data authority:
-//   - RFC 0014 §8 (docs/rfcs/0014-hcl-family-profiles-v1.md:509-572): the
+//   - RFC 0014 §8 (https://github.com/consema/consema/blob/main/docs/rfcs/0014-hcl-family-profiles-v1.md:509-572): the
 //     default exact target `hcl.projection.body@1` produces the versioned
 //     `hcl.body@1` record — one ordered body of items, each an attribute
 //     (name string + value) or a block (type, ordered labels, nested
@@ -19,7 +19,7 @@
 //   - RFC 0014 §8.1 (:511-537): the literal-complete boundary.
 //   - RFC 0014 §6 (:395-446): structural equality, canonical decimals,
 //     exact decoded string text, ordered duplicates.
-//   - crates/consema-hcl/src/projection.rs pins the record shape
+//   - consema-rs/consema-hcl/src/projection.rs pins the record shape
 //     (projection.rs:31-96: `{ "record": "hcl.body@1", "items": [...] }`,
 //     the typed members, the expression record
 //     `{ "record": "hcl.expression@1", "kind", "text", "fingerprint" }`,
@@ -27,7 +27,7 @@
 //     and the codec envelope (projection.rs:479-579).
 //   - The structural fingerprint is defined in Expression.kt
 //     (materialization.rs:1496-1758).
-//   - go/hcl is a cross-reference only.
+//   - consema-go/go/hcl is a cross-reference only.
 //
 // Kotlin-idiomatic design: the completion algebra is a sealed class, so
 // exhaustive `when` over Complete/Failed can never meet an unknown outcome;

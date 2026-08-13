@@ -1,17 +1,18 @@
 // YAML projection tests: exact graph projection with provenance, value
 // projection policies, fidelity and events, and the frozen failure codes.
 //
-// Data authority: RFC 0007 §10 (docs/rfcs/0007-yaml-family-profiles-and-
+// Data authority: RFC 0007 §10 (https://github.com/consema/consema/blob/main/docs/rfcs/0007-yaml-family-profiles-and-
 // safety-v1.md:260-302) and the vector cases projection.sharing-policy,
 // projection.cycle, projection.tag-policy, projection.mapping-policy,
 // projection.graph-provenance, graph.shared-cycle, resource.graph-provenance
 // (conformance/vectors/yaml-v1.json:45-49, 70-94, 130-134). The PGCE golden
 // hex of graph.shared-cycle is the byte authority
-// (crates/consema-graph/src/pgce.rs; transcribed into the Kotlin graph
+// (consema-rs/consema-graph/src/pgce.rs; transcribed into the Kotlin graph
 // PgceGoldenTest.kt).
 //
-// This file is an intent document: the toolchain is not verified yet, so
-// these tests pin the intent; they run at the L2 verification gate.
+// This file runs in the verified toolchain gate (kotlin-gates gradlew
+// test / the scripts/kotlin-verify-*.ps1 direct path): the toolchain is
+// verified and this file is executed.
 
 package yaml
 

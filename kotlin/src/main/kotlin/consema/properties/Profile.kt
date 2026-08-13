@@ -1,17 +1,17 @@
 // Frozen Java Properties formation profiles and lossless classifications.
 //
 // Data authority (language-neutral sources first):
-//   - RFC 0010 §1 (docs/rfcs/0010-java-properties-profiles-v1.md:14-35):
+//   - RFC 0010 §1 (https://github.com/consema/consema/blob/main/docs/rfcs/0010-java-properties-profiles-v1.md:14-35):
 //     the two frozen profiles java-properties.reader@1 and
 //     java-properties.latin1@1; the profile is always selected by the caller
 //     and a `.properties` extension never chooses between them.
 //   - conformance/vectors/java-properties-v1.json pins the profile spellings
 //     (line 3) and the syntax-kind vocabulary of the lossless syntax query
 //     domain (the syntax_kinds / syntax_contains facts of the query cases).
-//   - crates/consema-properties/src/lib.rs:33-50 (PropertiesProfile),
+//   - consema-rs/consema-properties/src/lib.rs:33-50 (PropertiesProfile),
 //     lib.rs:208-235 (PropertiesSyntaxKind), lib.rs:276-285
 //     (PropertiesValueState), lib.rs:287-295 (PropertiesLogicalLineKind),
-//     lib.rs:296-307 (PropertiesEscapeKind). go/properties is a
+//     lib.rs:296-307 (PropertiesEscapeKind). consema-go/go/properties is a
 //     cross-reference only.
 //
 // Kotlin-idiomatic design (NOT a translation): the profile is a closed enum;

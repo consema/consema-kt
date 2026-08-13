@@ -1,13 +1,13 @@
 // The `consema.source.conformance@1` suite runner
 // (conformance/vectors/source-v1.json).
 //
-// Data authority: crates/consema-conformance/src/source_v1.rs (the per-case
+// Data authority: consema-rs/consema-conformance/src/source_v1.rs (the per-case
 // dispatch is transcribed from the Rust handlers; the frozen failure-code
 // mappings come from source_error_code at source_v1.rs:410-421, the
 // location-error spellings from location_error_name at source_v1.rs:423-436,
 // and the patch-mode table from patch_case at source_v1.rs:245-317); the
 // vector file itself drives every input and expectation (conformance/README.md
-// rules 3-4). go/conformance/source_v1.go is a cross-reference only.
+// rules 3-4). consema-go/go/conformance/source_v1.go is a cross-reference only.
 
 package consema.conformance
 

@@ -2,7 +2,7 @@
 // tree of RFC 0014 §6 bound to one snapshot, plus the formation facade.
 //
 // Data authority:
-//   - RFC 0014 §3-§6 (docs/rfcs/0014-hcl-family-profiles-v1.md:94-446):
+//   - RFC 0014 §3-§6 (https://github.com/consema/consema/blob/main/docs/rfcs/0014-hcl-family-profiles-v1.md:94-446):
 //     Complete/Recovered/FatalFormationFailure; recovery retains every
 //     independently proven construct; the native semantic model
 //     (HclDocument/HclBody/HclAttribute/HclBlock/HclBlockLabel/
@@ -19,14 +19,14 @@
 //     formation Recovered with one `hcl.tfvars.block-not-allowed@1`
 //     diagnostic per top-level block occurrence; the rejected block remains
 //     a native item of the Recovered document.
-//   - crates/consema-hcl/src/document.rs:50-217 (Document and its
-//     accessors), crates/consema-hcl/src/native.rs:37-325 (HclDocument,
+//   - consema-rs/consema-hcl/src/document.rs:50-217 (Document and its
+//     accessors), consema-rs/consema-hcl/src/native.rs:37-325 (HclDocument,
 //     HclBody, HclBodyItem, HclAttribute, HclBlock, HclBlockLabel,
-//     HclErrorRegion), crates/consema-hcl/src/lib.rs:275-311 (the formation
+//     HclErrorRegion), consema-rs/consema-hcl/src/lib.rs:275-311 (the formation
 //     entry), and the frozen NodeRole spellings (document/Location.kt:
 //     202-231: HclDocument/HclBody/HclAttribute/HclBlock/HclBlockLabel/
 //     HclExpression/HclTemplatePart/HclErrorRegion/HclSyntaxPiece).
-//   - go/hcl is a cross-reference only.
+//   - consema-go/go/hcl is a cross-reference only.
 //
 // Kotlin-idiomatic design (NOT a translation): the native tree is built
 // into a flat immutable entity arena during formation; every handle is an

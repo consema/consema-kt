@@ -3,7 +3,7 @@
 // coverage index.
 //
 // Data authority:
-//   - RFC 0007 §2 (docs/rfcs/0007-yaml-family-profiles-and-safety-v1.md:
+//   - RFC 0007 §2 (https://github.com/consema/consema/blob/main/docs/rfcs/0007-yaml-family-profiles-and-safety-v1.md:
 //     36-53): the three layers — presentation stream, serialization tree
 //     (ordered document nodes, unresolved/resolved tag facts), and
 //     representation graph (resolved tagged nodes, sharing, cycles). Anchors
@@ -13,11 +13,11 @@
 //     alias occurrences with exact names and source spans, arbitrary keys,
 //     duplicate source associations, compact notation, and exhaustive
 //     non-overlapping raw-byte coverage.
-//   - crates/consema-yaml/src/lib.rs:322-787 pins the public handle surface
+//   - consema-rs/consema-yaml/src/lib.rs:322-787 pins the public handle surface
 //     (stream_node_ref, document(ordinal), alias_count, node anchors/spans,
-//     sequence/mapping associations); crates/consema-yaml/src/native.rs:33-94
+//     sequence/mapping associations); consema-rs/consema-yaml/src/native.rs:33-94
 //     pins the internal node/alias/association storage and native.rs:111-508
-//     pins the composer; go/yaml/document.go is a cross-reference only.
+//     pins the composer; consema-go/go/yaml/document.go is a cross-reference only.
 //
 // Kotlin-idiomatic design: handles are immutable classes carrying (document,
 // index), the Kotlin analogue of the Rust borrowed handles; entity storage is

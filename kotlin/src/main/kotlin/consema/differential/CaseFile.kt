@@ -1,20 +1,20 @@
-﻿// Shared case-file loading and fact-vocabulary helpers of the cross-language
+// Shared case-file loading and fact-vocabulary helpers of the cross-language
 // differential harnesses (byte parity / normalized / protocol exchange).
 //
 // The differential input sets live at conformance/differential/ of the
-// consema repository (single authority, docs/five-language-ci-design.md
+// consema repository (single authority, https://github.com/consema/consema/blob/main/docs/five-language-ci-design.md
 // §3.5: cases.json 68, normalized/cases.json 108, protocol-exchange/
 // cases.json 83; manifest ids consema.differential.byte-parity@1 /
 // normalized@1 / protocol-exchange@1). They are language-neutral JSON
 // documents, so every
 // side reads the same text: like the Rust examples
-// (crates/consema-conformance/examples/emit_parity_bytes.rs:49-64), this
+// (consema-rs/consema-conformance/examples/emit_parity_bytes.rs:49-64), this
 // harness parses the case file with the strict JSON parser and projects it
 // to the best-exact core value — no second authority.
 //
 // The fact vocabulary (the key=value lines and the escape() function) is
 // mirrored verbatim by the Rust examples and the Go harness
-// (go/conformance/differential/normalized/runner.go escape/join); error
+// (consema-go/go/conformance/differential/normalized/runner.go escape/join); error
 // texts never participate in any comparison (RFC 0016 §6).
 
 package consema.differential
@@ -133,9 +133,9 @@ class Facts {
  * escapes for the JSON whitespace set, `\u00xx` lowercase hex for the other
  * control characters, everything else passed through as UTF-8). The Go
  * harness and the Rust example implement the identical function
- * (go/conformance/differential/normalized/runner.go:233-295). The evidence
+ * (consema-go/go/conformance/differential/normalized/runner.go:233-295). The evidence
  * vocabulary is compared over bytes, so valid Unicode text must render
- * identically on every side; the Go/Rust lossy-invalid-UTF-8 branch is
+ * identically on every side; the consema-go/go/Rust lossy-invalid-UTF-8 branch is
  * unreachable here because Kotlin text values are always valid Unicode and
  * every byte-level source fact is escaped the same way on both sides.
  */

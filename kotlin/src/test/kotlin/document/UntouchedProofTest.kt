@@ -1,12 +1,12 @@
 // UntouchedByteProof behavior tests.
 //
-// Data authority: RFC 0004 §15 (docs/rfcs/0004-materialization-conversion-
+// Data authority: RFC 0004 §15 (https://github.com/consema/consema/blob/main/docs/rfcs/0004-materialization-conversion-
 // and-structural-edit-v1.md:358-372) — the proof is an ordered cover of all
 // old-source intervals outside replacements mapped to target intervals, with
 // equal length and equal bytes per mapped region, monotonic order, and base
 // and target digests matching the proof. The scenario (base "abXXcd!" ->
 // target ">abYYYcd" with three replacements) and the expected regions
-// (0,2)->(1,3) and (4,6)->(6,8) follow crates/consema-document/src/
+// (0,2)->(1,3) and (4,6)->(6,8) follow consema-rs/consema-document/src/
 // untouched_proof.rs:335-401 (the crate's own test data, which the vector
 // suite does not cover directly).
 

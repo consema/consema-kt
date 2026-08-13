@@ -1,10 +1,10 @@
 // INI native-semantic and lossless-syntax query execution tests.
 //
-// Authority: RFC 0009 §9 (docs/rfcs/0009-ini-family-profiles-v1.md:286-345)
+// Authority: RFC 0009 §9 (https://github.com/consema/consema/blob/main/docs/rfcs/0009-ini-family-profiles-v1.md:286-345)
 // and the vector cases query.native-order-and-profile-equivalence,
 // query.syntax-decoded-structure-order, and
 // query.validation-limit-cancellation (ini-v1.json:44-58);
-// crates/consema-ini/src/query.rs is the byte-arbitration authority.
+// consema-rs/consema-ini/src/query.rs is the byte-arbitration authority.
 
 package ini
 

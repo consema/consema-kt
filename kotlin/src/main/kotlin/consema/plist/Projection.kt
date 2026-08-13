@@ -1,9 +1,9 @@
-﻿// Two-stage explicit projection: Document -> the `plist.value-tree@1`
+// Two-stage explicit projection: Document -> the `plist.value-tree@1`
 // record (or the require-object target) with fidelity, report, and
 // provenance.
 //
 // Data authority:
-//   - RFC 0013 §9 (docs/rfcs/0013-plist-family-profiles-v1.md:598-633): the
+//   - RFC 0013 §9 (https://github.com/consema/consema/blob/main/docs/rfcs/0013-plist-family-profiles-v1.md:598-633): the
 //     default exact target `plist.projection.value-tree@1` produces the
 //     versioned `plist.value-tree@1` PortableValue record (one root value,
 //     ordered dictionary associations, ordered array elements, typed
@@ -16,11 +16,11 @@
 //     collision policy; any authorized collapse is Transformed and emits one
 //     report event per discarded association while keeping retained and
 //     discarded provenance.
-//   - RFC 0004 §7-§8 (docs/rfcs/0004-materialization-conversion-and-
+//   - RFC 0004 §7-§8 (https://github.com/consema/consema/blob/main/docs/rfcs/0004-materialization-conversion-and-
 //     structural-edit-v1.md:171-218): the completion algebra and the
 //     provenance direction (portable locations to source origins).
 //   - conformance/vectors/plist-v1.json (plist.projection.*) pins the
-//     per-case outcomes; crates/consema-plist/src/projection.rs is the
+//     per-case outcomes; consema-rs/consema-plist/src/projection.rs is the
 //     byte-arbitration authority (targets projection.rs:55-90, request
 //     projection.rs:86-162, value-tree encoding projection.rs:572-667,
 //     require-object projection.rs:671-830, failure codes projection.rs:

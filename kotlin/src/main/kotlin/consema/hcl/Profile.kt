@@ -2,7 +2,7 @@
 // classification.
 //
 // Data authority (language-neutral sources first):
-//   - RFC 0014 §1 (docs/rfcs/0014-hcl-family-profiles-v1.md:23-54): the two
+//   - RFC 0014 §1 (https://github.com/consema/consema/blob/main/docs/rfcs/0014-hcl-family-profiles-v1.md:23-54): the two
 //     mandatory profiles `hcl.native@1` and `hcl.tfvars@1`; both share one
 //     native syntax system, and `hcl.tfvars@1` is `hcl.native@1` under one
 //     structural restriction (the top-level body admits attributes only,
@@ -10,9 +10,9 @@
 //   - RFC 0014 §7.2 (:487-507): the v1 lossless syntax kind set is exactly
 //     the thirty PascalCase spellings below; there is no `Bom` kind because
 //     a BOM is excluded at formation (RFC 0014 §2).
-//   - crates/consema-hcl/src/lib.rs:101-118 (HclProfile and its id mapping),
-//     crates/consema-hcl/src/native.rs:335-398 (HclSyntaxKind declaration
-//     order) pin the spellings; go/hcl is a cross-reference only.
+//   - consema-rs/consema-hcl/src/lib.rs:101-118 (HclProfile and its id mapping),
+//     consema-rs/consema-hcl/src/native.rs:335-398 (HclSyntaxKind declaration
+//     order) pin the spellings; consema-go/go/hcl is a cross-reference only.
 //
 // Kotlin-idiomatic design (NOT a translation): the profile is a closed enum;
 // the syntax-kind names are the exact language-neutral spellings asserted by

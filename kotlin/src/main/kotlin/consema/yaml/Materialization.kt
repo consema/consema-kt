@@ -1,7 +1,7 @@
 // Canonical PortableGraph and PortableValue materialization for YAML.
 //
 // Data authority:
-//   - RFC 0007 §11 (docs/rfcs/0007-yaml-family-profiles-and-safety-v1.md:
+//   - RFC 0007 §11 (https://github.com/consema/consema/blob/main/docs/rfcs/0007-yaml-family-profiles-and-safety-v1.md:
 //     303-353): styles yaml.canonical-block@1 and yaml.canonical-flow@1;
 //     graph materialization uses canonical graph numbering, emits explicit
 //     document starts for every root, and introduces deterministic anchors
@@ -17,14 +17,14 @@
 //     target profile before a Complete result is returned; UTF-16 output
 //     always carries the matching BOM; raw encoded bytes are charged to
 //     max_output_bytes.
-//   - RFC 0004 §3-§8 (docs/rfcs/0004-materialization-conversion-and-
+//   - RFC 0004 §3-§8 (https://github.com/consema/consema/blob/main/docs/rfcs/0004-materialization-conversion-and-
 //     structural-edit-v1.md:56-218) pins the common request, the completion
 //     algebra, and the provenance direction.
 //   - conformance/vectors/yaml-v1.json pins the golden output bytes
 //     (materialization.graph-cycle-flow: "--- &g0 !!seq [!!str \"one\",
 //     *g0]\n"; materialization.value-flow: "--- !!map {? !!str \"a\" :
 //     !!seq [!!int \"1\", !!bool \"true\"]}\n").
-//   - crates/consema-yaml/src/materialization.rs is the byte-arbitration
+//   - consema-rs/consema-yaml/src/materialization.rs is the byte-arbitration
 //     authority (graph writer materialization.rs:430-728, scalar
 //     presentation materialization.rs:719-728, quoted escaping
 //     materialization.rs:689-709, output encoding materialization.rs:

@@ -1,9 +1,9 @@
-﻿// The immutable plist-family document model: the representation-independent
+// The immutable plist-family document model: the representation-independent
 // native value model, snapshot-bound handles, entity storage, and the binary
 // structural facts.
 //
 // Data authority:
-//   - RFC 0013 §6 (docs/rfcs/0013-plist-family-profiles-v1.md:461-511): the
+//   - RFC 0013 §6 (https://github.com/consema/consema/blob/main/docs/rfcs/0013-plist-family-profiles-v1.md:461-511): the
 //     native value model is representation-independent and owned by the plist
 //     family (PlistDocument/PlistValue/PlistDict/PlistDictEntry/PlistKey/
 //     PlistArray/PlistString/PlistInteger/PlistReal/PlistBoolean/PlistDate/
@@ -16,17 +16,17 @@
 //     value; shared object identity from the binary object table is
 //     preserved (one source object referenced by several containers is one
 //     native node with multiple owners).
-//   - RFC 0013 §3 (docs/rfcs/0013-...md:90-124): formation is Complete or
+//   - RFC 0013 §3 (https://github.com/consema/consema/blob/main/docs/rfcs/0013-...md:90-124): formation is Complete or
 //     Recovered; a Recovered Document retains the immutable source,
 //     exhaustive piece coverage, ordered diagnostics, and every independently
 //     proven construct; recovery never invents unproven native semantics.
 //   - RFC 0013 §8.3 and §5 (binary structure facts: object table, offset
-//     table, references, trailer); crates/consema-plist/src/parser_binary.rs:
+//     table, references, trailer); consema-rs/consema-plist/src/parser_binary.rs:
 //     53-172 pins BinaryObjectFact/BinaryOffsetFact/BinaryObjectRefFact/
 //     BinaryTrailerFacts and native.rs:828-864 the arena document.
-//   - crates/consema-plist/src/native.rs:39-140 (PlistString/PlistKey),
+//   - consema-rs/consema-plist/src/native.rs:39-140 (PlistString/PlistKey),
 //     native.rs:201-423 (PlistInteger/PlistReal/PlistBoolean/PlistDate/
-//     PlistData/PlistUid) pins the value semantics; go/plist is a
+//     PlistData/PlistUid) pins the value semantics; consema-go/go/plist is a
 //     cross-reference only.
 //
 // Kotlin-idiomatic design (NOT a translation): the JSON-family precedent

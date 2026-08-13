@@ -3,9 +3,10 @@
 The Kotlin/JVM implementation of the language-neutral Consema
 configuration-processing contracts (RFC 0016; equal footing with
 Rust/Go/TS/Python per the 2026-08-11 owner decision). Zero third-party
-runtime dependencies (build.gradle.kts keeps the runtime classpath empty —
-all dependencies are test-scoped) and never imports or calls the other
-implementations.
+runtime dependencies (the runtime classpath carries only the Kotlin
+platform — kotlin-stdlib and its transitive org.jetbrains:annotations,
+injected by the Kotlin Gradle plugin; every declared configuration is
+test-scoped) and never imports or calls the other implementations.
 
 ## Verify
 
@@ -18,16 +19,21 @@ pattern; ci-kotlin.yml). Two equivalent paths exist locally:
 Gradle path (wrapper committed 2026-08-12):
 
 ```
-./gradlew build          # compile + full unit-test suite (572 tests, 2026-08-12 静态计数：@Test 注解数) + kover 60% verify
+./gradlew build          # compile + full unit-test suite (572 tests, 2026-08-13 静态计数：@Test 注解数) + kover 60% verify
 ./gradlew koverHtmlReport koverXmlReport   # coverage reports (build/reports/kover/)
 ```
 
 The conformance/differential tests resolve `conformance/*` and
 `docs/fc-manifest-0.13.0.json` from `CONSEMA_REPO` (the pattern of
-ci-kotlin.yml's provision step): set it to a checkout of the consema spec
-repository, or the 21 such tests fail with "repository root not found" —
-same environment requirement as the direct-compile path, only without the
-reflective runner's SKIP logic.
+ci-kotlin.yml's provision step): set it to a root carrying the provisioned
+conformance/ and docs/fc-manifest-0.13.0.json (e.g. a checkout of the
+consema spec repository, or a provisioned workspace), or the 21 such tests
+fail with "repository root not found". The three verify scripts force
+CONSEMA_REPO to this repository's root and require conformance/ provisioned
+there (their failure message is "differential case file not found").
+Same environment requirement as the direct-compile path (the differential
+tests' built-in env check prints a documented [SKIP] line and returns when
+the golden env vars are absent — the gradle path runs the same checks).
 
 Direct-K2JVMCompiler path (what kotlin-conformance / kotlin-differential
 run today; kotlin-gates moved to the Gradle wrapper in b640af6):
@@ -55,15 +61,14 @@ comfortable headroom. The gate is live in CI: kotlin-gates runs
 `.\gradlew.bat test koverVerify` since b640af6 (kover 0.9.9, 60% minimum,
 build.gradle.kts:44-52). The Knit-style doc-example gate remains deferred
 (tracked here — this section is the single authority; the ci-kotlin.yml
-header defers to it). The ci-kotlin.yml header's
-"coverage 待 wrapper 落地后补" note is now superseded by this section.
+header defers to it).
 
 ## Gradle wrapper exploration (2026-08-12)
 
 Feasibility verdict: **viable.** The wrapper (gradle 8.14; `gradlew`,
 `gradlew.bat`, `gradle/wrapper/`) was generated and committed;
 `./gradlew build` resolves build.gradle.kts, compiles all 236 sources
-(163 main + 73 test), runs the 572-test JUnit suite green (2026-08-12
+(163 main + 73 test), runs the 572-test JUnit suite green (2026-08-13
 静态计数), and passes the
 60% kover line-coverage verify. Findings that matter for a future CI
 switch:
@@ -78,7 +83,7 @@ switch:
   `./gradlew test` there needs no new wiring; locally it must be set.
 - **Internal visibility is preserved**: gradle compiles main and test as
   separate source sets (friend modules), the direct path compiles them into
-  one module — the 572-test green suite (2026-08-12 静态计数) shows no dependence on the merged
+  one module — the 572-test green suite (2026-08-13 静态计数) shows no dependence on the merged
   visibility.
 - **CI switch (landed)**: kotlin-gates switched to the committed Gradle
   wrapper (b640af6: `.\gradlew.bat test koverVerify` — the kover 60%
@@ -91,13 +96,14 @@ switch:
 
 ## Conformance
 
-18 suites / 519 cases / aggregate digest `cfd6e296…` are pinned in
-`src/test/kotlin/consema/conformance/ConformanceRunnerTest.kt` (519 passed /
+18 suites / 519 cases / aggregate digest `cfd6e296…` are pinned in the
+kotlin-conformance CI job (ci-kotlin.yml, literal digest step) and asserted
+in `src/test/kotlin/consema/conformance/ConformanceRunnerTest.kt` (519 passed /
 0 skipped / 0 failed explicitly asserted); 519/519 pass in CI
 (ci-kotlin.yml, kotlin-conformance job).
 
 ## References
 
-- Language plan: `docs/multi-language-implementation-plan.md` (L0-L5 closed
+- Language plan: https://github.com/consema/consema/blob/main/docs/multi-language-implementation-plan.md (L0-L5 closed
   for all three new languages, 2026-08-12)
-- CI and cross-language verification design: `docs/five-language-ci-design.md`
+- CI and cross-language verification design: https://github.com/consema/consema/blob/main/docs/five-language-ci-design.md

@@ -1,7 +1,7 @@
 // Verifiable proof that planned replacements did not alter surrounding bytes.
 //
 // Data authority:
-//   - RFC 0004 §15 (docs/rfcs/0004-materialization-conversion-and-structural-
+//   - RFC 0004 §15 (https://github.com/consema/consema/blob/main/docs/rfcs/0004-materialization-conversion-and-structural-
 //     edit-v1.md:358-372) freezes the proof contract: an ordered cover of all
 //     old-source intervals outside replacements mapped to target intervals;
 //     old regions exactly cover every non-replaced old byte once, new regions
@@ -9,8 +9,8 @@
 //     equal length and equal bytes, region order is monotonic, and base and
 //     target digests match the proof. The proof asserts only that bytes
 //     outside planned replacements are identical.
-//   - crates/consema-document/src/untouched_proof.rs:1-317 pins the shapes
-//     and validation rules; go/document/untouched.go is a cross-reference
+//   - consema-rs/consema-document/src/untouched_proof.rs:1-317 pins the shapes
+//     and validation rules; consema-go/go/document/untouched.go is a cross-reference
 //     only.
 
 package consema.document

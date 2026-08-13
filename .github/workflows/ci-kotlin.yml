@@ -1,4 +1,4 @@
-# Consema Kotlin CI (docs/five-language-ci-design.md §1.2, §7.1): the
+# Consema Kotlin CI (https://github.com/consema/consema/blob/main/docs/five-language-ci-design.md §1.2, §7.1): the
 # Kotlin implementation joins the release gate with seven explicit jobs —
 # kotlin-gates, kotlin-conformance, kotlin-differential,
 # check-version-consistency, examples, kotlin-package and the aggregate
@@ -19,15 +19,21 @@
 # overrides, and provision the pinned kotlinc 2.2.0 distribution (cached)
 # on top of the Temurin 17 JDK. kotlin-conformance runs the Kotlin runner
 # (kotlin/src/test/kotlin/consema/conformance/ConformanceRunnerTest.kt —
-# the aggregate digest cfd6e296… and the 18/519 inventory are pinned inside
-# it, §2.2/§4.2); kotlin-package runs the L5 packaging gate (gradlew jar —
+# the 18/519 inventory is pinned inside it and it compares the computed
+# aggregate digest against the provisioned manifest record, §2.2/§4.2; the
+# literal digest pin
+# cfd6e296da5b22b62d37b076d35bf6bbf58b0678ceddb37eea51a8b47200ab6a
+# lives in this workflow — the kotlin-conformance digest step); kotlin-package runs the L5 packaging gate (gradlew jar —
 # the library jar must be produced, §1.1 package row / §5.3 L5 row);
 # kotlin-differential runs the bidirectional
 # scripts/kotlin-verify-*.ps1 harnesses against the Rust emitters. The
 # verify scripts and the toolchain layout are Windows-native (bin\java.exe,
-# debug\examples\*.exe), so all kotlin jobs run on windows-latest. The
+# debug\examples\*.exe), so the four implementation jobs (kotlin-gates,
+# kotlin-conformance, kotlin-differential, examples) run on windows-latest;
+# check-version-consistency, kotlin-package and the aggregate check run on
+# ubuntu-latest. The
 # runner-CLI entry point (kotlin/src/main/kotlin/consema/conformance/Cli.kt)
-# landed with the runner batch (613ae2f), while the shared-conformance
+# landed with the runner batch (95cf5d6), while the shared-conformance
 # script (scripts/kotlin-verify-shared-conformance.ps1, §3.6/§7.2) is not
 # committed yet — the fourth differential step stays deferred. No repository
 # secrets are required.
@@ -38,18 +44,28 @@
 # koverHtmlReport/koverXmlReport). The Knit-style doc-example gate stays
 # deferred (tracked in kotlin/README.md).
 #
-# This repository carries the Kotlin implementation only, so every job uses
-# the multi-repo checkout mode: it checks out consema/consema (the spec
+# This repository carries the Kotlin implementation only, so most jobs use
+# the multi-repo checkout mode: they check out consema/consema (the spec
 # repository, whose conformance/vectors + conformance/differential case sets,
 # docs/fc-manifest-0.13.0.json and the toml.corpus.cargo-manifest fixture
 # conformance/fixtures/toml/Cargo.toml are the single authority) beside this
-# repository and copies the conformance data into the workspace root (the
+# repository and copy the conformance data into the workspace root (the
 # runner resolves conformance/* and the manifest by repository-relative
-# path from CONSEMA_REPO=$GITHUB_WORKSPACE). The differential job
+# path from CONSEMA_REPO=$GITHUB_WORKSPACE). The three exceptions
+# (check-version-consistency, examples, kotlin-package) use the single-repo
+# checkout — no conformance data needed — and annotate it at their job
+# definition. The differential job
 # additionally checks out consema/consema-rs (the Rust emitter workspace;
 # the kotlin-verify-*.ps1 scripts default to <repo root>\consema-rs) and
 # the scripts build the pinned emitter examples (cargo build --locked -p
-# consema-conformance --example …) there.
+# consema-conformance --example …) there. The consema/consema checkout is
+# pinned by commit (ref) to ad667021 — the 2026-08-12 P2-B vector
+# reinforcement commit that carries the cfd6e296 519-case inventory (the
+# digest literal cfd6e296da5b22b62d37b076d35bf6bbf58b0678ceddb37eea51a8b47200ab6a
+# is asserted by the kotlin-conformance digest step) — so the provisioned
+# data cannot drift with the spec repository's default branch; the
+# consema-rs checkout is pinned to bd5734ea, the commit that vendored the
+# same cfd6e296 519-case conformance snapshot.
 name: Kotlin CI
 
 on:
@@ -74,7 +90,7 @@ env:
 
 jobs:
   kotlin-gates:
-    name: kotlin gates (unit tests + kover 60% + zero-dep)
+    name: kotlin gates (unit tests + kover 60% + test-only deps)
     runs-on: windows-latest
     timeout-minutes: 30
     steps:
@@ -86,6 +102,7 @@ jobs:
           persist-credentials: false
           repository: consema/consema
           path: consema-repo
+          ref: ad667021f0fd7c611dd0deb670eba7658e1ea575 # cfd6e296 519-case conformance data pin
       - uses: actions/setup-java@cf277c60eb25467037889841efdb72551f06f6c3 # v4.9.1
         with:
           distribution: temurin
@@ -117,9 +134,13 @@ jobs:
       # drives the unit-test run. setup-gradle caches the Gradle user home:
       # the wrapper distribution (gradle-8.14-bin.zip is ~137 MB — a restore
       # skips that download) plus the dependency/Kotlin caches. The cache key
-      # is bound to the Gradle version and a hash of the build files, so a
-      # build-config change invalidates the cache (no poisoning across
-      # configurations).
+      # is composed of the runner OS, the job id, the workflow/matrix hash
+      # and the git sha (gradle/actions/setup-gradle enhanced caching); it
+      # does not include the Gradle version or a hash of the build files, so
+      # a build-config change within one commit still restores the previous
+      # cache entry — the wrapper's pinned distributionSha256Sum
+      # (kotlin/gradle/wrapper/gradle-wrapper.properties) is the integrity
+      # guarantee for the distribution itself.
       - name: cache gradle user home (wrapper dist + dependency caches)
         uses: gradle/actions/setup-gradle@ed408507eac070d1f99cc633dbcf757c94c7933a # v4.4.3
       # Runs every @Test method (JUnit5 platform, kotlin.test assertions)
@@ -140,23 +161,25 @@ jobs:
           $ErrorActionPreference = 'Stop'
           .\gradlew.bat test koverVerify
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-      # Zero-runtime-dependency policy (§1.3): build.gradle.kts:27-32 keeps
-      # the runtime classpath empty — every declared configuration is
-      # test-scoped. Asserted at the source level (evaluating
+      # Test-only-dependency policy (§1.3): build.gradle.kts:27-32 keeps
+      # every declared configuration test-scoped — the runtime classpath
+      # carries only the Kotlin platform (kotlin-stdlib 2.2.0, injected by
+      # the Kotlin Gradle plugin, with its transitive org.jetbrains:annotations).
+      # Asserted at the source level (evaluating
       # configurations.runtimeClasspath would resolve the entire dependency
       # graph; the source-level tripwire is the documented check).
-      - name: zero-dependency assertion (build.gradle.kts runtime classpath empty)
+      - name: test-only-dependencies assertion (build.gradle.kts runtime-scoped declarations)
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
           $buildFile = Get-Content (Join-Path $env:GITHUB_WORKSPACE 'kotlin\build.gradle.kts') -Raw
-          if ($buildFile -match '(?m)^\s*(implementation|api|compileOnly|runtimeOnly)\s*\(') {
-            throw 'build.gradle.kts must keep the runtime classpath empty (runtime-scoped dependency found)'
+          if ($buildFile -match '(?m)^\s*(implementation|api|compileOnly|runtimeOnly)(\s*\(|\s+")') {
+            throw 'build.gradle.kts must keep every declared configuration test-scoped (runtime-scoped dependency found)'
           }
           if ($buildFile -notmatch '(?m)^\s*testImplementation\s*\(' -or $buildFile -notmatch '(?m)^\s*testRuntimeOnly\s*\(') {
             throw 'build.gradle.kts must declare its test-scoped dependencies (testImplementation/testRuntimeOnly)'
           }
-          Write-Output 'zero runtime dependencies: build.gradle.kts declares only test-scoped configurations'
+          Write-Output 'test-only dependencies: build.gradle.kts declares only test-scoped configurations (runtime classpath carries kotlin-stdlib + annotations)'
 
   kotlin-conformance:
     name: kotlin conformance runner (18 suites / 519 cases)
@@ -171,6 +194,7 @@ jobs:
           persist-credentials: false
           repository: consema/consema
           path: consema-repo
+          ref: ad667021f0fd7c611dd0deb670eba7658e1ea575 # cfd6e296 519-case conformance data pin
       - uses: actions/setup-java@cf277c60eb25467037889841efdb72551f06f6c3 # v4.9.1
         with:
           distribution: temurin
@@ -227,11 +251,57 @@ jobs:
           if (-not $compiler) {
             throw 'kotlinc distribution not found after extraction'
           }
+          # Verify the extracted compiler jar on every use — including a
+          # cache-restored distribution (the cache key is a constant, so the
+          # download branch is not the only supply path).
+          $expectedKotlincJarSha256 = 'cb2b7b0b82ad5b6ddc2e8c6c41c73e837a2b42e2abf64af64dda1b6173609790'
+          $actualKotlincJarSha256 = (Get-FileHash -Algorithm SHA256 -LiteralPath $compiler.FullName).Hash
+          if ($actualKotlincJarSha256 -ne $expectedKotlincJarSha256) {
+            throw "kotlin-compiler.jar sha256 mismatch (got $actualKotlincJarSha256, want $expectedKotlincJarSha256)"
+          }
           $kotlincRoot = $compiler.Directory.Parent.FullName
           [System.IO.File]::AppendAllText($env:GITHUB_ENV, "CONSEMA_KOTLINC=$kotlincRoot`r`n")
           [System.IO.File]::AppendAllText($env:GITHUB_ENV, "CONSEMA_JAVA_HOME=$env:JAVA_HOME`r`n")
           [System.IO.File]::AppendAllText($env:GITHUB_ENV, "KOTLIN_WORK=$env:RUNNER_TEMP\kotlin-work`r`n")
           Write-Output "kotlinc 2.2.0 provisioned at $kotlincRoot"
+      # Aggregate digest literal pin (fc-manifest-0.13.0.json:39,
+      # conformance_suite.aggregate_sha256; the 2026-08-12 P2-B vector
+      # reinforcement inventory): computes the aggregate over the provisioned
+      # conformance/vectors/*.json (file-name byte-order sort, per-file
+      # sha256 lowercase hex, lines `{basename}:{digest}` joined with '\n'
+      # without a trailing newline, then sha256 of that UTF-8 string) and
+      # compares it with the pinned literal — a manifest or vector drift
+      # fails the job instead of being accepted as self-consistent.
+      - name: verify the conformance/vectors aggregate digest (literal pin)
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $vectorsDir = Join-Path $env:GITHUB_WORKSPACE 'conformance\vectors'
+          $names = @(Get-ChildItem -LiteralPath $vectorsDir -Filter '*.json' | ForEach-Object { $_.Name })
+          [System.Array]::Sort($names, [System.StringComparer]::Ordinal)
+          $lines = @()
+          $caseTotal = 0
+          foreach ($name in $names) {
+            $path = Join-Path $vectorsDir $name
+            $vector = Get-Content $path -Raw -Encoding UTF8 | ConvertFrom-Json
+            $caseTotal += @($vector.cases).Count
+            $digest = (Get-FileHash -LiteralPath $path -Algorithm SHA256).Hash.ToLowerInvariant()
+            $lines += "$name`:$digest"
+          }
+          $aggregateText = [string]::Join("`n", $lines)
+          $sha = [System.Security.Cryptography.SHA256]::Create()
+          try {
+            $aggregateBytes = $sha.ComputeHash([System.Text.Encoding]::UTF8.GetBytes($aggregateText))
+          }
+          finally {
+            $sha.Dispose()
+          }
+          $computed = ([System.BitConverter]::ToString($aggregateBytes)).Replace('-', '').ToLowerInvariant()
+          $expected = 'cfd6e296da5b22b62d37b076d35bf6bbf58b0678ceddb37eea51a8b47200ab6a'
+          if ($names.Count -ne 18 -or $caseTotal -ne 519 -or $computed -ne $expected) {
+            throw "vectors digest mismatch: computed $computed, pinned $expected ($($names.Count) suites / $caseTotal cases vs pinned 18 / 519)"
+          }
+          Write-Output "vectors aggregate digest verified: $computed (18 suites / 519 cases)"
       # junit-jupiter-api-5.10.2.jar is required at test compile time
       # (kotlin.test resolves @Test through the kotlin-test-junit5 typealias
       # to org.junit.jupiter.api.Test). kotlinc bundles kotlin-test.jar and
@@ -323,6 +393,10 @@ jobs:
                   run(arg, block)
               }
               println("tests: $runs run, $failures failed")
+              if (runs == 0) {
+                  println("no tests ran — refusing to pass")
+                  exitProcess(1)
+              }
               if (failures > 0) exitProcess(1)
           }
           '@ | Set-Content -Path $runnerSource -Encoding utf8
@@ -330,13 +404,15 @@ jobs:
           & $java -Xmx2g -cp "$kotlinc\lib\*" org.jetbrains.kotlin.cli.jvm.K2JVMCompiler -jvm-target 17 -classpath $testClasspath -d $runnerOut (Join-Path $kotlinDir 'src\test\kotlin\consema\conformance') $runnerSource
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           Write-Output "conformance runner test compiled into $runnerOut"
-      # ConformanceRunnerTest verifies the aggregate digest
-      # cfd6e296da5b22b62d37b076d35bf6bbf58b0678ceddb37eea51a8b47200ab6a
-      # (fc-manifest-0.13.0.json:39), the 18 suites / 519 cases inventory,
-      # the per-suite counts, and zero failures (§4.2 hard pins in the
-      # runner). CONSEMA_REPO points the runner at the checkout, where the
-      # provision step placed conformance/ and docs/fc-manifest-0.13.0.json.
-      - name: run the conformance runner (digest + 18/519 pins)
+      # The digest literal pin step above verified the provisioned vectors
+      # against cfd6e296da5b22b62d37b076d35bf6bbf58b0678ceddb37eea51a8b47200ab6a
+      # (fc-manifest-0.13.0.json:39). ConformanceRunnerTest then asserts the
+      # 18 suites / 519 cases inventory, the per-suite counts, and zero
+      # failures, and compares the computed digest against the provisioned
+      # manifest record (§4.2 hard pins in the runner). CONSEMA_REPO points
+      # the runner at the checkout, where the provision step placed
+      # conformance/ and docs/fc-manifest-0.13.0.json.
+      - name: run the conformance runner (18/519 + manifest-record digest)
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
@@ -351,6 +427,22 @@ jobs:
           $runCp = "$mainOut;$runnerOut;$stdlib;$kotlinTestJar"
           & $java -Xmx2g -cp $runCp consema.conformance.ConformanceTestRunnerKt 'ConformanceRunnerTest.aggregateDigestMatchesTheManifest' 'ConformanceRunnerTest.allEighteenSuitesPassFiveHundredNineteenCases' 'ConformanceRunnerTest.everySuiteAssertsItsFrozenCaseCount'
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      # CLI smoke gate (six-repo audit G158): the runner CLI (Cli.kt main)
+      # was shipped but had no executor — run it here and require exit 0
+      # (RFC 0015 §5.1 success class; a conformant run must exit 0).
+      - name: smoke-run the conformance CLI (Cli.kt main, must exit 0)
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $java = Join-Path $env:CONSEMA_JAVA_HOME 'bin\java.exe'
+          $kotlinc = $env:CONSEMA_KOTLINC
+          $work = $env:KOTLIN_WORK
+          $mainOut = Join-Path $work 'main'
+          $stdlib = Join-Path $kotlinc 'lib\kotlin-stdlib.jar'
+          $env:CONSEMA_REPO = $env:GITHUB_WORKSPACE
+          & $java -Xmx2g -cp "$mainOut;$stdlib" consema.conformance.CliKt
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          Write-Output 'conformance CLI exited 0 on the provisioned data'
 
   kotlin-differential:
     name: kotlin differential vs Rust (byte parity + normalized + protocol exchange)
@@ -365,11 +457,13 @@ jobs:
           persist-credentials: false
           repository: consema/consema-rs
           path: consema-rs
+          ref: bd5734eab969fa7c8a1a1564d4ee50b85f3d10d6 # cfd6e296 519-case vendored conformance + emitter pin
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
           persist-credentials: false
           repository: consema/consema
           path: consema-repo
+          ref: ad667021f0fd7c611dd0deb670eba7658e1ea575 # cfd6e296 519-case conformance data pin
       - uses: dtolnay/rust-toolchain@4360b52568e2003a75bf9bc1d59f33a8e3fc893c # stable
         with:
           toolchain: stable
@@ -432,6 +526,14 @@ jobs:
           if (-not $compiler) {
             throw 'kotlinc distribution not found after extraction'
           }
+          # Verify the extracted compiler jar on every use — including a
+          # cache-restored distribution (the cache key is a constant, so the
+          # download branch is not the only supply path).
+          $expectedKotlincJarSha256 = 'cb2b7b0b82ad5b6ddc2e8c6c41c73e837a2b42e2abf64af64dda1b6173609790'
+          $actualKotlincJarSha256 = (Get-FileHash -Algorithm SHA256 -LiteralPath $compiler.FullName).Hash
+          if ($actualKotlincJarSha256 -ne $expectedKotlincJarSha256) {
+            throw "kotlin-compiler.jar sha256 mismatch (got $actualKotlincJarSha256, want $expectedKotlincJarSha256)"
+          }
           $kotlincRoot = $compiler.Directory.Parent.FullName
           [System.IO.File]::AppendAllText($env:GITHUB_ENV, "CONSEMA_KOTLINC=$kotlincRoot`r`n")
           [System.IO.File]::AppendAllText($env:GITHUB_ENV, "CONSEMA_JAVA_HOME=$env:JAVA_HOME`r`n")
@@ -484,17 +586,38 @@ jobs:
             echo "::error::no 'version' found in kotlin/build.gradle.kts"
             exit 1
           fi
-          grep -qF "Version: $version" README.md || {
-            echo "::error::README.md does not declare 'Version: $version'"
+          # Whole-line exact match: a substring match would let the rc->GA
+          # direction through (a stale 'Version: 1.0.0-rc.1' line contains
+          # 'Version: 1.0.0' as a prefix).
+          grep -qxF "Version: $version" README.md || {
+            echo "::error::README.md does not declare 'Version: $version' as a whole line"
             exit 1
           }
           echo "README version consistent with build.gradle.kts: $version"
+      # Extended coverage (six-repo audit G127): the README Maven coordinates
+      # (快速开始, dev.consema:consema-kotlin:<version>) and the bug-report
+      # template's version note must ride the same train bump.
+      - name: assert README Maven coordinates and bug-report template version match
+        shell: bash
+        run: |
+          set -euo pipefail
+          version=$(grep -m1 '^version' kotlin/build.gradle.kts | sed -E 's/^version[[:space:]]*=[[:space:]]*"([^"]+)".*/\1/')
+          grep -qF "dev.consema:consema-kotlin:$version" README.md || {
+            echo "::error::README.md quick-start Maven coordinates do not pin dev.consema:consema-kotlin:$version"
+            exit 1
+          }
+          echo "README Maven coordinates match: dev.consema:consema-kotlin:$version"
+          grep -qF "当前 $version" .github/ISSUE_TEMPLATE/bug_report.yml || {
+            echo "::error::.github/ISSUE_TEMPLATE/bug_report.yml does not note '当前 $version' (must match the train bump)"
+            exit 1
+          }
+          echo "bug-report template version matches: $version"
 
   # SDK examples gate: kotlin/examples/SdkChain.kt (the committed
   # five-language SDK chain example — parse -> native query -> best-exact
   # projection -> semantic edit -> canonical materialization -> TOML
   # conversion; language-neutral contract reference: consema repository
-  # docs/cookbook.md) and kotlin/examples/Quickstart.kt (the root README
+  # https://github.com/consema/consema/blob/main/docs/cookbook.md) and kotlin/examples/Quickstart.kt (the root README
   # "快速开始" snippet as a committed example — parse -> query -> edit ->
   # render). kotlinc compiles the main sources and the examples together
   # (the kotlin-gates K2JVMCompiler pattern), and both examples are actually
@@ -544,11 +667,43 @@ jobs:
           if (-not $compiler) {
             throw 'kotlinc distribution not found after extraction'
           }
+          # Verify the extracted compiler jar on every use — including a
+          # cache-restored distribution (the cache key is a constant, so the
+          # download branch is not the only supply path).
+          $expectedKotlincJarSha256 = 'cb2b7b0b82ad5b6ddc2e8c6c41c73e837a2b42e2abf64af64dda1b6173609790'
+          $actualKotlincJarSha256 = (Get-FileHash -Algorithm SHA256 -LiteralPath $compiler.FullName).Hash
+          if ($actualKotlincJarSha256 -ne $expectedKotlincJarSha256) {
+            throw "kotlin-compiler.jar sha256 mismatch (got $actualKotlincJarSha256, want $expectedKotlincJarSha256)"
+          }
           $kotlincRoot = $compiler.Directory.Parent.FullName
           [System.IO.File]::AppendAllText($env:GITHUB_ENV, "CONSEMA_KOTLINC=$kotlincRoot`r`n")
           [System.IO.File]::AppendAllText($env:GITHUB_ENV, "CONSEMA_JAVA_HOME=$env:JAVA_HOME`r`n")
           [System.IO.File]::AppendAllText($env:GITHUB_ENV, "KOTLIN_WORK=$env:RUNNER_TEMP\kotlin-work`r`n")
           Write-Output "kotlinc 2.2.0 provisioned at $kotlincRoot"
+      # Knit-style doc-example gate (root README quick-start snippet): the
+      # README ```kotlin fence must equal the committed examples/Quickstart.kt
+      # code body (after the file's header comment and package line), so the
+      # "粘贴版与入库版必须保持一致" claim is enforced, not asserted.
+      - name: README quick-start fence must match kotlin/examples/Quickstart.kt
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $readme = Get-Content (Join-Path $env:GITHUB_WORKSPACE 'README.md') -Raw
+          $m = [regex]::Match($readme, '(?s)```kotlin\r?\n(.*?)\r?\n```')
+          if (-not $m.Success) {
+            throw 'README.md quick-start fence (```kotlin ... ```) not found'
+          }
+          $fence = ($m.Groups[1].Value -replace "`r", '').Trim()
+          $file = Get-Content (Join-Path $env:GITHUB_WORKSPACE 'kotlin/examples/Quickstart.kt') -Raw
+          $normalized = ($file -replace "`r", '') -split '(?m)^package consema\.examples\r?\n', 2
+          if ($normalized.Count -ne 2) {
+            throw 'kotlin/examples/Quickstart.kt must declare package consema.examples'
+          }
+          $body = $normalized[1].Trim()
+          if ($fence -ne $body) {
+            throw 'README quick-start fence must equal kotlin/examples/Quickstart.kt (after its header comment and package line)'
+          }
+          Write-Output 'README quick-start fence matches kotlin/examples/Quickstart.kt'
       # Compiles every main source into one module (internal visibility),
       # then compiles the examples against it and runs both with java.
       - name: compile main sources + examples (K2JVMCompiler) and run
@@ -611,7 +766,13 @@ jobs:
           if (-not $jar) {
             throw 'no jar produced by gradlew jar'
           }
-          Write-Output "jar verified: $($jar.Name) ($($jar.Length) bytes)"
+          $listing = & jar tf $jar.FullName
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          $hasConsema = $listing | Where-Object { $_ -like 'consema/*' } | Select-Object -First 1
+          if (-not $hasConsema) {
+            throw "jar must contain consema classes: $($jar.Name) (an empty-shell artifact must never pass the release gate)"
+          }
+          Write-Output "jar verified: $($jar.Name) ($($jar.Length) bytes), contains consema/ classes"
 
   # Alls-green aggregate gate (tokio/pydantic pattern): `check (all gates
   # green)` is the SINGLE required check for branch protection on this

@@ -1,11 +1,11 @@
 // The `consema.protocol.conformance@2` suite runner
 // (conformance/vectors/protocol-v2.json).
 //
-// Data authority: crates/consema-conformance/src/protocol_v2.rs (the
+// Data authority: consema-rs/consema-conformance/src/protocol_v2.rs (the
 // per-case dispatch and every fact is transcribed from the Rust handlers;
 // the vector file drives every input and expectation). The
 // core.source-snapshot@1 / core.source-patch@1 wire shapes are transcribed
-// from crates/consema-protocol/src/source.rs (source_snapshot_value,
+// from consema-rs/consema-protocol/src/source.rs (source_snapshot_value,
 // source_patch_value, encoding_value, digest_value and their decoders).
 //
 // The Kotlin document package owns the source model (SourceSnapshot,

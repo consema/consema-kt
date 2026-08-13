@@ -1,8 +1,8 @@
 // The Kotlin test driver of the cross-language protocol exchange harness
-// (milestone 0.19.0 G5.3; docs/five-language-ci-design.md §3.4; the Go
-// precedent go/conformance/differential/protocol-exchange/exchange_test.go).
+// (L5; https://github.com/consema/consema/blob/main/docs/five-language-ci-design.md §3.4; the Go
+// precedent consema-go/go/conformance/differential/protocol-exchange/exchange_test.go).
 //
-// TestCaseFileIntegrity always runs and guards the checked-in case set
+// TestCaseFileIntegrity always runs and guards the provisioned case set
 // (manifest id, case count, unique ids, records, per-record accept/reject
 // coverage, canonical transport JSON, registered expected codes), so any
 // test run protects the input set even without the orchestrator.

@@ -3,7 +3,7 @@
 // extended sizes, cycles, and non-string dictionary keys.
 //
 // Data authority:
-//   - RFC 0013 §5.11 (docs/rfcs/0013-plist-family-profiles-v1.md:426-450):
+//   - RFC 0013 §5.11 (https://github.com/consema/consema/blob/main/docs/rfcs/0013-plist-family-profiles-v1.md:426-450):
 //     the mandatory integrity checks run before any object is decoded; a
 //     violated check makes the affected construct Recovered rather than
 //     inventing facts (RFC 0013 §3: recovery never asserts unproven native
@@ -13,8 +13,9 @@
 //     markers, extended-size-and-cycle) pin the statuses and codes; the
 //     hexes below are transcribed VERBATIM from those cases.
 //
-// This file is an intent document: the toolchain is not verified yet, so
-// these tests pin the intent; they run at the L3 verification gate.
+// This file runs in the verified toolchain gate (kotlin-gates gradlew
+// test / the scripts/kotlin-verify-*.ps1 direct path): the toolchain is
+// verified and this file is executed.
 
 package plist
 

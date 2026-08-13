@@ -2,7 +2,7 @@
 // Latin-1, published Windows code pages, and the decoded-text carrier.
 //
 // Data authority (language-neutral sources first):
-//   - RFC 0010 §3 (docs/rfcs/0010-java-properties-profiles-v1.md:65-106):
+//   - RFC 0010 §3 (https://github.com/consema/consema/blob/main/docs/rfcs/0010-java-properties-profiles-v1.md:65-106):
 //     reader@1 operates on an explicitly decoded character source with the
 //     charset chosen outside `load(Reader)`; latin1@1 maps every input byte
 //     to the same-numbered ISO-8859-1 character with BOM bytes as ordinary
@@ -12,12 +12,12 @@
 //     encodings (lines 40-49) pins Reader UTF-8/UTF-16LE/UTF-16BE/
 //     WindowsCodePage(1252) decoding and formation.latin1-byte-and-bom-
 //     content (lines 50-54) pins Latin-1 BOM-as-content.
-//   - crates/consema-properties/src/parser.rs:17-91 pins the encoding
+//   - consema-rs/consema-properties/src/parser.rs:17-91 pins the encoding
 //     request construction and the profile/encoding validation
 //     (java-properties.source.profile-encoding@1); the published Windows
 //     code-page registry is the Rust SourceEncoding::WindowsCodePage set
-//     (crates/consema-document/src/materialization.rs:633-652: 874, 932,
-//     936, 949, 950, 1250-1258, 65001). go/properties is a cross-reference
+//     (consema-rs/consema-document/src/materialization.rs:633-652: 874, 932,
+//     936, 949, 950, 1250-1258, 65001). consema-go/go/properties is a cross-reference
 //     only.
 //
 // Kotlin-idiomatic design (NOT a translation): the source selection is a

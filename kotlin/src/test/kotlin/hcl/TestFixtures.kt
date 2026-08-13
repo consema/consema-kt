@@ -2,9 +2,10 @@
 // and the golden-source transcription constants.
 //
 // Data authority: conformance/vectors/hcl-v1.json (the case inputs are
-// transcribed verbatim; the case id is cited on every use). This file is an
-// intent document: the toolchain is not verified yet, so these tests pin
-// the intent; they run at the L3 verification gate.
+// transcribed verbatim; the case id is cited on every use). This file runs
+// in the verified toolchain gate (kotlin-gates gradlew test / the scripts/
+// kotlin-verify-*.ps1 direct path): the toolchain is verified and this file
+// is executed.
 
 package hcl
 

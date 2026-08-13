@@ -1,17 +1,17 @@
 // The frozen INI-family format operation registry.
 //
 // Data authority:
-//   - RFC 0004 §10 (docs/rfcs/0004-materialization-conversion-and-
+//   - RFC 0004 §10 (https://github.com/consema/consema/blob/main/docs/rfcs/0004-materialization-conversion-and-
 //     structural-edit-v1.md:244-269): every structural operation has an
 //     immutable ID/version, target role, argument schema, and support
 //     classification; the registry does not claim that operations with
 //     similar names have identical format semantics.
-//   - RFC 0009 §12 (docs/rfcs/0009-ini-family-profiles-v1.md:437-472):
+//   - RFC 0009 §12 (https://github.com/consema/consema/blob/main/docs/rfcs/0009-ini-family-profiles-v1.md:437-472):
 //     all three format profiles publish the same operation count but
 //     independently typed INI operations: the eight ini.edit.*@1 names.
 //   - conformance/vectors/ini-v1.json registry.frozen-eight-operation-
 //     surface pins the eight ids and the six direct structural operations;
-//     crates/consema-ini/src/operation_registry.rs:16-80 is the exact
+//     consema-rs/consema-ini/src/operation_registry.rs:16-80 is the exact
 //     byte-arbitration source of the descriptor records and the support
 //     classes (operation_registry.rs:105-136).
 //

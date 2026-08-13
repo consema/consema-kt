@@ -1,9 +1,9 @@
 // The transferable Profile and Capability registry records plus the
 // registry manifest.
 //
-// Data authority: crates/consema-protocol/src/registry.rs and
+// Data authority: consema-rs/consema-protocol/src/registry.rs and
 // registry_manifest.rs (namespace rules at registry.rs:475-498; manifest
-// validation at registry_manifest.rs:119-151). go/protocol/
+// validation at registry_manifest.rs:119-151). consema-go/go/protocol/
 // registry_descriptor.go is a cross-reference.
 //
 // Kotlin-idiomatic design: immutable value types; validation throws

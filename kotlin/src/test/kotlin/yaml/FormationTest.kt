@@ -1,16 +1,17 @@
-﻿// YAML formation tests: profile directives, source encodings, empty and
+// YAML formation tests: profile directives, source encodings, empty and
 // multi-document streams, anchors/aliases, recovery-free fatal failures, and
 // the security limits (deep nesting, alias bombs, and count limits never
 // return partial documents).
 //
-// Data authority: RFC 0007 §3-§4, §8, §13 (docs/rfcs/0007-yaml-family-
+// Data authority: RFC 0007 §3-§4, §8, §13 (https://github.com/consema/consema/blob/main/docs/rfcs/0007-yaml-family-
 // profiles-and-safety-v1.md:54-97, 194-213, 400-429) and the vector cases
 // stream.empty, stream.multi-document, formation.undefined-alias,
 // source.utf16le-bom, resource.parse-source-bytes
 // (conformance/vectors/yaml-v1.json:15-29, 41-44, 126-129).
 //
-// This file is an intent document: the toolchain is not verified yet, so
-// these tests pin the intent; they run at the L2 verification gate.
+// This file runs in the verified toolchain gate (kotlin-gates gradlew
+// test / the scripts/kotlin-verify-*.ps1 direct path): the toolchain is
+// verified and this file is executed.
 
 package yaml
 

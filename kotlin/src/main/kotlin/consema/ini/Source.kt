@@ -3,26 +3,26 @@
 // exact decoded-boundary mapping.
 //
 // Data authority (language-neutral sources first):
-//   - RFC 0003 §3-§6 (docs/rfcs/0003-source-syntax-query-and-patch-v1.md:45-
+//   - RFC 0003 §3-§6 (https://github.com/consema/consema/blob/main/docs/rfcs/0003-source-syntax-query-and-patch-v1.md:45-
 //     148): content digest over exact raw bytes; the closed v1 encoding set;
 //     the decoded boundary tuple (raw_byte, decoded_utf8_byte,
 //     unicode_scalar_offset, utf16_code_unit_offset); only scalar boundaries
 //     are addressable; BOM bytes remain part of the raw source and digest
 //     and are retained as leading U+FEFF in the decoded view.
-//   - RFC 0009 §3 (docs/rfcs/0009-ini-family-profiles-v1.md:68-116):
+//   - RFC 0009 §3 (https://github.com/consema/consema/blob/main/docs/rfcs/0009-ini-family-profiles-v1.md:68-116):
 //     portable accepts UTF-8 without BOM over the ASCII horizontal tab /
 //     printable subset; windows accepts UTF-16LE with an initial BOM or an
 //     explicitly selected Windows code page (BomPolicy::TreatAsContent,
 //     invalid byte sequences rejected, the chosen code page and BOM facts
 //     observable); python accepts any complete text source when the caller
 //     or a BOM selected the encoding unambiguously.
-//   - crates/consema-ini/src/parser.rs:37-104 pins encoding_request and
+//   - consema-rs/consema-ini/src/parser.rs:37-104 pins encoding_request and
 //     validate_profile_encoding (the ini.profile.encoding@1 failure);
-//     crates/consema-document/src/source.rs:1016-1067 pins the checkpointed
+//     consema-rs/consema-document/src/source.rs:1016-1067 pins the checkpointed
 //     boundary index and the per-scalar RawBoundaryStep array used for
 //     variable-width code pages (source.rs:966-1014).
 //   - The JDK charset tables approximate the encoding_rs tables the Rust
-//     decoder pins (crates/consema-ini/src/materialization.rs:831-850):
+//     decoder pins (consema-rs/consema-ini/src/materialization.rs:831-850):
 //     874/1250-1258 -> windows-874/windows-125x, 932 -> windows-31j,
 //     936 -> GBK, 949 -> EUC-KR, 950 -> Big5, 65001 -> UTF-8. DBCS edge
 //     mappings need differential verification (盲写纪律: no gates claimed).

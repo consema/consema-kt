@@ -1,9 +1,9 @@
 // The Kotlin test driver of the cross-language normalized-result differential
-// harness (milestone 0.15.0 G1.5, bidirectional since 0.19.0 G5.2;
-// docs/five-language-ci-design.md §3.3; the Go precedent
-// go/conformance/differential/normalized/normalized_test.go).
+// harness (L5, bidirectional;
+// https://github.com/consema/consema/blob/main/docs/five-language-ci-design.md §3.3; the Go precedent
+// consema-go/go/conformance/differential/normalized/normalized_test.go).
 //
-// TestCaseFileIntegrity always runs and guards the checked-in case set
+// TestCaseFileIntegrity always runs and guards the provisioned case set
 // (manifest id, case count, unique ids, schema validity), so any test run
 // protects the input set even without the orchestrator.
 //

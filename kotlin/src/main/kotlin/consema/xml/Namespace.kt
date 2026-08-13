@@ -1,7 +1,7 @@
 // Namespace-aware expanded names and immutable binding scope (RFC 0012 §5).
 //
 // Data authority:
-//   - RFC 0012 §5 (docs/rfcs/0012-xml-1.0-safe-profile-v1.md:168-226):
+//   - RFC 0012 §5 (https://github.com/consema/consema/blob/main/docs/rfcs/0012-xml-1.0-safe-profile-v1.md:168-226):
 //     prefix spelling is source representation; expanded-name equality
 //     compares the namespace URI and local name, never the prefix;
 //     namespace declarations are ordered native associations; resolution
@@ -10,11 +10,11 @@
 //     `xmlns` is reserved and cannot be rebound; the default namespace
 //     applies to element names, not unprefixed attributes; namespace scope
 //     is immutable ancestry-derived data.
-//   - crates/consema-xml/src/namespace.rs:9-13 (the two frozen URIs),
+//   - consema-rs/consema-xml/src/namespace.rs:9-13 (the two frozen URIs),
 //     namespace.rs:15-57 (QName, ExpandedName), namespace.rs:59-89
 //     (Binding, NamespaceError), namespace.rs:91-219 (NamespaceScope
 //     declare/resolve rules and the declaration expanded-name rule).
-//   - go/xml/namespace.go is a cross-reference only.
+//   - consema-go/go/xml/namespace.go is a cross-reference only.
 //
 // Kotlin-idiomatic design: immutable data classes; NamespaceScope appends
 // bindings to a child scope instead of mutating, so the ancestry chain of

@@ -1,7 +1,7 @@
 // XML projection targets and explicit mapping policies (RFC 0012 §9).
 //
 // Data authority:
-//   - RFC 0012 §9 (docs/rfcs/0012-xml-1.0-safe-profile-v1.md:313-348): the
+//   - RFC 0012 §9 (https://github.com/consema/consema/blob/main/docs/rfcs/0012-xml-1.0-safe-profile-v1.md:313-348): the
 //     exact default target `xml.projection.element-tree@1` produces a
 //     versioned `xml.element-tree@1` PortableValue record containing
 //     declaration facts, admitted internal entity declarations, one
@@ -13,7 +13,7 @@
 //     attribute `@` prefix, text `#text` key, or namespace stripping.
 //   - conformance/vectors/xml-1-0-safe-v1.json cases xml.projection.* pin
 //     the record spelling and the recovered-document failure.
-//   - crates/consema-xml/src/projection.rs is the byte-arbitration
+//   - consema-rs/consema-xml/src/projection.rs is the byte-arbitration
 //     authority: targets (projection.rs:20-29), policies (projection.rs:
 //     31-124), ProjectionRequest (projection.rs:126-213), limits
 //     (projection.rs:215-237), the completion algebra (projection.rs:
@@ -21,7 +21,7 @@
 //     element-tree record (projection.rs:600-797), content items
 //     (projection.rs:799-973), text content (projection.rs:975-1095), and
 //     the entry mapping (projection.rs:1097-1236).
-//   - RFC 0004 §7-§8 (docs/rfcs/0004-...md:171-218) pins the completion
+//   - RFC 0004 §7-§8 (https://github.com/consema/consema/blob/main/docs/rfcs/0004-...md:171-218) pins the completion
 //     algebra and the provenance direction (portable locations to source
 //     origins).
 //

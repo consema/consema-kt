@@ -1,17 +1,17 @@
 // Scalar and structural edit transactions for TOML 1.0.
 //
 // Data authority:
-//   - RFC 0001 §6 (docs/rfcs/0001-toml-1.0-profile.md:102-120): scalar
+//   - RFC 0001 §6 (https://github.com/consema/consema/blob/main/docs/rfcs/0001-toml-1.0-profile.md:102-120): scalar
 //     edits accept only TomlItem scalar targets; the four representation
 //     policies; transactions validate all targets, conflicts, and candidate
 //     representations before one atomic replace-and-reparse.
-//   - RFC 0004 §12-§16 (docs/rfcs/0004-materialization-conversion-and-
+//   - RFC 0004 §12-§16 (https://github.com/consema/consema/blob/main/docs/rfcs/0004-materialization-conversion-and-
 //     structural-edit-v1.md:291-384): native ownership of the five
 //     structural operations, the transaction conflict algebra, the dry-run
 //     EditPlan, the untouched-byte proof, and SourcePatch derivation.
-//   - crates/consema-toml/src/operation_registry.rs:16-74 pins the seven
+//   - consema-rs/consema-toml/src/operation_registry.rs:16-74 pins the seven
 //     frozen operation IDs and their target roles.
-//   - crates/consema-toml/src/edit.rs:15-47 (RepresentationPolicy,
+//   - consema-rs/consema-toml/src/edit.rs:15-47 (RepresentationPolicy,
 //     ScalarReplacement), :57-99 (EditOperation), :101-227 (transaction and
 //     builder), :229-280 (EditCommit/EditFailure), :281-430 (commit),
 //     :432-447 (dry_run), :449-1062 (preparation), :1064-1100
@@ -22,14 +22,14 @@
 //   - conformance/vectors/toml-v1.json toml.edit.* (lines 71-82) and
 //     operations-v1.json operations.v1.toml-* (lines 173-223) pin the
 //     exact replacement bytes and failure codes.
-//   - go/toml/edit.go is a cross-reference only.
+//   - consema-go/go/toml/edit.go is a cross-reference only.
 //
 // Kotlin-idiomatic design: failures are typed exceptions carrying the
 // frozen core.edit.*@1 code and the stable kind name (the vector
-// `"failure": "UnsupportedSemanticValue"` fact); ChangeSet is a post-1.0.0
-// (冻结前评估项，见五要素终审 F-28.3-1 处置) milestone, so
+// `"failure": "UnsupportedSemanticValue"` fact); ChangeSet is not shipped
+// in the Kotlin TOML family (recorded gap, six-repo audit G090), so
 // the commit exposes the derived node mappings and fallback diagnostics as
-// family records ready for that integration.
+// family records.
 
 package consema.toml
 
@@ -344,10 +344,10 @@ class TomlEditException(val kind: EditFailureKind) :
         get() = kind.code
 }
 
-/** Atomic edit success (edit.rs:229-240). ChangeSet is a post-1.0.0
- * (冻结前评估项，见五要素终审 F-28.3-1 处置) document milestone; this L1
- * commit exposes the equivalent facts ([diagnostics], [nodeMappings]) as
- * family records. */
+/** Atomic edit success (edit.rs:229-240). ChangeSet is not shipped in the
+ * Kotlin TOML family (recorded gap, six-repo audit G090); the commit
+ * exposes the equivalent facts ([diagnostics], [nodeMappings]) as family
+ * records. */
 class EditCommit(
     /** New immutable document. */
     val document: TomlDocument,
@@ -364,7 +364,7 @@ class EditCommit(
 )
 
 /** One old-to-new node mapping fact (the Rust NodeMapping of the
- * post-1.0.0 (冻结前评估项，见五要素终审 F-28.3-1 处置) ChangeSet;
+ * not-shipped-in-Kotlin ChangeSet, recorded gap, six-repo audit G090;
  * edit.rs:368-393). */
 data class TomlNodeMapping(
     /** Old structural identity. */

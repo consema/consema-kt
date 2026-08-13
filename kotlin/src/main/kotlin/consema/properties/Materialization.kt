@@ -2,11 +2,11 @@
 // profiles.
 //
 // Data authority:
-//   - RFC 0004 §3-§8 (docs/rfcs/0004-materialization-conversion-and-
+//   - RFC 0004 §3-§8 (https://github.com/consema/consema/blob/main/docs/rfcs/0004-materialization-conversion-and-
 //     structural-edit-v1.md:56-218): the common MaterializationRequest v1,
 //     ExactOnly representability, the completion algebra, and the
 //     provenance direction (portable input locations to the new Document).
-//   - RFC 0010 §12 (docs/rfcs/0010-java-properties-profiles-v1.md:351-381):
+//   - RFC 0010 §12 (https://github.com/consema/consema/blob/main/docs/rfcs/0010-java-properties-profiles-v1.md:351-381):
 //     the canonical styles java-properties.reader-canonical@1 and
 //     java-properties.latin1-canonical@1; both emit `key=value` in input
 //     order with an explicitly selected newline and deterministic escaping
@@ -21,11 +21,11 @@
 //     bytes and failure names (materialization.canonical-styles-encodings-
 //     and-closure, lines 90-99; materialization.atomic-failures-and-limits,
 //     lines 100-104).
-//   - crates/consema-properties/src/materialization.rs is the byte-
+//   - consema-rs/consema-properties/src/materialization.rs is the byte-
 //     arbitration authority (writer materialization.rs:176-346, closure
 //     materialization.rs:348-395, provenance materialization.rs:397-468,
 //     encoding materialization.rs:520-631, parse limits materialization.rs:
-//     124-150). go/properties/materialization.go is a cross-reference only.
+//     124-150). consema-go/go/properties/materialization.go is a cross-reference only.
 //   - The Kotlin document package owns the completion algebra types
 //     (MaterializationResult/CompleteMaterialization/...,
 //     kotlin/.../document/Materialization.kt:286-371). Windows code pages

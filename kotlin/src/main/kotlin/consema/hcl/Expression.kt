@@ -3,7 +3,7 @@
 // predicate.
 //
 // Data authority:
-//   - RFC 0014 §4.3-§4.6 (docs/rfcs/0014-hcl-family-profiles-v1.md:215-357):
+//   - RFC 0014 §4.3-§4.6 (https://github.com/consema/consema/blob/main/docs/rfcs/0014-hcl-family-profiles-v1.md:215-357):
 //     the frozen expression grammar, operator precedence, templates,
 //     heredocs, constructors, and for-expressions.
 //   - RFC 0014 §6 (:395-446): an expression is a first-class native role
@@ -13,7 +13,7 @@
 //     canonical-decimal equality); unevaluated is the default contract.
 //   - RFC 0014 §8.1 (:511-537): the literal-complete boundary — a purely
 //     syntactic predicate; no arithmetic is ever computed (hard gate 1).
-//   - crates/consema-hcl/src/expression.rs pins the exact shapes and
+//   - consema-rs/consema-hcl/src/expression.rs pins the exact shapes and
 //     spellings: HclExpressionKind (:200-312), HclExpressionKindName
 //     (:564-650, "number"/"boolean"/"null"/"template"/"function-call"/
 //     "variable-ref"/"traversal"/"unary"/"binary"/"conditional"/"for-tuple"/
@@ -26,7 +26,7 @@
 //     canonical structural serialization defined by the materialization
 //     codec (materialization.rs:1496-1758), the shared adaptation point of
 //     the `hcl.expression@1` payload (projection.rs:581-592).
-//   - go/hcl is a cross-reference only.
+//   - consema-go/go/hcl is a cross-reference only.
 //
 // Kotlin-idiomatic design (NOT a translation): the closed kind set is a
 // sealed class hierarchy — exhaustive `when` can never meet an unknown kind;

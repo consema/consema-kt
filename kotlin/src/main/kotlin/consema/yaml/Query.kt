@@ -1,21 +1,21 @@
 // Versioned YAML native-semantic and lossless-syntax query execution.
 //
 // Data authority:
-//   - RFC 0007 §9 (docs/rfcs/0007-yaml-family-profiles-and-safety-v1.md:
+//   - RFC 0007 §9 (https://github.com/consema/consema/blob/main/docs/rfcs/0007-yaml-family-profiles-and-safety-v1.md:
 //     214-258): domains yaml.native-semantic-query@1 and
 //     yaml.lossless-syntax-query@1; native roles Stream, Document, Node,
 //     MappingEntry, SequenceElement, AnchorDefinition, AliasOccurrence; the
 //     frozen v1 operator surface; every match carries a snapshot-bound role
 //     and exact raw span; syntax text comparison uses decoded Unicode text
 //     while retaining raw byte spans.
-//   - RFC 0003 §8 (docs/rfcs/0003-source-syntax-query-and-patch-v1.md:
+//   - RFC 0003 §8 (https://github.com/consema/consema/blob/main/docs/rfcs/0003-source-syntax-query-and-patch-v1.md:
 //     173-248): the standard input sequence is every lossless syntax piece
 //     in raw source order; each match carries its NodeRef, raw Span,
 //     format-specific kind, and source ordinal.
 //   - conformance/vectors/yaml-v1.json pins the query facts
 //     (query.mapping-entries, query.alias-target, query.syntax-comments,
 //     query.resource-limit at lines 50-69).
-//   - crates/consema-yaml/src/query.rs is the byte-arbitration authority
+//   - consema-rs/consema-yaml/src/query.rs is the byte-arbitration authority
 //     (matches query.rs:12-99, execution query.rs:166-269, operators
 //     query.rs:394-676, selection query.rs:690-707); consema-core/src/
 //     query.rs:2967-2993 pins QueryLimits defaults (max_steps 100_000,

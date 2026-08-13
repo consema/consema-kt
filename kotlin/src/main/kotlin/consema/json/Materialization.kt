@@ -1,11 +1,11 @@
 // Deterministic PortableValue materialization for JSON-family profiles.
 //
 // Data authority:
-//   - RFC 0004 §3-§8 (docs/rfcs/0004-materialization-conversion-and-
+//   - RFC 0004 §3-§8 (https://github.com/consema/consema/blob/main/docs/rfcs/0004-materialization-conversion-and-
 //     structural-edit-v1.md:56-218): the common MaterializationRequest v1,
 //     ExactOnly representability, the completion algebra, and the
 //     provenance direction (portable input locations to the new Document).
-//   - RFC 0005 §9 (docs/rfcs/0005-json-family-production-v1.md:195-218):
+//   - RFC 0005 §9 (https://github.com/consema/consema/blob/main/docs/rfcs/0005-json-family-production-v1.md:195-218):
 //     styles json5.canonical-compact@1 / json5.canonical-pretty@1; canonical
 //     JSON5 deliberately emits the strict-JSON subset for ordinary core
 //     values and emits Infinity/-Infinity/NaN/-NaN only for the four frozen
@@ -13,7 +13,7 @@
 //     all output reparses under the exact requested profile and reprojects
 //     to the identical PortableValue before completion.
 //   - conformance/vectors/json-family-v2.json (json5.materialize.*) pins the
-//     golden output bytes and failure names; crates/consema-json/src/
+//     golden output bytes and failure names; consema-rs/consema-json/src/
 //     materialization.rs is the byte-arbitration authority (writer
 //     materialization.rs:154-494, provenance materialization.rs:500-756).
 //   - The Kotlin document package owns the completion algebra types

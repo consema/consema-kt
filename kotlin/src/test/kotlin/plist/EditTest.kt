@@ -7,7 +7,7 @@
 //     (plist-v1.json:257-325), plist.edit.binary-structural (plist-v1.json:
 //     327-361), plist.edit.conflicts (plist-v1.json:363-407) pin the
 //     outcomes.
-//   - crates/consema-plist/src/edit.rs is the byte authority: the fold rule
+//   - consema-rs/consema-plist/src/edit.rs is the byte authority: the fold rule
 //     (edit.rs:668-728 record_edit) folds a later operation whose span lies
 //     inside an earlier replacement and merges containing base spans at
 //     commit (edit.rs:1947-1979); two zero-width insertions at one base
@@ -16,10 +16,11 @@
 //     container loses its slots so later operations through it fail
 //     WrongRole (edit.rs:749-768); a binary key rename binds a fresh key
 //     object so shared keys stay byte-exact (edit.rs:1700-1721).
-//   - RFC 0013 §11 (docs/rfcs/0013-plist-family-profiles-v1.md:683-715).
+//   - RFC 0013 §11 (https://github.com/consema/consema/blob/main/docs/rfcs/0013-plist-family-profiles-v1.md:683-715).
 //
-// This file is an intent document: the toolchain is not verified yet, so
-// these tests pin the intent; they run at the L3 verification gate.
+// This file runs in the verified toolchain gate (kotlin-gates gradlew
+// test / the scripts/kotlin-verify-*.ps1 direct path): the toolchain is
+// verified and this file is executed.
 
 package plist
 

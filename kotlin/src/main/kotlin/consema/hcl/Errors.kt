@@ -2,7 +2,7 @@
 // the frozen `hcl.*@1` diagnostic-code inventory.
 //
 // Data authority:
-//   - RFC 0014 §11 (docs/rfcs/0014-hcl-family-profiles-v1.md:674-714): the
+//   - RFC 0014 §11 (https://github.com/consema/consema/blob/main/docs/rfcs/0014-hcl-family-profiles-v1.md:674-714): the
 //     `hcl.*` diagnostic codes are registered by RFC 0014 and are part of
 //     the `hcl.native@1` and `hcl.tfvars@1` contracts. They do NOT enter the
 //     `consema-protocol` core error registry, which covers only core/protocol
@@ -10,7 +10,7 @@
 //     externalized through the protocol they follow RFC 0011's error-code
 //     classification rules (RFC 0014 §11).
 //   - The frozen codes are transcribed from the byte-arbitration source
-//     crates/consema-hcl:
+//     consema-rs/consema-hcl:
 //       parse family: lexer.rs:461-486 (byte-order-mark@1, lone-cr@1,
 //         invalid-utf8@1, identifier@1, invalid-number@1,
 //         invalid-character@1, invalid-escape@1, unterminated-comment@1,
@@ -42,7 +42,7 @@
 //       query family: query.rs:802-803 (hcl.query.type-mismatch@1,
 //         hcl.query.non-literal@1).
 //   - The operation ids are pinned in Operations.kt (operation_registry.rs).
-//   - go/hcl is a cross-reference only.
+//   - consema-go/go/hcl is a cross-reference only.
 //
 // Kotlin-idiomatic design (NOT a translation): the family carries its own
 // immutable diagnostic record because the protocol `Diagnostic` primary

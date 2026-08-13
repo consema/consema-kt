@@ -1,13 +1,13 @@
 // Typed graph construction and PGCE/1 codec failures.
 //
 // Data authority: the frozen codes are transcribed from the Rust
-// StableFailure mappings (crates/consema-graph/src/lib.rs:228-242 for
-// graph_build_error_code; crates/consema-graph/src/pgce.rs:162-216 for the
+// StableFailure mappings (consema-rs/consema-graph/src/lib.rs:228-242 for
+// graph_build_error_code; consema-rs/consema-graph/src/pgce.rs:162-216 for the
 // PGCE decode/encode codes). Verified against the public error-code registry
-// (crates/consema-protocol/src/error_registry.rs registers
+// (consema-rs/consema-protocol/src/error_registry.rs registers
 // core.graph.invalid@1, core.graph.resource-limit@1, core.pgce.invalid@1,
 // core.pgce.non-canonical@1, core.pgce.resource-limit@1,
-// core.pgce.unsupported-version@1). go/graph/errors.go is a cross-reference.
+// core.pgce.unsupported-version@1). consema-go/go/graph/errors.go is a cross-reference.
 //
 // Kotlin-idiomatic error handling: failures are exceptions carrying the
 // frozen `code`; error text is human presentation only (RFC 0016 §6).
@@ -16,7 +16,7 @@ package consema.graph
 
 /**
  * The stable graph construction failures (the Rust GraphBuildError,
- * crates/consema-graph/src/lib.rs:192-218). Every kind maps to one frozen
+ * consema-rs/consema-graph/src/lib.rs:192-218). Every kind maps to one frozen
  * registered code (see [GraphException.code]).
  */
 enum class GraphErrorKind {
@@ -69,7 +69,7 @@ class GraphException(
      * null otherwise. */
     val id: NodeId? = null,
 ) : Exception(message) {
-    /** The frozen registered code (crates/consema-graph/src/lib.rs:
+    /** The frozen registered code (consema-rs/consema-graph/src/lib.rs:
      * 228-242): "core.graph.resource-limit@1" or "core.graph.invalid@1". */
     val code: String
         get() = when (kind) {
@@ -81,7 +81,7 @@ class GraphException(
 
 /**
  * The strict PGCE/1 failures of the encoder and decoder (the Rust
- * PgceEncodeError and PgceDecodeError, crates/consema-graph/src/pgce.rs:
+ * PgceEncodeError and PgceDecodeError, consema-rs/consema-graph/src/pgce.rs:
  * 70-152).
  */
 enum class PgceErrorKind {
@@ -151,7 +151,7 @@ class PgceException(
      * [PgceErrorKind.INVALID_GRAPH]; null otherwise. */
     override val cause: GraphException? = null,
 ) : Exception(message) {
-    /** The frozen registered code (crates/consema-graph/src/pgce.rs:
+    /** The frozen registered code (consema-rs/consema-graph/src/pgce.rs:
      * 162-216). */
     val code: String
         get() = when (kind) {

@@ -1,7 +1,7 @@
 // XML native and lossless syntax query execution (RFC 0012 §8).
 //
 // Data authority:
-//   - RFC 0012 §8 (docs/rfcs/0012-xml-1.0-safe-profile-v1.md:284-312):
+//   - RFC 0012 §8 (https://github.com/consema/consema/blob/main/docs/rfcs/0012-xml-1.0-safe-profile-v1.md:284-312):
 //     domains `xml.native-semantic-query@1` and `xml.lossless-syntax-query@1`;
 //     native order is document order; attributes and namespace declarations
 //     preserve source order; child content preserves mixed-content order;
@@ -10,8 +10,8 @@
 //   - conformance/vectors/xml-1-0-safe-v1.json cases xml.syntax-query.* and
 //     xml.native-query.* pin the operator spellings, the match order, and
 //     the ordinal facts (the conformance runner build_filters,
-//     crates/consema-conformance/src/xml_v1.rs:231-258).
-//   - crates/consema-xml/src/query.rs is the byte-arbitration authority:
+//     consema-rs/consema-conformance/src/xml_v1.rs:231-258).
+//   - consema-rs/consema-xml/src/query.rs is the byte-arbitration authority:
 //     XmlReferenceKind (query.rs:20-29), XmlMatch (query.rs:31-165), the
 //     operator table (query.rs:583-619), the per-operator semantics
 //     (query.rs:624-1376), selection (query.rs:251-269, 337-355), and the

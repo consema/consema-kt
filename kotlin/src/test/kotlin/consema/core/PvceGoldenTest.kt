@@ -9,7 +9,7 @@
 //   - pvce.reject-nonminimal-varint input "5056434581000000" ->
 //     NonCanonicalVarint
 // These tests run once the toolchain is ready (START GATE,
-// docs/multi-language-implementation-plan.md §7).
+// https://github.com/consema/consema/blob/main/docs/multi-language-implementation-plan.md §7).
 
 package consema.core
 

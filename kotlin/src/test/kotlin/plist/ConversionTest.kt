@@ -3,19 +3,20 @@
 // fixed points, and the plist.conversion.* vector facts.
 //
 // Data authority:
-//   - RFC 0013 §7 (docs/rfcs/0013-plist-family-profiles-v1.md:512-538):
+//   - RFC 0013 §7 (https://github.com/consema/consema/blob/main/docs/rfcs/0013-plist-family-profiles-v1.md:512-538):
 //     conversion is exact when every native fact is expressible in the
 //     target representation and fails atomically otherwise.
-//   - crates/consema-plist/src/document.rs:494-551 (XML -> binary writer)
+//   - consema-rs/consema-plist/src/document.rs:494-551 (XML -> binary writer)
 //     and document.rs:559-593 (binary -> XML writer) pin the canonical
-//     outputs; go/plist is a cross-reference only.
+//     outputs; consema-go/go/plist is a cross-reference only.
 //   - conformance/vectors/plist-v1.json cases plist.conversion.* pin the
 //     native-model facts; the minimal-document vector hex
 //     (plist.binary-formation.minimal-document, plist-v1.json:451-467) is
 //     the byte-exact target of the empty-string conversion.
 //
-// This file is an intent document: the toolchain is not verified yet, so
-// these tests pin the intent; they run at the L3 verification gate.
+// This file runs in the verified toolchain gate (kotlin-gates gradlew
+// test / the scripts/kotlin-verify-*.ps1 direct path): the toolchain is
+// verified and this file is executed.
 
 package plist
 

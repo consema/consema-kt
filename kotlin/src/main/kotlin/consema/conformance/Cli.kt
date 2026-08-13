@@ -5,16 +5,16 @@
 // any suite fails or the digest does not match the Feature-Complete
 // Manifest.
 //
-// Data authority: docs/five-language-ci-design.md §2 (each runner owns its
+// Data authority: https://github.com/consema/consema/blob/main/docs/five-language-ci-design.md §2 (each runner owns its
 // CLI form; the Go CLI cmd/consema-conformance is the cross-reference
 // shape); conformance/README.md:81-82 (every suite must validate its case
 // count).
 //
 // Usage:
 //   consema-conformance [<repo-root>]
-// The repository root defaults to the nearest ancestor of the working
-// directory containing conformance/vectors, or the CONSEMA_REPO
-// environment variable.
+// The repository root is the CONSEMA_REPO environment variable when set,
+// otherwise the nearest ancestor of the working directory containing both
+// conformance/vectors and docs/fc-manifest-0.13.0.json (Runner.resolveRepoRoot).
 
 package consema.conformance
 
@@ -60,8 +60,9 @@ fun runAllAndPrint(repoRoot: String): RunReport {
     return report
 }
 
-/** The conformance CLI entry: per-suite pass/fail, non-zero exit on
- * failure. */
+/** The conformance CLI entry: per-suite pass/fail, exit class per
+ * RFC 0015 §5.1 — 0 (success) or 2 (data: a non-conformant run means the
+ * input data failed, never an internal error). */
 fun main(args: Array<String>) {
     val repoRoot = if (args.isNotEmpty()) {
         args[0]
@@ -69,5 +70,5 @@ fun main(args: Array<String>) {
         resolveRepoRoot()
     }
     val report = runAllAndPrint(repoRoot)
-    exitProcess(if (report.conformant()) 0 else 1)
+    exitProcess(if (report.conformant()) 0 else 2)
 }

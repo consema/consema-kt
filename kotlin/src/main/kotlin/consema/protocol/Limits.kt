@@ -1,7 +1,7 @@
 // Protocol transport resource limits.
 //
-// Data authority: crates/consema-protocol/src/limits.rs (defaults at
-// limits.rs:20-31). go/protocol/limits.go is a cross-reference.
+// Data authority: consema-rs/consema-protocol/src/limits.rs (defaults at
+// limits.rs:20-31). consema-go/go/protocol/limits.go is a cross-reference.
 
 package consema.protocol
 

@@ -4,7 +4,7 @@
 //
 // Data authority: the operator spellings, the match order, and the ordinal
 // facts are pinned by the vector cases; the conformance runner builds the
-// filter chain exactly as these tests do (crates/consema-conformance/src/
+// filter chain exactly as these tests do (consema-rs/consema-conformance/src/
 // xml_v1.rs:231-258). The syntax-piece ordinal is the zero-based source
 // order of the piece in the exhaustive lossless index (RFC 0012 §7).
 
@@ -70,7 +70,7 @@ class QueryTest {
         // Case xml.syntax-query.kind-and-text-filter (xml-1-0-safe-v1.json:
         // 175-202). NOTE: the vector's informational ordinal column says
         // "10" for the second match, but the language-neutral runner asserts
-        // kind and text only (crates/consema-conformance/src/xml_v1.rs:
+        // kind and text only (consema-rs/consema-conformance/src/xml_v1.rs:
         // 297-325), and the byte authority emits a Whitespace gap piece
         // between the QName and the attribute (probed against the Rust:
         // pieces tag-open 0, local-name 1, whitespace 2, attribute-name 3,

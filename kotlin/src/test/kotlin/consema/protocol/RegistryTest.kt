@@ -1,8 +1,8 @@
 // Registry pinning tests — intent documents.
 //
 // The frozen counts and sortedness are transcribed from
-// crates/consema-protocol/src/contract.rs (CONTRACTS_V1..V7 at contract.rs:
-// 71/90/111/142/178/225) and crates/consema-protocol/src/error_registry.rs
+// consema-rs/consema-protocol/src/contract.rs (CONTRACTS_V1..V7 at contract.rs:
+// 71/90/111/142/178/225) and consema-rs/consema-protocol/src/error_registry.rs
 // (ERROR_CODES_V1..V7; the typed arrays at error_registry.rs:412/617/662/
 // 935/1172/1339): 16/18/25/25/30/38/41 contracts and 55/62/90/92/132/166/187
 // codes. These tests run once the toolchain is ready (START GATE).

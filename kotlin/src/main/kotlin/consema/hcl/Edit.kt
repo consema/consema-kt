@@ -2,7 +2,7 @@
 // §10, RFC 0004 §13-§16).
 //
 // Data authority:
-//   - RFC 0014 §10 (docs/rfcs/0014-hcl-family-profiles-v1.md:630-671):
+//   - RFC 0014 §10 (https://github.com/consema/consema/blob/main/docs/rfcs/0014-hcl-family-profiles-v1.md:630-671):
 //     both profiles publish the same snapshot-bound operations
 //     (set-attribute-value, insert-attribute, remove-attribute,
 //     rename-attribute, insert-block, remove-block); the tfvars profile
@@ -19,7 +19,7 @@
 //     `hcl.tfvars@1` block insertion, unrepresentable values, limit
 //     failure, and reparse failure; success returns the new Document,
 //     ChangeSet, `UntouchedByteProof`, and a replayable `SourcePatch`.
-//   - crates/consema-hcl/src/edit.rs pins the operation shapes (edit.rs:93-
+//   - consema-rs/consema-hcl/src/edit.rs pins the operation shapes (edit.rs:93-
 //     264: BodyPathStep, BodyPath, NodeRef, BodyPlacement, EditValue,
 //     EditKey), the failure codes (edit.rs:599-612: core.edit.wrong-
 //     snapshot@1, core.edit.wrong-role@1, core.edit.incomplete-target@1,
@@ -33,7 +33,7 @@
 //     derivation.
 //   - The six operation ids are pinned in Operations.kt
 //     (operation_registry.rs:105-127).
-//   - go/hcl is a cross-reference only.
+//   - consema-go/go/hcl is a cross-reference only.
 //
 // Kotlin-idiomatic design: the edit surface mirrors the toml family
 // (toml/Edit.kt): a builder-bound immutable transaction, a sealed failure
@@ -402,9 +402,9 @@ class HclEditException(val kind: HclEditFailureKind) :
         get() = kind.code
 }
 
-/** Atomic edit success (edit.rs:229-240). ChangeSet is a post-1.0.0
- * (冻结前评估项，见五要素终审 F-28.3-1 处置) document milestone; this L3
- * commit exposes the equivalent facts as family records. */
+/** Atomic edit success (edit.rs:229-240). ChangeSet is not shipped in the
+ * Kotlin HCL family (recorded gap, six-repo audit G090); the commit
+ * exposes the equivalent facts as family records. */
 class HclEditCommit(
     /** New immutable document. */
     val document: HclDocument,

@@ -2,25 +2,25 @@
 // report, and provenance.
 //
 // Data authority:
-//   - RFC 0004 §7-§8 (docs/rfcs/0004-materialization-conversion-and-
+//   - RFC 0004 §7-§8 (https://github.com/consema/consema/blob/main/docs/rfcs/0004-materialization-conversion-and-
 //     structural-edit-v1.md:171-218) pins the completion algebra
 //     (Complete{value, fidelity, report, provenance} | Failed{diagnostics,
 //     report, partial_analysis}) and the provenance direction (portable
 //     locations to source origins).
-//   - RFC 0005 §8 (docs/rfcs/0005-json-family-production-v1.md:174-193) pins
+//   - RFC 0005 §8 (https://github.com/consema/consema/blob/main/docs/rfcs/0005-json-family-production-v1.md:174-193) pins
 //     the JSON5 projection contract: json5.projection.best-exact-core@1 is the
 //     JSON5 default target and is profile-bound (applying the old target to
 //     JSON5 or the JSON5 target to another profile fails target-not-
 //     applicable); duplicate-name objects map to EntryMapping under BestExact;
 //     Infinity/NaN map to the exact frozen BinaryFloat64 bits.
 //   - conformance/vectors/json-family-v2.json (json5.projection.*) pins the
-//     per-case outcomes; crates/consema-json/src/projection.rs is the
+//     per-case outcomes; consema-rs/consema-json/src/projection.rs is the
 //     byte-arbitration authority (targets projection.rs:13-24, request
 //     projection.rs:52-168, failure codes projection.rs:754-765, selection
 //     projection.rs:691-726).
 //   - Value paths come from the L0 core agent (consema.core.ValuePath /
 //     ValuePathSegment / AssociationLocation / AssociationRole mirroring
-//     crates/consema-core/src/location.rs:1-89; the dependency is declared by
+//     consema-rs/consema-core/src/location.rs:1-89; the dependency is declared by
 //     kotlin/.../document/Materialization.kt:27-31).
 //
 // Kotlin-idiomatic design: the completion algebra is a sealed class, so

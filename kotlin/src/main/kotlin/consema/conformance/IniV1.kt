@@ -1,19 +1,17 @@
 // The `consema.ini.conformance@1` suite runner
 // (conformance/vectors/ini-v1.json).
 //
-// Data authority: crates/consema-conformance/src/ini_v1.rs (the per-case
+// Data authority: consema-rs/consema-conformance/src/ini_v1.rs (the per-case
 // dispatch and every fact are transcribed from the Rust handlers; the
 // capability mapping at ini_v1.rs:112-126 and the case table at
 // ini_v1.rs:130-152); the vector file itself drives every input and
-// expectation (conformance/README.md rules 3-4). go/conformance/ini_v1.go
+// expectation (conformance/README.md rules 3-4). consema-go/go/conformance/ini_v1.go
 // is a cross-reference only.
 //
-// One documented skip: query.validation-limit-cancellation needs the
-// RFC 0003 §9 ordered query cursor (first_yielded plus a Cancelled
-// terminal); the Kotlin INI family executes queries as one synchronous
-// result list whose terminal is always Completed
-// (kotlin/.../ini/Query.kt:28-30), so the cursor-only facts are not
-// observable here.
+// The ordered query cursor (RFC 0003 §9) is implemented in the Kotlin INI
+// family: a result limit fails with the resource-limit code and the
+// cancellation case yields the first match and then reports the Cancelled
+// terminal (ini/Query.kt); every case runs (the runner records zero skips).
 
 package consema.conformance
 

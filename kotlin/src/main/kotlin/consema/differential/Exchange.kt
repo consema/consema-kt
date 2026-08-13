@@ -1,7 +1,7 @@
 // The Kotlin side of the cross-language protocol exchange harness
-// (milestone 0.19.0 G5.3; docs/five-language-ci-design.md §3.4; the Go
-// precedent go/conformance/differential/protocol-exchange/exchange_test.go;
-// the Rust example crates/consema-conformance/examples/emit_protocol_exchange.rs
+// (L5; https://github.com/consema/consema/blob/main/docs/five-language-ci-design.md §3.4; the Go
+// precedent consema-go/go/conformance/differential/protocol-exchange/exchange_test.go;
+// the Rust example consema-rs/consema-conformance/examples/emit_protocol_exchange.rs
 // is the byte authority for the golden files).
 //
 // For every case (83: 40 accept + 43 reject):
@@ -56,7 +56,7 @@ const val EXCHANGE_MIN_CASES = 40
 
 /** The closed record inventory of the exchange set. It is exactly the
  * protocol record surface both implementations decode in full (the Go
- * payload.go dispatch intersect crates/consema-protocol payload.rs
+ * payload.go dispatch intersect consema-rs/consema-protocol payload.rs
  * dispatch). No Rust type names appear anywhere in the case file. */
 val EXCHANGE_ALL_RECORDS: List<String> = listOf(
     "core.batch-plan@1",
@@ -110,7 +110,7 @@ data class ExchangeReport(
     val failures: List<String>,
 )
 
-/** Loads and validates the checked-in case set: manifest id, case count
+/** Loads and validates the provisioned case set: manifest id, case count
  * lower bound, unique ids, known records, per-record positive and negative
  * coverage, canonical transport JSON, and registered expected codes. */
 fun loadExchangeCaseFile(file: File): List<ExchangeCase> {

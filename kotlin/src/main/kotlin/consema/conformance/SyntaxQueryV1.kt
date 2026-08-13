@@ -1,13 +1,13 @@
 // The `consema.syntax-query.conformance@1` suite runner
 // (conformance/vectors/syntax-query-v1.json).
 //
-// Data authority: crates/consema-conformance/src/syntax_query_v1.rs (the
+// Data authority: consema-rs/consema-conformance/src/syntax_query_v1.rs (the
 // per-case dispatch by prefix and the per-case handlers are transcribed from
 // the Rust runner: the definition builder at syntax_query_v1.rs:186-269, the
 // match comparison at syntax_query_v1.rs:271-312, the failure-code comparison
 // at syntax_query_v1.rs:314-316, and the ordered-cursor terminal semantics at
 // syntax_query_v1.rs:318-366); the vector file itself drives every input and
-// expectation (conformance/README.md rules 3-4). go/conformance/
+// expectation (conformance/README.md rules 3-4). consema-go/go/conformance/
 // syntax_query_v1.go is a cross-reference only.
 
 package consema.conformance

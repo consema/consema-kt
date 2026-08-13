@@ -3,13 +3,13 @@
 // lossless coverage index.
 //
 // Data authority:
-//   - RFC 0009 §4 (docs/rfcs/0009-ini-family-profiles-v1.md:118-146):
+//   - RFC 0009 §4 (https://github.com/consema/consema/blob/main/docs/rfcs/0009-ini-family-profiles-v1.md:118-146):
 //     formation continues to use Complete | Recovered | FatalFormationFailure;
 //     Recovered retains the complete source, exhaustive syntax/error-region
 //     coverage, ordered diagnostics, and every independently proven section
 //     or entry; syntax and native queries may inspect proven records and
 //     distinguish them from error regions.
-//   - RFC 0009 §8 (docs/rfcs/0009-...md:254-283): the immutable INI Document
+//   - RFC 0009 §8 (https://github.com/consema/consema/blob/main/docs/rfcs/0009-...md:254-283): the immutable INI Document
 //     retains ordered physical lines with exact raw/decoded ranges, logical
 //     lines with constituent physical-line identities, BOM/newline/quote/
 //     comment facts, section/entry identities with original and comparison
@@ -17,10 +17,10 @@
 //     duplicate groups without collapsing, error-line identities, and
 //     exhaustive non-overlapping syntax pieces; all handles are
 //     snapshot-bound NodeRefs with the INI roles.
-//   - crates/consema-ini/src/lib.rs:230-506 pins the handle shapes (node,
+//   - consema-rs/consema-ini/src/lib.rs:230-506 pins the handle shapes (node,
 //     span, content_span, line_break_span, name_span, key_span, value_span,
 //     comparison names, quote style, duplicate group, error code) and the
-//     resolver behavior lib.rs:605-660. go/ini/document.go is a
+//     resolver behavior lib.rs:605-660. consema-go/go/ini/document.go is a
 //     cross-reference only.
 //
 // Kotlin-idiomatic design (NOT a translation): the Rust borrowed handles are

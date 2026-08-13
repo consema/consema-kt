@@ -1,24 +1,23 @@
 // The `consema.protocol.conformance@1` suite runner
 // (conformance/vectors/protocol-v1.json).
 //
-// Data authority: crates/consema-conformance/src/protocol_v1.rs (the
+// Data authority: consema-rs/consema-conformance/src/protocol_v1.rs (the
 // per-case dispatch and every construction is transcribed from the Rust
 // handlers; the vector file carries the contract metadata but the facts are
 // pinned in the handlers). The record wire shapes are transcribed from
-// crates/consema-protocol/src/execution.rs (Completion, ExecutionPolicy,
+// consema-rs/consema-protocol/src/execution.rs (Completion, ExecutionPolicy,
 // CancellationRequest), change.rs (ChangeSetMessage), projection.rs
 // (ProjectionPolicy/Rule/RequestMessage/ReportMessage/ResultMessage and the
 // provenance records), query.rs (QueryResultMessage), and diagnostic.rs.
 //
-// Kotlin note: the record types of the payload contracts not yet owned by
-// the protocol package (completion, change-set, projection-*, provenance,
-// query-result, cancellation, execution-policy) are exercised at the wire
-// level: private builders and strict decoders mirror the Rust constructors
-// and from_value decoders byte-for-byte, and the common envelope
-// (ProtocolMessage.of/fromValue) plus the canonical transports
-// (encodeJson/decodeJson, encodePvce/decodePvce) carry the dual-transport
-// roundtrips. ProtocolMessage equality is contract + payload-value
-// equality, mirroring the Rust derived Eq.
+// Kotlin note: the record types of the payload contracts (completion,
+// change-set, projection-*, provenance, query-result, cancellation,
+// execution-policy) all ship in the Kotlin protocol package (RecordsShared.kt
+// and siblings); the cases dispatch through their typed record surfaces,
+// and the common envelope (ProtocolMessage.of/fromValue) plus the canonical
+// transports (encodeJson/decodeJson, encodePvce/decodePvce) carry the
+// dual-transport roundtrips. ProtocolMessage equality is contract +
+// payload-value equality, mirroring the Rust derived Eq.
 //
 // Both ProcessLocalHandle rejection cases are implemented, not skipped:
 // the runner dispatches protocol.diagnostic.require-source-binding and

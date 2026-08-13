@@ -1,14 +1,14 @@
 // The closed TOML v1 lossless syntax-piece classification.
 //
 // Data authority:
-//   - crates/consema-toml/src/lib.rs:41-109 (TomlSyntaxKind, as_str,
+//   - consema-rs/consema-toml/src/lib.rs:41-109 (TomlSyntaxKind, as_str,
 //     from_name) pins the twelve kind spellings; the same spellings are the
 //     argument vocabulary of `toml.syntax-kind-is@1`
 //     (kotlin/.../protocol/QueryValidate.kt:911-916 transcribes them).
 //   - conformance/vectors/syntax-query-v1.json cases syntax.toml.*
 //     (lines 54-99) pin the wire behavior (kind names in matches, ordinal
 //     ordering, "TomlSyntaxPiece" match role).
-//   - go/toml is a cross-reference only.
+//   - consema-go/go/toml is a cross-reference only.
 //
 // Kotlin-idiomatic design: an enum with the exact frozen spellings as entry
 // names (so `kind.name` IS the stable kind name) plus the Rust `as_str`/

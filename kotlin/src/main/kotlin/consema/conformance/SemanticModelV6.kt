@@ -1,7 +1,7 @@
 // The `consema.semantic-model-v6.conformance@1` suite runner
 // (conformance/vectors/semantic-model-v6.json).
 //
-// Data authority: crates/consema-conformance/src/semantic_model_v6.rs (the
+// Data authority: consema-rs/consema-conformance/src/semantic_model_v6.rs (the
 // per-case dispatch and every assertion are transcribed from the Rust
 // handlers); the vector file itself drives every input and expectation
 // (conformance/README.md rules 3-4). The registries, the
@@ -9,16 +9,15 @@
 // JSON/PVCE transports are the Kotlin consema.protocol package; the exact
 // Java UTF-16 code-unit semantics are the consema.properties JavaString
 // API (RFC 0010 §4; the classification scan is lib.rs:814-830).
-// go/protocol is a cross-reference only.
+// consema-go/go/protocol is a cross-reference only.
 //
 // The registry, source-encoding, java-utf16, and envelope cases whose
-// observables the Kotlin packages implement run here. The remaining v6
-// record types (SourceSnapshotMessageV2, SourcePatchMessageV2,
+// observables the Kotlin packages implement run here. All v6 record types
+// (SourceSnapshotMessageV2, SourcePatchMessageV2,
 // MaterializationRequestMessageV2, MaterializationResultMessageV2,
 // IniQueryResultMessage, JavaPropertiesQueryResultMessage, and the
-// Completion record) are not yet shipped in the Kotlin protocol package, so
-// the cases whose observable depends on their strict record decoders are
-// documented skips (SkipRecord).
+// Completion record) ship in the Kotlin protocol package (Payload.kt
+// dispatches them); every case runs (the runner records zero skips).
 
 package consema.conformance
 

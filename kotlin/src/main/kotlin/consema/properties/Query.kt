@@ -2,7 +2,7 @@
 // execution.
 //
 // Data authority:
-//   - RFC 0010 §10 (docs/rfcs/0010-java-properties-profiles-v1.md:269-308):
+//   - RFC 0010 §10 (https://github.com/consema/consema/blob/main/docs/rfcs/0010-java-properties-profiles-v1.md:269-308):
 //     java-properties.native-semantic-query@1 operators
 //     (document-properties, natural-lines, logical-lines,
 //     logical-line-natural-lines, property-key-equals, property-value-state-
@@ -14,7 +14,7 @@
 //   - conformance/vectors/java-properties-v1.json pins the match order,
 //     duplicate/escape counts, UTF16BE hex keys, ordinals, and the
 //     cancellation/limit outcomes.
-//   - crates/consema-properties/src/query.rs is the byte-arbitration
+//   - consema-rs/consema-properties/src/query.rs is the byte-arbitration
 //     authority (execution query.rs:123-225, operators query.rs:398-607,
 //     source order query.rs:609-634, text/boundary helpers query.rs:636-673);
 //     consema-core/src/query.rs:2967-2993 pins QueryLimits defaults

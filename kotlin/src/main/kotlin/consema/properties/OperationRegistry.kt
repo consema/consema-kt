@@ -1,14 +1,14 @@
 // The frozen Java Properties format operation registry.
 //
 // Data authority:
-//   - RFC 0004 §10 (docs/rfcs/0004-materialization-conversion-and-
+//   - RFC 0004 §10 (https://github.com/consema/consema/blob/main/docs/rfcs/0004-materialization-conversion-and-
 //     structural-edit-v1.md:244-269): every structural operation has an
 //     immutable ID/version, target role, argument schema, and support
 //     classification.
-//   - RFC 0010 §13 (docs/rfcs/0010-java-properties-profiles-v1.md:383-394):
+//   - RFC 0010 §13 (https://github.com/consema/consema/blob/main/docs/rfcs/0010-java-properties-profiles-v1.md:383-394):
 //     both Profiles publish the same five independently validated
 //     operations.
-//   - crates/consema-properties/src/operation_registry.rs:16-48 is the exact
+//   - consema-rs/consema-properties/src/operation_registry.rs:16-48 is the exact
 //     byte-arbitration source of the five descriptor records (ids, target
 //     roles, argument names/kinds, support classes); the frozen surface test
 //     (operation_registry.rs:67-95) pins the five Supported operations for

@@ -2,7 +2,7 @@
 // XML-specific parse/entity/recovery limits.
 //
 // Data authority (language-neutral sources first):
-//   - RFC 0012 §1 (docs/rfcs/0012-xml-1.0-safe-profile-v1.md:13-40):
+//   - RFC 0012 §1 (https://github.com/consema/consema/blob/main/docs/rfcs/0012-xml-1.0-safe-profile-v1.md:13-40):
 //     exactly one Profile, `xml.1.0-safe@1`; selected before formation, never
 //     by extension; the parser consumes one complete document entity and
 //     opens no other entity, file, URI, network connection, registry,
@@ -11,11 +11,11 @@
 //     (UTF-8 optional BOM; UTF-16LE/BE with a required BOM; no-BOM defaults
 //     to UTF-8; UTF-16 without a BOM is rejected; UTF-32/Latin-1/Windows
 //     code pages are explicit v1 exclusions).
-//   - crates/consema-xml/src/lib.rs:54-67 (XmlProfile, id), lib.rs:69-79
+//   - consema-rs/consema-xml/src/lib.rs:54-67 (XmlProfile, id), lib.rs:69-79
 //     (XmlEncodingSelection), lib.rs:81-157 (XmlParseLimits and the frozen
 //     defaults), lib.rs:159-172 (entity_limits derivation). The frozen
 //     numbers are transcribed VERBATIM from lib.rs:130-156.
-//   - go/xml/profile.go is a cross-reference only.
+//   - consema-go/go/xml/profile.go is a cross-reference only.
 //
 // Kotlin-idiomatic design: the profile is a closed enum, the encoding
 // selection is a sealed class, and the limits are an immutable data class

@@ -2,7 +2,7 @@
 // nested Object with fidelity, collision report, and provenance.
 //
 // Data authority:
-//   - RFC 0009 §10 (docs/rfcs/0009-ini-family-profiles-v1.md:347-385): the
+//   - RFC 0009 §10 (https://github.com/consema/consema/blob/main/docs/rfcs/0009-ini-family-profiles-v1.md:347-385): the
 //     default exact projection ini.projection.best-exact-entry-mapping@1
 //     produces an outer EntryMapping in source section order with inner
 //     EntryMappings of original key String to value String, preserving
@@ -16,13 +16,13 @@
 //     documents do not project.
 //   - conformance/vectors/ini-v1.json (projection.*) pins the per-case
 //     fidelity, events, section/key order, and provenance relations;
-//     crates/consema-ini/src/projection.rs is the byte-arbitration
+//     consema-rs/consema-ini/src/projection.rs is the byte-arbitration
 //     authority (request projection.rs:9-124, exact projection.rs:428-537,
 //     object projection.rs:546-785, selection projection.rs:787-821,
 //     comparison projection.rs:831-846, failures projection.rs:852-893).
 //   - Value paths come from the L0 core agent (consema.core.ValuePath /
 //     ValuePathSegment / AssociationLocation / AssociationRole mirroring
-//     crates/consema-core/src/location.rs:1-89; the dependency is declared
+//     consema-rs/consema-core/src/location.rs:1-89; the dependency is declared
 //     by kotlin/.../document/Materialization.kt:27-31).
 //
 // Kotlin-idiomatic design: the completion algebra is a sealed class, so

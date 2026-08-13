@@ -2,7 +2,7 @@
 // and Document -> PortableValue with fidelity, report, and provenance.
 //
 // Data authority:
-//   - RFC 0007 §10 (docs/rfcs/0007-yaml-family-profiles-and-safety-v1.md:
+//   - RFC 0007 §10 (https://github.com/consema/consema/blob/main/docs/rfcs/0007-yaml-family-profiles-and-safety-v1.md:
 //     260-302): yaml.projection.best-exact-graph@1 is the default YAML
 //     target (standard resolved tags, arbitrary keys, association order,
 //     sharing, cycles); yaml.projection.best-exact-value@1 defaults to
@@ -13,21 +13,21 @@
 //     nodes, sequence edges, mapping-key edges, and mapping-value edges;
 //     alias occurrences are Reference origins; failure carries no partial
 //     value or provenance.
-//   - RFC 0004 §7-§8 (docs/rfcs/0004-materialization-conversion-and-
+//   - RFC 0004 §7-§8 (https://github.com/consema/consema/blob/main/docs/rfcs/0004-materialization-conversion-and-
 //     structural-edit-v1.md:171-218) pins the completion algebra and the
 //     provenance direction (portable locations to source origins).
 //   - conformance/vectors/yaml-v1.json pins the per-case outcomes
 //     (projection.sharing-policy, projection.cycle, projection.tag-policy,
 //     projection.mapping-policy, projection.graph-provenance,
 //     resource.graph-provenance, graph.shared-cycle).
-//   - crates/consema-yaml/src/native.rs:143-196 (graph projection with
-//     canonical ids) and crates/consema-yaml/src/projection.rs are the
+//   - consema-rs/consema-yaml/src/native.rs:143-196 (graph projection with
+//     canonical ids) and consema-rs/consema-yaml/src/projection.rs are the
 //     byte-arbitration authorities (requests projection.rs:35-332, failure
 //     codes projection.rs:172-183 and 478-520, graph provenance
 //     projection.rs:605-754, value projection projection.rs:756-1147).
 //   - Value paths come from the L0 core agent (consema.core.ValuePath /
 //     ValuePathSegment / AssociationLocation / AssociationRole mirroring
-//     crates/consema-core/src/location.rs:1-89; the dependency is declared
+//     consema-rs/consema-core/src/location.rs:1-89; the dependency is declared
 //     by kotlin/.../document/Materialization.kt:27-31).
 //
 // Kotlin-idiomatic design: the completion algebra is a sealed class, so

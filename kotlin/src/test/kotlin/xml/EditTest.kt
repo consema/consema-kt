@@ -4,9 +4,9 @@
 // Data authority: the operation semantics and the render outcomes are
 // pinned by the vector cases; the conformance runner resolves name/ordinal
 // selectors to NodeRefs exactly as these tests do
-// (crates/consema-conformance/src/xml_v1.rs:581-813). The operation IDs
+// (consema-rs/consema-conformance/src/xml_v1.rs:581-813). The operation IDs
 // are the frozen xml.edit.*@1 registrations
-// (crates/consema-xml/src/operation_registry.rs:16-75).
+// (consema-rs/consema-xml/src/operation_registry.rs:16-75).
 
 package xml
 

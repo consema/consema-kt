@@ -1,13 +1,13 @@
 // EditPlan (dry-run plan) tests.
 //
-// Data authority: RFC 0004 §14 (docs/rfcs/0004-materialization-conversion-
+// Data authority: RFC 0004 §14 (https://github.com/consema/consema/blob/main/docs/rfcs/0004-materialization-conversion-
 // and-structural-edit-v1.md:338-356) — the transferable dry-run plan
 // contains source_id, base_digest, profile, ordered operations, exact
 // SourcePatch replacement facts, precomputed target_digest, and an ordered
 // report; a dry-run plan is not authority to write a file and is never
 // applied without rechecking base digest and every original-byte
 // precondition. The validation bounds and the operation-metadata
-// cross-check follow crates/consema-document/src/edit_plan.rs:13-127
+// cross-check follow consema-rs/consema-document/src/edit_plan.rs:13-127
 // (test data adapted from edit_plan.rs:235-272).
 
 package document

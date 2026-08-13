@@ -1,7 +1,7 @@
 // The Kotlin test driver of the cross-language PVCE/PGCE byte-parity
-// harness (roadmap §16.1 hard gate; docs/five-language-ci-design.md §3.2).
+// harness (roadmap §16.1 hard gate; https://github.com/consema/consema/blob/main/docs/five-language-ci-design.md §3.2).
 //
-// TestCaseFileIntegrity always runs and guards the checked-in case set
+// TestCaseFileIntegrity always runs and guards the provisioned case set
 // (manifest id, case count, unique ids, codecs, kinds coverage), so any
 // test run protects the input set even without the orchestrator.
 //

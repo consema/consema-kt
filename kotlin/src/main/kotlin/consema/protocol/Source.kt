@@ -1,12 +1,12 @@
 // The wire forms of the source records carried by the CLI machine payloads.
 //
-// Data authority: crates/consema-protocol/src/source.rs (core.source-
+// Data authority: consema-rs/consema-protocol/src/source.rs (core.source-
 // encoding@1 at source.rs:497-514; the source-patch@2 encoding facts at
 // source.rs:598-631; the patch record at source.rs:222-371) and
-// crates/consema-document/src/source.rs:58-76 (the Windows code-page
+// consema-rs/consema-document/src/source.rs:58-76 (the Windows code-page
 // registry). The document milestone (L1) owns the full source model; this
 // package validates the record structure and carries the facts so the
-// batch-plan record can round-trip them. go/protocol/records_source.go is a
+// batch-plan record can round-trip them. consema-go/go/protocol/records_source.go is a
 // cross-reference.
 
 package consema.protocol

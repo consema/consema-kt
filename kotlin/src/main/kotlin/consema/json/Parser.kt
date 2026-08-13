@@ -1,7 +1,7 @@
 // The byte-exact JSON/JSONC/JSON5 lexer and recovery parser.
 //
 // Data authority:
-//   - RFC 0005 §3-§6 (docs/rfcs/0005-json-family-production-v1.md:51-149):
+//   - RFC 0005 §3-§6 (https://github.com/consema/consema/blob/main/docs/rfcs/0005-json-family-production-v1.md:51-149):
 //     JSON5 whitespace is the exact frozen scalar set; IdentifierName keys
 //     follow ECMAScript ID_Start/ID_Continue with U+200C/U+200D; string
 //     escapes and line continuations; number forms and the frozen non-finite
@@ -9,12 +9,12 @@
 //     regions and never acquire a decoded name.
 //   - conformance/vectors/json-family-v2.json pins the recover/complete
 //     outcomes and the diagnostic codes case by case.
-//   - crates/consema-json/src/parser.rs is the byte-arbitration authority
+//   - consema-rs/consema-json/src/parser.rs is the byte-arbitration authority
 //     (lexing parser.rs:174-402, JSON5 lexing parser.rs:404-581, number
 //     validation parser.rs:701-815, string decoding parser.rs:1232-1347,
 //     object/array recovery parser.rs:953-1133, diagnostic sink
 //     parser.rs:1500-1537, deterministic sort consema-core/src/diagnostic.rs:
-//     106-123). go/json/parser.go is a cross-reference only.
+//     106-123). consema-go/go/json/parser.go is a cross-reference only.
 //
 // Kotlin-idiomatic design (NOT a translation): the lexer emits immutable
 // lexemes over byte offsets; JSON5 classification reads UTF-8 scalars

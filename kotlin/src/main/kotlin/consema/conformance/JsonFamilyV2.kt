@@ -1,12 +1,12 @@
 // The `consema.json-family.conformance@2` suite runner
 // (conformance/vectors/json-family-v2.json).
 //
-// Data authority: crates/consema-conformance/src/json_family_v2.rs (the
+// Data authority: consema-rs/consema-conformance/src/json_family_v2.rs (the
 // per-case dispatch and every handler is transcribed from the Rust runner);
 // the vector file itself drives every input and expectation
 // (conformance/README.md rules 3-4). The family tests under
 // kotlin/src/test/kotlin/json/ transcribe the same vector behaviors.
-// go/conformance is a cross-reference only.
+// consema-go/go/conformance is a cross-reference only.
 //
 // Kotlin-idiomatic design: one handler per vector action family
 // (parse/syntax-query/native-query/project/materialize/convert/move-member/

@@ -1,10 +1,10 @@
 // The `consema.xml-1-0-safe.conformance@1` suite runner
 // (conformance/vectors/xml-1-0-safe-v1.json).
 //
-// Data authority: crates/consema-conformance/src/xml_v1.rs (the per-case
+// Data authority: consema-rs/consema-conformance/src/xml_v1.rs (the per-case
 // dispatch is transcribed from the Rust handlers); the vector file itself
 // drives every input and expectation (conformance/README.md rules 3-4).
-// go/conformance is a cross-reference only.
+// consema-go/go/conformance is a cross-reference only.
 
 package consema.conformance
 

@@ -1,10 +1,10 @@
 // The frozen canonical TOML 1.0 scalar spellings.
 //
 // Data authority:
-//   - crates/consema-toml/src/edit.rs:1516-1636 (canonical_string,
+//   - consema-rs/consema-toml/src/edit.rs:1516-1636 (canonical_string,
 //     canonical_float, canonical_date, canonical_time, canonical_local_
 //     datetime, canonical_offset_datetime, exact_nanoseconds) and
-//     crates/consema-toml/src/materialization.rs:353-407 (write_string,
+//     consema-rs/consema-toml/src/materialization.rs:353-407 (write_string,
 //     write_float, write_date, write_time) pin the deterministic canonical
 //     representations used by both materialization and every structural
 //     edit insertion.
@@ -12,7 +12,7 @@
 //     representation without losing payload semantics; canonical NaN
 //     payloads (0x7ff8000000000000 / 0xfff8000000000000) are representable,
 //     non-canonical NaN payloads fail.
-//   - go/toml/materialization.go and edit.go are cross-references only.
+//   - consema-go/go/toml/materialization.go and edit.go are cross-references only.
 //
 // Kotlin-idiomatic design: the shortest-round-trip float spelling of the
 // Rust `f64::to_string` (never exponent notation) is reproduced from the

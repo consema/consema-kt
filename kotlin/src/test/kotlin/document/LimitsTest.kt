@@ -1,9 +1,9 @@
 // Frozen limit defaults tests.
 //
-// Data authority: crates/consema-document/src/lib.rs:614-639 (ParseLimits),
+// Data authority: consema-rs/consema-document/src/lib.rs:614-639 (ParseLimits),
 // materialization.rs:80-105 (MaterializationLimits), source.rs:381-409
 // (SourceLimits), source_patch.rs:8-27 (SourcePatchLimits); cross-checked
-// against go/document/limits.go:4-58 and go/document/source.go:27-43
+// against consema-go/go/document/limits.go:4-58 and consema-go/go/document/source.go:27-43
 // (identical numbers). RFC 0016 §5.1: ParseLimits mirrors the Rust defaults.
 
 package document

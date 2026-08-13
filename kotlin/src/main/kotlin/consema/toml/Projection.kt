@@ -1,7 +1,7 @@
 // Explicit TOML-to-PortableValue projection.
 //
 // Data authority:
-//   - RFC 0001 §5 (docs/rfcs/0001-toml-1.0-profile.md:78-100): the frozen
+//   - RFC 0001 §5 (https://github.com/consema/consema/blob/main/docs/rfcs/0001-toml-1.0-profile.md:78-100): the frozen
 //     target `toml.best-exact-core@1` mapping table (Boolean→Boolean,
 //     Integer→Integer, Float→BinaryFloat64, String→String, LocalDate→Date,
 //     LocalTime→Time, LocalDateTime→LocalDateTime, OffsetDateTime→
@@ -10,7 +10,7 @@
 //     object association back to source NodeRef/span; leap seconds fail
 //     the whole projection with `toml.projection.unrepresentable-
 //     datetime@1`.
-//   - crates/consema-toml/src/projection.rs:9-75 (ProjectionTarget,
+//   - consema-rs/consema-toml/src/projection.rs:9-75 (ProjectionTarget,
 //     ProjectionRequest, ProjectionLimits with the frozen defaults 1M value
 //     nodes / 100k report entries / 2M provenance entries / depth 256),
 //     :77-199 (Fidelity, ProjectedLocation, ProvenanceRelation, SourceOrigin,
@@ -25,7 +25,7 @@
 //     (all_origins_snapshot_bound, object_associations_present), and
 //     reject-leap-second (Failed, toml.projection.unrepresentable-
 //     datetime@1, no partial value).
-//   - go/toml/projection.go is a cross-reference only.
+//   - consema-go/go/toml/projection.go is a cross-reference only.
 //
 // Kotlin-idiomatic design: the completion algebra is the sealed
 // [ProjectionResult] exactly like the Rust enum; the provenance map is an

@@ -1,10 +1,10 @@
 // The `consema.java-properties.conformance@1` suite runner
 // (conformance/vectors/java-properties-v1.json).
 //
-// Data authority: crates/consema-conformance/src/properties_v1.rs (the
+// Data authority: consema-rs/consema-conformance/src/properties_v1.rs (the
 // per-case dispatch is transcribed from the Rust handlers); the vector file
 // itself drives every input and expectation (conformance/README.md rules
-// 3-4). go/conformance is a cross-reference only.
+// 3-4). consema-go/go/conformance is a cross-reference only.
 
 package consema.conformance
 

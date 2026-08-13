@@ -2,14 +2,14 @@
 // handles, member/element associations, and the lossless coverage index.
 //
 // Data authority:
-//   - RFC 0005 §2 (docs/rfcs/0005-json-family-production-v1.md:32-49):
+//   - RFC 0005 §2 (https://github.com/consema/consema/blob/main/docs/rfcs/0005-json-family-production-v1.md:32-49):
 //     formation is the same Complete | Recovered algebra as the existing JSON
 //     family parser; source/encoding and configured resource failures are
 //     fatal; recovered syntax never turns into available native semantics.
-//   - crates/consema-json/src/lib.rs:170-286 (Document), lib.rs:288-341
+//   - consema-rs/consema-json/src/lib.rs:170-286 (Document), lib.rs:288-341
 //     (SemanticAvailability / SemanticUnavailable / JsonValueKind),
 //     lib.rs:342-610 (JsonValue / JsonObjectMember / JsonArrayElement),
-//     lib.rs:623-674 (entities). go/json/document.go is a cross-reference
+//     lib.rs:623-674 (entities). consema-go/go/json/document.go is a cross-reference
 //     only.
 //
 // Kotlin-idiomatic design (NOT a translation): the Rust borrowed handles are

@@ -1,20 +1,20 @@
-﻿// Versioned plist native-semantic, lossless-syntax, and binary-structure
+// Versioned plist native-semantic, lossless-syntax, and binary-structure
 // query execution.
 //
 // Data authority:
-//   - RFC 0013 §8.1 (docs/rfcs/0013-plist-family-profiles-v1.md:539-558):
+//   - RFC 0013 §8.1 (https://github.com/consema/consema/blob/main/docs/rfcs/0013-plist-family-profiles-v1.md:539-558):
 //     the native domain operator set, source-order results, exact Unicode
 //     key comparison without case folding, duplicate-key-group expansion,
 //     and typed accessors that validate the value type before returning (a
 //     type mismatch is a query failure, never a null or converted result).
-//   - RFC 0013 §8.2 (docs/rfcs/0013-...md:560-582): the lossless syntax
+//   - RFC 0013 §8.2 (https://github.com/consema/consema/blob/main/docs/rfcs/0013-...md:560-582): the lossless syntax
 //     domain provides exact kind and decoded-text filters over pieces.
-//   - RFC 0013 §8.3 (docs/rfcs/0013-...md:584-596): the binary structure
+//   - RFC 0013 §8.3 (https://github.com/consema/consema/blob/main/docs/rfcs/0013-...md:584-596): the binary structure
 //     domain exposes the object/offset/reference/trailer facts with exact
 //     byte spans; the domain exists only for the `plist.binary@1`
 //     representation (hard gate 1: no invented text trivia).
 //   - conformance/vectors/plist-v1.json (plist.query.*) pins the match
-//     facts and the terminal states; crates/consema-plist/src/query.rs is
+//     facts and the terminal states; consema-rs/consema-plist/src/query.rs is
 //     the byte-arbitration authority (native operators query.rs:333-660,
 //     binary operators query.rs:1330-1511, selection query.rs:440-459).
 //   - The operator table and role validation live in the protocol package

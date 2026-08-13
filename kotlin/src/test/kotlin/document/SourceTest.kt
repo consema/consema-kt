@@ -1,4 +1,4 @@
-﻿// SourceSnapshot behavior tests, transcribed from conformance/vectors/
+// SourceSnapshot behavior tests, transcribed from conformance/vectors/
 // source-v1.json (the language-neutral vector suite, capability
 // core.source.snapshot@1 / core.source.encoding@1 /
 // core.source.decoded-location@1 / core.source.limits@1). Every golden

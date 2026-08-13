@@ -9,11 +9,11 @@
 //   - RFC 0015 §6.2 (the facade surface the CLI derives every format fact
 //     from; crates/consema/src/bin/consema/registry.rs as the CLI thin
 //     enumeration over it).
-//   - docs/multi-language-implementation-plan.md §0.3/§1 (L1 root facade
-//     "Document union/Registry/convert" mirrors Go G1.4; each language
-//     implements its own idiom — Kotlin sealed class, never a translation of
-//     the Rust enum wrapper).
-//   - go/document.go and go/registry.go are cross-references only.
+//   - https://github.com/consema/consema/blob/main/docs/multi-language-implementation-plan.md §0.3/§1 (L1 root facade
+//     "Document union/Registry/convert" — implemented in this repository;
+//     each language implements its own idiom — Kotlin sealed class, never a
+//     translation of the Rust enum wrapper).
+//   - consema-go/go/document.go and consema-go/go/registry.go are cross-references only.
 //
 // Kotlin-idiomatic design: the closed family set is a sealed class
 // hierarchy, so an exhaustive `when` over the variants can never meet an

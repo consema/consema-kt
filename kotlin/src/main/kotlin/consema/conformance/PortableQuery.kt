@@ -1,7 +1,7 @@
 // The conformance-runner portable-value query executor.
 //
 // Data authority (language-neutral sources first):
-//   - crates/consema-conformance/src/lib.rs:641-711 (query.root-result-limit
+//   - consema-rs/consema-conformance/src/lib.rs:641-711 (query.root-result-limit
 //     and query.cursor-failure-terminal handlers) pins the exact behaviors
 //     this executor reproduces: the bare Input expression yields the root
 //     value as one match; `core.try-sequence-elements@1` yields the elements

@@ -1,18 +1,18 @@
 // The frozen XML format operation registry (RFC 0012 §11; RFC 0004 §10).
 //
 // Data authority:
-//   - RFC 0012 §11 (docs/rfcs/0012-xml-1.0-safe-profile-v1.md:375-403):
+//   - RFC 0012 §11 (https://github.com/consema/consema/blob/main/docs/rfcs/0012-xml-1.0-safe-profile-v1.md:375-403):
 //     V1 publishes exactly these eight snapshot-bound operations:
 //     xml.edit.replace-text@1, xml.edit.insert-attribute@1,
 //     xml.edit.remove-attribute@1, xml.edit.rename-attribute@1,
 //     xml.edit.set-attribute-value@1, xml.edit.insert-element@1,
 //     xml.edit.remove-element@1, xml.edit.rename-element@1.
-//   - crates/consema-xml/src/operation_registry.rs:16-93 is the exact
+//   - consema-rs/consema-xml/src/operation_registry.rs:16-93 is the exact
 //     byte-arbitration source of the eight descriptor records (ids, target
 //     roles, argument names/kinds, support classes); the frozen surface test
 //     (operation_registry.rs:95-125) pins the exact eight-operation surface
 //     and the Supported classification of every record.
-//   - go/xml has no registry file; the operation_test.go surface is a
+//   - consema-go/go/xml has no registry file; the operation_test.go surface is a
 //     cross-check against the Rust records only.
 //
 // Kotlin-idiomatic design: the registry is an immutable list of descriptor

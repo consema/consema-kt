@@ -1,13 +1,13 @@
 // Security boundary and span-exactness intent checks for the xml family.
 //
 // Data authority:
-//   - RFC 0012 §3 (docs/rfcs/0012-xml-1.0-safe-profile-v1.md:83-130):
+//   - RFC 0012 §3 (https://github.com/consema/consema/blob/main/docs/rfcs/0012-xml-1.0-safe-profile-v1.md:83-130):
 //     entity deny-by-default — no external entity expansion, no external
 //     subset fetch, no markup-generating replacement text; the parser never
 //     opens another entity, file, URI, network connection, registry,
 //     classpath, or catalog (RFC 0012 §1).
 //   - The recovered codes are the frozen xml.* codes of
-//     crates/consema-xml/src/parser.rs (each cited in the test).
+//     consema-rs/consema-xml/src/parser.rs (each cited in the test).
 //   - conformance/vectors/xml-1-0-safe-v1.json cases xml.formation.* and
 //     xml.limit.* pin the status and diagnostic outcomes.
 

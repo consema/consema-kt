@@ -1,10 +1,10 @@
 // Materialization tests: all canonical styles, atomic failures, and the
 // Windows code-page path.
 //
-// Authority: RFC 0009 §11 (docs/rfcs/0009-ini-family-profiles-v1.md:387-
+// Authority: RFC 0009 §11 (https://github.com/consema/consema/blob/main/docs/rfcs/0009-ini-family-profiles-v1.md:387-
 // 435), the vector cases materialization.all-canonical-styles and
 // materialization.atomic-failures-and-limits (ini-v1.json:75-86), and
-// crates/consema-ini/src/materialization.rs (the byte-arbitration
+// consema-rs/consema-ini/src/materialization.rs (the byte-arbitration
 // authority).
 
 package ini

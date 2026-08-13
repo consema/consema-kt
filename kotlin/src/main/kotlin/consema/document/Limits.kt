@@ -1,18 +1,18 @@
 // Parse and materialization resource limits.
 //
 // Data authority:
-//   - crates/consema-document/src/lib.rs:614-639 (ParseLimits fields and the
+//   - consema-rs/consema-document/src/lib.rs:614-639 (ParseLimits fields and the
 //     frozen defaults: 64 MiB source, depth 256, 2M tokens, 1M nodes, 10k
-//     diagnostics). RFC 0016 §5.1 (docs/rfcs/0016-go-api-mapping-v1.md:176):
+//     diagnostics). RFC 0016 §5.1 (https://github.com/consema/consema/blob/main/docs/rfcs/0016-go-api-mapping-v1.md:176):
 //     "Parse limits: ParseLimits (and per-family limits) mirror the Rust
 //     defaults; exceeding a limit is a ResourceLimit error carrying the
 //     frozen limit code".
-//   - crates/consema-document/src/materialization.rs:80-105
+//   - consema-rs/consema-document/src/materialization.rs:80-105
 //     (MaterializationLimits fields and the frozen defaults: 1M input nodes,
 //     64 MiB output bytes, depth 256, 100k report entries, 2M provenance
-//     entries). RFC 0004 §3 (docs/rfcs/0004-materialization-conversion-and-
+//     entries). RFC 0004 §3 (https://github.com/consema/consema/blob/main/docs/rfcs/0004-materialization-conversion-and-
 //     structural-edit-v1.md:73-84) freezes the closed v1 limit fields.
-//   - go/document/limits.go:4-58 is a cross-reference only (identical
+//   - consema-go/go/document/limits.go:4-58 is a cross-reference only (identical
 //     numbers).
 //
 // NOTE: the field set is taken from the authority above — ParseLimits has

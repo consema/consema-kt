@@ -1,7 +1,7 @@
 // The `consema.plist.conformance@1` suite runner
 // (conformance/vectors/plist-v1.json).
 //
-// Data authority: crates/consema-conformance/src/plist_v1.rs (the per-case
+// Data authority: consema-rs/consema-conformance/src/plist_v1.rs (the per-case
 // dispatch is transcribed from the Rust handlers); the vector file itself
 // drives every input and expectation (conformance/README.md rules 3-4).
 //

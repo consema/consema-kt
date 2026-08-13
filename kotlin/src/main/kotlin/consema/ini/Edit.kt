@@ -2,14 +2,14 @@
 // dry-run plan, untouched-byte proof, and SourcePatch derivation.
 //
 // Data authority:
-//   - RFC 0004 §11-§16 (docs/rfcs/0004-materialization-conversion-and-
+//   - RFC 0004 §11-§16 (https://github.com/consema/consema/blob/main/docs/rfcs/0004-materialization-conversion-and-
 //     structural-edit-v1.md:271-384): snapshot-bound operations; inserted
 //     literals use the target profile's canonical fragment; removal owns
 //     only the record and its unambiguously attached delimiter/newline;
 //     comments are not moved or deleted without explicit ownership; the
 //     conflict algebra; the dry-run plan; the untouched-byte proof; the
 //     derived SourcePatch.
-//   - RFC 0009 §12 (docs/rfcs/0009-ini-family-profiles-v1.md:437-472):
+//   - RFC 0009 §12 (https://github.com/consema/consema/blob/main/docs/rfcs/0009-ini-family-profiles-v1.md:437-472):
 //     semantic replacement preserves a compatible quote/multiline
 //     representation or records a canonical fallback; literal replacement
 //     must form exactly one value under the selected profile and cannot
@@ -21,7 +21,7 @@
 //     ChangeSet, UntouchedByteProof, and replayable SourcePatch.
 //   - conformance/vectors/ini-v1.json (edit.all-eight-operations,
 //     edit.dry-run-patch-proof-and-atomic-failure) pins the golden output
-//     bytes and the wrong-snapshot code; crates/consema-ini/src/edit.rs is
+//     bytes and the wrong-snapshot code; consema-rs/consema-ini/src/edit.rs is
 //     the byte-arbitration authority (commit edit.rs:305-553, dry-run
 //     edit.rs:556-570, preparation edit.rs:572-861, dependencies edit.rs:
 //     863-920, names/collisions edit.rs:950-1069, canonical entry text
@@ -29,8 +29,8 @@
 //     ownership edit.rs:1445-1475, failure codes edit.rs:1754-1779).
 //   - Kotlin document owns SourcePatch (kotlin/.../document/Patch.kt:147-296)
 //     and UntouchedByteProof (kotlin/.../document/UntouchedProof.kt). The
-//     ChangeSet is a post-1.0.0 (冻结前评估项，见五要素终审 F-28.3-1 处置)
-//     milestone in Kotlin (document/Patch.kt:31-33); this L2 commit carries
+//     ChangeSet is not shipped in the Kotlin INI family (recorded gap,
+//     six-repo audit G090; document/Patch.kt:31-33); the commit carries
 //     the ordered edit diagnostics instead.
 //
 // Kotlin-idiomatic design: failures are a sealed hierarchy whose [name] is
@@ -247,9 +247,9 @@ class EditTransactionBuilder internal constructor(private val base: SnapshotIden
 }
 
 /**
- * Atomic edit success (edit.rs:245-256). The ChangeSet is a post-1.0.0
- * (冻结前评估项，见五要素终审 F-28.3-1 处置) milestone in Kotlin; this
- * L2 commit carries the ordered edit diagnostics instead. For
+ * Atomic edit success (edit.rs:245-256). The ChangeSet is not shipped in
+ * the Kotlin INI family (recorded gap, six-repo audit G090); the commit
+ * carries the ordered edit diagnostics instead. For
  * base documents whose selected encoding is a Windows code page, the
  * document-contract artifacts are unavailable until the source-v2 extension
  * (kotlin/.../document/Encoding.kt:18-25) and are null.

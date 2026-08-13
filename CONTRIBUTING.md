@@ -16,7 +16,7 @@ Consema 六仓拆分的 Kotlin 仓：本仓承载 Kotlin/JVM 实现（`kotlin/` 
   gradle/wrapper/）：kotlin-gates 经 gradlew 跑单测与 kover 60% 覆盖率门禁；
   conformance / differential 验证仍直驱 JVM K2JVMCompiler，与提交的验证脚本
   和 CI 完全一致。
-- 运行时零依赖（runtime classpath 为空，依赖全部 test-scoped）。
+- 运行时仅 kotlin-stdlib 及其传递的 org.jetbrains:annotations（KGP 注入；build.gradle.kts 自身声明全部 test-scoped）。
 
 ## 构建与测试
 

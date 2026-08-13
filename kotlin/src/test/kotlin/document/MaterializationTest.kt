@@ -1,10 +1,10 @@
 // MaterializationRequest and provenance tests.
 //
-// Data authority: RFC 0004 §3 (docs/rfcs/0004-materialization-conversion-and-
+// Data authority: RFC 0004 §3 (https://github.com/consema/consema/blob/main/docs/rfcs/0004-materialization-conversion-and-
 // structural-edit-v1.md:57-96) — the common request fields and the closed
 // v1 policies (ExactOnly representability, RequireObject /
 // UniqueStringEntriesToObject mapping policy, None|Lf|CrLf newline);
-// crates/consema-document/src/materialization.rs:107-203 (request defaults),
+// consema-rs/consema-document/src/materialization.rs:107-203 (request defaults),
 // materialization.rs:41-62 (newline bytes), materialization.rs:281-325
 // (provenance validation), materialization.rs:327-391 (failure codes).
 

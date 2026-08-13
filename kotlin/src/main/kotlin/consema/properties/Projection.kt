@@ -3,7 +3,7 @@
 // targets.
 //
 // Data authority:
-//   - RFC 0010 §11 (docs/rfcs/0010-java-properties-profiles-v1.md:310-349):
+//   - RFC 0010 §11 (https://github.com/consema/consema/blob/main/docs/rfcs/0010-java-properties-profiles-v1.md:310-349):
 //     java-properties.projection.best-exact-entry-mapping@1 produces one
 //     source-ordered EntryMapping association per property and fails
 //     atomically on any unpaired surrogate; RequireObject accepts only
@@ -15,14 +15,14 @@
 //   - conformance/vectors/java-properties-v1.json pins the fidelity, event
 //     counts, first/last entry facts, provenance relations, and failure
 //     codes (projection.* cases, lines 74-89).
-//   - crates/consema-properties/src/projection.rs is the byte-arbitration
+//   - consema-rs/consema-properties/src/projection.rs is the byte-arbitration
 //     authority (targets projection.rs:9-27, request projection.rs:29-82,
 //     limits projection.rs:84-106, failure codes projection.rs:741-752,
 //     exact projection.rs:430-497, object projection.rs:499-648).
-//     go/properties/projection.go is a cross-reference only.
+//     consema-go/go/properties/projection.go is a cross-reference only.
 //   - Value paths come from the L0 core agent (consema.core.ValuePath /
 //     ValuePathSegment / AssociationLocation / AssociationRole mirroring
-//     crates/consema-core/src/location.rs:1-89), the same dependency the
+//     consema-rs/consema-core/src/location.rs:1-89), the same dependency the
 //     JSON family declares (kotlin/.../json/Projection.kt:21-24).
 //
 // Kotlin-idiomatic design: the completion algebra is a sealed class, so

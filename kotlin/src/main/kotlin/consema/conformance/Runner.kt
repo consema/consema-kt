@@ -4,28 +4,31 @@
 //   - conformance/README.md (rules 3-4: the runner is only an executor; the
 //     vectors are the authority; every suite must validate its case count so
 //     the runner never silently skips unknown items).
-//   - crates/consema-conformance/src/lib.rs:86-106 (ConformanceReport shape)
+//   - consema-rs/consema-conformance/src/lib.rs:86-106 (ConformanceReport shape)
 //     and the per-suite Rust runners (the dispatch authority); the Rust
 //     runner parses vector files with its own strict JSON parser and
 //     projects them to PortableValue (lib.rs:131-150), which the Kotlin
 //     runner mirrors with consema.json.
-//   - docs/five-language-ci-design.md §2 (the five-runner contract: vector
+//   - https://github.com/consema/consema/blob/main/docs/five-language-ci-design.md §2 (the five-runner contract: vector
 //     files read by explicit repository-relative path, no embedded copies;
 //     per-runner fixed validations — suite id prefix `consema.*`, case-id
 //     dedupe, 18/519 count assertion, aggregate digest assertion, unknown
 //     case rejection; skip discipline).
-//   - docs/fc-manifest-0.13.0.json:35-40 (the aggregate digest algorithm:
+//   - https://github.com/consema/consema/blob/main/docs/fc-manifest-0.13.0.json:39 (the aggregate digest algorithm:
 //     file-name byte-order sort, per-file sha256 lowercase hex, lines
 //     `{basename}:{digest}` joined with '\n' without a trailing newline,
 //     then sha256 of that UTF-8 string; recorded value
 //     cfd6e296da5b22b62d37b076d35bf6bbf58b0678ceddb37eea51a8b47200ab6a).
-//   - go/conformance/conformance.go (cross-reference only).
+//   - consema-go/go/conformance/conformance.go (cross-reference only).
 //
 // Kotlin-idiomatic design: immutable report data classes, a Runner with
 // explicit repository paths, and one handler function per suite (the
 // mirror of the Go allSuites table). The vector files are read from disk at
-// run time — the runner embeds no vector copy and holds no expectation
-// literals.
+// run time — the runner embeds no vector copy: the vector contents remain
+// the authority, while the 18/519 inventory and the per-suite counts are
+// hard-pinned here (ALL_SUITES) and the aggregate digest is compared
+// against the manifest record (the literal digest pin lives in
+// ci-kotlin.yml, the kotlin-conformance digest step).
 
 package consema.conformance
 

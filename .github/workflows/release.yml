@@ -3,12 +3,11 @@
 # precedent — credentials are user-side actions, see RELEASING.md §2).
 #
 # The committed Gradle wrapper (kotlin/gradlew.bat, gradle 8.14 — landed
-# c60d31a/b640af6) drives the CI gates and Dependabot resolution, while this
-# workflow provisions Gradle itself via gradle/actions/setup-gradle
-# (gradle-version 8.14 — the latest Gradle line supported by Kotlin 2.2.0)
-# and runs `gradle publish` in kotlin/: the tag-triggered publish path is
-# deliberately independent of the wrapper's pinned distribution download
-# (setup-gradle uses the same 8.14 line).
+# c60d31a/b640af6) drives the CI gates, Dependabot resolution, and this
+# publish path: `gradlew publish` downloads the distribution through the
+# wrapper, whose pinned distributionSha256Sum (kotlin/gradle/wrapper/
+# gradle-wrapper.properties) verifies the downloaded bytes — no unverified
+# Gradle download can influence a published artifact.
 #
 # REQUIRED user configuration before the first tag push (the workflow is
 # complete but will fail without these; they are deliberately NOT
@@ -61,19 +60,18 @@ jobs:
         with:
           distribution: temurin
           java-version: '17'
-      - uses: gradle/actions/setup-gradle@ed408507eac070d1f99cc633dbcf757c94c7933a # v4.4.3
-        with:
-          gradle-version: '8.14'
-          # setup-gradle enables Gradle caching by default; a poisoned cache
-          # entry must never influence a published artifact, so the cache is
-          # disabled on this tag-triggered publishing workflow (zizmor
-          # cache-poisoning).
-          cache-disabled: true
-      - name: gradle publish (portal deploy, signed artifacts)
+      # No Gradle caching on this tag-triggered publishing workflow: a
+      # poisoned cache entry must never influence a published artifact
+      # (zizmor cache-poisoning). The wrapper's pinned distributionSha256Sum
+      # verifies the distribution download itself.
+      - name: gradlew test (release-path test gate)
+        working-directory: kotlin
+        run: bash gradlew test --no-daemon
+      - name: gradlew publish (portal deploy, signed artifacts)
         working-directory: kotlin
         env:
           OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
           OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
           SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
           SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
-        run: gradle publish
+        run: bash gradlew publish --no-daemon

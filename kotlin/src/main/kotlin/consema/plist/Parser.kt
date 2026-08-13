@@ -1,25 +1,25 @@
-﻿// Formation of `plist.xml@1` documents: the plist value vocabulary expressed
+// Formation of `plist.xml@1` documents: the plist value vocabulary expressed
 // as XML 1.0, with byte-exact lossless syntax pieces and Complete/Recovered
 // outcomes.
 //
 // Data authority:
-//   - RFC 0013 §2.1, §3, §4 (docs/rfcs/0013-plist-family-profiles-v1.md:
+//   - RFC 0013 §2.1, §3, §4 (https://github.com/consema/consema/blob/main/docs/rfcs/0013-plist-family-profiles-v1.md:
 //     57-76, 90-124, 125-275): the admitted document-entity encodings
 //     (UTF-8 optional BOM; UTF-16LE/BE required BOM), the three-way
 //     formation outcome, the DOCTYPE identifier contract, the root contract
 //     (`<plist version="1.0">` exactly, one value element), the value
 //     element vocabulary, the dictionary/key rules, the integer/real/date/
 //     data/string grammars, and the trailing-content rule.
-//   - RFC 0013 §8.2 (docs/rfcs/0013-...md:560-582): the lossless syntax-kind
+//   - RFC 0013 §8.2 (https://github.com/consema/consema/blob/main/docs/rfcs/0013-...md:560-582): the lossless syntax-kind
 //     set and the root-tag partition rule.
 //   - conformance/vectors/plist-v1.json (plist.xml-formation.* and
 //     plist.query.* XML cases) pins the recover/complete outcomes and the
 //     diagnostic codes case by case.
-//   - crates/consema-plist/src/parser_xml.rs is the byte-arbitration
+//   - consema-rs/consema-plist/src/parser_xml.rs is the byte-arbitration
 //     authority (element/attribute rules parser_xml.rs:1060-1353, value
 //     building parser_xml.rs:1479-1800, text/reference resolution
 //     parser_xml.rs:1791-2060, gap assembly parser_xml.rs:2226-2303);
-//     go/plist is a cross-reference only.
+//     consema-go/go/plist is a cross-reference only.
 //
 // Kotlin-idiomatic design (NOT a translation): a single self-contained
 // scanner over the decoded text tracks UTF-16 unit offsets and resolves raw
@@ -45,7 +45,7 @@ import java.util.ArrayDeque
 
 /**
  * Explicit source-encoding selection for plist formation (RFC 0013 §2;
- * crates/consema-plist/src/lib.rs:94-110). For the XML profile the selection
+ * consema-rs/consema-plist/src/lib.rs:94-110). For the XML profile the selection
  * follows the RFC 0012 source contract: no-BOM source defaults to UTF-8, and
  * an explicit caller choice is evidence, not permission to contradict a BOM
  * or a declaration. The binary profile has no text encoding; only
@@ -1529,13 +1529,11 @@ internal class XmlParser(
             LosslessStructuralIndex.new(authority.identity, sourceLen, structuralPieces)
         } catch (e: consema.document.LocationException) {
             for ((ordinal, piece) in structuralPieces.withIndex()) {
+                // Summary only — never dump the parsed document bytes
+                // (configurations routinely contain credentials).
                 System.err.println(
                     "PIECE $ordinal [${piece.span.startByte},${piece.span.endByte}) " +
-                        "${piece.kind} ${syntaxKinds[ordinal].wireName()} '" +
-                        String(source.rawBytes().copyOfRange(
-                            piece.span.startByte,
-                            piece.span.endByte,
-                        ), Charsets.UTF_8).replace("\n", "\\n") + "'",
+                        "${piece.kind} ${syntaxKinds[ordinal].wireName()}",
                 )
             }
             throw PlistFormationException(

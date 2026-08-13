@@ -1,13 +1,13 @@
 // TOML native semantic and lossless syntax query execution.
 //
 // Data authority:
-//   - RFC 0001 §4 (docs/rfcs/0001-toml-1.0-profile.md:64-76): the frozen
+//   - RFC 0001 §4 (https://github.com/consema/consema/blob/main/docs/rfcs/0001-toml-1.0-profile.md:64-76): the frozen
 //     domain `toml.native-semantic-query@1` with the six standard operators
 //     (toml.try-table-entries@1, toml.entry-name-equals@1, toml.entry-item@1,
 //     toml.try-array-elements@1, toml.array-element-item@1, plus
 //     core.take@1 and core.distinct-by-identity@1); validation completes
 //     before execution.
-//   - crates/consema-toml/src/query.rs:9-87 (TomlMatch, TomlSyntaxMatch),
+//   - consema-rs/consema-toml/src/query.rs:9-87 (TomlMatch, TomlSyntaxMatch),
 //     :88-180 (execute_toml_query / execute_toml_syntax_query and cursors),
 //     :182-488 (Context::step with the frozen QueryLimits defaults
 //     max_steps 100_000 / max_results 100_000, the expression evaluator,
@@ -17,7 +17,7 @@
 //   - conformance/vectors/syntax-query-v1.json syntax.toml.* cases (lines
 //     54-99) pin the match facts (kind, text, ordinal, TomlSyntaxPiece
 //     role) and the failure codes.
-//   - go/toml/query.go is a cross-reference only.
+//   - consema-go/go/toml/query.go is a cross-reference only.
 //
 // Kotlin-idiomatic design: definition validation and capability binding
 // belong to consema.protocol (QueryValidate.kt); this module executes a

@@ -1,7 +1,7 @@
 // Common immutable contracts for creating a new format document.
 //
 // Data authority (language-neutral sources first):
-//   - RFC 0004 (docs/rfcs/0004-materialization-conversion-and-structural-
+//   - RFC 0004 (https://github.com/consema/consema/blob/main/docs/rfcs/0004-materialization-conversion-and-structural-
 //     edit-v1.md) §3 (the common MaterializationRequest v1: target_profile,
 //     style, encoding, newline None|Lf|CrLf, mapping_policy
 //     RequireObject|UniqueStringEntriesToObject, representability ExactOnly,
@@ -9,12 +9,12 @@
 //     provenance} | Failed{failure, report, analyzed_input_paths}), §8
 //     (provenance: Value(ValuePath) | Association(AssociationLocation) input
 //     locations; Direct|Reencoded|Generated relations).
-//   - crates/consema-document/src/materialization.rs:1-495 pins the shapes,
+//   - consema-rs/consema-document/src/materialization.rs:1-495 pins the shapes,
 //     the frozen defaults (materialization.rs:95-105), and the failure
-//     codes; go/document/materialization.go is a cross-reference only.
+//     codes; consema-go/go/document/materialization.go is a cross-reference only.
 //
 // The registered materialization codes (RFC 0004 §17
-// docs/rfcs/0004-...md:412-420; error_registry.rs:556-604):
+// https://github.com/consema/consema/blob/main/docs/rfcs/0004-...md:412-420; error_registry.rs:556-604):
 //   core.materialization.invalid-request@1
 //   core.materialization.unsupported-profile@1
 //   core.materialization.unsupported-style@1
@@ -26,7 +26,7 @@
 //
 // Cross-domain dependencies (defined by the L0 core/protocol agents, NOT
 // here): consema.core.ValuePath / AssociationLocation / AssociationRole
-// mirror crates/consema-core/src/location.rs:1-89; consema.protocol.
+// mirror consema-rs/consema-core/src/location.rs:1-89; consema.protocol.
 // Diagnostic is the RFC 0016 §6 diagnostic record owned by the protocol
 // package.
 

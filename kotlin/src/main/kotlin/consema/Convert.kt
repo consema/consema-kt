@@ -1,4 +1,4 @@
-﻿// The L4 root facade conversion: audited projection-to-materialization
+// The L4 root facade conversion: audited projection-to-materialization
 // composition (Kotlin).
 //
 // Data authority (language-neutral sources first):
@@ -15,10 +15,10 @@
 //     and no partial bytes).
 //   - conformance/vectors/operations-v1.json and json-family-v2.json
 //     (convert.* cases) pin the observable conversion surface.
-//   - docs/multi-language-implementation-plan.md §0.3/§1 (L1 root facade
-//     "Document union/Registry/convert" mirrors Go G1.4; two-stage
-//     projection → PortableValue → materialization per RFC 0004); go/
-//     conversion.go is a cross-reference only.
+//   - https://github.com/consema/consema/blob/main/docs/multi-language-implementation-plan.md §0.3/§1 (L1 root facade
+//     "Document union/Registry/convert" — implemented in this repository;
+//     two-stage projection → PortableValue → materialization per RFC 0004);
+//     consema-go/go/conversion.go is a cross-reference only.
 //
 // Kotlin-idiomatic design: sealed completion algebra (ConversionResult is
 // exactly one of Complete or Failed — never a partial document), immutable

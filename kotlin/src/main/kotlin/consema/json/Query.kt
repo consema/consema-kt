@@ -1,19 +1,19 @@
 // Versioned JSON native-semantic and lossless-syntax query execution.
 //
 // Data authority:
-//   - RFC 0005 §7 (docs/rfcs/0005-json-family-production-v1.md:151-172):
+//   - RFC 0005 §7 (https://github.com/consema/consema/blob/main/docs/rfcs/0005-json-family-production-v1.md:151-172):
 //     domains json.native-semantic-query@1|2 and json.lossless-syntax-query@1|2;
 //     v2 extends the permitted native kind set with BinaryFloat64 and the
 //     syntax kind set with Identifier; strict/JSONC execute either version,
 //     JSON5 requires v2; binding validates the domain/kind combination.
-//   - RFC 0003 §8 (docs/rfcs/0003-source-syntax-query-and-patch-v1.md:173-248):
+//   - RFC 0003 §8 (https://github.com/consema/consema/blob/main/docs/rfcs/0003-source-syntax-query-and-patch-v1.md:173-248):
 //     the standard input sequence is every lossless syntax piece in raw
 //     source order; each match carries its NodeRef, raw Span, format-specific
 //     kind, and source ordinal; kind names and argument types are validated
 //     before the first match.
 //   - conformance/vectors/syntax-query-v1.json (json cases, lines 5-52) and
 //     json-family-v2.json (json5.query.*) pin the match order/ordinal/text
-//     facts; crates/consema-json/src/query.rs is the byte-arbitration
+//     facts; consema-rs/consema-json/src/query.rs is the byte-arbitration
 //     authority (execution query.rs:91-305, operators query.rs:307-477,
 //     selection query.rs:479-496); consema-core/src/query.rs:2967-2993 pins
 //     QueryLimits defaults (max_steps 100_000, max_results 100_000) and the

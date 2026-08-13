@@ -2,7 +2,7 @@
 // classification.
 //
 // Data authority (language-neutral sources first):
-//   - RFC 0007 §1 (docs/rfcs/0007-yaml-family-profiles-and-safety-v1.md:16-32):
+//   - RFC 0007 §1 (https://github.com/consema/consema/blob/main/docs/rfcs/0007-yaml-family-profiles-and-safety-v1.md:16-32):
 //     the two profiles yaml.1.2-core@1 (YAML 1.2.2 presentation grammar +
 //     Core schema) and yaml.1.1-compat@1 (YAML 1.2-compatible presentation +
 //     frozen 1.1 scalar resolution); they share source/lossless structure/
@@ -12,10 +12,10 @@
 //   - conformance/vectors/yaml-v1.json pins the profile spellings (line 3)
 //     and the syntax kinds the vectors assert (syntax.styles-and-trivia,
 //     yaml-v1.json:31-34).
-//   - crates/consema-yaml/src/lib.rs:54-116 pins YamlProfile and the exact
+//   - consema-rs/consema-yaml/src/lib.rs:54-116 pins YamlProfile and the exact
 //     YamlSyntaxKind spellings (as_str lib.rs:167-198, from_name lib.rs:
 //     200-231); lib.rs:241-257 pins the profile ids and accepted %YAML
-//     versions. go/yaml/profile.go is a cross-reference only.
+//     versions. consema-go/go/yaml/profile.go is a cross-reference only.
 //
 // Kotlin-idiomatic design (NOT a translation): the profile is a closed enum;
 // the syntax-kind names are the exact language-neutral spellings asserted by

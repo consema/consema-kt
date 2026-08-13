@@ -2,24 +2,24 @@
 // classification, and formation limits.
 //
 // Data authority (language-neutral sources first):
-//   - RFC 0013 §1 (docs/rfcs/0013-plist-family-profiles-v1.md:25-46): the two
+//   - RFC 0013 §1 (https://github.com/consema/consema/blob/main/docs/rfcs/0013-plist-family-profiles-v1.md:25-46): the two
 //     profiles plist.xml@1 and plist.binary@1 share one native value model
 //     but no syntax; the profile is selected by the caller before formation;
 //     the bplist00 magic number never selects semantics.
-//   - RFC 0013 §8.2 (docs/rfcs/0013-...md:560-582) freezes the v1 lossless
+//   - RFC 0013 §8.2 (https://github.com/consema/consema/blob/main/docs/rfcs/0013-...md:560-582) freezes the v1 lossless
 //     syntax-kind set and the root-tag partition rule (PlistOpen on the name,
 //     Whitespace on the separator, PlistVersionName on `version`,
 //     PlistVersionValue on `="1.0"`, a second PlistOpen on the closing `>`).
-//   - RFC 0013 §12 (docs/rfcs/0013-...md:716-753) bounds at least the raw
+//   - RFC 0013 §12 (https://github.com/consema/consema/blob/main/docs/rfcs/0013-...md:716-753) bounds at least the raw
 //     bytes, object count, nesting depth, dictionary entries, duplicate-key
 //     groups, array elements, string code units, data bytes, UID count,
 //     extended-size integers and magnitudes, offset/ref widths and offset-
 //     table bytes, syntax pieces, binary facts, conversion nodes, and
 //     report/recovery regions.
-//   - crates/consema-plist/src/lib.rs:70-92 (PlistProfile ids), lib.rs:119-194
+//   - consema-rs/consema-plist/src/lib.rs:70-92 (PlistProfile ids), lib.rs:119-194
 //     (PlistParseLimits fields and frozen defaults), parser_xml.rs:77-171
 //     (PlistSyntaxKind declaration) and parser_xml.rs:173-224 (the exact
-//     kebab-case wire spellings). go/plist is a cross-reference only.
+//     kebab-case wire spellings). consema-go/go/plist is a cross-reference only.
 //
 // Kotlin-idiomatic design (NOT a translation): the profile is a closed enum
 // and the syntax kinds a closed enum whose `wireName` IS the frozen kebab-

@@ -3,7 +3,7 @@
 // with exact spans.
 //
 // Data authority:
-//   - RFC 0007 §7 (docs/rfcs/0007-yaml-family-profiles-and-safety-v1.md:
+//   - RFC 0007 §7 (https://github.com/consema/consema/blob/main/docs/rfcs/0007-yaml-family-profiles-and-safety-v1.md:
 //     168-192): the lossless Document retains comments, whitespace, line
 //     breaks, directives, markers, styles, and exhaustive non-overlapping
 //     raw-byte coverage; the syntax kinds are stable style subfacts.
@@ -11,7 +11,7 @@
 //     (piece_count 48 with the exact required kinds, lines 31-34) and
 //     query.syntax-comments (Comment ordinals [5, 12], lines 61-64) pin the
 //     exact piece segmentation byte-for-byte.
-//   - crates/consema-yaml/src/syntax.rs:16-421 is the byte-arbitration
+//   - consema-rs/consema-yaml/src/syntax.rs:16-421 is the byte-arbitration
 //     authority for the lexeme rules (plain-line continuation, node-property
 //     characters inside plain scalars, block-scalar content regions
 //     including their trailing line break, quote scanning, and the

@@ -1,5 +1,5 @@
 # Dependency audit for the Kotlin implementation. Gradle-ecosystem audit
-# strategy, three standing layers:
+# strategy, three layers:
 #
 #   1. Dependabot (gradle ecosystem, .github/dependabot.yml) tracks
 #      kotlin/build.gradle.kts manifest updates and the Gradle wrapper
@@ -11,7 +11,7 @@
 #      runtimeClasspath`) and asserts it resolves nothing beyond the Kotlin
 #      platform (kotlin-stdlib + its transitive org.jetbrains:annotations —
 #      the language runtime, the same category as the Go stdlib). The
-#      zero-runtime-dependency policy (§1.3; build.gradle.kts:27-32 keeps
+#      test-only-dependency policy (§1.3; build.gradle.kts:27-32 keeps
 #      every declared configuration test-scoped) is violated the moment any
 #      third-party group appears in runtimeClasspath. The source-level
 #      tripwire below (build.gradle.kts must not declare
@@ -23,6 +23,13 @@
 #      dependency graph is the test-scoped JUnit/Kotlin stack that Dependabot
 #      already tracks. Revisit (dependency-check, Gradle dependency
 #      verification, SBOM) only if a runtime dependency is ever added.
+#
+# Scope note (six-repo audit G135): this workflow is scheduled and
+# path-triggered (gradle files only) and is NOT part of the aggregate
+# required check `check (all gates green)` — an audit failure reddens the
+# PR but does not block merge by itself. The always-on merge gate for the
+# same policy is the ci-kotlin.yml kotlin-gates job's test-only-dependencies
+# source-level assertion.
 #
 # No repository secrets are required.
 name: Dependency audit
@@ -73,7 +80,7 @@ jobs:
       # default — the language runtime, not a dependency — so the assertion
       # allows exactly the org.jetbrains.kotlin / org.jetbrains groups (and
       # the self-reference line) and fails on any other group.
-      - name: gradlew dependencies --configuration runtimeClasspath (zero third-party runtime deps)
+      - name: gradlew dependencies --configuration runtimeClasspath (test-only deps — runtime classpath = Kotlin platform only)
         shell: pwsh
         working-directory: kotlin
         run: |
@@ -83,29 +90,31 @@ jobs:
           $allowed = @('org.jetbrains.kotlin', 'org.jetbrains', 'project')
           $violations = @()
           foreach ($line in $output) {
-            if ($line -match '^\s*[+\\]---\s+([^:\s]+):') {
+            # Match top-level and nested tree lines (nested entries are
+            # prefixed with '|     ' continuation markers).
+            if ($line -match '^\s*(?:\|\s+)*[+\\]---\s+([^:\s]+):') {
               $group = $Matches[1]
               if ($allowed -notcontains $group) { $violations += $line }
             }
           }
           if ($violations.Count -gt 0) {
-            throw "runtimeClasspath resolved third-party dependencies (zero-runtime-dependency policy violated):`n" + ($violations -join "`n")
+            throw "runtimeClasspath resolved third-party dependencies (test-only-dependency policy violated):`n" + ($violations -join "`n")
           }
-          Write-Output 'runtimeClasspath: only the Kotlin platform (kotlin-stdlib) — zero third-party runtime dependencies'
+          Write-Output 'runtimeClasspath: only the Kotlin platform (kotlin-stdlib) — every declared configuration is test-scoped (test-only deps)'
       # Source-level tripwire, kept as the documented check: build.gradle.kts
-      # must keep the runtime classpath empty of declared runtime-scoped
-      # configurations (evaluating configurations.runtimeClasspath would
-      # resolve the entire dependency graph; the source-level tripwire is
-      # the standing gate, identical to the ci-kotlin.yml kotlin-gates job).
-      - name: zero-dependency source-level assertion (build.gradle.kts runtime classpath empty)
+      # must keep every declared configuration test-scoped (evaluating
+      # configurations.runtimeClasspath would resolve the entire dependency
+      # graph; the source-level tripwire is the standing gate, identical to
+      # the ci-kotlin.yml kotlin-gates job).
+      - name: test-only-dependencies source-level assertion (build.gradle.kts runtime-scoped declarations)
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
           $buildFile = Get-Content (Join-Path $env:GITHUB_WORKSPACE 'kotlin\build.gradle.kts') -Raw
-          if ($buildFile -match '(?m)^\s*(implementation|api|compileOnly|runtimeOnly)\s*\(') {
-            throw 'build.gradle.kts must keep the runtime classpath empty (runtime-scoped dependency found)'
+          if ($buildFile -match '(?m)^\s*(implementation|api|compileOnly|runtimeOnly)(\s*\(|\s+")') {
+            throw 'build.gradle.kts must keep every declared configuration test-scoped (runtime-scoped dependency found)'
           }
           if ($buildFile -notmatch '(?m)^\s*testImplementation\s*\(' -or $buildFile -notmatch '(?m)^\s*testRuntimeOnly\s*\(') {
             throw 'build.gradle.kts must declare its test-scoped dependencies (testImplementation/testRuntimeOnly)'
           }
-          Write-Output 'zero runtime dependencies: build.gradle.kts declares only test-scoped configurations'
+          Write-Output 'test-only dependencies: build.gradle.kts declares only test-scoped configurations (runtime classpath carries kotlin-stdlib + annotations)'

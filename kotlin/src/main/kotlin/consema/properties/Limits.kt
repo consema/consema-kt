@@ -1,7 +1,7 @@
 // Java Properties parse, projection, and edit resource limits.
 //
 // Data authority (language-neutral sources first):
-//   - RFC 0010 §14 (docs/rfcs/0010-java-properties-profiles-v1.md:415-425):
+//   - RFC 0010 §14 (https://github.com/consema/consema/blob/main/docs/rfcs/0010-java-properties-profiles-v1.md:415-425):
 //     PropertiesParseLimits bounds raw and decoded source bytes/scalars,
 //     natural-line count and maximum natural-line bytes/scalars, logical-line
 //     count/constituents/assembled size, property/comment/escape/Unicode-
@@ -10,10 +10,10 @@
 //   - conformance/vectors/java-properties-v1.json resource.formation-limit-
 //     matrix (lines 115-140) and resource.projection-limit-matrix
 //     (lines 141-145) pin every limit name and the fatal/no-partial outcome.
-//   - crates/consema-properties/src/lib.rs:62-122 (PropertiesParseLimits and
+//   - consema-rs/consema-properties/src/lib.rs:62-122 (PropertiesParseLimits and
 //     the frozen defaults) and projection.rs:84-106 (ProjectionLimits and the
 //     frozen defaults) are the byte-arbitration authorities.
-//     go/properties is a cross-reference only.
+//     consema-go/go/properties is a cross-reference only.
 //
 // Kotlin-idiomatic design: immutable data classes; the default companion
 // values are transcribed verbatim from lib.rs:100-122 and projection.rs:

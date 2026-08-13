@@ -2,7 +2,7 @@
 // encoding resolution, decoded text, and exact boundary mapping.
 //
 // Data authority (language-neutral sources first):
-//   - RFC 0003 §3-§5 (docs/rfcs/0003-source-syntax-query-and-patch-v1.md):
+//   - RFC 0003 §3-§5 (https://github.com/consema/consema/blob/main/docs/rfcs/0003-source-syntax-query-and-patch-v1.md):
 //     content digest over exact raw bytes; closed v1 encoding set; decoded
 //     boundary tuple (raw_byte, decoded_utf8_byte, unicode_scalar_offset,
 //     utf16_code_unit_offset); only scalar boundaries are addressable; BOM
@@ -11,13 +11,13 @@
 //   - conformance/vectors/source-v1.json (cases source.digest.*,
 //     source.encoding.*, source.location.*, source.resource.*, lines 4-172)
 //     pins the byte-exact behaviors and rejection codes.
-//   - crates/consema-document/src/source.rs:476-666 (SourceSnapshot),
+//   - consema-rs/consema-document/src/source.rs:476-666 (SourceSnapshot),
 //     source.rs:669-725 (SourceError, UnsupportedBomKind), and the decode
-//     rules source.rs:727-1220; crates/consema-conformance/src/source_v1.rs:
+//     rules source.rs:727-1220; consema-rs/consema-conformance/src/source_v1.rs:
 //     410-421 maps SourceError variants to the registered codes.
-//   - go/document/source.go is a cross-reference only.
+//   - consema-go/go/document/source.go is a cross-reference only.
 //
-// The registered error codes (crates/consema-protocol/src/error_registry.rs:
+// The registered error codes (consema-rs/consema-protocol/src/error_registry.rs:
 // 207, 366-410; transcribed into kotlin/.../protocol/ErrorRegistry.kt:206,
 // 236-242):
 //   core.source.invalid-sequence@1  (InvalidUtf8 and InvalidSequence)

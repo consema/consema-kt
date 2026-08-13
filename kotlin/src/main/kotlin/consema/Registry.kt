@@ -11,12 +11,12 @@
 //     facts the CLI derives exclusively from this surface;
 //     crates/consema/src/bin/consema/registry.rs as the CLI thin
 //     enumeration).
-//   - docs/fc-manifest-0.13.0.json:31-34 (capability_set: 8 families /
+//   - https://github.com/consema/consema/blob/main/docs/fc-manifest-0.13.0.json:31-34 (capability_set: 8 families /
 //     16 profiles / 21 query domains / 16 operation registries / 187 error
 //     codes) — the CapabilityParity test pins these counts.
-//   - docs/multi-language-implementation-plan.md §0.3/§1 (L1 root facade
-//     "Document union/Registry/convert" mirrors Go G1.4); go/registry.go is
-//     a cross-reference only.
+//   - https://github.com/consema/consema/blob/main/docs/multi-language-implementation-plan.md §0.3/§1 (L1 root facade
+//     "Document union/Registry/convert" — implemented in this repository;
+//     consema-go/go/registry.go is a cross-reference only).
 //
 // Kotlin-idiomatic design: immutable data classes and pure functions over
 // the family enum types; ids keep the exact language-neutral spellings so

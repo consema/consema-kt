@@ -1,10 +1,10 @@
 // Fixed-field record decoding helpers.
 //
 // Data authority: the fixed-field record discipline of the protocol
-// contracts (crates/consema-protocol/src/schema.rs:16-70 as the Rust
+// contracts (consema-rs/consema-protocol/src/schema.rs:16-70 as the Rust
 // cross-reference): an Object record must declare exactly the schema's
 // fields in canonical order, with the schema discriminator first for
-// schema-bearing records. go/protocol/schema.go is a cross-reference.
+// schema-bearing records. consema-go/go/protocol/schema.go is a cross-reference.
 
 package consema.protocol
 

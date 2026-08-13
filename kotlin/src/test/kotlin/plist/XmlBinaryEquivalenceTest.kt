@@ -4,7 +4,7 @@
 // shared object identity.
 //
 // Data authority:
-//   - RFC 0013 §7 (docs/rfcs/0013-plist-family-profiles-v1.md:512-538): the
+//   - RFC 0013 §7 (https://github.com/consema/consema/blob/main/docs/rfcs/0013-plist-family-profiles-v1.md:512-538): the
 //     XML and binary profiles are distinct formats with one value model;
 //     conversion is exact when every native fact is expressible and fails
 //     atomically otherwise; "XML/binary exact round trip" means native-model
@@ -13,8 +13,9 @@
 //   - conformance/vectors/plist-v1.json cases plist.conversion.*,
 //     plist.binary-formation.shared-reference, plist.materialization.*.
 //
-// This file is an intent document: the toolchain is not verified yet, so
-// these tests pin the intent; they run at the L3 verification gate.
+// This file runs in the verified toolchain gate (kotlin-gates gradlew
+// test / the scripts/kotlin-verify-*.ps1 direct path): the toolchain is
+// verified and this file is executed.
 
 package plist
 

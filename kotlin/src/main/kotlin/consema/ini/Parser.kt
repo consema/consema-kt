@@ -1,7 +1,7 @@
 // The byte-exact three-profile INI scanner and recovery parser.
 //
 // Data authority:
-//   - RFC 0009 §4-§7 (docs/rfcs/0009-ini-family-profiles-v1.md:118-252):
+//   - RFC 0009 §4-§7 (https://github.com/consema/consema/blob/main/docs/rfcs/0009-ini-family-profiles-v1.md:118-252):
 //     Complete | Recovered | FatalFormationFailure; the portable grammar and
 //     its deliberate restrictions; the Windows section plus key=string
 //     model, `;` comments, exact single/double-quoted values, ASCII
@@ -12,11 +12,11 @@
 //   - conformance/vectors/ini-v1.json pins the formation outcomes and the
 //     diagnostic codes case by case (formation.*, resource.formation-limit-
 //     matrix).
-//   - crates/consema-ini/src/parser.rs is the byte-arbitration authority
+//   - consema-rs/consema-ini/src/parser.rs is the byte-arbitration authority
 //     (physical-line scan parser.rs:228-301, per-line parse parser.rs:303-
 //     578, continuation parser.rs:580-747, records parser.rs:749-867,
 //     recovery parser.rs:869-905, pieces parser.rs:907-1125, duplicate
-//     groups parser.rs:1212-1304). go/ini/parser.go is a cross-reference
+//     groups parser.rs:1212-1304). consema-go/go/ini/parser.go is a cross-reference
 //     only.
 //
 // Kotlin-idiomatic design (NOT a translation): scanning works over the

@@ -1,13 +1,13 @@
 // Namespaced identifiers of the document domain.
 //
-// Data authority: crates/consema-document/src/lib.rs:344-402 (FormatFamilyId,
-// ProfileId), crates/consema-document/src/materialization.rs:11-39
-// (MaterializationStyleId), crates/consema-document/src/operation_registry.rs:
+// Data authority: consema-rs/consema-document/src/lib.rs:344-402 (FormatFamilyId,
+// ProfileId), consema-rs/consema-document/src/materialization.rs:11-39
+// (MaterializationStyleId), consema-rs/consema-document/src/operation_registry.rs:
 // 8-42 (FormatOperationId). The v1 target profiles and style IDs frozen by
 // RFC 0004 §4 are: json.strict@1, jsonc.bounded@1, toml.1.0@1 and
 // json.canonical-compact@1, json.canonical-pretty@1, toml.canonical-
-// document@1 (docs/rfcs/0004-materialization-conversion-and-structural-edit-
-// v1.md:98-117). go/document/ids.go is a cross-reference only.
+// document@1 (https://github.com/consema/consema/blob/main/docs/rfcs/0004-materialization-conversion-and-structural-edit-
+// v1.md:98-117). consema-go/go/document/ids.go is a cross-reference only.
 //
 // Kotlin-idiomatic design: immutable data classes with the namespaced `id`
 // spelling kept as the exact language-neutral string and the `version`

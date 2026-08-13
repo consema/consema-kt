@@ -1,7 +1,7 @@
 // Versioned INI native-semantic and lossless-syntax query execution.
 //
 // Data authority:
-//   - RFC 0009 §9 (docs/rfcs/0009-ini-family-profiles-v1.md:286-345): the
+//   - RFC 0009 §9 (https://github.com/consema/consema/blob/main/docs/rfcs/0009-ini-family-profiles-v1.md:286-345): the
 //     native operator schemas (ini.document-sections@1 through
 //     ini.logical-lines@1), the exact comparison modes OriginalExact |
 //     ProfileEquivalent and the exact state values Missing | Empty |
@@ -13,7 +13,7 @@
 //     cancellation, and terminal-state rules apply.
 //   - conformance/vectors/ini-v1.json (query.*) pins the match order, the
 //     duplicate-group facts, the syntax-kind ordinals, and the
-//     resource-limit behavior; crates/consema-ini/src/query.rs is the
+//     resource-limit behavior; consema-rs/consema-ini/src/query.rs is the
 //     byte-arbitration authority (execution query.rs:117-218, operators
 //     query.rs:421-625, source order query.rs:627-659, decoded text
 //     query.rs:661-676); consema-core/src/query.rs:2967-2993 pins QueryLimits

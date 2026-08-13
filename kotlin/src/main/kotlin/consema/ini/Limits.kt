@@ -1,16 +1,16 @@
 // INI-specific parse and recovery resource limits.
 //
 // Data authority:
-//   - RFC 0009 §13 (docs/rfcs/0009-ini-family-profiles-v1.md:475-489):
+//   - RFC 0009 §13 (https://github.com/consema/consema/blob/main/docs/rfcs/0009-ini-family-profiles-v1.md:475-489):
 //     IniParseLimits bounds raw/decoded bytes, scalar/boundary counts,
 //     physical/logical lines and their byte/scalar maxima, continuation
 //     physical-line count, sections/entries/duplicate-group members, syntax
 //     pieces, diagnostics, and recovery regions; limit failure never returns
 //     a truncated Complete Document.
-//   - crates/consema-ini/src/lib.rs:67-119 pins the fields and the frozen
-//     defaults; crates/consema-document/src/lib.rs:614-639 pins the common
+//   - consema-rs/consema-ini/src/lib.rs:67-119 pins the fields and the frozen
+//     defaults; consema-rs/consema-document/src/lib.rs:614-639 pins the common
 //     ParseLimits defaults (64 MiB source, depth 256, 2M tokens, 1M nodes,
-//     10k diagnostics). go/ini/limits.go is a cross-reference only.
+//     10k diagnostics). consema-go/go/ini/limits.go is a cross-reference only.
 
 package consema.ini
 

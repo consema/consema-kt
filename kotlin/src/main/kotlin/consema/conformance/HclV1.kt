@@ -1,7 +1,7 @@
 // The `consema.hcl.conformance@1` suite runner
 // (conformance/vectors/hcl-v1.json).
 //
-// Data authority: crates/consema-conformance/src/hcl_v1.rs (the per-case
+// Data authority: consema-rs/consema-conformance/src/hcl_v1.rs (the per-case
 // dispatch is transcribed from the Rust handlers); the vector file itself
 // drives every input and expectation (conformance/README.md rules 3-4).
 //

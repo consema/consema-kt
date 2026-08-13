@@ -4,9 +4,19 @@ build/
 *.class
 *.jar
 
+# Provisioned conformance data: the single authority is the consema spec
+# repository (CI provisions conformance/ + docs/fc-manifest-0.13.0.json into
+# the workspace root); a committed copy here would fork the authority.
+conformance/
+docs/
+
 # IDE / OS artifacts
 .idea/
 .vscode/
 *.swp
 .DS_Store
 Thumbs.db
+
+# Build outputs (repo root; gradle build/ covered under kotlin/)
+target/
+kotlin/.kotlin/

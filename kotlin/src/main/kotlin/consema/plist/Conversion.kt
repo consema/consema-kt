@@ -1,8 +1,8 @@
-﻿// Cross-representation conversion between `plist.xml@1` and
+// Cross-representation conversion between `plist.xml@1` and
 // `plist.binary@1`.
 //
 // Data authority:
-//   - RFC 0013 §7 (docs/rfcs/0013-plist-family-profiles-v1.md:512-538):
+//   - RFC 0013 §7 (https://github.com/consema/consema/blob/main/docs/rfcs/0013-plist-family-profiles-v1.md:512-538):
 //     conversion is a first-class transform, not an internal detail; exact
 //     when every native fact is expressible and atomic otherwise; each
 //     conversion emits report events identifying the representation change
@@ -12,7 +12,7 @@
 //     round-trip contract is native-model equality across a chain of
 //     conversions with every representation change reported.
 //   - conformance/vectors/plist-v1.json (plist.conversion.*) pins the
-//     outcomes; crates/consema-plist/src/document.rs:252-593 is the
+//     outcomes; consema-rs/consema-plist/src/document.rs:252-593 is the
 //     byte-arbitration authority (convert_to document.rs:252-289,
 //     convert_xml_to_binary document.rs:494-551, convert_binary_to_xml
 //     document.rs:559-593, analyze document.rs:619-770, the XML serializer

@@ -1,10 +1,10 @@
 // The frozen CLI exit classes and the pure error classification.
 //
-// Data authority: RFC 0015 §5 (docs/rfcs/0015-cli-machine-protocol-and-
+// Data authority: RFC 0015 §5 (https://github.com/consema/consema/blob/main/docs/rfcs/0015-cli-machine-protocol-and-
 // batch-apply-v1.md) — the six exit classes, their codes (0-5), and the
 // stable mapping from error families to classes. ClassifyErrorCode is a
 // pure function; the CLI applies the mapped code only (RFC 0016 §6: "the
-// SDK itself never classifies"). go/protocol/exit_class.go is a
+// SDK itself never classifies"). consema-go/go/protocol/exit_class.go is a
 // cross-reference.
 
 package consema.protocol

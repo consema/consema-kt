@@ -2,7 +2,7 @@
 // classification (RFC 0012 §4-7).
 //
 // Data authority:
-//   - RFC 0012 §4 (docs/rfcs/0012-xml-1.0-safe-profile-v1.md:132-166):
+//   - RFC 0012 §4 (https://github.com/consema/consema/blob/main/docs/rfcs/0012-xml-1.0-safe-profile-v1.md:132-166):
 //     Complete | Recovered | FatalFormationFailure; recovery only at
 //     deterministic markup boundaries; the parser never invents a closing
 //     tag, namespace binding, attribute value, entity replacement, or second
@@ -19,18 +19,18 @@
 //     adjacent Text occurrences are not merged.
 //   - RFC 0012 §7 (0012-...:258-282): every non-empty raw byte belongs to
 //     exactly one ordered structural piece; the frozen v1 kind set.
-//   - crates/consema-xml/src/document.rs:17-94 (XmlSyntaxKind), document.rs:
+//   - consema-rs/consema-xml/src/document.rs:17-94 (XmlSyntaxKind), document.rs:
 //     96-120 (QNameFacts), document.rs:122-172 (ReferenceFragment),
 //     document.rs:174-387 (the occurrence data structs), document.rs:388-568
 //     (Document), document.rs:570-763 (XmlDocument/XmlElement/XmlContentItem),
 //     document.rs:765-799 (text_semantic and the CR/CRLF->LF normalization),
 //     document.rs:801-890 (XmlSyntaxKind::as_str/from_name).
-//   - go/xml/document.go is a cross-reference only.
+//   - consema-go/go/xml/document.go is a cross-reference only.
 //
 // The `xml.*` diagnostic codes are registered by RFC 0012 as part of the
 // `xml.1.0-safe@1` contract and do NOT enter the consema-protocol core error
 // registry (RFC 0012 §12, 0012-...:426-433; verified: no xml.* code exists
-// in crates/consema-protocol/src/error_registry.rs or its Kotlin
+// in consema-rs/consema-protocol/src/error_registry.rs or its Kotlin
 // transcription ErrorRegistry.kt), so this family carries its own
 // [XmlDiagnostic] record instead of the registry-validated protocol
 // Diagnostic (the Rust xml parser constructs consema_core::Diagnostic
@@ -512,7 +512,7 @@ data class XmlDoctypeData(
  * One stable `xml.*` diagnostic published by this family (RFC 0012 §12).
  * The xml codes are part of the `xml.1.0-safe@1` contract, not the
  * consema-protocol core registry, so this record mirrors the Rust
- * consema_core::Diagnostic::new surface (crates/consema-core/src/
+ * consema_core::Diagnostic::new surface (consema-rs/consema-core/src/
  * diagnostic.rs:65-104) and is constructed without registry validation.
  * [occurrence] is the final stable ordering key (diagnostic.rs:80-81).
  */

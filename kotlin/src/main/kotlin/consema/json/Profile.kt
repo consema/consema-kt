@@ -2,15 +2,15 @@
 // classification.
 //
 // Data authority (language-neutral sources first):
-//   - RFC 0005 §1-§2 (docs/rfcs/0005-json-family-production-v1.md:16-49):
+//   - RFC 0005 §1-§2 (https://github.com/consema/consema/blob/main/docs/rfcs/0005-json-family-production-v1.md:16-49):
 //     the three profiles json.strict@1, jsonc.bounded@1, json5.standard@1;
 //     JSON5 accepts exactly the Standard JSON5 1.0.0 grammar plus Consema
 //     resource bounds.
 //   - conformance/vectors/json-family-v2.json pins the profile spellings and
 //     the syntax kinds the vectors assert (syntax_contains, kind-is).
-//   - crates/consema-json/src/lib.rs:36-159 pins JsonProfile and
+//   - consema-rs/consema-json/src/lib.rs:36-159 pins JsonProfile and
 //     JsonSyntaxKind (the exact kind names "Bom".."ErrorRegion" at
-//     lib.rs:89-108). go/json/profile.go is a cross-reference only.
+//     lib.rs:89-108). consema-go/go/json/profile.go is a cross-reference only.
 //
 // Kotlin-idiomatic design (NOT a translation): the profile is a closed enum;
 // the syntax-kind names are the exact language-neutral spellings asserted by

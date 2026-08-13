@@ -3,7 +3,7 @@
 // SourcePatch derivation.
 //
 // Data authority:
-//   - RFC 0010 §13 (docs/rfcs/0010-java-properties-profiles-v1.md:383-413):
+//   - RFC 0010 §13 (https://github.com/consema/consema/blob/main/docs/rfcs/0010-java-properties-profiles-v1.md:383-413):
 //     the five operations replace-semantic-value, replace-literal-value,
 //     insert-property, remove-property, rename-property; semantic
 //     replacement accepts a JavaString (exact unpaired code units through
@@ -19,24 +19,23 @@
 //     missing or duplicate target, overlapping ownership, removed placement
 //     anchor, invalid literal, unrepresentable encoding, resource failure,
 //     and reparse/closure failure before a patch exists.
-//   - RFC 0004 §13-§16 (docs/rfcs/0004-materialization-conversion-and-
+//   - RFC 0004 §13-§16 (https://github.com/consema/consema/blob/main/docs/rfcs/0004-materialization-conversion-and-
 //     structural-edit-v1.md:300-384): the transaction/conflict algebra, the
 //     dry-run plan, the untouched-byte proof, and the derived SourcePatch;
 //     ChangeSet remains the document-level change fact (RFC 0004 §16).
 //   - conformance/vectors/java-properties-v1.json pins the golden outputs
 //     and conflict codes (edit.all-five-operations, lines 105-109;
 //     edit.dry-run-patch-proof-conflict-atomicity, lines 110-114).
-//   - crates/consema-properties/src/edit.rs is the byte-arbitration
+//   - consema-rs/consema-properties/src/edit.rs is the byte-arbitration
 //     authority (commit edit.rs:270-442, dry-run edit.rs:444-459, ownership
 //     edit.rs:461-605, canonical escaping edit.rs:925-1036, expected-state
 //     verification edit.rs:794-833, mappings edit.rs:894-923).
 //   - The shared ChangeSet shapes live in the Rust consema-document layer
-//     (crates/consema-document/src/lib.rs:800-899: SourceEdit, NodeMapping,
+//     (consema-rs/consema-document/src/lib.rs:800-899: SourceEdit, NodeMapping,
 //     NodeMappingStatus, ChangeSet); the Kotlin document layer does not own
-//     ChangeSet yet — a post-1.0.0 (冻结前评估项，见五要素终审 F-28.3-1
-//     处置) milestone — so this package defines the same immutable records
-//     locally and that milestone can promote them into the shared layer
-//     unchanged.
+//     ChangeSet — this package ships the same immutable records locally
+//     (constructed at commit, EditCommit.changeSet), and a later promotion
+//     into the shared layer can move them unchanged.
 //
 // Kotlin-idiomatic design: failures are a sealed hierarchy whose [name] is
 // the exact vector spelling and whose registered code follows the Rust

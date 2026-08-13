@@ -1,7 +1,7 @@
 // The complete TOML 1.0 parser and entity builder.
 //
 // Data authority:
-//   - RFC 0001 §2-§3 (docs/rfcs/0001-toml-1.0-profile.md): the closed native
+//   - RFC 0001 §2-§3 (https://github.com/consema/consema/blob/main/docs/rfcs/0001-toml-1.0-profile.md): the closed native
 //     item set, dotted-key layered entries, deterministic order and exact
 //     spans, fatal syntax failures carrying `toml.parse.syntax@1` with a
 //     provable minimal span, and the four parse limits applied in the frozen
@@ -10,14 +10,14 @@
 //     implicit/dotted tables, arrays of tables, inline-table extension
 //     prohibition, implicit-table reuse with remove-and-reinsert) follows
 //     toml_edit 0.22.27 (the frozen Rust backend, IMPLEMENTATION.md:104) as
-//     transcribed by the Go parser (go/toml/parser.go:280-2030, a
+//     transcribed by the Go parser (consema-go/go/toml/parser.go:280-2030, a
 //     cross-reference only): parseDocument BOM skip, parseComment/lineTrailing
 //     trivia rules, parseKey dotted keys, parseKeyval with the dotted-vs-table
 //     conflict checks, descendPath, parseHeader with the implicit-reuse rule,
 //     finalize with AOT append, parseValue dispatch order, the four string
 //     forms with mlb-escaped-nl, tryDateTime/tryFloatToken/trySpecialFloat/
 //     parseIntToken number grammar, parseArray, parseInlineTableValue.
-//   - crates/consema-toml/src/parser.rs:84-337 (EntityBuilder): the exact
+//   - consema-rs/consema-toml/src/parser.rs:84-337 (EntityBuilder): the exact
 //     entity order (item first, then per entry key/item/entry), the span
 //     fallback rules, and the node-count/nesting limits.
 //

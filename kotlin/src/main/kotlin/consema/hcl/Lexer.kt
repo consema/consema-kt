@@ -3,7 +3,7 @@
 // §2, §7.2).
 //
 // Data authority:
-//   - crates/consema-hcl/src/lexer.rs pins the token kind set (lexer.rs:146-
+//   - consema-rs/consema-hcl/src/lexer.rs pins the token kind set (lexer.rs:146-
 //     245), the token-to-piece kind mapping (lexer.rs:251-301), the
 //     structural classification (lexer.rs:305-313), the main scan (lexer.rs:
 //     680-888: operators, `::` as invalid-character, `_` as identifier@1,
@@ -14,13 +14,13 @@
 //     match, per-line content runs, heredoc-bytes/heredoc-lines limits), the
 //     interpolation/directive absorption (lexer.rs:889-968), and the
 //     template frames (lexer.rs:1378-1530).
-//   - RFC 0014 §2 (docs/rfcs/0014-hcl-family-profiles-v1.md:56-93) freezes
+//   - RFC 0014 §2 (https://github.com/consema/consema/blob/main/docs/rfcs/0014-hcl-family-profiles-v1.md:56-93) freezes
 //     the UTF-8-only source contract: newline is exactly LF or CRLF, a lone
 //     CR is Recovered, a leading BOM is Recovered.
 //   - RFC 0014 §4.1 (:147-186) freezes the identifier (UAX #31 with `-`
 //     continuation; `_` is not an ID_Start), number, comment, whitespace,
 //     and traversal facts.
-//   - go/hcl is a cross-reference only.
+//   - consema-go/go/hcl is a cross-reference only.
 //
 // Kotlin-idiomatic design: the lexer is a state machine over the raw bytes
 // with an explicit template frame stack (quoted / heredoc / absorbed

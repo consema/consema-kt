@@ -6,7 +6,7 @@
 // graph.sharing-is-not-duplication: sharing is not duplication). The hashing
 // contract (FNV-1a over the canonical PGCE/1 bytes) follows the cross-
 // language rule that equal graphs hash equal and that the bytes of equal
-// graphs are identical (RFC 0006 §4; go/graph/equal.go as cross-reference).
+// graphs are identical (RFC 0006 §4; consema-go/go/graph/equal.go as cross-reference).
 
 package consema.graph
 
@@ -69,7 +69,7 @@ fun equal(a: Graph?, b: Graph?): Boolean {
 }
 
 /** Compares two nodes under their canonical ID mappings (the Rust
- * canonical_node_eq, crates/consema-graph/src/lib.rs:634-661). */
+ * canonical_node_eq, consema-rs/consema-graph/src/lib.rs:634-661). */
 private fun canonicalNodeEqual(
     left: NodeData,
     leftIds: IntArray,

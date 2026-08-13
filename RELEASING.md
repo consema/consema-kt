@@ -16,7 +16,7 @@ workflow 已写完整，但**凭证未配置前推送 tag 会明确失败**（po
    `version = "X.Y.Z"`（rootProject version），同时改仓根 `README.md` 的
    `Version:` 行（`check-version-consistency` 门禁强制一致）。
 2. **CHANGELOG 策展**：记录本版本变更；跨语言变更同步到
-   consema 仓库 `docs/CHANGELOG.md`。
+   consema 仓库根 `CHANGELOG.md`（真实历史记录，勿指 docs/CHANGELOG.md 勘误页）。
 3. **质量门禁全绿**：main 分支 CI `check (all gates green)` 全绿
    （清单见各仓 ci 配置）。
 4. **打 tag 并推送**（发布动作的唯一触发点）：
@@ -26,9 +26,11 @@ workflow 已写完整，但**凭证未配置前推送 tag 会明确失败**（po
    ```
    发布 workflow 会先校验 tag↔版本一致（tag 去掉 `v` 前缀必须等于
    `kotlin/build.gradle.kts` 的 rootProject version，不一致即 exit 1
-   中止），随后用 Temurin 17 + Gradle 8.14（Gradle wrapper 已入库（gradle 8.14，
-   commit c60d31a/b640af6）；Gradle 由 `gradle/actions/setup-gradle` 安装）执行
-   `gradle publish`。
+   中止），随后用 Temurin 17 + 已入库的 Gradle wrapper（gradle 8.14，
+   commit c60d31a/b640af6；wrapper 的 distributionSha256Sum 钉住发行版
+   下载，见 kotlin/gradle/wrapper/gradle-wrapper.properties）执行
+   `gradlew publish`（发布 job 不启用 Gradle 缓存，且先跑 `gradlew test`
+   作为发布路径测试门禁）。
 
 ## 2. 凭证配置（用户侧一次性动作）
 
@@ -76,13 +78,13 @@ Maven Central 要求所有 artifact（含 pom、module、sources/javadoc jar）
 4. 跨语言同步：按 consema 仓 RELEASING.md 的检查单核对其他语言仓的发布
    状态。
 
-## 4. API reference 文档与依赖审计（决策：P2，待 Gradle wrapper 落地）
+## 4. API reference 文档与依赖审计（决策：P2）
 
 - **dokka 文档构建**：dokka 是 Gradle 插件；Gradle wrapper 已入库（gradle 8.14，commit c60d31a/b640af6）
-  （设计 §7.3 的后续 L0-batch 项），CI 直驱 K2JVMCompiler，无法产出
-  dokka 报告。API reference 的 docs CI job **待 wrapper 落地后引入**（P2）。
+  （设计 §7.3 的后续 L0-batch 项）。wrapper 条件已满足，但 API reference
+  的 docs CI job 仍未引入（recorded gap，六仓审计 G138；P2）。
 - **依赖审计**：完整依赖审计（如 OWASP dependency-check 或 Gradle
-  dependency verification）需要求值 Gradle 配置，同样依赖 wrapper。
-  `.github/workflows/audit.yml` 目前只跑零运行时依赖断言并注明该 P2
-  决策；Dependabot 已覆盖 `kotlin/build.gradle.kts` 的清单更新（同样
-  记录 wrapper 限制，见 .github/dependabot.yml）。
+  dependency verification）需要求值 Gradle 配置。
+  `.github/workflows/audit.yml` 已走 wrapper 求值 `runtimeClasspath` 并
+  断言无第三方 group（kotlin-stdlib + annotations 除外）；Dependabot 已
+  覆盖 `kotlin/build.gradle.kts` 的清单更新（见 .github/dependabot.yml）。

@@ -1,10 +1,10 @@
 // Portable value and association locations.
 //
 // Data authority (language-neutral sources first):
-//   - crates/consema-core/src/location.rs:1-89 is the ONLY authority for the
+//   - consema-rs/consema-core/src/location.rs:1-89 is the ONLY authority for the
 //     location model: ValuePathSegment (location.rs:5-14), ValuePath
 //     (location.rs:17-40), AssociationRole (location.rs:44-51),
-//     AssociationLocation (location.rs:54-89). go/core has no equivalent;
+//     AssociationLocation (location.rs:54-89). consema-go/go/core has no equivalent;
 //     the shapes below are not invented elsewhere. The dependency is
 //     consumed by the json/toml/properties/ini/yaml families
 //     (consema/json/Projection.kt:33-45 imports, Projection.kt:525-648
@@ -30,7 +30,7 @@ package consema.core
  * One segment of a root-relative portable value path.
  *
  * The closed variant set mirrors the Rust enum exactly
- * (crates/consema-core/src/location.rs:5-14): [ObjectValue] — value of a
+ * (consema-rs/consema-core/src/location.rs:5-14): [ObjectValue] — value of a
  * uniquely named object entry (location.rs:6-7); [SequenceElement] —
  * sequence element at a non-negative index (location.rs:8-9);
  * [EntryKey] — key value of an entry-mapping association (location.rs:10-11);
@@ -54,7 +54,7 @@ sealed class ValuePathSegment {
 
 /**
  * A path to a value; the empty path denotes the root
- * (crates/consema-core/src/location.rs:17-18).
+ * (consema-rs/consema-core/src/location.rs:17-18).
  *
  * Immutable: [child] returns a new path and never modifies this path
  * (location.rs:35-39). Equality and hashing are structural over the segment
@@ -85,7 +85,7 @@ data class ValuePath private constructor(val segments: List<ValuePathSegment>) {
 
 /**
  * Association kind independent from child values
- * (crates/consema-core/src/location.rs:43-51). The entries use the exact
+ * (consema-rs/consema-core/src/location.rs:43-51). The entries use the exact
  * Rust spellings (location.rs:44-51).
  */
 enum class AssociationRole {
@@ -101,7 +101,7 @@ enum class AssociationRole {
 
 /**
  * Location of an association, not a portable value node
- * (crates/consema-core/src/location.rs:54-59).
+ * (consema-rs/consema-core/src/location.rs:54-59).
  *
  * [ordinal] is the structural association ordinal (location.rs:79-82); the
  * Rust u64 maps to Kotlin Long. location.rs defines no construction-time

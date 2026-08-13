@@ -1,12 +1,12 @@
 // The `consema.cli.conformance@1` suite runner (conformance/vectors/cli-v1.json).
 //
-// Data authority: crates/consema-conformance/src/cli_v1.rs (the per-case
+// Data authority: consema-rs/consema-conformance/src/cli_v1.rs (the per-case
 // dispatch is transcribed from the Rust handlers; the Rust runner is the
 // dispatch authority for every cli case); the vector file itself drives every
 // input and expectation (conformance/README.md rules 3-4). The protocol
 // payloads are the Kotlin `consema.protocol` CLI records (Cli.kt, ExitClass.kt,
 // Errors.kt, Canonical.kt, Source.kt), which mirror the Rust consema-protocol
-// v7 types. go/conformance/cli_v1.go is a cross-reference only.
+// v7 types. consema-go/go/conformance/cli_v1.go is a cross-reference only.
 //
 // The six capability families are covered: cli.envelope@1 (canonical
 // transport decode, byte-exact re-encode, PVCE dual-transport equivalence,

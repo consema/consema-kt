@@ -2,7 +2,7 @@
 // frozen resolution priority, and construction limits.
 //
 // Data authority (language-neutral sources first):
-//   - RFC 0003 §4 (docs/rfcs/0003-source-syntax-query-and-patch-v1.md:66-123)
+//   - RFC 0003 §4 (https://github.com/consema/consema/blob/main/docs/rfcs/0003-source-syntax-query-and-patch-v1.md:66-123)
 //     freezes the closed v1 encoding IDs (Binary, Utf8, Utf16Le, Utf16Be,
 //     Latin1), the resolution inputs (profile_default, bom, declaration,
 //     caller_override, selected), and the priority order
@@ -11,16 +11,17 @@
 //   - conformance/vectors/source-v1.json cases source.encoding.* (lines
 //     24-82) pin the wire spellings ("utf-8", "utf-16le", "utf-16be",
 //     "latin-1", "binary") and the rejection codes.
-//   - crates/consema-document/src/source.rs:121-409 pins the shapes and the
-//     resolution/decoding rules; go/document/encoding.go is a cross-reference
+//   - consema-rs/consema-document/src/source.rs:121-409 pins the shapes and the
+//     resolution/decoding rules; consema-go/go/document/encoding.go is a cross-reference
 //     only.
 //
 // Source contract v2 (0.8.0, the java-properties family) extends this set
 // with WindowsCodePage and BomPolicy::TreatAsContent
-// (crates/consema-protocol/src/error_registry.rs:967-977 registers
+// (consema-rs/consema-protocol/src/error_registry.rs:967-977 registers
 // core.source.code-page-required@1 / core.source.unsupported-code-page@1).
-// That extension belongs to the L2 properties milestone and is not part of
-// this L1 surface; BomPolicy is nevertheless present here because the v1
+// The WindowsCodePage extension ships in the ini family
+// (consema/ini/Profile.kt IniWindowsCodePage) and is not part of this v1
+// source surface; BomPolicy is nevertheless present here because the v1
 // resolution rule already distinguishes BOM evidence from content
 // (source.rs:727-738).
 

@@ -1,4 +1,4 @@
-﻿// Shared golden fixtures transcribed from the shared conformance assets.
+// Shared golden fixtures transcribed from the shared conformance assets.
 //
 // Data authority: conformance/fixtures/toml/*.toml (the files consumed by
 // the toml-v1.json vectors) and the corpus Cargo.toml (toml.corpus.cargo-
@@ -13,12 +13,16 @@ package toml
 import java.io.File
 
 private val FIXTURE_DIR = "conformance/fixtures/toml"
-private val FIXTURE_DIRS = listOf(
-    File(FIXTURE_DIR),
-    File("../$FIXTURE_DIR"),
-    File("../../$FIXTURE_DIR"),
-    File("C:/Users/franck/Documents/consema/$FIXTURE_DIR"),
-)
+private val FIXTURE_DIRS = buildList {
+    add(File(FIXTURE_DIR))
+    add(File("../$FIXTURE_DIR"))
+    add(File("../../$FIXTURE_DIR"))
+    // The CONSEMA_REPO root, when set (the repository-relative rule of the
+    // runner; no machine-coupled path is baked in).
+    System.getenv("CONSEMA_REPO")?.takeIf { it.isNotBlank() }?.let {
+        add(File(File(it), FIXTURE_DIR))
+    }
+}
 
 /**
  * The shared fixture files end with one blank line; trimIndent removes the

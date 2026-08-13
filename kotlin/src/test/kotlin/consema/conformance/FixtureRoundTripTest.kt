@@ -15,13 +15,14 @@
 //   - yaml/*.yaml — the real-project fixtures (kubernetes-workload with
 //     two documents, anchor-heavy with five aliases).
 //
-// Facts (counts) mirror crates/consema-conformance/tests/
+// Facts (counts) mirror consema-rs/consema-conformance/tests/
 // line_format_fixtures.rs:48-179 and yaml_fixtures.rs:22-51. The fixture
 // directory resolves through the same repository-relative rule as the
 // runner (CONSEMA_REPO or an ancestor carrying conformance/vectors +
 // docs/fc-manifest-0.13.0.json); when the shared tree is not reachable
-// the tests are skipped (JUnit assumption). Fixtures are read-only; tests
-// never modify them.
+// the tests fail at construction (resolveRepoRoot throws — the
+// CONSEMA_REPO prerequisite, kotlin/README.md). Fixtures are read-only;
+// tests never modify them.
 
 package consema.conformance
 

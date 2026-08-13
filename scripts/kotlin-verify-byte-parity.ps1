@@ -7,13 +7,13 @@ param(
 
 # ---------------------------------------------------------------------------
 # Cross-language PVCE/PGCE byte-parity verification — Kotlin side
-# (milestone 0.14.0 G0.5; docs/five-language-ci-design.md §3.2; the Go
+# (L5; https://github.com/consema/consema/blob/main/docs/five-language-ci-design.md §3.2; the Go
 # precedent scripts/go-verify-byte-parity.ps1).
 #
 # Pipeline (Kotlin never imports or calls Rust, RFC 0016 §1.1):
 #   1. builds the minimal Rust encoder example
 #      (consema-conformance/examples/emit_parity_bytes.rs);
-#   2. runs it over the checked-in case set
+#   2. runs it over the provisioned case set
 #      (conformance/differential/cases.json, the shared single-authority
 #      case directory of the consema repository) into <OutDir> as one
 #      `<case-id>.hex` file per case;
@@ -93,8 +93,8 @@ if (-not (Test-Path $CaseFile)) {
 # UTF8 explicit: PowerShell 5.1 Get-Content defaults to the ANSI codepage.
 $cases = Get-Content $CaseFile -Raw -Encoding UTF8 | ConvertFrom-Json
 $caseCount = @($cases.cases).Count
-if ($caseCount -lt 40) {
-    Write-Error "differential case file has $caseCount cases, want >= 40"
+if ($caseCount -ne 68) {
+    Write-Error "differential case file has $caseCount cases, want exactly 68 (the frozen ByteParityTest.caseFileIntegrity count)"
     exit 1
 }
 
@@ -160,23 +160,26 @@ if (-not (Test-Path $junitJar)) {
     $junitJar = Join-Path $junitDir 'junit-jupiter-api-5.10.2.jar'
     if (-not (Test-Path $junitJar)) {
         Write-Host "downloading junit-jupiter-api-5.10.2.jar (needed by kotlin-test-junit5)..."
-        Invoke-WebRequest -UseBasicParsing `
-            'https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-api/5.10.2/junit-jupiter-api-5.10.2.jar' `
-            -OutFile $junitJar
-        if ($LASTEXITCODE -ne 0) {
+        try {
+            Invoke-WebRequest -UseBasicParsing `
+                'https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-api/5.10.2/junit-jupiter-api-5.10.2.jar' `
+                -OutFile $junitJar
+        }
+        catch {
             Write-Error 'cannot fetch junit-jupiter-api-5.10.2.jar (set up kotlin/build/verify/lib or a network path)'
             exit 1
         }
-        # Pinned upstream artifact (Maven Central, 5.10.2): verify the
-        # download against the pinned sha256 so an upstream drift fails the
-        # script instead of being silently used.
-        $expectedJunitSha256 = 'afff77c186cd317275803872fa5133aa801fd6ac40bd91c78a6cf8009b4b17cc'
-        $actualJunitSha256 = (Get-FileHash -Algorithm SHA256 -LiteralPath $junitJar).Hash
-        if ($actualJunitSha256 -ne $expectedJunitSha256) {
-            Write-Error "junit-jupiter-api-5.10.2.jar sha256 mismatch (got $actualJunitSha256, want $expectedJunitSha256)"
-            exit 1
-        }
     }
+}
+# Pinned upstream artifact (Maven Central, 5.10.2): verify the jar against
+# the pinned sha256 on every use — a reused local copy (e.g. an existing
+# kotlin/build/verify/lib jar) or a poisoned one fails the script instead of
+# being silently used.
+$expectedJunitSha256 = 'afff77c186cd317275803872fa5133aa801fd6ac40bd91c78a6cf8009b4b17cc'
+$actualJunitSha256 = (Get-FileHash -Algorithm SHA256 -LiteralPath $junitJar).Hash
+if ($actualJunitSha256 -ne $expectedJunitSha256) {
+    Write-Error "junit-jupiter-api-5.10.2.jar sha256 mismatch (got $actualJunitSha256, want $expectedJunitSha256)"
+    exit 1
 }
 
 Write-Host "[3/3] compiling the Kotlin side and running the differential test..."
@@ -226,6 +229,10 @@ fun main(args: Array<String>) {
         run(arg, block)
     }
     println("tests: $runs run, $failures failed")
+    if (runs == 0) {
+        println("no tests ran — refusing to pass")
+        exitProcess(1)
+    }
     if (failures > 0) exitProcess(1)
 }
 '@ | Set-Content -Path $runnerSource -Encoding UTF8

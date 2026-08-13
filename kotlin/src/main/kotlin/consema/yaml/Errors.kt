@@ -2,24 +2,24 @@
 // diagnostic factory.
 //
 // Data authority:
-//   - crates/consema-document/src/lib.rs:643-790 pins FatalFormationFailure
+//   - consema-rs/consema-document/src/lib.rs:643-790 pins FatalFormationFailure
 //     and its code mapping: resource limits use "core.parse.resource-limit@1"
 //     (lib.rs:771-776), source construction failures map through
 //     FatalFormationFailure::source_error (lib.rs:676-707).
 //   - The YAML-specific registered codes are frozen by
-//     crates/consema-protocol/src/error_registry.rs:729-932 (yaml.alias.*,
+//     consema-rs/consema-protocol/src/error_registry.rs:729-932 (yaml.alias.*,
 //     yaml.anchor.*, yaml.edit.*, yaml.mapping.*, yaml.materialization.*,
 //     yaml.native.*, yaml.parse.syntax@1 at :850-854, yaml.profile.*,
 //     yaml.projection.*, yaml.scalar.*, yaml.tag.*) and transcribed in
 //     kotlin/.../protocol/ErrorRegistry.kt:291-324.
-//   - crates/consema-yaml/src/lib.rs:789-858 maps version-directive and
+//   - consema-rs/consema-yaml/src/lib.rs:789-858 maps version-directive and
 //     backend-syntax failures (yaml.profile.version-directive@1 at
 //     lib.rs:811-827; yaml.parse.syntax@1 at lib.rs:849-855);
-//     crates/consema-yaml/src/native.rs:1148-1157 maps the composition
+//     consema-rs/consema-yaml/src/native.rs:1148-1157 maps the composition
 //     failures (yaml.native.*, yaml.anchor.*, yaml.alias.*,
 //     yaml.mapping.missing-value@1, yaml.tag.kind-mismatch@1,
 //     yaml.scalar.invalid-explicit-tag@1).
-//   - RFC 0016 §6 (docs/rfcs/0016-go-api-mapping-v1.md:194-200): SDK errors
+//   - RFC 0016 §6 (https://github.com/consema/consema/blob/main/docs/rfcs/0016-go-api-mapping-v1.md:194-200): SDK errors
 //     carry the stable registered code; error text is human presentation only.
 //
 // Kotlin-idiomatic design: fatal formation failure is a typed exception

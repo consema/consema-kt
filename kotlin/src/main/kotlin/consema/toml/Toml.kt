@@ -1,7 +1,7 @@
 // The immutable TOML document and its native handles.
 //
 // Data authority:
-//   - RFC 0001 §1-§2 (docs/rfcs/0001-toml-1.0-profile.md): TOML 1.0 forms
+//   - RFC 0001 §1-§2 (https://github.com/consema/consema/blob/main/docs/rfcs/0001-toml-1.0-profile.md): TOML 1.0 forms
 //     only complete valid documents; the public identities are TomlItem /
 //     TomlEntry / TomlKey / TomlArrayElement; tables, inline tables, arrays,
 //     and arrays-of-tables are distinct native categories; the root is
@@ -9,13 +9,13 @@
 //   - RFC 0001 §3: the frozen formation order (max_source_bytes, UTF-8
 //     validation, TOML syntax, token/node/depth limits) and the frozen
 //     failure codes (core.parse.resource-limit@1, toml.parse.syntax@1).
-//   - crates/consema-toml/src/lib.rs:34-39 (TomlProfile), :114-119
+//   - consema-rs/consema-toml/src/lib.rs:34-39 (TomlProfile), :114-119
 //     (TomlProfile::id), :121-128 (parse), :130-259 (Document shape and
 //     accessors), :272-349 (TomlItemKind, TomlDate/TomlTime/TomlOffset/
 //     TomlDateTime), :351-575 (TomlItem/TomlEntry/TomlArrayElement
 //     handles), :596-663 (entity internals and public_kind).
 //   - The toml.* error codes are cited in Errors.kt.
-//   - go/toml is a cross-reference only.
+//   - consema-go/go/toml is a cross-reference only.
 //
 // Kotlin-idiomatic design: [TomlDocument] is an immutable value; the handle
 // types [TomlItem]/[TomlEntry]/[TomlArrayElement] hold the document

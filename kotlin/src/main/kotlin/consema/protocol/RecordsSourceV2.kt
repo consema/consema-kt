@@ -3,12 +3,12 @@
 // (Windows code pages included).
 //
 // Data authority (language-neutral sources first):
-//   - crates/consema-protocol/src/source.rs:99-146 (SourceSnapshotMessageV2:
+//   - consema-rs/consema-protocol/src/source.rs:99-146 (SourceSnapshotMessageV2:
 //     the fixed v2 wire schema, the encoding facts v2 record, and the strict
 //     from_value re-verification of digest, encoding facts, and decoded
 //     status).
 //   - source.rs:196-239 (SourcePatchMessageV2), source.rs:598-631 (the v2
-//     encoding facts), and crates/consema-document/src/source.rs (the
+//     encoding facts), and consema-rs/consema-document/src/source.rs (the
 //     resolution priority and the Windows code-page registry).
 //   - conformance/vectors/semantic-model-v6.json pins the code-page
 //     boundaries, BOM policies, digest rejection, and patch application.

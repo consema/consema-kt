@@ -1,19 +1,19 @@
 // The `consema.operations.conformance@1` suite runner
 // (conformance/vectors/operations-v1.json).
 //
-// Data authority: crates/consema-conformance/src/operations_v1.rs (the
+// Data authority: consema-rs/consema-conformance/src/operations_v1.rs (the
 // per-case dispatch and every handler is transcribed from the Rust runner);
 // the vector file itself drives every input and expectation
-// (conformance/README.md rules 3-4). go/conformance is a cross-reference
+// (conformance/README.md rules 3-4). consema-go/go/conformance is a cross-reference
 // only.
 //
 // Kotlin-idiomatic design: one handler per published case id, mirroring the
 // Rust dispatch table; materialization/conversion/edit outcomes compare the
 // frozen registered codes and the exact golden bytes; the protocol-v3 case
 // round-trips the seven registered payload contracts through both canonical
-// transports (the payload records are validated at the envelope level until
-// their owning milestone ships the record types, payload.rs:11-13); every
-// case runs (no skips).
+// transports (all seven record types ship in the protocol package and
+// dispatch through their typed decoders, Payload.kt); every case runs
+// (no skips).
 
 package consema.conformance
 

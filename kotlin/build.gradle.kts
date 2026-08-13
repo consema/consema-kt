@@ -1,7 +1,10 @@
 // Consema Kotlin implementation — L0 scaffold.
-// Authority: docs/multi-language-implementation-plan.md §0.2/§1: Kotlin 2.2.0
-// on JVM 17, single module, zero runtime dependencies (test frameworks
-// excepted, mirroring the go.mod zero-require precedent).
+// Authority: https://github.com/consema/consema/blob/main/docs/multi-language-implementation-plan.md §0.2/§1: Kotlin 2.2.0
+// on JVM 17, single module, zero third-party runtime dependencies (the
+// runtime classpath carries only kotlin-stdlib + its transitive
+// org.jetbrains:annotations, injected by the Kotlin Gradle plugin; every
+// declared configuration is test-scoped, mirroring the go.mod zero-require
+// precedent).
 plugins {
     kotlin("jvm") version "2.2.0"
     `maven-publish`
@@ -28,7 +31,7 @@ dependencies {
     // kotlin("test") maps to kotlin.test assertions; JUnit5 is the runner.
     testImplementation(kotlin("test"))
     testImplementation("org.junit.jupiter:junit-jupiter:5.10.2")
-    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher:1.10.2")
 }
 
 tasks.test {
@@ -64,7 +67,7 @@ publishing {
             from(components["java"])
             pom {
                 name.set("Consema Kotlin SDK")
-                description.set("Kotlin implementation of the language-neutral Consema configuration-processing contracts (RFC 0016; docs/multi-language-implementation-plan.md)")
+                description.set("Kotlin implementation of the language-neutral Consema configuration-processing contracts (RFC 0016; https://github.com/consema/consema/blob/main/docs/multi-language-implementation-plan.md)")
                 url.set("https://github.com/consema/consema-kt")
                 licenses {
                     license {
@@ -74,7 +77,7 @@ publishing {
                     }
                 }
                 scm {
-                    connection.set("scm:git:git://github.com/consema/consema-kt.git")
+                    connection.set("scm:git:https://github.com/consema/consema-kt.git")
                     developerConnection.set("scm:git:ssh://git@github.com/consema/consema-kt.git")
                     url.set("https://github.com/consema/consema-kt")
                 }

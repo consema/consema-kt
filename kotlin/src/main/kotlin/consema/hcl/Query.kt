@@ -1,7 +1,7 @@
 // HCL native semantic and lossless syntax query execution.
 //
 // Data authority:
-//   - RFC 0014 §7 (docs/rfcs/0014-hcl-family-profiles-v1.md:448-507): the
+//   - RFC 0014 §7 (https://github.com/consema/consema/blob/main/docs/rfcs/0014-hcl-family-profiles-v1.md:448-507): the
 //     frozen domains `hcl.native-semantic-query@1` (the operator table of
 //     §7.1) and `hcl.lossless-syntax-query@1` (the exact kind and
 //     decoded-text filters of §7.2); results preserve source order;
@@ -16,12 +16,12 @@
 //     anything (hard gate 1).
 //   - conformance/vectors/hcl-v1.json hcl.query.* cases pin the match
 //     facts (kind, text, literal, value, ordinal) and the failure codes.
-//   - crates/consema-hcl/src/query.rs pins the operator semantics;
+//   - consema-rs/consema-hcl/src/query.rs pins the operator semantics;
 //     kotlin/.../protocol/QueryValidate.kt pins the validated operator
 //     table (QueryValidate.kt:377-425) and role typing
 //     (QueryValidate.kt:578-628); the frozen roles are the Hcl* spellings
 //     of protocol/Query.kt:89-96.
-//   - go/hcl is a cross-reference only.
+//   - consema-go/go/hcl is a cross-reference only.
 //
 // Kotlin-idiomatic design: definition validation and capability binding
 // belong to consema.protocol; this module executes a bound [ExecutableQuery]

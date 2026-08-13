@@ -1,11 +1,11 @@
 // The operator validation table and semantic argument checks.
 //
-// Data authority: crates/consema-core/src/query.rs:899-1897 (the operator
+// Data authority: consema-rs/consema-core/src/query.rs:899-1897 (the operator
 // rows: expected input role, output role, argument value kinds; the
 // argument-value semantic checks at query.rs:1634-1897; the kind
 // vocabularies at query.rs:1900-2209). Every row and vocabulary spelling is
 // transcribed VERBATIM as data; the semantic checks follow in the Rust
-// order. go/protocol/query_validate.go is a cross-reference.
+// order. consema-go/go/protocol/query_validate.go is a cross-reference.
 
 package consema.protocol
 

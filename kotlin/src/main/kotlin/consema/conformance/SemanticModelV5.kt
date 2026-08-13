@@ -1,23 +1,22 @@
 // The `consema.semantic-model-v5.conformance@1` suite runner
 // (conformance/vectors/semantic-model-v5.json).
 //
-// Data authority: crates/consema-conformance/src/semantic_model_v5.rs (the
+// Data authority: consema-rs/consema-conformance/src/semantic_model_v5.rs (the
 // per-case dispatch and every assertion are transcribed from the Rust
 // handlers); the vector file itself drives every input and expectation
 // (conformance/README.md rules 3-4). The registries, protocol envelope,
 // and canonical JSON/PVCE transports are the Kotlin consema.protocol
 // package; the graph model and PGCE/1 codec are the consema.graph package.
-// go/protocol is a cross-reference only.
+// consema-go/go/protocol is a cross-reference only.
 //
 // The registry cases, the portable-graph dual transport (wire value
 // construction plus the real envelope and codec round-trips), the v4
 // unknown-contract rejection, the truncated-PVCE rejection, and the nested
-// error-code registry cases run here. The payload record types of the
-// remaining v5 contracts (PortableGraphMessage, GraphQueryResultMessage,
+// error-code registry cases run here. All payload record types of the v5
+// contracts (PortableGraphMessage, GraphQueryResultMessage,
 // GraphProjectionResultMessage, GraphProvenanceMapMessage,
-// YamlQueryResultMessage, and the Completion record) are not yet shipped in
-// the Kotlin protocol package, so the cases whose observable depends on
-// their strict record decoders are documented skips (SkipRecord).
+// YamlQueryResultMessage, and the Completion record) ship in the Kotlin
+// protocol package; every case runs (the runner records zero skips).
 
 package consema.conformance
 

@@ -2,9 +2,9 @@
 // xml-1-0-safe-v1.json (cases xml.materialization.*).
 //
 // Data authority: the canonical `xml.safe-canonical-document@1` style
-// (RFC 0012 §10; crates/consema-xml/src/materialization.rs) and the vector
+// (RFC 0012 §10; consema-rs/consema-xml/src/materialization.rs) and the vector
 // renders, transcribed verbatim. The failure spelling `"invalid-record"`
-// is the runner mapping of InvalidRequest (crates/consema-conformance/src/
+// is the runner mapping of InvalidRequest (consema-rs/consema-conformance/src/
 // xml_v1.rs:855-871).
 
 package xml

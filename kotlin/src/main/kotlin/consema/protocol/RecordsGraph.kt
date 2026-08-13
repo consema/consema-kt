@@ -3,12 +3,12 @@
 // records.
 //
 // Data authority (language-neutral sources first):
-//   - crates/consema-protocol/src/portable_graph.rs (PortableGraphMessage:
+//   - consema-rs/consema-protocol/src/portable_graph.rs (PortableGraphMessage:
 //     the canonical readable layout, the strict from_value cross-validation
 //     of readable graph and PGCE/1 bytes, and the limit pre-checks).
-//   - crates/consema-protocol/src/graph_query.rs (GraphQueryResultMessage and
+//   - consema-rs/consema-protocol/src/graph_query.rs (GraphQueryResultMessage and
 //     the canonical-ID match records).
-//   - crates/consema-protocol/src/graph_projection.rs (GraphProjectionResult-
+//   - consema-rs/consema-protocol/src/graph_projection.rs (GraphProjectionResult-
 //     Message, GraphProvenanceMapMessage, and the projected locations).
 //   - conformance/vectors/semantic-model-v5.json pins the round-trip and
 //     rejection behaviors.

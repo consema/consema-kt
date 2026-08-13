@@ -1,10 +1,10 @@
 // Structural edit tests: the frozen eight operations, dry-run/commit
 // equivalence, patch replay, untouched proof, and the conflict matrix.
 //
-// Authority: RFC 0009 §12 (docs/rfcs/0009-ini-family-profiles-v1.md:437-
+// Authority: RFC 0009 §12 (https://github.com/consema/consema/blob/main/docs/rfcs/0009-ini-family-profiles-v1.md:437-
 // 472), the vector cases edit.all-eight-operations and
 // edit.dry-run-patch-proof-and-atomic-failure (ini-v1.json:89-105), and
-// crates/consema-ini/src/edit.rs (the byte-arbitration authority).
+// consema-rs/consema-ini/src/edit.rs (the byte-arbitration authority).
 
 package ini
 

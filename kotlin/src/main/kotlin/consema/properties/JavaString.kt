@@ -1,7 +1,7 @@
 // Exact Java UTF-16 string semantics for the Properties native model.
 //
 // Data authority (language-neutral sources first):
-//   - RFC 0010 §4 (docs/rfcs/0010-java-properties-profiles-v1.md:108-131):
+//   - RFC 0010 §4 (https://github.com/consema/consema/blob/main/docs/rfcs/0010-java-properties-profiles-v1.md:108-131):
 //     Java String is an ordered sequence of UTF-16 code units, not a
 //     guarantee of well-formed Unicode scalar values; the native JavaString
 //     value is an immutable sequence of code units with strict
@@ -11,9 +11,9 @@
 //   - conformance/vectors/java-properties-v1.json pins the UTF16BE/1 hex
 //     facts (value_utf16be_hex / key_utf16be_hex) and the statuses
 //     (formation.escape-and-java-utf16-matrix, lines 30-34).
-//   - crates/consema-properties/src/lib.rs:124-206 (JavaStringStatus,
+//   - consema-rs/consema-properties/src/lib.rs:124-206 (JavaStringStatus,
 //     JavaString, JavaStringConversionError) pins the shapes; the
-//     classification scan is lib.rs:814-830. go/properties is a
+//     classification scan is lib.rs:814-830. consema-go/go/properties is a
 //     cross-reference only.
 //
 // Kotlin-idiomatic design (NOT a translation): a Kotlin Char IS one UTF-16

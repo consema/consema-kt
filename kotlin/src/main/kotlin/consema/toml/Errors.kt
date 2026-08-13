@@ -1,11 +1,11 @@
 // Typed formation failures of the TOML family.
 //
 // Data authority:
-//   - RFC 0016 §5.1 F10 (docs/rfcs/0016-go-api-mapping-v1.md:171-176): a
+//   - RFC 0016 §5.1 F10 (https://github.com/consema/consema/blob/main/docs/rfcs/0016-go-api-mapping-v1.md:171-176): a
 //     formation failure carries the ordered diagnostics (code, category,
 //     severity, span, arguments, notes, occurrence) with registry-bound
 //     validation; TOML forms no partial Document.
-//   - The frozen toml-family codes (crates/consema-protocol/src/
+//   - The frozen toml-family codes (consema-rs/consema-protocol/src/
 //     error_registry.rs:338-361; transcribed verbatim into
 //     kotlin/.../protocol/ErrorRegistry.kt:228-231):
 //       toml.edit.representation-fallback@1    Edit       0.2.0 (error_registry.rs:338-343)

@@ -3,13 +3,13 @@
 // (RFC 0012 §2-4, §6-7, §12-13).
 //
 // Data authority:
-//   - RFC 0012 §2 (docs/rfcs/0012-xml-1.0-safe-profile-v1.md:46-81) pins the
+//   - RFC 0012 §2 (https://github.com/consema/consema/blob/main/docs/rfcs/0012-xml-1.0-safe-profile-v1.md:46-81) pins the
 //     source/encoding table; §3 (0012-...:83-130) the safe DTD/entity
 //     boundary; §4 (0012-...:132-166) Complete/Recovered formation and
 //     deterministic recovery at markup boundaries; §6 (0012-...:228-256)
 //     text/CDATA/reference facts; §7 (0012-...:258-282) exhaustive piece
 //     coverage.
-//   - crates/consema-xml/src/parser.rs is the byte-arbitration authority:
+//   - consema-rs/consema-xml/src/parser.rs is the byte-arbitration authority:
 //     the parse entry (parser.rs:22-46), encoding resolution (parser.rs:
 //     48-108), the token dispatch (parser.rs:287-332), the declaration
 //     handler (parser.rs:334-503), PI (parser.rs:505-579), comment
@@ -19,12 +19,12 @@
 //     fragments and reference resolution (parser.rs:1460-1729), recovery
 //     (parser.rs:1731-1790), and finish/gap filling (parser.rs:1792-1914).
 //   - The tokenizer follows the xmlparser 0.13.6 token stream contract that
-//     the Rust parser consumes (RFC 0012 §13, 0012-...:435-453); go/xml/
+//     the Rust parser consumes (RFC 0012 §13, 0012-...:435-453); consema-go/go/xml/
 //     parser.go is the cross-reference confirming the token boundaries and
 //     the tokenizer-error behavior: "A tokenizer error jumps the stream to
 //     the end of the document (xmlparser Stream::jump_to_end), so the
 //     recovery region is always the final byte and tokenization stops"
-//     (go/xml/parser.go:153-161), which is why the Rust recovery loop reads
+//     (consema-go/go/xml/parser.go:153-161), which is why the Rust recovery loop reads
 //     `tokenizer.stream().pos()` as the document end (parser.rs:255-268).
 //
 // Kotlin-idiomatic design (NOT a translation): a hand-rolled deterministic
@@ -303,7 +303,7 @@ private sealed class XmlToken {
 
 /** One tokenizer failure. Per the xmlparser 0.13.6 contract the failing
  * stream jumps to the end of the document, so the position is not used for
- * the recovery region (go/xml/parser.go:153-161; parser.rs:255-268). */
+ * the recovery region (consema-go/go/xml/parser.go:153-161; parser.rs:255-268). */
 private class TokenizerError : Exception()
 
 // ---------------------------------------------------------------------------
@@ -315,7 +315,7 @@ private class TokenizerError : Exception()
  * reproducing the xmlparser 0.13.6 token stream contract consumed by the
  * Rust parser (RFC 0012 §13). Token errors throw [TokenizerError]; the
  * parse loop covers the final byte as the recovery region and stops
- * (go/xml/parser.go:153-161).
+ * (consema-go/go/xml/parser.go:153-161).
  */
 private class XmlTokenizer(
     private val decoded: ByteArray,
@@ -454,7 +454,7 @@ private class XmlTokenizer(
     }
 
     /** Scans the fixed declaration grammar `<?xml` S version Eq value
-     * (S encoding Eq value)? (S standalone Eq value)? S? `?>` (go/xml/
+     * (S encoding Eq value)? (S standalone Eq value)? S? `?>` (consema-go/go/xml/
      * parser.go:357-397). */
     private fun scanDeclaration(start: Int, nameStart: Int, nameEnd: Int): XmlToken {
         var cursor = skipSpaces(nameEnd)
@@ -857,7 +857,7 @@ private class XmlTokenizer(
     )
 
     /** Scans one XML name at cursor (XML 1.0 Fifth Edition Name productions;
-     * the isNameStart/isNameChar tables of go/xml/parser.go:832-887). */
+     * the isNameStart/isNameChar tables of consema-go/go/xml/parser.go:832-887). */
     private fun scanName(start: Int): Triple<Int, Int, Boolean> {
         if (start >= decoded.size) {
             return Triple(0, 0, false)
@@ -1091,7 +1091,7 @@ private class Parser(
                 // A tokenizer error jumps the stream to the end of the
                 // document (xmlparser Stream::jump_to_end), so the recovery
                 // region is always the final byte and tokenization stops
-                // (go/xml/parser.go:153-161; parser.rs:255-268).
+                // (consema-go/go/xml/parser.go:153-161; parser.rs:255-268).
                 val end = decoded.size
                 val start = (end - 1).coerceAtLeast(0)
                 recoverErrorRegion(start, end)
@@ -2135,12 +2135,12 @@ private class Parser(
      * Resolves one `&…;` reference body into a fragment (parser.rs:1557-1645).
      * Both decimal and hexadecimal character references resolve, and both
      * resolve only to legal XML 1.0 characters (RFC 0012 §6,
-     * docs/rfcs/0012-...md:236-241; vector case
+     * https://github.com/consema/consema/blob/main/docs/rfcs/0012-...md:236-241; vector case
      * xml.formation.predefined-and-character-references pins `&#65;` as
      * Complete). NOTE: the Rust parser.rs:1579-1584 expression binds the
      * is_xml_char filter to the else branch only (decimal references would
      * never resolve there); the vector and the Go cross-reference
-     * (go/xml/parser.go:2015-2034) require both forms, so this
+     * (consema-go/go/xml/parser.go:2015-2034) require both forms, so this
      * implementation follows the vector and filters both forms.
      */
     private fun resolveReference(body: String, refSpan: Span, depth: Int): ReferenceFragment? {

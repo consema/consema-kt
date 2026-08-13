@@ -1,10 +1,10 @@
 // Typed PVCE/1 codec failures.
 //
 // Data authority: the frozen `core.pvce.*@1` codes are transcribed from the
-// Rust StableFailure mapping (crates/consema-pvce/src/lib.rs:1062-1087);
+// Rust StableFailure mapping (consema-rs/consema-pvce/src/lib.rs:1062-1087);
 // each kind's semantics follow the Rust DecodeError/EncodeError enums
 // (lib.rs:981-1028). Note: these codes are NOT entries of the public
-// error-code registry (crates/consema-protocol/src/error_registry.rs
+// error-code registry (consema-rs/consema-protocol/src/error_registry.rs
 // registers core.pgce.* but no core.pvce.* — verified by grep); they are the
 // stable diagnostic codes of the codec itself.
 //
@@ -89,7 +89,7 @@ enum class PvceErrorKind(val code: String) {
 
     /** Date, time, or offset fields were outside the supported ranges (the
      * Rust DecodeError::InvalidTemporal and the construction failures,
-     * crates/consema-pvce/src/lib.rs:971-979). */
+     * consema-rs/consema-pvce/src/lib.rs:971-979). */
     INVALID_TEMPORAL("core.pvce.invalid-temporal@1"),
 }
 
@@ -125,6 +125,6 @@ internal fun resourceLimit(field: String): PvceException =
 class DuplicateKeyException(val key: String) :
     Exception("core: duplicate object key: $key") {
     /** The frozen registered code "core.pvce.duplicate-object-key@1"
-     * (crates/consema-pvce/src/lib.rs:1082). */
+     * (consema-rs/consema-pvce/src/lib.rs:1082). */
     val code: String get() = PvceErrorKind.DUPLICATE_OBJECT_KEY.code
 }

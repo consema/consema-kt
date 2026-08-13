@@ -1,9 +1,9 @@
-﻿// The YAML formation pipeline: profile-directive validation, the grammar
+// The YAML formation pipeline: profile-directive validation, the grammar
 // parser producing a backend event stream, and composition into the
 // immutable native model.
 //
 // Data authority:
-//   - RFC 0007 §3-§4 (docs/rfcs/0007-yaml-family-profiles-and-safety-v1.md:
+//   - RFC 0007 §3-§4 (https://github.com/consema/consema/blob/main/docs/rfcs/0007-yaml-family-profiles-and-safety-v1.md:
 //     54-97): both profiles accept UTF-8 (with or without BOM) and
 //     UTF-16LE/BE with BOM; formation states Complete | Recovered |
 //     FatalFormationFailure; backend success is never sufficient evidence
@@ -12,13 +12,13 @@
 //     identity when a node starts, register an anchor before descending,
 //     resolve an alias to the most recent preceding anchor, never expand
 //     aliases, permit backward self/mutual cycles.
-//   - crates/consema-yaml/src/lib.rs:259-320 (parse entry), lib.rs:789-858
+//   - consema-rs/consema-yaml/src/lib.rs:259-320 (parse entry), lib.rs:789-858
 //     (version-directive validation and backend failure mapping),
-//     crates/consema-yaml/src/backend.rs:71-176 (event surface, depth and
-//     event limits), crates/consema-yaml/src/native.rs:111-508 (composition)
+//     consema-rs/consema-yaml/src/backend.rs:71-176 (event surface, depth and
+//     event limits), consema-rs/consema-yaml/src/native.rs:111-508 (composition)
 //     and native.rs:510-539 (the empty-plain-scalar placeholder rewrite)
 //     are the byte-arbitration authority for every event shape, span
-//     convention, and failure code; go/yaml/parser.go is a cross-reference
+//     convention, and failure code; consema-go/go/yaml/parser.go is a cross-reference
 //     only.
 //   - conformance/vectors/yaml-v1.json pins the observable outcomes
 //     (stream.empty, stream.multi-document, formation.undefined-alias,

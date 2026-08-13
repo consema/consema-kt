@@ -1,19 +1,19 @@
 // The frozen plist-family format operation registry.
 //
 // Data authority:
-//   - RFC 0013 §11 (docs/rfcs/0013-plist-family-profiles-v1.md:683-715):
+//   - RFC 0013 §11 (https://github.com/consema/consema/blob/main/docs/rfcs/0013-plist-family-profiles-v1.md:683-715):
 //     both profiles publish the same six snapshot-bound structural
 //     operations, independently typed per profile.
-//   - RFC 0004 §10 (docs/rfcs/0004-materialization-conversion-and-
+//   - RFC 0004 §10 (https://github.com/consema/consema/blob/main/docs/rfcs/0004-materialization-conversion-and-
 //     structural-edit-v1.md:244-269): every structural operation has an
 //     immutable ID/version, target role, argument schema, and support
 //     classification; the registry does not claim that operations with
 //     similar names have identical format semantics.
-//   - crates/consema-plist/src/operation_registry.rs:20-101 is the exact
+//   - consema-rs/consema-plist/src/operation_registry.rs:20-101 is the exact
 //     byte-arbitration source of the six descriptor records (ids, target
 //     roles, argument names/kinds, support class); the frozen surface test
 //     (operation_registry.rs:107-132) pins the sorted six-operation list
-//     for both profiles. go/plist is a cross-reference only.
+//     for both profiles. consema-go/go/plist is a cross-reference only.
 //
 // Kotlin-idiomatic design: the registry is an immutable list of descriptor
 // data classes per profile (the json-family precedent,

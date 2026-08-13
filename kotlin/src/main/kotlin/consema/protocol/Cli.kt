@@ -1,13 +1,13 @@
 // The CLI machine-protocol payloads of RFC 0015 §4/§8/§9.
 //
-// Data authority: RFC 0015 (docs/rfcs/0015-cli-machine-protocol-and-batch-
-// apply-v1.md) and crates/consema-protocol/src/cli.rs (the command set at
+// Data authority: RFC 0015 (https://github.com/consema/consema/blob/main/docs/rfcs/0015-cli-machine-protocol-and-batch-
+// apply-v1.md) and consema-rs/consema-protocol/src/cli.rs (the command set at
 // cli.rs:92-115, the envelope at cli.rs:149-364, the batch-plan manifest at
 // cli.rs:366-641, the batch-result manifest at cli.rs:643-822, the SemVer
 // shape at cli.rs:870-929). Every decoder re-validates the cross constraints
 // (closed command and exit-class sets, payload-schema/command consistency,
 // redaction consistency, digest equality, per-status presence rules)
-// instead of trusting the schema discriminator. go/protocol/cli.go is a
+// instead of trusting the schema discriminator. consema-go/go/protocol/cli.go is a
 // cross-reference.
 //
 // Bytes note: the core.source-patch@2 record nested in a planned batch-plan

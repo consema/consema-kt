@@ -1,20 +1,20 @@
 // Stable content identity of exact raw source bytes.
 //
 // Data authority (language-neutral sources first):
-//   - RFC 0003 §3 (docs/rfcs/0003-source-syntax-query-and-patch-v1.md:45-62):
+//   - RFC 0003 §3 (https://github.com/consema/consema/blob/main/docs/rfcs/0003-source-syntax-query-and-patch-v1.md:45-62):
 //     the v1 content digest is SHA-256 over the complete original byte
 //     sequence with no decoding, BOM removal, newline normalization, or
 //     metadata mixed in; algorithm exactly "sha256", hex exactly 64 lowercase
 //     hexadecimal characters.
 //   - conformance/vectors/source-v1.json:6-16 (cases source.digest.sha256-
 //     empty and source.digest.sha256-abc) pins the golden hex values.
-//   - crates/consema-document/src/source.rs:15-54 (ContentDigest) and
-//     lib.rs:39-51 (SnapshotIdentity) pin the shapes; go/document/digest.go
+//   - consema-rs/consema-document/src/source.rs:15-54 (ContentDigest) and
+//     lib.rs:39-51 (SnapshotIdentity) pin the shapes; consema-go/go/document/digest.go
 //     is a cross-reference only.
 //
 // Kotlin-idiomatic design: SHA-256 is computed with java.security.
 // MessageDigest — the JDK standard library, not a third-party dependency
-// (the zero-runtime-dependency policy of docs/multi-language-implementation-
+// (the zero-runtime-dependency policy of https://github.com/consema/consema/blob/main/docs/multi-language-implementation-
 // plan.md §0.2 follows the go.mod zero-require precedent; JDK classes are the
 // runtime itself, exactly like Python's hashlib).
 

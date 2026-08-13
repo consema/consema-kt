@@ -2,11 +2,11 @@
 // native match locator boundary.
 //
 // Data authority (language-neutral sources first):
-//   - crates/consema-protocol/src/yaml_query.rs (YamlMatchLocator and
+//   - consema-rs/consema-protocol/src/yaml_query.rs (YamlMatchLocator and
 //     YamlQueryResultMessage: the stable identities, the YAML domain/role
 //     matrix, the strictly increasing ordinals, and the process-local
 //     rejection).
-//   - crates/consema-protocol/src/query.rs (NativeMatchLocator and the
+//   - consema-rs/consema-protocol/src/query.rs (NativeMatchLocator and the
 //     process-local NodeRef boundary).
 //   - conformance/vectors/semantic-model-v5.json pins the behaviors.
 //

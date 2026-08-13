@@ -1,6 +1,6 @@
 // One-pass decoded-scalar to raw-byte offset resolution.
 //
-// Data authority: crates/consema-yaml/src/offsets.rs:1-80 pins the single
+// Data authority: consema-rs/consema-yaml/src/offsets.rs:1-80 pins the single
 // forward walk that resolves every lexeme and node boundary in non-decreasing
 // order (constant-width per-scalar raw advances for the only encodings the
 // YAML parse can select: UTF-8 and BOM-detected UTF-16). Lookups may be

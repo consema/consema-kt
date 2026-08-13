@@ -2,16 +2,16 @@
 // node-role registry.
 //
 // Data authority:
-//   - RFC 0003 §5 (docs/rfcs/0003-source-syntax-query-and-patch-v1.md:125-141):
+//   - RFC 0003 §5 (https://github.com/consema/consema/blob/main/docs/rfcs/0003-source-syntax-query-and-patch-v1.md:125-141):
 //     Span is [start_byte, end_byte) over original raw bytes; offsets never
 //     become UTF-8 indices after decoding UTF-16 or Latin-1; only scalar
 //     boundaries are addressable.
-//   - crates/consema-document/src/lib.rs:113-272 (NodeRole, NodeRef,
+//   - consema-rs/consema-document/src/lib.rs:113-272 (NodeRole, NodeRef,
 //     AssociationPlacement), lib.rs:294-342 (Span), lib.rs:39-110
 //     (SnapshotIdentity, DocumentAuthority), lib.rs:582-604 (LocationError).
-//   - crates/consema-conformance/src/source_v1.rs:423-436 pins the exact
+//   - consema-rs/consema-conformance/src/source_v1.rs:423-436 pins the exact
 //     error *names* the shared vectors expect ("NoDecodedText",
-//     "IncompleteStructuralCoverage", ...). go/document/location.go is a
+//     "IncompleteStructuralCoverage", ...). consema-go/go/document/location.go is a
 //     cross-reference only.
 //
 // Kotlin-idiomatic design: byte offsets are Int (all frozen limits fit well

@@ -3,7 +3,7 @@
 // canonical scalar spellings.
 //
 // Data authority:
-//   - RFC 0007 §5-§6 (docs/rfcs/0007-yaml-family-profiles-and-safety-v1.md:
+//   - RFC 0007 §5-§6 (https://github.com/consema/consema/blob/main/docs/rfcs/0007-yaml-family-profiles-and-safety-v1.md:
 //     98-166) freezes the resolved tag set, the canonical content rules
 //     (null "", booleans true/false, unbounded base-10 integers, normalized
 //     decimal coefficient/exponent, .inf/-.inf/.nan, decoded strings), the
@@ -11,10 +11,10 @@
 //   - conformance/vectors/yaml-v1.json cases profile.yaml12-scalars (lines
 //     5-9) and profile.yaml11-scalars (lines 10-14) pin the per-profile
 //     kind/canonical facts byte-for-byte.
-//   - crates/consema-yaml/src/native.rs:746-1146 is the byte-arbitration
+//   - consema-rs/consema-yaml/src/native.rs:746-1146 is the byte-arbitration
 //     authority for every lexical rule (parse_null/bool/integer/float,
 //     timestamp canonicalization, base64 validation); native.rs:565-716 pins
-//     resolve_scalar / resolve_explicit / resolve_implicit. go/yaml/scalar.go
+//     resolve_scalar / resolve_explicit / resolve_implicit. consema-go/go/yaml/scalar.go
 //     is a cross-reference only.
 //
 // Kotlin-idiomatic design: pure functions over String with java.math.BigInteger

@@ -1,7 +1,7 @@
 // Safe internal DTD/entity boundary (RFC 0012 §3).
 //
 // Data authority:
-//   - RFC 0012 §3 (docs/rfcs/0012-xml-1.0-safe-profile-v1.md:83-130): no
+//   - RFC 0012 §3 (https://github.com/consema/consema/blob/main/docs/rfcs/0012-xml-1.0-safe-profile-v1.md:83-130): no
 //     DOCTYPE or an internal-only DOCTYPE with a bounded subset; the five
 //     predefined entities are always available with their XML meanings;
 //     internal general entity names are unique; a declaration cannot
@@ -9,13 +9,13 @@
 //     allocation by declaration count, reference count, reference depth,
 //     replacement bytes/scalars, total expanded bytes/scalars, and the
 //     amplification ratio; limits apply across the whole document.
-//   - crates/consema-xml/src/entity.rs:9-40 (PredefinedEntity and the frozen
+//   - consema-rs/consema-xml/src/entity.rs:9-40 (PredefinedEntity and the frozen
 //     PREDEFINED_ENTITIES table), entity.rs:42-49 (predefined_value),
 //     entity.rs:51-59 (is_xml_char), entity.rs:61-89 (ReplacementError and
 //     validate_replacement_text), entity.rs:91-123 (ExpansionBreach and
 //     EntityExpansionLimits), entity.rs:125-208 (EntityExpansionState
 //     accounting).
-//   - go/xml/entity.go is a cross-reference only.
+//   - consema-go/go/xml/entity.go is a cross-reference only.
 
 package consema.xml
 

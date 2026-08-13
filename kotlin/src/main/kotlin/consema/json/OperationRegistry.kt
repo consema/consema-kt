@@ -1,19 +1,19 @@
 // The frozen JSON-family format operation registry.
 //
 // Data authority:
-//   - RFC 0004 §10 (docs/rfcs/0004-materialization-conversion-and-structural-
+//   - RFC 0004 §10 (https://github.com/consema/consema/blob/main/docs/rfcs/0004-materialization-conversion-and-structural-
 //     edit-v1.md:244-269): every structural operation has an immutable
 //     ID/version, target role, argument schema, and support classification;
 //     the registry does not claim that operations with similar names have
 //     identical format semantics.
-//   - RFC 0005 §10 (docs/rfcs/0005-json-family-production-v1.md:220-241):
+//   - RFC 0005 §10 (https://github.com/consema/consema/blob/main/docs/rfcs/0005-json-family-production-v1.md:220-241):
 //     json.edit.move-member@1 raises the JSON format-operation registry to
 //     eight records for every JSON-family profile.
-//   - crates/consema-json/src/operation_registry.rs:16-80 is the exact
+//   - consema-rs/consema-json/src/operation_registry.rs:16-80 is the exact
 //     byte-arbitration source of the eight descriptor records (ids, target
 //     roles, argument names/kinds, support classes); the frozen surface test
 //     (operation_registry.rs:104-129) pins the six Supported operations and
-//     the total count of 8. go/json has no registry file; it is cross-checked
+//     the total count of 8. consema-go/go/json has no registry file; it is cross-checked
 //     against the Rust records only.
 //
 // Kotlin-idiomatic design: the registry is an immutable list of descriptor

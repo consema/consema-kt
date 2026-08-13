@@ -1,7 +1,7 @@
 // The semantic-model v5/v6 protocol record tests.
 //
 // Data authority (language-neutral sources first):
-//   - crates/consema-protocol/src/portable_graph.rs, graph_query.rs,
+//   - consema-rs/consema-protocol/src/portable_graph.rs, graph_query.rs,
 //     graph_projection.rs, yaml_query.rs, line_query.rs, source.rs,
 //     materialization.rs (the record contracts this package transcribes).
 //   - conformance/vectors/semantic-model-v5.json and semantic-model-v6.json

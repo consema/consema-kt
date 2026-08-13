@@ -1,7 +1,7 @@
 // Verifiable raw-byte patches between immutable source snapshots.
 //
 // Data authority (language-neutral sources first):
-//   - RFC 0003 §10 (docs/rfcs/0003-source-syntax-query-and-patch-v1.md:250-292)
+//   - RFC 0003 §10 (https://github.com/consema/consema/blob/main/docs/rfcs/0003-source-syntax-query-and-patch-v1.md:250-292)
 //     freezes the core.source-patch@1 facts: base_digest, target_digest,
 //     encoding facts, ordered replacements, metadata; each replacement has
 //     old_start/old_end/original/replacement/redact flags; old ranges are
@@ -11,9 +11,9 @@
 //     computed target digest must match; any mismatch fails atomically.
 //   - conformance/vectors/source-v1.json cases source.patch.* (lines 120-172)
 //     pin the success bytes and the rejection codes.
-//   - crates/consema-document/src/source_patch.rs:1-566 pins the shapes and
+//   - consema-rs/consema-document/src/source_patch.rs:1-566 pins the shapes and
 //     the error-code mapping (source_patch.rs:434-458).
-//   - go/document/source_patch.go is a cross-reference only.
+//   - consema-go/go/document/source_patch.go is a cross-reference only.
 //
 // The registered codes (error_registry.rs:381-405; ErrorRegistry.kt:238-242):
 //   core.source.patch-base-mismatch@1
@@ -28,9 +28,9 @@
 //                                        error_registry.rs:87)
 //
 // SourcePatch derivation from document-level change facts (SourcePatch::
-// derive, source_patch.rs:143-205) consumes ChangeSet, which belongs to the
-// L4 structural-edit milestone (docs/multi-language-implementation-plan.md
-// §2); it is not part of this L1 surface.
+// derive, source_patch.rs:143-205) consumes ChangeSet, which is not shipped
+// in Kotlin (recorded gap, six-repo audit G090; the consema.properties
+// package carries the ChangeSet-shaped facts instead).
 
 package consema.document
 
@@ -314,8 +314,8 @@ enum class SourcePatchErrorKind(val code: String) {
     DUPLICATE_INSERTION("core.protocol.invalid-value@1"),
 
     /** A document-level source edit disagrees with its snapshots or
-     * replacement bytes (unreachable until ChangeSet lands — post-1.0.0
-     * (冻结前评估项，见五要素终审 F-28.3-1 处置)). */
+     * replacement bytes (unreachable: ChangeSet is not shipped in Kotlin —
+     * recorded gap, six-repo audit G090). */
     CHANGE_SET_MISMATCH("core.protocol.invalid-value@1"),
 
     /** Base raw bytes do not have the declared digest. */
