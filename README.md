@@ -23,6 +23,8 @@ kotlinc -jvm-target 17 -d out src/main/kotlin quickstart.kt
 java -cp "out;<kotlinc>\lib\kotlin-stdlib.jar" QuickstartKt
 ```
 
+同一示例已入库为 [`kotlin/examples/Quickstart.kt`](kotlin/examples/Quickstart.kt)（带 `package consema.examples`，运行类 `consema.examples.QuickstartKt`），由 CI examples job 与 SdkChain.kt 一起编译并运行验证；粘贴版与入库版必须保持一致。
+
 ```kotlin
 import consema.core.PvInteger
 import consema.document.ProfileId
@@ -30,6 +32,7 @@ import consema.json.EditTransactionBuilder
 import consema.json.JsonValue
 import consema.json.RepresentationPolicy
 import consema.json.SemanticAvailability
+import consema.json.commit
 import consema.parseDocument
 import java.math.BigInteger
 

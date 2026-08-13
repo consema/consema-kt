@@ -488,16 +488,18 @@ jobs:
           }
           echo "README version consistent with build.gradle.kts: $version"
 
-  # SDK examples gate: kotlin/examples/SdkChain.kt is the committed
-  # five-language SDK chain example (parse -> native query -> best-exact
+  # SDK examples gate: kotlin/examples/SdkChain.kt (the committed
+  # five-language SDK chain example — parse -> native query -> best-exact
   # projection -> semantic edit -> canonical materialization -> TOML
   # conversion; language-neutral contract reference: consema repository
-  # docs/cookbook.md). kotlinc compiles the main sources and the example
-  # together (the kotlin-gates K2JVMCompiler pattern), and the example is
-  # actually run with java. The example is a pure SDK chain (no conformance
-  # data), so no multi-repo checkout or provision step is needed.
+  # docs/cookbook.md) and kotlin/examples/Quickstart.kt (the root README
+  # "快速开始" snippet as a committed example — parse -> query -> edit ->
+  # render). kotlinc compiles the main sources and the examples together
+  # (the kotlin-gates K2JVMCompiler pattern), and both examples are actually
+  # run with java. The examples are pure SDK chains (no conformance data),
+  # so no multi-repo checkout or provision step is needed.
   examples:
-    name: examples (kotlinc + run SdkChain.kt)
+    name: examples (kotlinc + run SdkChain.kt / Quickstart.kt)
     runs-on: windows-latest
     timeout-minutes: 30
     permissions:
@@ -546,8 +548,8 @@ jobs:
           [System.IO.File]::AppendAllText($env:GITHUB_ENV, "KOTLIN_WORK=$env:RUNNER_TEMP\kotlin-work`r`n")
           Write-Output "kotlinc 2.2.0 provisioned at $kotlincRoot"
       # Compiles every main source into one module (internal visibility),
-      # then compiles the example against it and runs it with java.
-      - name: compile main sources + example (K2JVMCompiler) and run
+      # then compiles the examples against it and runs both with java.
+      - name: compile main sources + examples (K2JVMCompiler) and run
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
@@ -565,9 +567,11 @@ jobs:
           & $java -Xmx2g -cp "$kotlinc\lib\*" org.jetbrains.kotlin.cli.jvm.K2JVMCompiler -jvm-target 17 -d $mainOut (Join-Path $kotlinDir 'src\main\kotlin')
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           $stdlib = Join-Path $kotlinc 'lib\kotlin-stdlib.jar'
-          & $java -Xmx2g -cp "$kotlinc\lib\*" org.jetbrains.kotlin.cli.jvm.K2JVMCompiler -jvm-target 17 -classpath "$mainOut;$stdlib" -d $exampleOut (Join-Path $kotlinDir 'examples\SdkChain.kt')
+          & $java -Xmx2g -cp "$kotlinc\lib\*" org.jetbrains.kotlin.cli.jvm.K2JVMCompiler -jvm-target 17 -classpath "$mainOut;$stdlib" -d $exampleOut (Join-Path $kotlinDir 'examples\SdkChain.kt') (Join-Path $kotlinDir 'examples\Quickstart.kt')
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           & $java -Xmx2g -cp "$exampleOut;$mainOut;$stdlib" consema.examples.SdkChainKt
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          & $java -Xmx2g -cp "$exampleOut;$mainOut;$stdlib" consema.examples.QuickstartKt
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
   # L5 packaging gate (five-language-ci-design.md §1.1 package row / §5.3
