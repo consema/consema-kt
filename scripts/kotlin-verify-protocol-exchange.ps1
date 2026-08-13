@@ -37,6 +37,12 @@ param(
 # $env:CONSEMA_KOTLINC); the Rust workspace is the consema-rs checkout
 # (<repo root>\consema-rs by default, -RustWorkspace overrides). Windows
 # PowerShell 5.1 compatible, no third-party dependencies.
+#
+# NOTE: CONSEMA_JAVA_HOME defaults to $env:JAVA_HOME when unset — no
+# machine-coupled path is baked in. CONSEMA_KOTLINC has no generic
+# default, so every environment must set it (and CONSEMA_JAVA_HOME when
+# JAVA_HOME is unset). A missing toolchain fails with a clear message —
+# the script never silently falls back to a wrong toolchain.
 # ---------------------------------------------------------------------------
 
 $ErrorActionPreference = 'Stop'
@@ -58,15 +64,23 @@ if (-not (Test-Path (Join-Path $kotlinDir 'src\main\kotlin\consema\differential'
     Write-Error "Kotlin differential sources not found: $kotlinDir"
     exit 1
 }
-$javaHome = if ($env:CONSEMA_JAVA_HOME) { $env:CONSEMA_JAVA_HOME } else { 'C:\Users\franck\tools\jdk17\jdk-17.0.20+8' }
-$java = Join-Path $javaHome 'bin\java.exe'
-if (-not (Test-Path $java)) {
-    Write-Error "JDK 17 not found at '$java' (set CONSEMA_JAVA_HOME)"
+$javaHome = if ($env:CONSEMA_JAVA_HOME) { $env:CONSEMA_JAVA_HOME } elseif ($env:JAVA_HOME) { $env:JAVA_HOME } else { '' }
+if (-not $javaHome) {
+    Write-Error 'JDK 17 not found: set CONSEMA_JAVA_HOME to a JDK 17 installation (or set JAVA_HOME), e.g. $env:CONSEMA_JAVA_HOME = "C:\path\to\jdk-17"'
     exit 1
 }
-$kotlinc = if ($env:CONSEMA_KOTLINC) { $env:CONSEMA_KOTLINC } else { 'C:\Users\franck\kotlinc\kotlinc' }
+$java = Join-Path $javaHome 'bin\java.exe'
+if (-not (Test-Path $java)) {
+    Write-Error "JDK 17 not found at '$java' (set CONSEMA_JAVA_HOME to a valid JDK 17 path)"
+    exit 1
+}
+$kotlinc = if ($env:CONSEMA_KOTLINC) { $env:CONSEMA_KOTLINC } else { '' }
+if (-not $kotlinc) {
+    Write-Error 'Kotlin compiler distribution not found: set CONSEMA_KOTLINC to a kotlinc distribution root, e.g. $env:CONSEMA_KOTLINC = "C:\path\to\kotlinc"'
+    exit 1
+}
 if (-not (Test-Path (Join-Path $kotlinc 'lib\kotlin-compiler.jar'))) {
-    Write-Error "Kotlin compiler distribution not found at '$kotlinc' (set CONSEMA_KOTLINC)"
+    Write-Error "Kotlin compiler distribution not found at '$kotlinc' (set CONSEMA_KOTLINC to a valid kotlinc root)"
     exit 1
 }
 $kotlinTestJar = Join-Path $kotlinc 'lib\kotlin-test.jar'
