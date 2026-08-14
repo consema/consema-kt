@@ -14,12 +14,17 @@ workflow 已写完整，但**凭证未配置前推送 tag 会明确失败**（po
 
 1. **版本 bump**：改 `kotlin/build.gradle.kts` 的
    `version = "X.Y.Z"`（rootProject version）。`check-version-consistency`
-   门禁强制以下位置与 rootProject version 同步（全部是硬门禁，漏改即红）：
+   门禁强制以下位置与 rootProject version 同步（全部是硬门禁，漏改即红；
+   每个位置同时被存在性断言覆盖——整段删除同样红，wave-4 R36）：
    - 仓根 `README.md` 的 `Version:` 整行（精确匹配）；
    - `README.md` 快速开始区的 Maven 坐标 `dev.consema:consema-kotlin:X.Y.Z`
-     （整词匹配）；
+     （整词匹配；存在性断言：坐标文本不得整段删除）；
    - `.github/ISSUE_TEMPLATE/bug_report.yml` 环境信息节的
-     「当前 X.Y.Z」版本注记（整词匹配）；
+     「当前 X.Y.Z」版本注记（整词匹配；存在性断言：「当前 」注记不得
+     整段删除）；
+   - `kotlin/src/test/kotlin/toml/TestFixtures.kt` workspace-package 夹具的
+     `version = "X.Y.Z"` 字面量（整串匹配；存在性断言：该字面量不得
+     删除，wave-4 R36）；
    - （版本载体为 README `Version:` 整行，由 check-version-consistency
      门禁断言；本仓无 shields.io 版本徽章）。
 2. **CHANGELOG 策展**：记录本版本变更；跨语言变更同步到
@@ -44,7 +49,12 @@ workflow 已写完整，但**凭证未配置前推送 tag 会明确失败**（po
    `gradlew publish`。发布路径先跑 `gradlew test` 作为测试门禁：该 job
    按 ci-kotlin.yml 体例多仓 checkout 规范仓并 provision conformance 数据
    （CONSEMA_REPO 指向 workspace 根），无数据时 conformance/fixture 测试
-   必然失败——不要删掉 provision 步骤。发布 job 不启用 Gradle 缓存。
+   必然失败——不要删掉 provision 步骤。差分腿在发布 job 中不设 golden
+   环境变量，按 §0.2 skip 纪律打印 documented [SKIP] 后通过；release.yml
+   断言 JUnit XML 中的 [SKIP] 标记数 ≤ 3（wave-4 R47，与 kotlin-gates
+   同界——实测三个 env-gated 差分腿：differentialByteParity /
+   differentialNormalized / protocolExchange），新增静默 skip
+   会在发布路径变红。发布 job 不启用 Gradle 缓存。
 
 ## 2. 凭证配置（用户侧一次性动作）
 
@@ -92,7 +102,15 @@ Maven Central 要求所有 artifact（含 pom、module、sources/javadoc jar）
    新版本可见（portal 处理通常数分钟内完成）。
 3. pom 元数据（name/description/licenses/scm/developers）在 portal 页面
    渲染正常。
-4. 跨语言同步：按 consema 仓 RELEASING.md 的检查单核对其他语言仓的发布
+4. **javadoc jar 内容核对**（wave-4 R20）：`kotlin/build/libs/`
+   下的 `consema-kotlin-<v>-javadoc.jar` 当前是空壳（无 dokka 接线，
+   build.gradle.kts `javadocJar` 注释与 RELEASING §4 记录；本地
+   `gradlew publishToMavenLocal` 预演确认空壳可被 Maven 本地仓库接受，
+   portal 端校验行为以首次发布实测为准）——发布前用
+   `jar tf kotlin/build/libs/consema-kotlin-<v>-javadoc.jar` 确认内容，
+   并在发布记录中注明该 jar 为空壳；若 portal 拒绝空壳 javadoc 是
+   post-1.0.0 补 dokka 的触发条件。
+5. 跨语言同步：按 consema 仓 RELEASING.md 的检查单核对其他语言仓的发布
    状态。
 
 ## 4. API reference 文档与依赖审计（决策：P2）

@@ -20,7 +20,7 @@ pattern; ci-kotlin.yml). Two equivalent paths exist locally:
 Gradle path (wrapper committed 2026-08-12):
 
 ```
-./gradlew build          # compile + full unit-test suite (572 tests, 2026-08-13 静态计数：@Test 注解数) + kover 60% verify
+./gradlew build          # compile + full unit-test suite (576 tests, 2026-08-15 静态计数：@Test 注解数——计数随测试新增漂移，以最近 CI run 为准) + kover 60% verify
 ./gradlew koverHtmlReport koverXmlReport   # coverage reports (build/reports/kover/)
 ```
 
@@ -55,9 +55,12 @@ powershell -File ../scripts/kotlin-verify-protocol-exchange.ps1
 Landing check (2026-08-12, Gradle wrapper exploration): `./gradlew
 koverHtmlReport koverXmlReport` produces HTML/XML reports (build/reports/kover/) and the
 `koverVerify` task enforces the documented 60% line threshold (kover 0.9.9,
-bound configured in the build.gradle.kts kover block). Measured with all 572 tests green
+bound configured in the build.gradle.kts kover block). Last measured with all 572 tests green
 (2026-08-13 静态计数；CONSEMA_REPO set): **line 77.8%** (40385/51934) · instruction 74.6% ·
-branch 55.8% · method 86.9% · class 87.6%. The 60% gate passes with
+branch 55.8% · method 86.9% · class 87.6% — a snapshot for the record: the
+kover percentages are written into this README by hand and no gate
+regenerates them (koverVerify only enforces the 60% threshold), so treat
+them as historical, not as a recomputable current-state claim. The 60% gate passes with
 comfortable headroom. The gate is live in CI: kotlin-gates runs
 `.\gradlew.bat test koverVerify` since b640af6 (kover 0.9.9, 60% minimum,
 build.gradle.kts kover block). The Knit-style doc-example gate landed with
@@ -69,8 +72,8 @@ kotlin/examples/Quickstart.kt after Trim and the header/package-line strip
 
 Feasibility verdict: **viable.** The wrapper (gradle 8.14; `gradlew`,
 `gradlew.bat`, `gradle/wrapper/`) was generated and committed;
-`./gradlew build` resolves build.gradle.kts, compiles all 236 sources
-(163 main + 73 test), runs the 572-test JUnit suite green (2026-08-13
+`./gradlew build` resolves build.gradle.kts, compiles all 237 sources
+(163 main + 74 test), runs the 576-test JUnit suite green (2026-08-15
 静态计数), and passes the
 60% kover line-coverage verify. Findings that matter for a future CI
 switch:
@@ -85,7 +88,7 @@ switch:
   `./gradlew test` there needs no new wiring; locally it must be set.
 - **Internal visibility is preserved**: gradle compiles main and test as
   separate source sets (friend modules), the direct path compiles them into
-  one module — the 572-test green suite (2026-08-13 静态计数) shows no dependence on the merged
+  one module — the 576-test green suite (2026-08-15 静态计数) shows no dependence on the merged
   visibility.
 - **CI switch (landed)**: kotlin-gates switched to the committed Gradle
   wrapper (b640af6: `.\gradlew.bat test koverVerify` — the kover 60%
@@ -106,6 +109,10 @@ in `src/test/kotlin/consema/conformance/ConformanceRunnerTest.kt` (519 passed /
 
 ## References
 
-- Language plan: https://github.com/consema/consema/blob/main/docs/multi-language-implementation-plan.md (L0-L5 closed
-  for all three new languages, 2026-08-12)
+- Language plan: https://github.com/consema/consema/blob/main/docs/multi-language-implementation-plan.md (L0-L4 closed
+  for all three new languages; the L5 differential steps — byte parity /
+  normalized differential / protocol exchange — closed 2026-08-12, while
+  the shared-conformance leg (five-language-ci-design.md §3.6/§7.2,
+  scripts/kotlin-verify-shared-conformance.ps1) stays deferred — not
+  committed, ci-kotlin.yml header note; wave-4 D6-04 wording)
 - CI and cross-language verification design: https://github.com/consema/consema/blob/main/docs/five-language-ci-design.md

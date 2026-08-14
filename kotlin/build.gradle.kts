@@ -64,8 +64,13 @@ val sourcesJar by tasks.registering(Jar::class) {
 val javadocJar by tasks.registering(Jar::class) {
     archiveClassifier.set("javadoc")
     // The Kotlin-only module has no Java sources, so the java plugin's
-    // javadoc task produces an empty output; the jar satisfies the portal's
-    // javadoc-artifact requirement.
+    // javadoc task produces an empty output (jar contains only
+    // META-INF/MANIFEST.MF). Wave-4 R20 rehearsal (2026-08-15):
+    // `gradlew publishToMavenLocal` accepted the empty jar locally
+    // (exit 0, all artifacts installed); the Central Portal's server-side
+    // acceptance stays unverified until the first release — RELEASING.md
+    // §3 checklist step 4 covers it, and a portal rejection is the
+    // trigger for wiring dokka (post-1.0.0 backlog).
     from(tasks.named("javadoc"))
 }
 

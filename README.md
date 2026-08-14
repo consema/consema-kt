@@ -17,14 +17,15 @@ check-version-consistency job 断言与 README 整行一致。）
 
 Maven Central 坐标（发布后可用）：`dev.consema:consema-kotlin:1.0.0-rc.1`（Gradle：`implementation("dev.consema:consema-kotlin:1.0.0-rc.1")`）。
 
-把下面内容保存为 `kotlin/quickstart.kt`，与主源码一起编译后运行（一个 JSON 文档走完 parse → query → edit → render 四条链）：
+把下面内容保存为 `kotlin/quickstart.kt`（仓根相对路径），然后在 **`kotlin/` 目录下**（先 `cd kotlin`）与主源码一起编译后运行（一个 JSON 文档走完 parse → query → edit → render 四条链）：
 
 ```text
+cd kotlin
 kotlinc -J-Xmx2g -jvm-target 17 -d out src/main/kotlin quickstart.kt
 java -cp "out;<kotlinc>\lib\kotlin-stdlib.jar" QuickstartKt
 ```
 
-（上面的命令块不受门禁保护——examples job 只比对下方 ```kotlin 栅栏与入库文件的 Trim 后核心代码（剥离头部注释/package 行）；命令块为人工同步，按需保持最新。）
+（上面命令块中的 `src/main/kotlin` 与 `quickstart.kt` 均为 kotlin/ 目录内相对路径，基准目录就是上文的 `cd kotlin` 之后；命令块不受门禁保护——examples job 只比对下方 ```kotlin 栅栏与入库文件的 Trim 后核心代码（剥离头部注释/package 行）；命令块为人工同步，按需保持最新。）
 
 注：kotlinc 2.2.0 启动器默认堆为 512 MiB，对 163 个主源文件的 K2 编译会在
 IR 阶段耗尽堆——必须加 `-J-Xmx2g`（与 CI 直驱路径的内存档位一致，见

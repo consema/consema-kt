@@ -44,10 +44,15 @@ powershell -File scripts/kotlin-verify-protocol-exchange.ps1
 
 ## CI 门禁
 
-`.github/workflows/ci-kotlin.yml`：K2JVMCompiler 直驱编译 + 单测 + 零依赖
-门禁、conformance runner 门禁（18 suites / 519 cases）与 Kotlin-Rust 差分
-门禁（windows-latest 多仓 checkout）。push 到 main 或 PR 均触发；PR 另受
-pr-labels.yml 的 kind 标签门禁约束（标签见规范仓 .github/LABELS.md）。
+`.github/workflows/ci-kotlin.yml` 八个 job（聚合 check 为唯一必选）：
+kotlin-gates 经已入库的 Gradle wrapper（`gradlew.bat test koverVerify`）
+跑全量单测 + kover 60% 行覆盖门禁 + 零依赖断言；kotlin-conformance /
+kotlin-differential 直驱 JVM K2JVMCompiler（conformance runner 18 suites /
+519 cases 门禁与 Kotlin-Rust 差分门禁，windows-latest 多仓 checkout）——
+单测不经直驱 K2JVMCompiler 路径执行（wrapper 落地 b640af6 起），
+直驱路径只跑 conformance runner 与差分 harness。push 到 main 或 PR 均
+触发；PR 另受 pr-labels.yml 的 kind 标签门禁约束（标签见规范仓
+.github/LABELS.md）。
 
 ## 发布与安全
 
