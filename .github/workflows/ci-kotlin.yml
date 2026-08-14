@@ -170,7 +170,10 @@ jobs:
       # dists/<hash>/<zip>.ok marker and reuses the unpacked distribution
       # without re-verification (Ruling R9, 2026-08-14), so every .ok marker
       # is deleted here and the next gradlew run re-verifies the zip and
-      # re-unpacks through Gradle's own distributionSha256Sum path.
+      # re-unpacks through Gradle's own distributionSha256Sum path. The
+      # dists probe prefers the setup-gradle GRADLE_USER_HOME (D:\a\.gradle
+      # on hosted Windows runners) and falls back to the default user home
+      # (%USERPROFILE%\.gradle on Windows, $HOME/.gradle on Linux).
       - name: verify cached gradle distribution (restored zip sha256 vs pinned sum, drop .ok markers)
         shell: pwsh
         run: |
@@ -180,8 +183,14 @@ jobs:
           if (-not $sum) {
             throw 'distributionSha256Sum not found in gradle-wrapper.properties'
           }
-          $dists = Join-Path $env:USERPROFILE '.gradle\wrapper\dists'
-          $zip = Get-ChildItem -Path $dists -Recurse -Filter 'gradle-8.14-bin.zip' | Select-Object -First 1
+          $dists = if ($env:GRADLE_USER_HOME -and (Test-Path -LiteralPath $env:GRADLE_USER_HOME)) {
+            Join-Path $env:GRADLE_USER_HOME 'wrapper\dists'
+          } elseif ($env:USERPROFILE) {
+            Join-Path $env:USERPROFILE '.gradle\wrapper\dists'
+          } else {
+            Join-Path $env:HOME '.gradle\wrapper\dists'
+          }
+          $zip = Get-ChildItem -Path $dists -Recurse -Filter 'gradle-8.14-bin.zip' -ErrorAction SilentlyContinue | Select-Object -First 1
           if ($zip) {
             $actual = (Get-FileHash -Algorithm SHA256 -LiteralPath $zip.FullName).Hash
             if ($actual -ne $sum) {
@@ -850,9 +859,11 @@ jobs:
         uses: gradle/actions/setup-gradle@ed408507eac070d1f99cc633dbcf757c94c7933a # v4.4.3
       # Cache-restore integrity (G87, 2026-08-14; W3-29): the same
       # re-verification as the kotlin-gates job — the restore path never ran
-      # Gradle's own download-time check. The gradle user home lives under
-      # %USERPROFILE%\.gradle on Windows and $HOME/.gradle on Linux, so the
-      # probe handles both. The .ok marker deletion (Ruling R9, 2026-08-14)
+      # Gradle's own download-time check. setup-gradle sets GRADLE_USER_HOME
+      # to a runner-local dir (D:\a\.gradle on hosted Windows runners), so
+      # the dists probe prefers it and falls back to the default user home
+      # (%USERPROFILE%\.gradle on Windows, $HOME/.gradle on Linux). The .ok
+      # marker deletion (Ruling R9, 2026-08-14)
       # forces the next gradlew run to re-verify the zip and re-unpack
       # through Gradle's own distributionSha256Sum path.
       - name: verify cached gradle distribution (restored zip sha256 vs pinned sum, drop .ok markers)
@@ -864,9 +875,14 @@ jobs:
           if (-not $sum) {
             throw 'distributionSha256Sum not found in gradle-wrapper.properties'
           }
-          $userHome = if ($env:USERPROFILE) { $env:USERPROFILE } else { $env:HOME }
-          $dists = Join-Path $userHome '.gradle\wrapper\dists'
-          $zip = Get-ChildItem -Path $dists -Recurse -Filter 'gradle-8.14-bin.zip' | Select-Object -First 1
+          $dists = if ($env:GRADLE_USER_HOME -and (Test-Path -LiteralPath $env:GRADLE_USER_HOME)) {
+            Join-Path $env:GRADLE_USER_HOME 'wrapper\dists'
+          } elseif ($env:USERPROFILE) {
+            Join-Path $env:USERPROFILE '.gradle\wrapper\dists'
+          } else {
+            Join-Path $env:HOME '.gradle\wrapper\dists'
+          }
+          $zip = Get-ChildItem -Path $dists -Recurse -Filter 'gradle-8.14-bin.zip' -ErrorAction SilentlyContinue | Select-Object -First 1
           if ($zip) {
             $actual = (Get-FileHash -Algorithm SHA256 -LiteralPath $zip.FullName).Hash
             if ($actual -ne $sum) {
@@ -934,7 +950,10 @@ jobs:
       # re-verification as the kotlin-gates job — the restore path never ran
       # Gradle's own download-time check. The .ok marker deletion (Ruling
       # R9, 2026-08-14) forces the next gradlew run to re-verify the zip and
-      # re-unpack through Gradle's own distributionSha256Sum path.
+      # re-unpack through Gradle's own distributionSha256Sum path. The dists
+      # probe prefers the setup-gradle GRADLE_USER_HOME (D:\a\.gradle on
+      # hosted Windows runners) and falls back to the default user home
+      # (%USERPROFILE%\.gradle on Windows, $HOME/.gradle on Linux).
       - name: verify cached gradle distribution (restored zip sha256 vs pinned sum, drop .ok markers)
         shell: pwsh
         run: |
@@ -944,8 +963,14 @@ jobs:
           if (-not $sum) {
             throw 'distributionSha256Sum not found in gradle-wrapper.properties'
           }
-          $dists = Join-Path $env:USERPROFILE '.gradle\wrapper\dists'
-          $zip = Get-ChildItem -Path $dists -Recurse -Filter 'gradle-8.14-bin.zip' | Select-Object -First 1
+          $dists = if ($env:GRADLE_USER_HOME -and (Test-Path -LiteralPath $env:GRADLE_USER_HOME)) {
+            Join-Path $env:GRADLE_USER_HOME 'wrapper\dists'
+          } elseif ($env:USERPROFILE) {
+            Join-Path $env:USERPROFILE '.gradle\wrapper\dists'
+          } else {
+            Join-Path $env:HOME '.gradle\wrapper\dists'
+          }
+          $zip = Get-ChildItem -Path $dists -Recurse -Filter 'gradle-8.14-bin.zip' -ErrorAction SilentlyContinue | Select-Object -First 1
           if ($zip) {
             $actual = (Get-FileHash -Algorithm SHA256 -LiteralPath $zip.FullName).Hash
             if ($actual -ne $sum) {
