@@ -3,7 +3,7 @@
 ![CI](https://img.shields.io/github/actions/workflow/status/consema/consema-kt/ci-kotlin.yml?branch=main)
 ![License](https://img.shields.io/github/license/consema/consema-kt)
 
-Consema 语言中立契约（RFC 0016）的 **Kotlin/JVM 实现**仓库。本仓库是 Consema 六仓
+Consema 语言中立契约（RFC 0002/0003/0004/0006 契约家族；权威仓 docs/rfcs/）的 **Kotlin/JVM 实现**仓库。本仓库是 Consema 六仓
 拆分中的 Kotlin 仓：规范权威（RFC、docs、路线图、跨语言 conformance suites）在
 [github.com/consema/consema](https://github.com/consema/consema)；本仓承载
 Kotlin 实现与跨语言差分验证工具。

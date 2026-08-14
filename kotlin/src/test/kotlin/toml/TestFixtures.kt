@@ -2,11 +2,18 @@
 //
 // Data authority: conformance/fixtures/toml/*.toml (the files consumed by
 // the toml-v1.json vectors) and the corpus Cargo.toml (toml.corpus.cargo-
-// manifest). The loader prefers the real shared files (byte-exact); the
-// embedded constants are byte-for-byte transcriptions used when the shared
-// tree is not reachable from the test working directory. The L5 conformance
-// runner reads the shared vector files directly; these are the L1
-// intent-document stand-ins.
+// manifest). The loader prefers the real shared files (byte-exact). The
+// embedded constants are transcriptions with newline normalization and
+// escape handling (trimIndent + a re-appended final newline) — NOT
+// byte-for-byte copies: measured with Kotlin 2.2.0 (2026-08-14), 4 of the
+// 6 constants are byte-identical to the real files, CORPUS_CARGO_TOML is
+// 1309B vs the real 1308B (the real file ends without a blank line, the
+// transcription re-appends one) and INVALID_DUPLICATE_TOML is 31B vs 32B
+// (the real file ends with a blank line the plain-string constant lacks).
+// They are the unreachable fallback only: the L5 conformance runner reads
+// the shared vector files directly; these are the L1 intent-document
+// stand-ins, and TestFixturesTest asserts the real file wins whenever it
+// is reachable.
 
 package toml
 
@@ -25,9 +32,12 @@ private val FIXTURE_DIRS = buildList {
 }
 
 /**
- * The shared fixture files end with one blank line; trimIndent removes the
- * trailing blank line, so the exact transcription re-appends the final
- * newline.
+ * Most shared fixture files end with one blank line; trimIndent removes the
+ * first and last blank lines and this re-appends a single final newline, so
+ * those transcriptions match the real bytes. Files whose layout differs
+ * (Cargo.toml ends without a blank line) come out one byte longer — a
+ * recorded normalization artifact, not a byte-for-byte copy (W3-45,
+ * 2026-08-14).
  */
 private fun transcribed(text: String): ByteArray =
     (text.trimIndent() + "\n").toByteArray(Charsets.UTF_8)

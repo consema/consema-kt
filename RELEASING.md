@@ -20,7 +20,8 @@ workflow 已写完整，但**凭证未配置前推送 tag 会明确失败**（po
      （整词匹配）；
    - `.github/ISSUE_TEMPLATE/bug_report.yml` 环境信息节的
      「当前 X.Y.Z」版本注记（整词匹配）；
-   - （版本徽章是静态 shields.io 徽章，随 bump 手动更新）。
+   - （版本载体为 README `Version:` 整行，由 check-version-consistency
+     门禁断言；本仓无 shields.io 版本徽章）。
 2. **CHANGELOG 策展**：记录本版本变更；跨语言变更同步到
    consema 仓库根 `CHANGELOG.md`（真实历史记录，勿指 docs/CHANGELOG.md 勘误页）。
 3. **质量门禁全绿**：main 分支 CI `check (all gates green)` 全绿

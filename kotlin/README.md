@@ -1,7 +1,8 @@
 # Consema Kotlin implementation
 
 The Kotlin/JVM implementation of the language-neutral Consema
-configuration-processing contracts (RFC 0016; equal footing with
+configuration-processing contracts (RFC 0002/0003/0004/0006 contract
+family; authority: the spec repository docs/rfcs/; equal footing with
 Rust/Go/TS/Python per the 2026-08-11 owner decision). Zero third-party
 runtime dependencies (the runtime classpath carries only the Kotlin
 platform — kotlin-stdlib and its transitive org.jetbrains:annotations,

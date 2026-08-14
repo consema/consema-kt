@@ -88,7 +88,7 @@ publishing {
             artifact(javadocJar)
             pom {
                 name.set("Consema Kotlin SDK")
-                description.set("Kotlin implementation of the language-neutral Consema configuration-processing contracts (RFC 0016; https://github.com/consema/consema/blob/main/docs/multi-language-implementation-plan.md)")
+                description.set("Kotlin implementation of the language-neutral Consema configuration-processing contracts (RFC 0002/0003/0004/0006 contract family; authority: https://github.com/consema/consema/tree/main/docs/rfcs)")
                 url.set("https://github.com/consema/consema-kt")
                 licenses {
                     license {

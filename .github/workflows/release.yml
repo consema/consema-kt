@@ -37,6 +37,13 @@ on:
   push:
     tags: ['v*']
 
+# Concurrency guard (W3-27, 2026-08-14): a tag re-push or a continued run
+# must not start a second concurrent publish (same shape as the
+# consema-go/consema-ts release workflows).
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
 
