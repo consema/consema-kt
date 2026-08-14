@@ -16,8 +16,9 @@
 # conformance/* and docs/fc-manifest-0.13.0.json by repository-relative
 # path from CONSEMA_REPO — without the provisioned data those tests fail
 # at construction. Like the CI workflows, this job checks out
-# consema/consema (pinned to 096e5f8, the cfd6e296 519-case conformance
-# snapshot) and copies the conformance data into the workspace root before
+# consema/consema (pinned to 9aa6597, the 2026-08-15 wave-4 R5 unified
+# provision pin carrying the cfd6e296 519-case conformance snapshot) and
+# copies the conformance data into the workspace root before
 # testing (multi-repo checkout + provision pattern, ci-kotlin.yml).
 #
 # REQUIRED user configuration before the first tag push (the workflow is
@@ -109,7 +110,7 @@ jobs:
         with:
           persist-credentials: false
           repository: consema/consema
-          ref: 096e5f840ecc714912db779706fd881405b92308 # cfd6e296 519-case conformance data pin
+          ref: 9aa65976d51d27f93afcffca957475368a69e93b # wave-4 unified provision pin (mother-repo HEAD; fc-manifest sha256 3fdf9a77)
           path: consema-repo
       - name: provision conformance data from the consema spec repository
         shell: pwsh
@@ -120,6 +121,7 @@ jobs:
           if (-not (Test-Path -LiteralPath $source)) {
             throw "conformance data not found in the consema checkout: $source"
           }
+          if (Test-Path -LiteralPath $target) { Remove-Item -LiteralPath $target -Recurse -Force }
           Copy-Item -LiteralPath $source -Destination $target -Recurse -Force
           New-Item -ItemType Directory -Force (Join-Path $env:GITHUB_WORKSPACE 'docs') | Out-Null
           $manifest = Join-Path $env:GITHUB_WORKSPACE 'consema-repo\docs\fc-manifest-0.13.0.json'
@@ -127,13 +129,34 @@ jobs:
             throw "fc-manifest not found in the consema checkout: $manifest"
           }
           Copy-Item -LiteralPath $manifest -Destination (Join-Path $env:GITHUB_WORKSPACE 'docs\fc-manifest-0.13.0.json') -Force
+          # Wave-4 R5 manifest sha256 assertion (unified provision pin
+          # 9aa6597): the pinned checkout must carry exactly the digest
+          # recorded at the pin — silent manifest drift fails the job.
+          $expectedDigest = '3fdf9a77323705dfaf24e8f3a822b9217da20dd243e668165f4d06a9ea64676d'
+          $actualDigest = (Get-FileHash -Algorithm SHA256 -LiteralPath (Join-Path $env:GITHUB_WORKSPACE 'docs\fc-manifest-0.13.0.json')).Hash.ToLowerInvariant()
+          if ($actualDigest -ne $expectedDigest) {
+            throw "fc-manifest sha256 mismatch after provision: expected $expectedDigest, got $actualDigest"
+          }
           $count = @(Get-ChildItem -LiteralPath $target -Recurse -File).Count
           Write-Output "provisioned conformance/: $count files + docs/fc-manifest-0.13.0.json"
+      # Release-path test gate: the differential legs without their golden
+      # env vars (no CONSEMA_DIFFERENTIAL_* / CONSEMA_EXCHANGE_* here) print
+      # a documented [SKIP] and pass (§0.2 skip discipline) — wave-4 R47
+      # asserts the skip upper bound from the JUnit XML results, so a new
+      # silent skip cannot grow the set at release time.
       - name: gradlew test (release-path test gate, provisioned conformance data)
         working-directory: kotlin
         env:
           CONSEMA_REPO: ${{ github.workspace }}
-        run: bash gradlew test --no-daemon
+        run: |
+          set -euo pipefail
+          bash gradlew test --no-daemon
+          skipped=$(find kotlin/build/test-results/test -name '*.xml' -exec grep -ho 'skipped="[0-9]*"' {} + 2>/dev/null | sed -E 's/skipped="([0-9]+)"/\1/' | awk '{s+=$1} END {print s+0}')
+          if [ "$skipped" -gt 4 ]; then
+            echo "::error::unexpectedly many skipped tests: $skipped (at most 4 documented env-gated differential legs may skip — a new silent skip must not grow this set)"
+            exit 1
+          fi
+          echo "skipped tests: $skipped (<= 4 documented env-gated differential legs)"
       - name: gradlew publish (portal deploy, signed artifacts)
         working-directory: kotlin
         env:
