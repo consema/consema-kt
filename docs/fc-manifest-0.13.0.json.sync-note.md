@@ -13,7 +13,7 @@
 ## 来源与同步
 
 - source: consema@9aa6597（母仓 HEAD，2026-08-15 波 4 R5 统一 provision 钉；内容 sha256 `3fdf9a77…`）
-- synced: 2026-08-14（波 3 W3-04 修复，agent F3；W3-12/F7 重同步：母仓 f58dc1f 删注记字符串行号后副本逐字节重随）；2026-08-15 波 4 R5 source 重锚 9aa6597（内容 sha256 未变，副本无需重随）
+- synced: 2026-08-14（波 3 W3-04 修复，agent F3；W3-12/F7 重同步：母仓 f58dc1f 删注记字符串行号后副本逐字节重随）；2026-08-15 波 4 R5：source 重锚 9aa6597（母仓 70e8884 R27/R40/R38 修订 manifest：锚点、C-2 freeze、审计计数 76→83 —— 源 sha256 变为 3fdf9a77；本仓 gitignore 副本为旧内容 21141047，已按下方命令重随）
 - 同步范围（相对旧副本 dbd8e95f… 的 123 行差异全量对齐）：
   - `digests.dependency_lock_digest`（:66-67）：Cargo.lock sha256 死钉 `0adbb56b…`（2026-08-07 旧值）→ `4ada9e74…`（2026-08-14 实测），并补齐母仓同款重算命令与旧值失效注记。
   - gates 状态对齐：security（:456）、api_product（:650）由 partial → complete（其全部子条目本就 complete/closed）；quality（:339）、Q-7（:406）、C-2（:807）、C-3（:821）保持 partial（母仓同值）。
