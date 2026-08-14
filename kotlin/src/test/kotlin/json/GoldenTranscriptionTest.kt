@@ -3,7 +3,7 @@
 // Each test transcribes one vector case (input.source / expected.*) VERBATIM
 // from conformance/vectors/json-family-v2.json and asserts the language-
 // neutral facts the Rust/Go differential runners assert
-// (https://github.com/consema/consema-rs/blob/main/consema-conformance/src/json_family_v2.rs:344-444 for parse cases,
+// (https://github.com/consema/consema-rs/blob/main/consema-conformance/src/json_family_v2.rs for parse cases,
 // :582-602 for materialization cases). The case id is cited on every test.
 //
 // This file runs in the verified toolchain gate (kotlin-gates gradlew
@@ -117,10 +117,10 @@ class GoldenTranscriptionTest {
     }
 
     /** Vector case json5.materialize.canonical-specials (json-family-v2.json:
-     * 138-142): the four frozen non-finite spellings and the canonical
+ *): the four frozen non-finite spellings and the canonical
      * U+2028 escape, byte-exact under json5.canonical-compact with newline
      * None (the conformance runner's materialization request,
-     * json_family_v2.rs:822-828). */
+     * json_family_v2.rs). */
     @Test
     fun json5MaterializeCanonicalSpecials() {
         val request = MaterializationRequest.new(
@@ -145,7 +145,7 @@ class GoldenTranscriptionTest {
     }
 
     /** Vector case json5.materialize.reject-finite-binary (json-family-v2.json:
-     * 144-148): a finite binary64 bit pattern is Unrepresentable under
+ *): a finite binary64 bit pattern is Unrepresentable under
      * ExactOnly (RFC 0004 §3, RFC 0005 §9). */
     @Test
     fun json5MaterializeRejectsFiniteBinary() {

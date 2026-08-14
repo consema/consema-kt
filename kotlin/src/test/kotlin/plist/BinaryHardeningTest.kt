@@ -3,7 +3,7 @@
 // extended sizes, cycles, and non-string dictionary keys.
 //
 // Data authority:
-//   - RFC 0013 §5.11 (https://github.com/consema/consema/blob/main/docs/rfcs/0013-plist-family-profiles-v1.md:426-450):
+//   - RFC 0013 §5.11 (https://github.com/consema/consema/blob/main/docs/rfcs/0013-plist-family-profiles-v1.md):
 //     the mandatory integrity checks run before any object is decoded; a
 //     violated check makes the affected construct Recovered rather than
 //     inventing facts (RFC 0013 §3: recovery never asserts unproven native
@@ -116,7 +116,7 @@ class BinaryHardeningTest {
     }
 
     /** Vector case plist.binary-formation.rejected-markers (plist-v1.json:
-     * 725-773): the excluded markers (null, URL, fill, 16-byte integer,
+ *): the excluded markers (null, URL, fill, 16-byte integer,
      * UTF-8 string, ordered set, set) recover with marker@1. */
     @Test
     fun excludedMarkersRejected() {

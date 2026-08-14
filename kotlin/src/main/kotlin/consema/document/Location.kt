@@ -2,14 +2,14 @@
 // node-role registry.
 //
 // Data authority:
-//   - RFC 0003 §5 (https://github.com/consema/consema/blob/main/docs/rfcs/0003-source-syntax-query-and-patch-v1.md:125-141):
+//   - RFC 0003 §5 (https://github.com/consema/consema/blob/main/docs/rfcs/0003-source-syntax-query-and-patch-v1.md):
 //     Span is [start_byte, end_byte) over original raw bytes; offsets never
 //     become UTF-8 indices after decoding UTF-16 or Latin-1; only scalar
 //     boundaries are addressable.
-//   - https://github.com/consema/consema-rs/blob/main/consema-document/src/lib.rs:113-272 (NodeRole, NodeRef,
-//     AssociationPlacement), lib.rs:294-342 (Span), lib.rs:39-110
-//     (SnapshotIdentity, DocumentAuthority), lib.rs:582-604 (LocationError).
-//   - https://github.com/consema/consema-rs/blob/main/consema-conformance/src/source_v1.rs:423-436 pins the exact
+//   - https://github.com/consema/consema-rs/blob/main/consema-document/src/lib.rs (NodeRole, NodeRef,
+//     AssociationPlacement), lib.rs (Span), lib.rs
+//     (SnapshotIdentity, DocumentAuthority), lib.rs (LocationError).
+//   - https://github.com/consema/consema-rs/blob/main/consema-conformance/src/source_v1.rs pins the exact
 //     error *names* the shared vectors expect ("NoDecodedText",
 //     "IncompleteStructuralCoverage", ...). consema-go/go/document/location.go is a
 //     cross-reference only.
@@ -24,7 +24,7 @@ package consema.document
 import java.util.concurrent.atomic.AtomicLong
 
 /**
- * Semantic role of a document structural identity (lib.rs:113-251). The
+ * Semantic role of a document structural identity (lib.rs). The
  * spellings are frozen language-neutral names; new family agents must not
  * invent new roles.
  */
@@ -233,7 +233,7 @@ enum class NodeRole {
 
 /**
  * Opaque handle to one structural identity in exactly one snapshot
- * (lib.rs:253-292).
+ * (lib.rs).
  */
 data class NodeRef(
     /** Owning snapshot. */
@@ -246,7 +246,7 @@ data class NodeRef(
 
 /**
  * Placement of a new association relative to one container or exact anchor
- * (lib.rs:261-272).
+ * (lib.rs).
  */
 sealed class AssociationPlacement {
     /** First association in the target container. */
@@ -263,7 +263,7 @@ sealed class AssociationPlacement {
 }
 
 /**
- * Half-open byte range bound to one snapshot (RFC 0003 §5; lib.rs:294-342).
+ * Half-open byte range bound to one snapshot (RFC 0003 §5; lib.rs).
  * Offsets are over the original raw bytes and never become UTF-8 indices
  * after decoding UTF-16 or Latin-1.
  */
@@ -285,7 +285,7 @@ data class Span(
 }
 
 /** One exact boundary expressed in every supported coordinate system
- * (RFC 0003 §5; source.rs:411-422). */
+ * (RFC 0003 §5; source.rs). */
 data class DecodedPosition(
     /** Offset in retained raw source bytes. */
     val rawByte: Int,
@@ -298,7 +298,7 @@ data class DecodedPosition(
 )
 
 /** A decoded coordinate to resolve back to an exact raw-byte boundary
- * (RFC 0003 §5; source.rs:424-433). */
+ * (RFC 0003 §5; source.rs). */
 sealed class DecodedOffset {
     /** UTF-8 byte offset in decoded text. */
     data class Utf8Byte(val value: Int) : DecodedOffset()
@@ -325,9 +325,9 @@ sealed class DecodedOffset {
 }
 
 /**
- * Stable span, identity, or coverage failure (lib.rs:582-604). The
+ * Stable span, identity, or coverage failure (lib.rs). The
  * [name] spellings are exactly what the shared vectors expect
- * (source_v1.rs:423-436); these names are NOT registered error codes.
+ * (source_v1.rs); these names are NOT registered error codes.
  */
 enum class LocationErrorKind {
     /** Span start followed its end. */
@@ -373,17 +373,17 @@ class LocationException(val kind: LocationErrorKind) :
 
 /**
  * Authority owned by one document implementation for issuing snapshot-bound
- * handles (lib.rs:53-110). Mirrors the Rust #[doc(hidden)] DocumentAuthority:
+ * handles (lib.rs). Mirrors the Rust #[doc(hidden)] DocumentAuthority:
  * module-internal, but every family package in this module creates spans and
  * node refs through it.
  */
 internal class DocumentAuthority private constructor(val identity: SnapshotIdentity) {
 
-    /** Issues one opaque node handle (lib.rs:74-81). */
+    /** Issues one opaque node handle (lib.rs). */
     fun nodeRef(index: Long, role: NodeRole): NodeRef = NodeRef(identity, index, role)
 
     /** Creates a snapshot-bound span after range validation
-     * (lib.rs:83-93). Negative offsets are impossible in the Rust usize
+     * (lib.rs). Negative offsets are impossible in the Rust usize
      * surface; Kotlin Ints require the explicit guard. */
     fun span(startByte: Int, endByte: Int): Span {
         if (startByte < 0 || endByte < 0 || startByte > endByte) {
@@ -392,7 +392,7 @@ internal class DocumentAuthority private constructor(val identity: SnapshotIdent
         return Span(identity, startByte, endByte)
     }
 
-    /** Verifies that a node handle belongs to this snapshot (lib.rs:95-102). */
+    /** Verifies that a node handle belongs to this snapshot (lib.rs). */
     fun verify(node: NodeRef) {
         if (node.snapshot != identity) {
             throw LocationException(LocationErrorKind.WrongSnapshot)
@@ -402,7 +402,7 @@ internal class DocumentAuthority private constructor(val identity: SnapshotIdent
     companion object {
         private val next = AtomicLong(0)
 
-        /** Allocates a fresh snapshot identity (lib.rs:60-65); every call
+        /** Allocates a fresh snapshot identity (lib.rs); every call
          * returns a distinct identity. */
         fun fresh(): DocumentAuthority {
             val id = next.incrementAndGet()

@@ -2,34 +2,34 @@
 // frozen resolution priority, and construction limits.
 //
 // Data authority (language-neutral sources first):
-//   - RFC 0003 §4 (https://github.com/consema/consema/blob/main/docs/rfcs/0003-source-syntax-query-and-patch-v1.md:66-123)
+//   - RFC 0003 §4 (https://github.com/consema/consema/blob/main/docs/rfcs/0003-source-syntax-query-and-patch-v1.md)
 //     freezes the closed v1 encoding IDs (Binary, Utf8, Utf16Le, Utf16Be,
 //     Latin1), the resolution inputs (profile_default, bom, declaration,
 //     caller_override, selected), and the priority order
 //     caller_override -> declaration -> bom -> profile_default; any two
 //     present disagreeing facts produce EncodingConflict.
 //   - conformance/vectors/source-v1.json cases source.encoding.* (lines
-//     24-82) pin the wire spellings ("utf-8", "utf-16le", "utf-16be",
+//) pin the wire spellings ("utf-8", "utf-16le", "utf-16be",
 //     "latin-1", "binary") and the rejection codes.
-//   - https://github.com/consema/consema-rs/blob/main/consema-document/src/source.rs:121-409 pins the shapes and the
+//   - https://github.com/consema/consema-rs/blob/main/consema-document/src/source.rs pins the shapes and the
 //     resolution/decoding rules; consema-go/go/document/encoding.go is a cross-reference
 //     only.
 //
 // Source contract v2 (0.8.0, the java-properties family) extends this set
 // with WindowsCodePage and BomPolicy::TreatAsContent
-// (https://github.com/consema/consema-rs/blob/main/consema-protocol/src/error_registry.rs:967-977 registers
+// (https://github.com/consema/consema-rs/blob/main/consema-protocol/src/error_registry.rs registers
 // core.source.code-page-required@1 / core.source.unsupported-code-page@1).
 // The WindowsCodePage extension ships in the ini family
 // (consema/ini/Profile.kt IniWindowsCodePage) and is not part of this v1
 // source surface; BomPolicy is nevertheless present here because the v1
 // resolution rule already distinguishes BOM evidence from content
-// (source.rs:727-738).
+// (source.rs).
 
 package consema.document
 
 /**
  * Closed source encoding set supported by source contracts v1 (RFC 0003
- * §4.1; source.rs:121-155). The wire spellings are the exact strings the
+ * §4.1; source.rs). The wire spellings are the exact strings the
  * shared vectors use (source-v1.json source.encoding.* cases).
  */
 sealed class SourceEncoding {
@@ -49,7 +49,7 @@ sealed class SourceEncoding {
      * (RFC 0003 §4.1). */
     data object Latin1 : SourceEncoding()
 
-    /** Stable wire identifier (source.rs:141-150; the exact strings used by
+    /** Stable wire identifier (source.rs; the exact strings used by
      * source-v1.json). */
     fun asStr(): String =
         when (this) {
@@ -63,7 +63,7 @@ sealed class SourceEncoding {
     internal fun isText(): Boolean = this !== Binary
 }
 
-/** Recognized Unicode byte-order mark (source.rs:167-187). */
+/** Recognized Unicode byte-order mark (source.rs). */
 enum class BomKind {
     /** EF BB BF. */
     Utf8,
@@ -75,7 +75,7 @@ enum class BomKind {
     Utf16Be,
     ;
 
-    /** Encoding asserted by this marker (source.rs:179-186). */
+    /** Encoding asserted by this marker (source.rs). */
     fun encoding(): SourceEncoding =
         when (this) {
             Utf8 -> SourceEncoding.Utf8
@@ -84,7 +84,7 @@ enum class BomKind {
         }
 }
 
-/** Recognized but unsupported Unicode marker (source.rs:719-725). */
+/** Recognized but unsupported Unicode marker (source.rs). */
 enum class UnsupportedBomKind {
     /** FF FE 00 00. */
     Utf32Le,
@@ -94,7 +94,7 @@ enum class UnsupportedBomKind {
 }
 
 /** Whether marker-shaped leading bytes participate in Unicode BOM resolution
- * (source.rs:157-164). The v1 rule is [DetectUnicode]; TreatAsContent is the
+ * (source.rs). The v1 rule is [DetectUnicode]; TreatAsContent is the
  * source-v2 escape used by code-page sources. */
 enum class BomPolicy {
     /** Detect UTF-8/UTF-16 BOMs using the frozen source-v1 rule. */
@@ -106,9 +106,9 @@ enum class BomPolicy {
 
 /**
  * Caller inputs to deterministic encoding resolution (RFC 0003 §4.2;
- * source.rs:189-260). The selected encoding is the first present value in
+ * source.rs). The selected encoding is the first present value in
  * this priority order: caller_override -> declaration -> bom ->
- * profile_default (RFC 0003 §4.2; source.rs:769-773).
+ * profile_default (RFC 0003 §4.2; source.rs).
  */
 class EncodingRequest internal constructor(
     /** Profile fallback (required). */
@@ -122,33 +122,33 @@ class EncodingRequest internal constructor(
 ) {
     companion object {
         /** Starts with the required profile default and no higher-priority
-         * facts (source.rs:200-208). */
+         * facts (source.rs). */
         fun new(profileDefault: SourceEncoding): EncodingRequest =
             EncodingRequest(profileDefault, BomPolicy.DetectUnicode, null, null)
 
-        /** Opaque-binary request (source.rs:211-214). */
+        /** Opaque-binary request (source.rs). */
         fun binary(): EncodingRequest = new(SourceEncoding.Binary)
     }
 
     /** Adds a normalized declaration supplied by the format layer
-     * (source.rs:217-221). */
+     * (source.rs). */
     fun withDeclaration(declaration: SourceEncoding): EncodingRequest =
         EncodingRequest(profileDefault, bomPolicy, declaration, callerOverride)
 
-    /** Adds an explicit caller override (source.rs:224-228). */
+    /** Adds an explicit caller override (source.rs). */
     fun withCallerOverride(callerOverride: SourceEncoding): EncodingRequest =
         EncodingRequest(profileDefault, bomPolicy, declaration, callerOverride)
 
     /** Selects whether leading marker-shaped bytes are BOM evidence or
-     * content (source.rs:231-235). */
+     * content (source.rs). */
     fun withBomPolicy(bomPolicy: BomPolicy): EncodingRequest =
         EncodingRequest(profileDefault, bomPolicy, declaration, callerOverride)
 }
 
 /**
  * Complete, auditable result of encoding resolution (RFC 0003 §4.2;
- * source.rs:262-379). Equality of two fact records is a language-neutral
- * fact used by SourcePatch application (source_patch.rs:263-275).
+ * source.rs). Equality of two fact records is a language-neutral
+ * fact used by SourcePatch application (source_patch.rs).
  */
 data class EncodingFacts(
     /** Profile fallback that participated in resolution. */
@@ -167,7 +167,7 @@ data class EncodingFacts(
     companion object {
         /**
          * Validates a structurally complete encoding-facts claim
-         * (source.rs:278-300). This proves resolution consistency only; a
+         * (source.rs). This proves resolution consistency only; a
          * source decoder must still verify that the claimed BOM is present
          * in the supplied raw bytes.
          */
@@ -191,7 +191,7 @@ data class EncodingFacts(
 
         /**
          * Validates a source-v2 claim including explicit BOM interpretation
-         * (source.rs:303-333).
+         * (source.rs).
          */
         fun fromClaimWithBomPolicy(
             profileDefault: SourceEncoding,
@@ -223,7 +223,7 @@ data class EncodingFacts(
 
 /**
  * Resource bounds applied while a source snapshot is constructed (RFC 0003
- * §12; source.rs:381-409). Limits apply before or during allocation; a limit
+ * §12; source.rs). Limits apply before or during allocation; a limit
  * failure returns no partial snapshot (RFC 0003 §12).
  */
 data class SourceLimits(
@@ -236,14 +236,14 @@ data class SourceLimits(
 ) {
     companion object {
         /** Compatibility limits for already-bounded format parsers
-         * (source.rs:392-399). */
+         * (source.rs). */
         val UNBOUNDED = SourceLimits(
             maxRawBytes = Int.MAX_VALUE,
             maxDecodedUtf8Bytes = Int.MAX_VALUE,
             maxDecodedScalars = Int.MAX_VALUE,
         )
 
-        /** The frozen defaults (source.rs:401-409): 64 MiB raw bytes,
+        /** The frozen defaults (source.rs): 64 MiB raw bytes,
          * 128 MiB decoded UTF-8 bytes, 64 MiB decoded scalars. */
         val default = SourceLimits(
             maxRawBytes = 64 shl 20,
@@ -254,7 +254,7 @@ data class SourceLimits(
 }
 
 /**
- * Resolves the encoding facts for one byte buffer (source.rs:727-738).
+ * Resolves the encoding facts for one byte buffer (source.rs).
  * BOM detection runs only when the selected policy is DetectUnicode and the
  * profile default or an explicit text fact asks for text.
  */
@@ -268,7 +268,7 @@ internal fun resolveEncoding(bytes: ByteArray, request: EncodingRequest): Encodi
 }
 
 /**
- * Applies the frozen resolution assertions (source.rs:740-782): any two
+ * Applies the frozen resolution assertions (source.rs): any two
  * present BOM/declaration/caller facts that disagree produce
  * EncodingConflict; the resolver never guesses. A Binary profile default
  * with any explicit text fact is a conflict. The selected encoding is the
@@ -321,7 +321,7 @@ private fun resolveAssertions(
 }
 
 /**
- * Detects a Unicode BOM from raw bytes (source.rs:784-804). UTF-32 BOMs are
+ * Detects a Unicode BOM from raw bytes (source.rs). UTF-32 BOMs are
  * explicitly unsupported in v1 (RFC 0003 §4.2) and fail with UnsupportedBom
  * before any other resolution step.
  */

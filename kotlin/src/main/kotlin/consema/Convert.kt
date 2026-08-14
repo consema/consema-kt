@@ -2,14 +2,14 @@
 // composition (Kotlin).
 //
 // Data authority (language-neutral sources first):
-//   - https://github.com/consema/consema-rs/blob/main/consema/src/conversion.rs:1-989 (the audited composition:
+//   - https://github.com/consema/consema-rs/blob/main/consema/src/conversion.rs (the audited composition:
 //     every convert_* function composes one format-owned projection and the
 //     requested target materializer, retaining the intermediate portable
 //     value, both provenance directions, and the two-stage report; the
-//     record-consumption gate at conversion.rs:590-689; the materialization
-//     dispatch table at conversion.rs:740-901; the failure codes
+//     record-consumption gate at conversion.rs; the materialization
+//     dispatch table at conversion.rs; the failure codes
 //     core.conversion.projection-failed@1 / materialization-failed@1 /
-//     unauthorized-loss@1 at conversion.rs:310-333).
+//     unauthorized-loss@1 at conversion.rs).
 //   - RFC 0004 (materialization/conversion/structural edit v1; §7
 //     completion algebra — failed conversions contain no target document
 //     and no partial bytes).
@@ -47,7 +47,7 @@ import consema.toml.project
 import consema.xml.project
 import consema.yaml.projectValue
 
-/** Whole-conversion semantic fidelity (conversion.rs:42-51). */
+/** Whole-conversion semantic fidelity (conversion.rs). */
 enum class ConversionFidelity {
     /** Both stages retain exact portable semantics. */
     Exact,
@@ -60,7 +60,7 @@ enum class ConversionFidelity {
 }
 
 /** Complete format-owned projection report retained without flattening
- * facts (conversion.rs:53-72). */
+ * facts (conversion.rs). */
 sealed class ConversionProjectionReport {
     /** INI projection report. */
     data class Ini(val report: consema.ini.ProjectionReport) : ConversionProjectionReport()
@@ -102,7 +102,7 @@ sealed class ConversionProjectionReport {
 }
 
 /** Complete ordered report for both conversion stages
- * (conversion.rs:95-149). */
+ * (conversion.rs). */
 class ConversionReport(
     /** Projection-stage fidelity. */
     val projectionFidelity: ConversionFidelity,
@@ -119,7 +119,7 @@ class ConversionReport(
 )
 
 /** Complete conversion result with the target document and the two-stage
- * report (conversion.rs:151-278). */
+ * report (conversion.rs). */
 class CompleteConversion(
     /** Newly materialized target document. */
     val document: Document,
@@ -130,7 +130,7 @@ class CompleteConversion(
 )
 
 /** Conversion failure without a partial target document
- * (conversion.rs:280-308). */
+ * (conversion.rs). */
 sealed class ConversionFailure {
     /** Projection did not produce a complete portable value. */
     data class ProjectionFailed(
@@ -152,7 +152,7 @@ sealed class ConversionFailure {
      * policy. */
     data object UnauthorizedLoss : ConversionFailure()
 
-    /** The frozen registered code of the failure (conversion.rs:324-332). */
+    /** The frozen registered code of the failure (conversion.rs). */
     val code: String
         get() = when (this) {
             is ProjectionFailed -> "core.conversion.projection-failed@1"
@@ -161,7 +161,7 @@ sealed class ConversionFailure {
         }
 }
 
-/** Complete or explicitly failed conversion (conversion.rs:335-343). */
+/** Complete or explicitly failed conversion (conversion.rs). */
 sealed class ConversionResult {
     /** Complete target document and all required audit artifacts. */
     data class Complete(val conversion: CompleteConversion) : ConversionResult()
@@ -171,7 +171,7 @@ sealed class ConversionResult {
 }
 
 /** Published record envelope ids produced by the record-format projections
- * (RFC 0012 §9, RFC 0013 §9, RFC 0014 §8.2; conversion.rs:590-595). */
+ * (RFC 0012 §9, RFC 0013 §9, RFC 0014 §8.2; conversion.rs). */
 private const val XML_ELEMENT_TREE_RECORD: String = "xml.element-tree@1"
 private const val PLIST_VALUE_TREE_RECORD: String = "plist.value-tree@1"
 private const val HCL_BODY_RECORD: String = "hcl.body@1"
@@ -201,7 +201,7 @@ private fun formatFamily(profileId: String): String? =
         else -> null
     }
 
-/** Record-consumption gate of the composition (conversion.rs:657-689): a
+/** Record-consumption gate of the composition (conversion.rs): a
  * record-format source (XML, plist, HCL) projects its versioned internal
  * record envelope; the envelope is consumed only by the owning format
  * family's materializer. Baseline sources never project envelopes — a
@@ -284,7 +284,7 @@ private fun completeConversion(
 }
 
 /** Materializes one portable value into the requested target profile through
- * the per-family materializers (conversion.rs:740-901). The target document
+ * the per-family materializers (conversion.rs). The target document
  * is rewrapped into the facade [Document] union. */
 private fun materializeTarget(
     value: PortableValue,
@@ -305,7 +305,7 @@ private fun materializeTarget(
     }
     if (result == null) {
         // HCL materialization has its own completion algebra
-        // (hcl/Materialization.kt:128-140); the facade converts it to the
+        // (kotlin/src/main/kotlin/consema/hcl/Materialization.kt); the facade converts it to the
         // common algebra, preserving the frozen registered code.
         if (request.targetProfile.id == "hcl.native" || request.targetProfile.id == "hcl.tfvars") {
             return when (val hcl = consema.hcl.materialize(value, request)) {
@@ -442,7 +442,7 @@ private fun hclFidelity(fidelity: consema.hcl.Fidelity): ConversionFidelity =
     }
 
 /** Converts one JSON document by composing its published projection and a
- * target materializer (conversion.rs:344-379). */
+ * target materializer (conversion.rs). */
 fun convertJson(
     source: consema.json.Document,
     projectionRequest: consema.json.ProjectionRequest,
@@ -476,7 +476,7 @@ fun convertJson(
 }
 
 /** Converts one INI document by composing its explicit projection and a
- * target materializer (conversion.rs:381-405). */
+ * target materializer (conversion.rs). */
 fun convertIni(
     source: consema.ini.IniDocument,
     projectionRequest: consema.ini.ProjectionRequest,
@@ -499,7 +499,7 @@ fun convertIni(
     }
 
 /** Converts one Java Properties document through an explicit duplicate
- * policy (conversion.rs:407-431). */
+ * policy (conversion.rs). */
 fun convertProperties(
     source: consema.properties.Document,
     projectionRequest: consema.properties.ProjectionRequest,
@@ -522,7 +522,7 @@ fun convertProperties(
     }
 
 /** Converts one TOML document by composing its published projection and a
- * target materializer (conversion.rs:433-457). */
+ * target materializer (conversion.rs). */
 fun convertToml(
     source: consema.toml.TomlDocument,
     projectionRequest: consema.toml.ProjectionRequest,
@@ -545,7 +545,7 @@ fun convertToml(
     }
 
 /** Converts one YAML stream through its explicit PortableValue projection
- * (conversion.rs:459-479). */
+ * (conversion.rs). */
 fun convertYaml(
     source: consema.yaml.Document,
     projectionRequest: consema.yaml.ValueProjectionRequest,
@@ -568,7 +568,7 @@ fun convertYaml(
     }
 
 /** Converts one XML document by composing its element-tree projection and a
- * target materializer (conversion.rs:481-512). Recovered documents never
+ * target materializer (conversion.rs). Recovered documents never
  * project. */
 fun convertXml(
     source: consema.xml.Document,
@@ -592,7 +592,7 @@ fun convertXml(
     }
 
 /** Converts one Property List document by composing its value-tree
- * projection and a target materializer (conversion.rs:514-545). Recovered
+ * projection and a target materializer (conversion.rs). Recovered
  * documents never project. */
 fun convertPlist(
     source: consema.plist.Document,
@@ -616,7 +616,7 @@ fun convertPlist(
     }
 
 /** Converts one HCL document by composing its body projection and a target
- * materializer (conversion.rs:547-588). Recovered documents never project.
+ * materializer (conversion.rs). Recovered documents never project.
  * The exact body target is the default `ExpressionPolicy.Default`: a derived
  * expression fails the conversion atomically; conversion never implicitly
  * enables the `ProjectExpression` strategy. */

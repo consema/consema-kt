@@ -2,23 +2,23 @@
 // classification, and formation limits.
 //
 // Data authority (language-neutral sources first):
-//   - RFC 0013 §1 (https://github.com/consema/consema/blob/main/docs/rfcs/0013-plist-family-profiles-v1.md:25-46): the two
+//   - RFC 0013 §1 (https://github.com/consema/consema/blob/main/docs/rfcs/0013-plist-family-profiles-v1.md): the two
 //     profiles plist.xml@1 and plist.binary@1 share one native value model
 //     but no syntax; the profile is selected by the caller before formation;
 //     the bplist00 magic number never selects semantics.
-//   - RFC 0013 §8.2 (https://github.com/consema/consema/blob/main/docs/rfcs/0013-plist-family-profiles-v1.md:560-582) freezes the v1 lossless
+//   - RFC 0013 §8.2 (https://github.com/consema/consema/blob/main/docs/rfcs/0013-plist-family-profiles-v1.md) freezes the v1 lossless
 //     syntax-kind set and the root-tag partition rule (PlistOpen on the name,
 //     Whitespace on the separator, PlistVersionName on `version`,
 //     PlistVersionValue on `="1.0"`, a second PlistOpen on the closing `>`).
-//   - RFC 0013 §12 (https://github.com/consema/consema/blob/main/docs/rfcs/0013-plist-family-profiles-v1.md:716-753) bounds at least the raw
+//   - RFC 0013 §12 (https://github.com/consema/consema/blob/main/docs/rfcs/0013-plist-family-profiles-v1.md) bounds at least the raw
 //     bytes, object count, nesting depth, dictionary entries, duplicate-key
 //     groups, array elements, string code units, data bytes, UID count,
 //     extended-size integers and magnitudes, offset/ref widths and offset-
 //     table bytes, syntax pieces, binary facts, conversion nodes, and
 //     report/recovery regions.
-//   - https://github.com/consema/consema-rs/blob/main/consema-plist/src/lib.rs:70-92 (PlistProfile ids), lib.rs:119-194
-//     (PlistParseLimits fields and frozen defaults), parser_xml.rs:77-171
-//     (PlistSyntaxKind declaration) and parser_xml.rs:173-224 (the exact
+//   - https://github.com/consema/consema-rs/blob/main/consema-plist/src/lib.rs (PlistProfile ids), lib.rs
+//     (PlistParseLimits fields and frozen defaults), parser_xml.rs
+//     (PlistSyntaxKind declaration) and parser_xml.rs (the exact
 //     kebab-case wire spellings). consema-go/go/plist is a cross-reference only.
 //
 // Kotlin-idiomatic design (NOT a translation): the profile is a closed enum
@@ -30,7 +30,7 @@ package consema.plist
 import consema.document.ParseLimits
 import consema.document.ProfileId
 
-/** Frozen plist formation profiles (RFC 0013 §1; lib.rs:70-92). */
+/** Frozen plist formation profiles (RFC 0013 §1; lib.rs). */
 enum class PlistProfile {
     /** The plist value vocabulary expressed as XML 1.0 (RFC 0013 §4). */
     XmlV1,
@@ -39,7 +39,7 @@ enum class PlistProfile {
     BinaryV1,
     ;
 
-    /** Immutable profile identifier (lib.rs:83-92). */
+    /** Immutable profile identifier (lib.rs). */
     fun id(): ProfileId =
         when (this) {
             XmlV1 -> ProfileId("plist.xml", 1)
@@ -52,8 +52,8 @@ enum class PlistProfile {
 
 /**
  * Closed plist XML lossless syntax-piece classification (RFC 0013 §8.2;
- * parser_xml.rs:77-171). The enum order is the Rust declaration order; the
- * query/protocol vocabulary is [wireName] (parser_xml.rs:176-224), which is
+ * parser_xml.rs). The enum order is the Rust declaration order; the
+ * query/protocol vocabulary is [wireName] (parser_xml.rs), which is
  * byte-identical to the vector spellings.
  */
 enum class PlistSyntaxKind {
@@ -196,7 +196,7 @@ enum class PlistSyntaxKind {
     ErrorRegion,
     ;
 
-    /** Stable query and protocol name (parser_xml.rs:176-224). */
+    /** Stable query and protocol name (parser_xml.rs). */
     fun wireName(): String =
         when (this) {
             Bom -> "bom"
@@ -248,7 +248,7 @@ enum class PlistSyntaxKind {
         }
 
     companion object {
-        /** Resolves one exact stable kind name (parser_xml.rs:229-277). */
+        /** Resolves one exact stable kind name (parser_xml.rs). */
         fun fromName(name: String): PlistSyntaxKind? =
             entries.firstOrNull { it.wireName() == name }
     }
@@ -256,7 +256,7 @@ enum class PlistSyntaxKind {
 
 /**
  * Plist-specific formation, structure, recovery, and conversion limits
- * (RFC 0013 §12; lib.rs:119-166).
+ * (RFC 0013 §12; lib.rs).
  *
  * Every limit failure is a fatal formation failure or an atomic operation
  * failure; a limit failure never masquerades as an empty tree, truncated
@@ -309,7 +309,7 @@ data class PlistParseLimits(
     val maxRecoveryRegions: Int,
 ) {
     companion object {
-        /** The frozen defaults (lib.rs:168-194). */
+        /** The frozen defaults (lib.rs). */
         val default = PlistParseLimits(
             common = ParseLimits.default,
             maxDecodedUtf8Bytes = 128 shl 20,

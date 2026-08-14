@@ -3,8 +3,8 @@
 // coverage index.
 //
 // Data authority:
-//   - RFC 0007 §2 (https://github.com/consema/consema/blob/main/docs/rfcs/0007-yaml-family-profiles-and-safety-v1.md:
-//     36-53): the three layers — presentation stream, serialization tree
+//   - RFC 0007 §2 (https://github.com/consema/consema/blob/main/docs/rfcs/0007-yaml-family-profiles-and-safety-v1.md
+//): the three layers — presentation stream, serialization tree
 //     (ordered document nodes, unresolved/resolved tag facts), and
 //     representation graph (resolved tagged nodes, sharing, cycles). Anchors
 //     and aliases are NOT PortableGraph node kinds.
@@ -13,10 +13,10 @@
 //     alias occurrences with exact names and source spans, arbitrary keys,
 //     duplicate source associations, compact notation, and exhaustive
 //     non-overlapping raw-byte coverage.
-//   - https://github.com/consema/consema-rs/blob/main/consema-yaml/src/lib.rs:322-787 pins the public handle surface
+//   - https://github.com/consema/consema-rs/blob/main/consema-yaml/src/lib.rs pins the public handle surface
 //     (stream_node_ref, document(ordinal), alias_count, node anchors/spans,
-//     sequence/mapping associations); https://github.com/consema/consema-rs/blob/main/consema-yaml/src/native.rs:33-94
-//     pins the internal node/alias/association storage and native.rs:111-508
+//     sequence/mapping associations); https://github.com/consema/consema-rs/blob/main/consema-yaml/src/native.rs
+//     pins the internal node/alias/association storage and native.rs
 //     pins the composer; consema-go/go/yaml/document.go is a cross-reference only.
 //
 // Kotlin-idiomatic design: handles are immutable classes carrying (document,
@@ -39,17 +39,17 @@ import consema.document.SnapshotIdentity
 import consema.document.SourceSnapshot
 import consema.document.Span
 
-/** The immutable native stream model (native.rs:33-38). */
+/** The immutable native stream model (native.rs). */
 internal class NativeStream(
     val nodes: List<NativeNode>,
     val documents: List<NativeDocument>,
     val aliases: List<NativeAlias>,
 )
 
-/** One independent document (native.rs:40-44). */
+/** One independent document (native.rs). */
 internal class NativeDocument(val root: Int, val span: Span)
 
-/** One representation node (native.rs:46-53). */
+/** One representation node (native.rs). */
 internal class NativeNode(
     val tag: String,
     val anchor: String?,
@@ -58,14 +58,14 @@ internal class NativeNode(
     val content: NativeContent,
 )
 
-/** Node content (native.rs:55-60). */
+/** Node content (native.rs). */
 internal sealed class NativeContent {
     data class Scalar(val scalar: NativeScalar) : NativeContent()
     data class Sequence(val items: List<NativeSequenceItem>) : NativeContent()
     data class Mapping(val entries: List<NativeMappingEntry>) : NativeContent()
 }
 
-/** One ordered sequence association (native.rs:70-76). */
+/** One ordered sequence association (native.rs). */
 internal class NativeSequenceItem(
     val identity: Long,
     val node: Int,
@@ -73,7 +73,7 @@ internal class NativeSequenceItem(
     val alias: Int?,
 )
 
-/** One ordered mapping association (native.rs:78-86). */
+/** One ordered mapping association (native.rs). */
 internal class NativeMappingEntry(
     val identity: Long,
     val key: Int,
@@ -83,7 +83,7 @@ internal class NativeMappingEntry(
     val valueAlias: Int?,
 )
 
-/** One alias serialization occurrence (native.rs:88-94). */
+/** One alias serialization occurrence (native.rs). */
 internal class NativeAlias(
     val identity: Long,
     val name: String,
@@ -92,15 +92,15 @@ internal class NativeAlias(
 )
 
 /** One composed node occurrence: its representation index, occurrence span,
- * and the alias ordinal that supplied the edge, when present (native.rs:
- * 216-221). */
+ * and the alias ordinal that supplied the edge, when present (native.rs
+ *). */
 private class ComposedOccurrence(val node: Int, val span: Span, val alias: Int?)
 
 /**
  * Composes the backend event stream into the immutable native model
- * (native.rs:111-257). Every anchor registers before descending into its
+ * (native.rs). Every anchor registers before descending into its
  * node; an alias resolves to the most recent preceding anchor of the same
- * document (native.rs:259-413); events and named occurrences must be
+ * document (native.rs); events and named occurrences must be
  * exhausted exactly (yaml.native.trailing-events@1,
  * yaml.native.trailing-named-occurrence@1).
  */
@@ -319,7 +319,7 @@ private class Composer(
 }
 
 /** Rewrites the backend's empty-plain-scalar placeholder back to the empty
- * string (native.rs:516-539): only the `"~"` plain placeholder is rewritten;
+ * string (native.rs): only the `"~"` plain placeholder is rewritten;
  * a quoted `"~"` or `'~'` is a real string scalar. */
 private fun exactEmptyScalar(
     decoded: String,
@@ -351,7 +351,7 @@ internal fun nodeRef(authority: DocumentAuthority, index: Int): NodeRef =
     authority.nodeRef(index.toLong(), NodeRole.YamlNode)
 
 /**
- * Immutable exact-source YAML stream snapshot (lib.rs:322-461). Parsing
+ * Immutable exact-source YAML stream snapshot (lib.rs). Parsing
  * happens in Parser.kt; this class pins the read surface and the
  * module-internal native model shared by query, projection, materialization,
  * and edit.
@@ -367,62 +367,62 @@ class Document internal constructor(
     internal val parseLimits: ParseLimits,
 ) {
     /** Snapshot-bound identity of the complete serialization stream
-     * (lib.rs:336-341). */
+     * (lib.rs). */
     fun streamNodeRef(): NodeRef = authority.nodeRef(0, NodeRole.YamlStream)
 
-    /** Exact raw span of the complete serialization stream (lib.rs:343-349). */
+    /** Exact raw span of the complete serialization stream (lib.rs). */
     fun streamSpan(): Span = authority.span(0, source.len)
 
     /** Snapshot identity to which every NodeRef and Span belongs
-     * (lib.rs:351-356). */
+     * (lib.rs). */
     val snapshotIdentity: SnapshotIdentity
         get() = authority.identity
 
-    /** Exact immutable raw source and decoded-location facts (lib.rs:358-362). */
+    /** Exact immutable raw source and decoded-location facts (lib.rs). */
     fun source(): SourceSnapshot = source
 
-    /** Default rendering is byte-for-byte identical to the input (lib.rs:
-     * 364-368). */
+    /** Default rendering is byte-for-byte identical to the input (lib.rs
+ *). */
     fun render(): ByteArray = source.bytes()
 
-    /** YAML format-family contract (lib.rs:370-374). */
+    /** YAML format-family contract (lib.rs). */
     fun formatFamily(): FormatFamilyId = FormatFamilyId("yaml", 1)
 
-    /** Exact selected YAML profile (lib.rs:376-380). */
+    /** Exact selected YAML profile (lib.rs). */
     fun profileId(): ProfileId = profile.id()
 
     /** Complete valid streams require no recovered semantic claims
-     * (lib.rs:382-386). */
+     * (lib.rs). */
     fun formationStatus(): FormationStatus = FormationStatus.Complete
 
-    /** Complete YAML formation publishes no recovery diagnostics (lib.rs:
-     * 388-391). */
+    /** Complete YAML formation publishes no recovery diagnostics (lib.rs
+ *). */
     fun diagnostics(): List<consema.protocol.Diagnostic> = emptyList()
 
-    /** Exhaustive token/trivia byte coverage (lib.rs:393-397). */
+    /** Exhaustive token/trivia byte coverage (lib.rs). */
     fun losslessStructuralIndex(): LosslessStructuralIndex = structuralIndex
 
     /** Format-specific kind for each structural piece in source order
-     * (lib.rs:399-403). */
+     * (lib.rs). */
     fun losslessSyntaxKinds(): List<YamlSyntaxKind> = syntaxKinds
 
-    /** Returns one independent YAML document by stream ordinal (lib.rs:
-     * 405-416). */
+    /** Returns one independent YAML document by stream ordinal (lib.rs
+ *). */
     fun document(ordinal: Int): YamlDocument? =
         native.documents.getOrNull(ordinal)?.let { YamlDocument(this, ordinal, it) }
 
     /** Number of alias serialization occurrences; aliases are never
-     * expanded (lib.rs:418-422). */
+     * expanded (lib.rs). */
     fun aliasCount(): Int = native.aliases.size
 
-    /** Returns one alias occurrence in serialization order (lib.rs:424-431). */
+    /** Returns one alias occurrence in serialization order (lib.rs). */
     fun alias(ordinal: Int): YamlAlias? =
         native.aliases.getOrNull(ordinal)?.let { YamlAlias(this, it) }
 
-    /** Number of independent YAML documents in this stream (lib.rs:450-454). */
+    /** Number of independent YAML documents in this stream (lib.rs). */
     fun documentCount(): Int = streamDocuments
 
-    /** Resource contract used to form this stream (lib.rs:456-461). */
+    /** Resource contract used to form this stream (lib.rs). */
     fun parseLimits(): ParseLimits = parseLimits
 
     internal fun pieces(): List<consema.document.StructuralPiece> = structuralIndex.pieces()
@@ -446,57 +446,57 @@ class Document internal constructor(
     }
 }
 
-/** One independent document in a YAML stream (lib.rs:463-501). */
+/** One independent document in a YAML stream (lib.rs). */
 class YamlDocument internal constructor(
     internal val owner: Document,
     internal val ordinal: Int,
     internal val document: NativeDocument,
 ) {
-    /** Zero-based stream ordinal (lib.rs:474-478). */
+    /** Zero-based stream ordinal (lib.rs). */
     fun ordinal(): Int = ordinal
 
-    /** Snapshot-bound document identity (lib.rs:480-486). */
+    /** Snapshot-bound document identity (lib.rs). */
     fun nodeRef(): NodeRef =
         owner.authority.nodeRef(ordinal.toLong(), NodeRole.YamlDocument)
 
-    /** Backend-validated raw document presentation span (lib.rs:488-492). */
+    /** Backend-validated raw document presentation span (lib.rs). */
     fun span(): Span = document.span
 
     /** Representation root; alias occurrences already share target identity
-     * (lib.rs:494-500). */
+     * (lib.rs). */
     fun root(): YamlNode = YamlNode(owner, document.root)
 }
 
-/** Snapshot-bound YAML representation node (lib.rs:503-615). */
+/** Snapshot-bound YAML representation node (lib.rs). */
 class YamlNode internal constructor(
     internal val owner: Document,
     internal val index: Int,
 ) {
-    /** Process-local stable identity within this snapshot (lib.rs:513-517). */
+    /** Process-local stable identity within this snapshot (lib.rs). */
     fun nodeRef(): NodeRef = nodeRef(owner.authority, index)
 
-    /** Exact raw representation occurrence span (lib.rs:519-523). */
+    /** Exact raw representation occurrence span (lib.rs). */
     fun span(): Span = owner.native.nodes[index].span
 
-    /** Resolved tag identifier (lib.rs:525-529). */
+    /** Resolved tag identifier (lib.rs). */
     fun tag(): String = owner.native.nodes[index].tag
 
-    /** Exact anchor name on the defining occurrence, if present (lib.rs:
-     * 531-535). */
+    /** Exact anchor name on the defining occurrence, if present (lib.rs
+ *). */
     fun anchor(): String? = owner.native.nodes[index].anchor
 
     /** Snapshot-bound anchor-definition identity, when this node defines
-     * one (lib.rs:537-547). */
+     * one (lib.rs). */
     fun anchorNodeRef(): NodeRef? =
         owner.native.nodes[index].anchor?.let {
             owner.authority.nodeRef(index.toLong(), NodeRole.YamlAnchorDefinition)
         }
 
-    /** Exact raw `&name` span, when this node defines an anchor (lib.rs:
-     * 549-553). */
+    /** Exact raw `&name` span, when this node defines an anchor (lib.rs
+ *). */
     fun anchorSpan(): Span? = owner.native.nodes[index].anchorSpan
 
-    /** Native node kind (lib.rs:556-563). */
+    /** Native node kind (lib.rs). */
     fun kind(): YamlNodeKind =
         when (val content = owner.native.nodes[index].content) {
             is NativeContent.Scalar -> YamlNodeKind.Scalar
@@ -504,117 +504,117 @@ class YamlNode internal constructor(
             is NativeContent.Mapping -> YamlNodeKind.Mapping
         }
 
-    /** Scalar facts, when this is a scalar node (lib.rs:565-571). */
+    /** Scalar facts, when this is a scalar node (lib.rs). */
     fun scalar(): YamlScalar? =
         (owner.native.nodes[index].content as? NativeContent.Scalar)?.scalar
             ?.let { YamlScalar(it) }
 
-    /** Ordered sequence association count (lib.rs:573-581). */
+    /** Ordered sequence association count (lib.rs). */
     fun sequenceLen(): Int? =
         (owner.native.nodes[index].content as? NativeContent.Sequence)?.items?.size
 
-    /** One exact sequence association (lib.rs:583-593). */
+    /** One exact sequence association (lib.rs). */
     fun sequenceItem(ordinal: Int): YamlSequenceItem? =
         (owner.native.nodes[index].content as? NativeContent.Sequence)?.items
             ?.getOrNull(ordinal)?.let { YamlSequenceItem(owner, it) }
 
-    /** Ordered mapping association count (lib.rs:595-602). */
+    /** Ordered mapping association count (lib.rs). */
     fun mappingLen(): Int? =
         (owner.native.nodes[index].content as? NativeContent.Mapping)?.entries?.size
 
-    /** One exact arbitrary key/value association (lib.rs:604-614). */
+    /** One exact arbitrary key/value association (lib.rs). */
     fun mappingEntry(ordinal: Int): YamlMappingEntry? =
         (owner.native.nodes[index].content as? NativeContent.Mapping)?.entries
             ?.getOrNull(ordinal)?.let { YamlMappingEntry(owner, it) }
 }
 
-/** Native scalar facts with exact decoded and canonical content (lib.rs:
- * 617-647). */
+/** Native scalar facts with exact decoded and canonical content (lib.rs
+ *). */
 class YamlScalar internal constructor(internal val scalar: NativeScalar) {
-    /** Decoded YAML scalar content before schema canonicalization (lib.rs:
-     * 626-630). */
+    /** Decoded YAML scalar content before schema canonicalization (lib.rs
+ *). */
     fun decoded(): String = scalar.decoded
 
-    /** Profile-defined canonical scalar content (lib.rs:632-636). */
+    /** Profile-defined canonical scalar content (lib.rs). */
     fun canonical(): String = scalar.canonical
 
-    /** Resolved scalar category (lib.rs:638-641). */
+    /** Resolved scalar category (lib.rs). */
     fun kind(): YamlScalarKind = scalar.kind
 
-    /** Source presentation style (lib.rs:643-646). */
+    /** Source presentation style (lib.rs). */
     fun style(): YamlScalarStyle = scalar.style
 }
 
-/** One ordered sequence association (lib.rs:649-689). */
+/** One ordered sequence association (lib.rs). */
 class YamlSequenceItem internal constructor(
     internal val owner: Document,
     internal val item: NativeSequenceItem,
 ) {
-    /** Snapshot-bound association identity (lib.rs:658-664). */
+    /** Snapshot-bound association identity (lib.rs). */
     fun nodeRef(): NodeRef =
         owner.authority.nodeRef(item.identity, NodeRole.YamlSequenceElement)
 
     /** Exact raw element occurrence span, including an alias spelling when
-     * used (lib.rs:666-671). */
+     * used (lib.rs). */
     fun span(): Span = item.span
 
-    /** Referenced representation node (lib.rs:673-679). */
+    /** Referenced representation node (lib.rs). */
     fun node(): YamlNode = YamlNode(owner, item.node)
 
     /** Alias occurrence that supplied this element edge, when present
-     * (lib.rs:681-688). */
+     * (lib.rs). */
     fun alias(): YamlAlias? =
         item.alias?.let { YamlAlias(owner, owner.native.aliases[it]) }
 }
 
-/** One ordered YAML mapping association with an arbitrary key node (lib.rs:
- * 691-749). */
+/** One ordered YAML mapping association with an arbitrary key node (lib.rs
+ *). */
 class YamlMappingEntry internal constructor(
     internal val owner: Document,
     internal val entry: NativeMappingEntry,
 ) {
-    /** Snapshot-bound association identity (lib.rs:700-706). */
+    /** Snapshot-bound association identity (lib.rs). */
     fun nodeRef(): NodeRef =
         owner.authority.nodeRef(entry.identity, NodeRole.YamlMappingEntry)
 
     /** Raw span from the key occurrence through the value occurrence
-     * (lib.rs:708-712). */
+     * (lib.rs). */
     fun span(): Span = entry.span
 
-    /** Arbitrary key node (lib.rs:714-720). */
+    /** Arbitrary key node (lib.rs). */
     fun key(): YamlNode = YamlNode(owner, entry.key)
 
-    /** Value node (lib.rs:722-728). */
+    /** Value node (lib.rs). */
     fun value(): YamlNode = YamlNode(owner, entry.value)
 
-    /** Alias occurrence that supplied the key edge, when present (lib.rs:
-     * 730-738). */
+    /** Alias occurrence that supplied the key edge, when present (lib.rs
+ *). */
     fun keyAlias(): YamlAlias? =
         entry.keyAlias?.let { YamlAlias(owner, owner.native.aliases[it]) }
 
-    /** Alias occurrence that supplied the value edge, when present (lib.rs:
-     * 740-748). */
+    /** Alias occurrence that supplied the value edge, when present (lib.rs
+ *). */
     fun valueAlias(): YamlAlias? =
         entry.valueAlias?.let { YamlAlias(owner, owner.native.aliases[it]) }
 }
 
 /** One alias serialization occurrence pointing at an existing representation
- * node (lib.rs:751-787). */
+ * node (lib.rs). */
 class YamlAlias internal constructor(
     internal val owner: Document,
     internal val alias: NativeAlias,
 ) {
-    /** Snapshot-bound occurrence identity (lib.rs:760-766). */
+    /** Snapshot-bound occurrence identity (lib.rs). */
     fun nodeRef(): NodeRef =
         owner.authority.nodeRef(alias.identity, NodeRole.YamlAlias)
 
-    /** Exact raw `*name` occurrence span (lib.rs:768-772). */
+    /** Exact raw `*name` occurrence span (lib.rs). */
     fun span(): Span = alias.span
 
-    /** Exact alias name without `*` (lib.rs:774-778). */
+    /** Exact alias name without `*` (lib.rs). */
     fun name(): String = alias.name
 
-    /** Shared target representation node; no expansion occurs (lib.rs:
-     * 780-786). */
+    /** Shared target representation node; no expansion occurs (lib.rs
+ *). */
     fun target(): YamlNode = YamlNode(owner, alias.target)
 }

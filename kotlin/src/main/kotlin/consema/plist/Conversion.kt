@@ -2,7 +2,7 @@
 // `plist.binary@1`.
 //
 // Data authority:
-//   - RFC 0013 §7 (https://github.com/consema/consema/blob/main/docs/rfcs/0013-plist-family-profiles-v1.md:512-538):
+//   - RFC 0013 §7 (https://github.com/consema/consema/blob/main/docs/rfcs/0013-plist-family-profiles-v1.md):
 //     conversion is a first-class transform, not an internal detail; exact
 //     when every native fact is expressible and atomic otherwise; each
 //     conversion emits report events identifying the representation change
@@ -12,11 +12,11 @@
 //     round-trip contract is native-model equality across a chain of
 //     conversions with every representation change reported.
 //   - conformance/vectors/plist-v1.json (plist.conversion.*) pins the
-//     outcomes; https://github.com/consema/consema-rs/blob/main/consema-plist/src/document.rs:252-593 is the
-//     byte-arbitration authority (convert_to document.rs:252-289,
-//     convert_xml_to_binary document.rs:494-551, convert_binary_to_xml
-//     document.rs:559-593, analyze document.rs:619-770, the XML serializer
-//     document.rs:773-841, the failure codes document.rs:1292-1303).
+//     outcomes; https://github.com/consema/consema-rs/blob/main/consema-plist/src/document.rs is the
+//     byte-arbitration authority (convert_to document.rs,
+//     convert_xml_to_binary document.rs, convert_binary_to_xml
+//     document.rs, analyze document.rs, the XML serializer
+//     document.rs, the failure codes document.rs).
 //
 // Kotlin-idiomatic design: the conversion is a Document extension returning
 // the immutable ConvertedDocument; the target XML serializer emits the root
@@ -30,7 +30,7 @@ import consema.document.NodeRef
 import consema.document.NodeRole
 import kotlin.math.absoluteValue
 
-/** One conversion report event kind (document.rs:314-377). */
+/** One conversion report event kind (document.rs). */
 enum class ConversionEventKind {
     /** The target representation differs from the source. */
     RepresentationChange,
@@ -49,7 +49,7 @@ data class ConversionEvent(
     val targetOrdinal: Int = -1,
 )
 
-/** Complete ordered conversion report (document.rs:314-377). */
+/** Complete ordered conversion report (document.rs). */
 class ConversionReport private constructor(private val events: List<ConversionEvent>) {
     companion object {
         internal fun new(events: List<ConversionEvent>): ConversionReport = ConversionReport(events)
@@ -68,7 +68,7 @@ class ConversionReport private constructor(private val events: List<ConversionEv
     override fun hashCode(): Int = events.hashCode()
 }
 
-/** One successful cross-representation conversion (document.rs:319-330). */
+/** One successful cross-representation conversion (document.rs). */
 data class ConvertedDocument(
     /** The new immutable target snapshot. */
     val document: Document,
@@ -78,7 +78,7 @@ data class ConvertedDocument(
 )
 
 /** The typed conversion failure carrying the frozen `plist.conversion.*@1`
- * code (document.rs:1292-1303, 718). */
+ * code (document.rs). */
 class ConversionFailureException(
     /** The frozen conversion code. */
     val code: String,
@@ -91,7 +91,7 @@ class ConversionFailureException(
 
 /**
  * Converts this complete document to the other representation (RFC 0013 §7;
- * document.rs:252-289). The conversion is exact when every native fact is
+ * document.rs). The conversion is exact when every native fact is
  * expressible in the target representation and fails atomically otherwise;
  * each conversion emits report events identifying the representation change
  * and the per-value provenance mapping.
@@ -116,8 +116,8 @@ fun Document.convertTo(
     }
 }
 
-/** Converts one `plist.xml@1` document to `plist.binary@1` (document.rs:
- * 494-551). */
+/** Converts one `plist.xml@1` document to `plist.binary@1` (document.rs
+ *). */
 private fun Document.convertXmlToBinary(limits: PlistParseLimits): ConvertedDocument {
     val valueIndices = valueOnlyIndices()
     val nodeCount = valueIndices.size
@@ -159,7 +159,7 @@ private fun Document.convertXmlToBinary(limits: PlistParseLimits): ConvertedDocu
         throw ConversionFailureException(PlistCodes.CONVERSION_REPARSE)
     }
     // Mapping: node i lands after the key objects of every earlier
-    // dictionary and its own (document.rs:528-543).
+    // dictionary and its own (document.rs).
     val events = ArrayList<ConversionEvent>(eventCount)
     events.add(ConversionEvent(ConversionEventKind.RepresentationChange))
     var keysBefore = 0
@@ -180,9 +180,9 @@ private fun Document.convertXmlToBinary(limits: PlistParseLimits): ConvertedDocu
 
 /** Serializes the native model as a binary object table: every dictionary's
  * key objects immediately precede their dictionary, and every node is
- * written fresh (document.rs:1080-1123; no scalar deduplication in the
+ * written fresh (document.rs; no scalar deduplication in the
  * conversion path). Node `i` lands after the key objects of every earlier
- * dictionary and its own (document.rs:528-543). */
+ * dictionary and its own (document.rs). */
 private fun Document.conversionBinaryBytes(): ByteArray {
     val valueIndices = valueOnlyIndices()
     val ordinalOf = HashMap<Int, Int>()
@@ -227,7 +227,7 @@ private fun Document.conversionBinaryBytes(): ByteArray {
     out.add(offsetIntSize.toByte())
     out.add(refSize.toByte())
     writeConversionBe(out, offsets.size.toLong(), 8)
-    // topObject is the root's target ordinal (document.rs:1120).
+    // topObject is the root's target ordinal (document.rs).
     val rootOrdinal = ordinalOf[rootIndex] ?: 0
     writeConversionBe(out, targetIndex[rootOrdinal].toLong(), 8)
     writeConversionBe(out, offsetTableOffset.toLong(), 8)
@@ -346,7 +346,7 @@ private fun Document.writeConversionValue(
         is NativeValue.Dict -> {
             writeConversionSized(out, 0xD0, native.entries.size)
             // The dict's own key objects immediately precede it
-            // (document.rs:1137-1140).
+            // (document.rs).
             val keyStart = targetIndex[sourceOrdinal] - native.entries.size
             for (position in 0 until native.entries.size) {
                 writeConversionBe(out, (keyStart + position).toLong(), refSize)
@@ -361,8 +361,8 @@ private fun Document.writeConversionValue(
     }
 }
 
-/** Converts one `plist.binary@1` document to `plist.xml@1` (document.rs:
- * 559-593). The reachable value graph is validated for XML expressibility
+/** Converts one `plist.binary@1` document to `plist.xml@1` (document.rs
+ *). The reachable value graph is validated for XML expressibility
  * first; any binary-only fact fails the whole conversion atomically. */
 private fun Document.convertBinaryToXml(limits: PlistParseLimits): ConvertedDocument {
     val valueIndices = valueOnlyIndices()
@@ -373,7 +373,7 @@ private fun Document.convertBinaryToXml(limits: PlistParseLimits): ConvertedDocu
         )
     }
     // Reachable-graph analysis with expressibility validation
-    // (document.rs:619-770).
+    // (document.rs).
     val graph = analyzeXmlExpressibility(valueIndices, limits)
     val eventCount = 1 + graph.reachable.size
     if (eventCount > limits.maxReportEvents) {
@@ -406,7 +406,7 @@ private fun Document.convertBinaryToXml(limits: PlistParseLimits): ConvertedDocu
 }
 
 /** The reachable graph with post-order ranks and the XML expressibility
- * verdict (document.rs:619-770). */
+ * verdict (document.rs). */
 private class ReachableGraph(
     val reachable: List<Int>,
     val ranks: IntArray,
@@ -554,7 +554,7 @@ private fun isXmlConvertibleText(string: PlistString): Boolean {
 private class XmlFrame(val node: Int, val depth: Int, val childCursor: Int)
 
 /** Serializes the reachable native graph as XML with the root value at
- * depth 0 (document.rs:773-841; the conversion render pinned by the
+ * depth 0 (document.rs; the conversion render pinned by the
  * vectors). */
 private fun Document.conversionXmlBytes(graph: ReachableGraph): ByteArray {
     val out = StringBuilder()

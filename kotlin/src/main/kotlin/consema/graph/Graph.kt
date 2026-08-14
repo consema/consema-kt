@@ -5,7 +5,7 @@
 // (pgce.empty-vector, pgce.scalar-vector, graph.isomorphic-builder-numbering,
 // graph.sharing-is-not-duplication, pgce.cycle-roundtrip); the Rust crate
 // https://github.com/consema/consema-rs/blob/main/consema-graph/src/lib.rs is the byte/limits arbiter (GraphLimits
-// default lib.rs:178-190). consema-go/go/graph/graph.go is a cross-reference only.
+// default lib.rs). consema-go/go/graph/graph.go is a cross-reference only.
 //
 // The model is independent from the closed fifteen-kind PortableValue model:
 // scalar nodes carry resolved tag identifiers and canonical content strings
@@ -41,7 +41,7 @@ enum class NodeKind {
  */
 data class NodeId internal constructor(internal val graph: Long, internal val index: Int) {
     /** The builder-local numeric representation (the Rust
-     * GraphNodeId::as_u64, https://github.com/consema/consema-rs/blob/main/consema-graph/src/lib.rs:40-43). */
+     * GraphNodeId::as_u64, https://github.com/consema/consema-rs/blob/main/consema-graph/src/lib.rs). */
     fun asUint64(): ULong = index.toULong()
 }
 
@@ -83,7 +83,7 @@ internal class NodeData(
 
 /**
  * The resource bounds for graph construction and traversal (RFC 0006 §6;
- * the Rust GraphLimits, https://github.com/consema/consema-rs/blob/main/consema-graph/src/lib.rs:159-190). The zero
+ * the Rust GraphLimits, https://github.com/consema/consema-rs/blob/main/consema-graph/src/lib.rs). The zero
  * value rejects every reservation and root; use [GraphLimits.default].
  */
 data class GraphLimits(
@@ -106,8 +106,8 @@ data class GraphLimits(
     companion object {
         /** The frozen defaults (1,000,000 roots, 1,000,000 nodes,
          * 2,000,000 edges, 1,000,000 container entries, 1 MiB tag,
-         * 64 MiB scalar, depth 256; https://github.com/consema/consema-rs/blob/main/consema-graph/src/lib.rs:
-         * 178-190). */
+         * 64 MiB scalar, depth 256; https://github.com/consema/consema-rs/blob/main/consema-graph/src/lib.rs
+ *). */
         val default = GraphLimits(
             maxRoots = 1_000_000,
             maxNodes = 1_000_000,
@@ -158,7 +158,7 @@ class Graph internal constructor(
 
     /** The builder-local IDs in builder order. Numeric ID order is not
      * value semantics (the Rust PortableGraph::nodes,
-     * https://github.com/consema/consema-rs/blob/main/consema-graph/src/lib.rs:507-519). */
+     * https://github.com/consema/consema-rs/blob/main/consema-graph/src/lib.rs). */
     fun nodeIds(): List<NodeId> {
         val ids = ArrayList<NodeId>(nodes.size)
         for (index in nodes.indices) {
@@ -246,8 +246,8 @@ class Builder private constructor(private val identity: Long, private val limits
     }
 
     /** Stores one node after checking duplicate definition and the edge
-     * limit (the Rust GraphBuilder::define, https://github.com/consema/consema-rs/blob/main/consema-graph/src/lib.rs:
-     * 383-401). */
+     * limit (the Rust GraphBuilder::define, https://github.com/consema/consema-rs/blob/main/consema-graph/src/lib.rs
+ *). */
     private fun define(id: NodeId, node: NodeData, newEdges: Int) {
         val index = requireReserved(id)
         if (nodes[index] != null) {
@@ -264,7 +264,7 @@ class Builder private constructor(private val identity: Long, private val limits
 
     /** Validates that [id] belongs to this builder and is within the
      * reserved range (the Rust GraphBuilder::require_reserved,
-     * https://github.com/consema/consema-rs/blob/main/consema-graph/src/lib.rs:403-410). Returns the node index. */
+     * https://github.com/consema/consema-rs/blob/main/consema-graph/src/lib.rs). Returns the node index. */
     private fun requireReserved(id: NodeId): Int {
         if (id.graph != identity) {
             throw GraphException(
@@ -285,7 +285,7 @@ class Builder private constructor(private val identity: Long, private val limits
 
     /** Rejects empty tags, tags containing ASCII control or whitespace, and
      * tags that are not valid UTF-8 (the Rust validate_tag,
-     * https://github.com/consema/consema-rs/blob/main/consema-graph/src/lib.rs:447-456 plus the Arc<str> invariant;
+     * https://github.com/consema/consema-rs/blob/main/consema-graph/src/lib.rs plus the Arc<str> invariant;
      * RFC 0006 §2). */
     private fun validateTag(tag: String) {
         if (tag.isEmpty() || hasInvalidTagChar(tag)) {
@@ -312,8 +312,8 @@ class Builder private constructor(private val identity: Long, private val limits
     }
 
     /** Reports [GraphErrorKind.RESOURCE_LIMIT] when [observed] exceeds
-     * [limit] (the Rust check_limit, https://github.com/consema/consema-rs/blob/main/consema-graph/src/lib.rs:
-     * 458-468). */
+     * [limit] (the Rust check_limit, https://github.com/consema/consema-rs/blob/main/consema-graph/src/lib.rs
+ *). */
     private fun checkLimit(name: String, observed: Int, limit: Int) {
         if (observed > limit) {
             throw GraphException(
@@ -369,7 +369,7 @@ class Builder private constructor(private val identity: Long, private val limits
  * a reference and is not traversed again. [maxDepth] < 0 disables the
  * first-visit depth limit. Returns the original indices in visit order and
  * the canonical ID of every original index (the Rust canonical_order,
- * https://github.com/consema/consema-rs/blob/main/consema-graph/src/lib.rs:542-578).
+ * https://github.com/consema/consema-rs/blob/main/consema-graph/src/lib.rs).
  */
 internal fun canonicalOrder(
     nodes: List<NodeData>,

@@ -2,7 +2,7 @@
 // XML-specific parse/entity/recovery limits.
 //
 // Data authority (language-neutral sources first):
-//   - RFC 0012 §1 (https://github.com/consema/consema/blob/main/docs/rfcs/0012-xml-1.0-safe-profile-v1.md:13-40):
+//   - RFC 0012 §1 (https://github.com/consema/consema/blob/main/docs/rfcs/0012-xml-1.0-safe-profile-v1.md):
 //     exactly one Profile, `xml.1.0-safe@1`; selected before formation, never
 //     by extension; the parser consumes one complete document entity and
 //     opens no other entity, file, URI, network connection, registry,
@@ -11,15 +11,15 @@
 //     (UTF-8 optional BOM; UTF-16LE/BE with a required BOM; no-BOM defaults
 //     to UTF-8; UTF-16 without a BOM is rejected; UTF-32/Latin-1/Windows
 //     code pages are explicit v1 exclusions).
-//   - https://github.com/consema/consema-rs/blob/main/consema-xml/src/lib.rs:54-67 (XmlProfile, id), lib.rs:69-79
-//     (XmlEncodingSelection), lib.rs:81-157 (XmlParseLimits and the frozen
-//     defaults), lib.rs:159-172 (entity_limits derivation). The frozen
-//     numbers are transcribed VERBATIM from lib.rs:130-156.
+//   - https://github.com/consema/consema-rs/blob/main/consema-xml/src/lib.rs (XmlProfile, id), lib.rs
+//     (XmlEncodingSelection), lib.rs (XmlParseLimits and the frozen
+//     defaults), lib.rs (entity_limits derivation). The frozen
+//     numbers are transcribed VERBATIM from lib.rs.
 //   - consema-go/go/xml/profile.go is a cross-reference only.
 //
 // Kotlin-idiomatic design: the profile is a closed enum, the encoding
 // selection is a sealed class, and the limits are an immutable data class
-// whose defaults are the frozen lib.rs:130-156 values.
+// whose defaults are the frozen lib.rs values.
 
 package consema.xml
 
@@ -27,19 +27,19 @@ import consema.document.ParseLimits
 import consema.document.ProfileId
 import consema.document.SourceEncoding
 
-/** Frozen XML formation profile (lib.rs:54-67). */
+/** Frozen XML formation profile (lib.rs). */
 enum class XmlProfile {
     /** Namespace-aware, side-effect-free XML 1.0 with the safe DTD subset
      * (RFC 0012 §1). */
     SafeV1,
     ;
 
-    /** Stable profile identifier (lib.rs:61-67). */
+    /** Stable profile identifier (lib.rs). */
     fun id(): ProfileId = ProfileId("xml.1.0-safe", 1)
 }
 
 /**
- * Explicit document-entity encoding selection (lib.rs:69-79; RFC 0012 §2).
+ * Explicit document-entity encoding selection (lib.rs; RFC 0012 §2).
  * No-BOM source defaults to UTF-8. An explicit caller choice is evidence,
  * not permission to contradict a BOM or a declaration.
  */
@@ -53,9 +53,9 @@ sealed class XmlEncodingSelection {
 
 /**
  * XML-specific formation, entity, and recovery limits (RFC 0012 §12;
- * lib.rs:81-128). All frozen defaults are transcribed from lib.rs:130-156.
+ * lib.rs). All frozen defaults are transcribed from lib.rs.
  * Common source, node, piece, nesting, and diagnostic limits mirror the
- * document domain [ParseLimits] (document/Limits.kt:31-55).
+ * document domain [ParseLimits] (kotlin/src/main/kotlin/consema/document/Limits.kt).
  */
 data class XmlParseLimits(
     /** Common source, node, piece, nesting, and diagnostic limits. */
@@ -104,7 +104,7 @@ data class XmlParseLimits(
     val maxRecoveryRegions: Int,
 ) {
     companion object {
-        /** The frozen defaults (lib.rs:130-156). */
+        /** The frozen defaults (lib.rs). */
         val default = XmlParseLimits(
             common = ParseLimits.default,
             maxDecodedUtf8Bytes = 128 * 1024 * 1024,
@@ -131,7 +131,7 @@ data class XmlParseLimits(
         )
     }
 
-    /** Entity expansion limits derived from these parse limits (lib.rs:159-172). */
+    /** Entity expansion limits derived from these parse limits (lib.rs). */
     fun entityLimits(): EntityExpansionLimits =
         EntityExpansionLimits(
             maxDeclarations = maxEntityDeclarations,

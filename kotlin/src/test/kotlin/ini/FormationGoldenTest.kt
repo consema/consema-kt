@@ -170,7 +170,7 @@ class FormationGoldenTest {
     }
 
     /** Vector case formation.recovery-never-fabricates-entry (ini-v1.json:
-     * 39-42): a bare line recovers as one error record with the
+ *): a bare line recovers as one error record with the
      * missing-delimiter code, never as an entry; projection and edit both
      * refuse the recovered document with their frozen codes. */
     @Test

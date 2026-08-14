@@ -68,7 +68,7 @@ class EditRoundTripTest {
     }
 
     /** Vector case json5.edit.move-cross-object-rejected (json-family-v2.json:
-     * 180-184): a placement anchor in another Object is TargetNotFound. */
+ *): a placement anchor in another Object is TargetNotFound. */
     @Test
     fun moveCrossObjectIsRejected() {
         val source = "{left:{a:1},right:{b:2}}"

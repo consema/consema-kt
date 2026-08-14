@@ -1,12 +1,12 @@
 // MaterializationRequest and provenance tests.
 //
 // Data authority: RFC 0004 §3 (https://github.com/consema/consema/blob/main/docs/rfcs/0004-materialization-conversion-and-
-// structural-edit-v1.md:57-96) — the common request fields and the closed
+// structural-edit-v1.md) — the common request fields and the closed
 // v1 policies (ExactOnly representability, RequireObject /
 // UniqueStringEntriesToObject mapping policy, None|Lf|CrLf newline);
-// https://github.com/consema/consema-rs/blob/main/consema-document/src/materialization.rs:107-203 (request defaults),
-// materialization.rs:41-62 (newline bytes), materialization.rs:281-325
-// (provenance validation), materialization.rs:327-391 (failure codes).
+// https://github.com/consema/consema-rs/blob/main/consema-document/src/materialization.rs (request defaults),
+// materialization.rs (newline bytes), materialization.rs
+// (provenance validation), materialization.rs (failure codes).
 
 package document
 
@@ -55,7 +55,7 @@ class MaterializationTest {
         assertEquals("toml.1.0@1", ProfileId("toml.1.0", 1).let { "${it.id}@${it.version}" })
     }
 
-    /** materialization.rs:120-132: the strict request defaults are UTF-8,
+    /** materialization.rs: the strict request defaults are UTF-8,
      * LF, RequireObject, ExactOnly, and the frozen limits. */
     @Test
     fun requestDefaultsAreStrict() {
@@ -69,7 +69,7 @@ class MaterializationTest {
         assertEquals(MaterializationLimits.default, request.limits)
     }
 
-    /** materialization.rs:41-62: the exact newline bytes. */
+    /** materialization.rs: the exact newline bytes. */
     @Test
     fun newlineBytesAreExact() {
         assertTrue(NewlinePolicy.None.bytes().isEmpty())
@@ -94,7 +94,7 @@ class MaterializationTest {
         assertEquals(listOf(MaterializationFidelity.Exact, MaterializationFidelity.Transformed), MaterializationFidelity.entries)
     }
 
-    /** materialization.rs:451-454: every explicit policy is kept. */
+    /** materialization.rs: every explicit policy is kept. */
     @Test
     fun requestKeepsEveryExplicitPolicy() {
         val request = MaterializationRequest.new(profile, style)
@@ -108,7 +108,7 @@ class MaterializationTest {
         assertEquals(10, request.limits.maxInputNodes)
     }
 
-    /** materialization.rs:288-318: provenance is target-bound, requires
+    /** materialization.rs: provenance is target-bound, requires
      * non-empty outputs, and enforces its combined limit. */
     @Test
     fun provenanceIsTargetBoundAndLimited() {
@@ -172,7 +172,7 @@ class MaterializationTest {
         assertEquals(MaterializationFailureKind.INVALID_REQUEST, foreignError.kind)
     }
 
-    /** materialization.rs:293-318: the provenance limit counts entries and
+    /** materialization.rs: the provenance limit counts entries and
      * origins combined. */
     @Test
     fun provenanceCombinedLimitIsEnforced() {
@@ -197,7 +197,7 @@ class MaterializationTest {
         assertEquals("core.materialization.resource-limit@1", error.code)
     }
 
-    /** RFC 0004 §7 + materialization.rs:417-424: the result algebra is
+    /** RFC 0004 §7 + materialization.rs: the result algebra is
      * exactly Complete or Failed. */
     @Test
     fun resultAlgebraIsClosed() {
@@ -214,7 +214,7 @@ class MaterializationTest {
         assertEquals(MaterializationFidelity.Exact, result.materialization.fidelity)
     }
 
-    /** materialization.rs:379-390: every failure kind carries its frozen
+    /** materialization.rs: every failure kind carries its frozen
      * registered code. */
     @Test
     fun failureKindsCarryFrozenCodes() {

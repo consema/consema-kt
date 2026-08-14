@@ -1,12 +1,12 @@
 // Versioned JSON native-semantic and lossless-syntax query execution.
 //
 // Data authority:
-//   - RFC 0005 §7 (https://github.com/consema/consema/blob/main/docs/rfcs/0005-json-family-production-v1.md:151-172):
+//   - RFC 0005 §7 (https://github.com/consema/consema/blob/main/docs/rfcs/0005-json-family-production-v1.md):
 //     domains json.native-semantic-query@1|2 and json.lossless-syntax-query@1|2;
 //     v2 extends the permitted native kind set with BinaryFloat64 and the
 //     syntax kind set with Identifier; strict/JSONC execute either version,
 //     JSON5 requires v2; binding validates the domain/kind combination.
-//   - RFC 0003 §8 (https://github.com/consema/consema/blob/main/docs/rfcs/0003-source-syntax-query-and-patch-v1.md:173-248):
+//   - RFC 0003 §8 (https://github.com/consema/consema/blob/main/docs/rfcs/0003-source-syntax-query-and-patch-v1.md):
 //     the standard input sequence is every lossless syntax piece in raw
 //     source order; each match carries its NodeRef, raw Span, format-specific
 //     kind, and source ordinal; kind names and argument types are validated
@@ -14,14 +14,14 @@
 //   - conformance/vectors/syntax-query-v1.json (json cases, lines 5-52) and
 //     json-family-v2.json (json5.query.*) pin the match order/ordinal/text
 //     facts; https://github.com/consema/consema-rs/blob/main/consema-json/src/query.rs is the byte-arbitration
-//     authority (execution query.rs:91-305, operators query.rs:307-477,
-//     selection query.rs:479-496); consema-core/src/query.rs:2967-2993 pins
+//     authority (execution query.rs, operators query.rs,
+//     selection query.rs); consema-core/src/query.rs pins
 //     QueryLimits defaults (max_steps 100_000, max_results 100_000) and the
 //     CancellationToken shape.
 //
 // Kotlin-idiomatic design: execution throws the protocol package's typed
 // [consema.protocol.QueryFailureException] carrying the registered code
-// (query_failure_code mapping, error_registry.rs:1515-1529); the cursor
+// (query_failure_code mapping, error_registry.rs); the cursor
 // terminal contract (RFC 0003 §9) is a synchronous complete result list here,
 // with the terminal state always Completed after a successful execution.
 
@@ -41,7 +41,7 @@ import consema.protocol.QuerySelection
 import java.math.BigInteger
 import java.util.concurrent.atomic.AtomicBoolean
 
-/** Query resource limits (query.rs:2967-2981). */
+/** Query resource limits (query.rs). */
 data class QueryLimits(
     /** Maximum operator steps. */
     val maxSteps: Int,
@@ -49,13 +49,13 @@ data class QueryLimits(
     val maxResults: Int,
 ) {
     companion object {
-        /** The frozen defaults (query.rs:2974-2981): 100,000 steps and
+        /** The frozen defaults (query.rs): 100,000 steps and
          * 100,000 results. */
         val default = QueryLimits(maxSteps = 100_000, maxResults = 100_000)
     }
 }
 
-/** Cooperative cancellation flag (query.rs:2984-2993). */
+/** Cooperative cancellation flag (query.rs). */
 class CancellationToken {
     private val cancelled = AtomicBoolean(false)
 
@@ -68,7 +68,7 @@ class CancellationToken {
     }
 }
 
-/** Owned snapshot-bound JSON native semantic query match (query.rs:11-43). */
+/** Owned snapshot-bound JSON native semantic query match (query.rs). */
 sealed class JsonMatch {
     /** JSON native value. */
     data class Value(
@@ -120,7 +120,7 @@ sealed class JsonMatch {
         }
 }
 
-/** Owned snapshot-bound JSON lossless syntax query match (query.rs:55-88). */
+/** Owned snapshot-bound JSON lossless syntax query match (query.rs). */
 data class JsonSyntaxMatch(
     /** Process-local syntax-piece identity. */
     val node: NodeRef,
@@ -134,7 +134,7 @@ data class JsonSyntaxMatch(
 
 /**
  * Executes a validated JSON native semantic query against one immutable
- * snapshot (query.rs:91-125). The root is the first standard result; it must
+ * snapshot (query.rs). The root is the first standard result; it must
  * not bypass result limits. The domain binding rejects JSON5 documents under
  * domain v1 with a DomainMismatch failure.
  */
@@ -174,7 +174,7 @@ fun executeJsonQuery(
 
 /**
  * Executes a validated JSON lossless syntax query against every source piece
- * in raw order (query.rs:142-183). Matches carry the format-owned kind and
+ * in raw order (query.rs). Matches carry the format-owned kind and
  * the source ordinal; the domain binding rejects JSON5 documents under
  * domain v1.
  */
@@ -211,7 +211,7 @@ fun executeJsonSyntaxQuery(
     return applySelection(matches, definition.selection)
 }
 
-/** Execution context carrying limits and cancellation (query.rs:196-228). */
+/** Execution context carrying limits and cancellation (query.rs). */
 private class Context(
     val document: Document,
     val limits: QueryLimits,
@@ -434,7 +434,7 @@ private fun applyOperator(
     return output
 }
 
-/** Applies the cardinality selection (query.rs:479-496). */
+/** Applies the cardinality selection (query.rs). */
 internal fun <T> applySelection(values: List<T>, selection: QuerySelection): List<T> =
     when (selection) {
         QuerySelection.All -> values

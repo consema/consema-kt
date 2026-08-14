@@ -9,12 +9,12 @@
 //     provenance} | Failed{failure, report, analyzed_input_paths}), §8
 //     (provenance: Value(ValuePath) | Association(AssociationLocation) input
 //     locations; Direct|Reencoded|Generated relations).
-//   - https://github.com/consema/consema-rs/blob/main/consema-document/src/materialization.rs:1-495 pins the shapes,
-//     the frozen defaults (materialization.rs:95-105), and the failure
+//   - https://github.com/consema/consema-rs/blob/main/consema-document/src/materialization.rs pins the shapes,
+//     the frozen defaults (materialization.rs), and the failure
 //     codes; consema-go/go/document/materialization.go is a cross-reference only.
 //
 // The registered materialization codes (RFC 0004 §17
-// https://github.com/consema/consema/blob/main/docs/rfcs/0004-materialization-conversion-and-structural-edit-v1.md:412-420; error_registry.rs:556-604):
+// https://github.com/consema/consema/blob/main/docs/rfcs/0004-materialization-conversion-and-structural-edit-v1.md; error_registry.rs):
 //   core.materialization.invalid-request@1
 //   core.materialization.unsupported-profile@1
 //   core.materialization.unsupported-style@1
@@ -26,7 +26,7 @@
 //
 // Cross-domain dependencies (defined by the L0 core/protocol agents, NOT
 // here): consema.core.ValuePath / AssociationLocation / AssociationRole
-// mirror https://github.com/consema/consema-rs/blob/main/consema-core/src/location.rs:1-89; consema.protocol.
+// mirror https://github.com/consema/consema-rs/blob/main/consema-core/src/location.rs; consema.protocol.
 // Diagnostic is the RFC 0016 §6 diagnostic record owned by the protocol
 // package.
 
@@ -37,7 +37,7 @@ import consema.core.Kind
 import consema.core.ValuePath
 import consema.protocol.Diagnostic
 
-/** Explicit output newline policy (RFC 0004 §3; materialization.rs:41-62). */
+/** Explicit output newline policy (RFC 0004 §3; materialization.rs). */
 enum class NewlinePolicy {
     /** Emit no final or layout newline; only supported by compact
      * profiles. */
@@ -50,7 +50,7 @@ enum class NewlinePolicy {
     CrLf,
     ;
 
-    /** Exact selected newline bytes (materialization.rs:53-61). */
+    /** Exact selected newline bytes (materialization.rs). */
     fun bytes(): ByteArray =
         when (this) {
             None -> ByteArray(0)
@@ -60,7 +60,7 @@ enum class NewlinePolicy {
 }
 
 /** Explicit treatment of ordered mappings at object-only targets
- * (RFC 0004 §3; materialization.rs:64-71). */
+ * (RFC 0004 §3; materialization.rs). */
 enum class MappingPolicy {
     /** Require a native PortableValue Object. */
     RequireObject,
@@ -71,7 +71,7 @@ enum class MappingPolicy {
     UniqueStringEntriesToObject,
 }
 
-/** Closed v1 representability policy (RFC 0004 §3; materialization.rs:73-78).
+/** Closed v1 representability policy (RFC 0004 §3; materialization.rs).
  * ExactOnly is intentionally the only v1 value: a target-native semantic
  * value must round-trip through that target's published exact projection
  * contract. */
@@ -83,7 +83,7 @@ enum class RepresentabilityPolicy {
 
 /**
  * Complete immutable request for creating one new target document
- * (RFC 0004 §3; materialization.rs:107-203). Materialization consumes one
+ * (RFC 0004 §3; materialization.rs). Materialization consumes one
  * complete PortableValue; it never consumes a format AST, process-local
  * handle, partial projection, or arbitrary bytes (RFC 0004 §3).
  */
@@ -105,7 +105,7 @@ class MaterializationRequest private constructor(
 ) {
     companion object {
         /** Creates a strict request with UTF-8, LF, Object-only, and
-         * ExactOnly defaults (materialization.rs:120-132). */
+         * ExactOnly defaults (materialization.rs). */
         fun new(targetProfile: ProfileId, style: MaterializationStyleId): MaterializationRequest =
             MaterializationRequest(
                 targetProfile = targetProfile,
@@ -118,24 +118,24 @@ class MaterializationRequest private constructor(
             )
     }
 
-    /** Selects an explicit output encoding (materialization.rs:134-139). */
+    /** Selects an explicit output encoding (materialization.rs). */
     fun withEncoding(encoding: SourceEncoding): MaterializationRequest =
         MaterializationRequest(targetProfile, style, encoding, newline, mappingPolicy, representability, limits)
 
-    /** Selects an explicit newline policy (materialization.rs:140-146). */
+    /** Selects an explicit newline policy (materialization.rs). */
     fun withNewline(newline: NewlinePolicy): MaterializationRequest =
         MaterializationRequest(targetProfile, style, encoding, newline, mappingPolicy, representability, limits)
 
-    /** Selects explicit ordered-mapping behavior (materialization.rs:147-153). */
+    /** Selects explicit ordered-mapping behavior (materialization.rs). */
     fun withMappingPolicy(policy: MappingPolicy): MaterializationRequest =
         MaterializationRequest(targetProfile, style, encoding, newline, policy, representability, limits)
 
-    /** Replaces immutable materialization limits (materialization.rs:154-160). */
+    /** Replaces immutable materialization limits (materialization.rs). */
     fun withLimits(limits: MaterializationLimits): MaterializationRequest =
         MaterializationRequest(targetProfile, style, encoding, newline, mappingPolicy, representability, limits)
 }
 
-/** Whole-operation semantic fidelity (materialization.rs:205-212). */
+/** Whole-operation semantic fidelity (materialization.rs). */
 enum class MaterializationFidelity {
     /** Target projection reproduces the same portable representation. */
     Exact,
@@ -146,14 +146,14 @@ enum class MaterializationFidelity {
 }
 
 /**
- * Complete ordered materialization report (materialization.rs:214-237).
+ * Complete ordered materialization report (materialization.rs).
  * Report events are stable, ordered, machine-readable diagnostics; human
  * wording is not a contract (RFC 0004 §7).
  */
 class MaterializationReport private constructor(private val events: List<Diagnostic>) {
     companion object {
         /** Creates a report after enforcing its configured event limit
-         * (materialization.rs:222-229). */
+         * (materialization.rs). */
         fun new(events: List<Diagnostic>, limits: MaterializationLimits): MaterializationReport {
             if (events.size > limits.maxReportEntries) {
                 throw MaterializationException(
@@ -175,7 +175,7 @@ class MaterializationReport private constructor(private val events: List<Diagnos
 }
 
 /** Portable input value or association location (RFC 0004 §8;
- * materialization.rs:239-246). */
+ * materialization.rs). */
 sealed class MaterializationInputLocation {
     /** Portable value location. */
     data class Value(val path: ValuePath) : MaterializationInputLocation()
@@ -185,7 +185,7 @@ sealed class MaterializationInputLocation {
 }
 
 /** Relationship from portable input fact to generated target syntax
- * (RFC 0004 §8; materialization.rs:248-258). */
+ * (RFC 0004 §8; materialization.rs). */
 enum class MaterializationRelation {
     /** Direct exact semantic representation. */
     Direct,
@@ -198,7 +198,7 @@ enum class MaterializationRelation {
 }
 
 /** One exact output origin in the newly materialized snapshot (RFC 0004 §8;
- * materialization.rs:259-270). */
+ * materialization.rs). */
 data class MaterializedOrigin(
     /** Target snapshot identity. */
     val snapshot: SnapshotIdentity,
@@ -211,7 +211,7 @@ data class MaterializedOrigin(
 )
 
 /** One input location mapped to one or more target origins (RFC 0004 §8;
- * materialization.rs:272-279). */
+ * materialization.rs). */
 data class MaterializationProvenanceEntry(
     /** Portable input location. */
     val input: MaterializationInputLocation,
@@ -221,7 +221,7 @@ data class MaterializationProvenanceEntry(
 
 /**
  * Complete input-to-output provenance map (RFC 0004 §8;
- * materialization.rs:281-325). Materialization provenance points from
+ * materialization.rs). Materialization provenance points from
  * portable input locations to the new Document; it is not the reverse-
  * direction Projection provenance map. Missing locators fail; identities are
  * not silently dropped (RFC 0004 §8).
@@ -231,7 +231,7 @@ class MaterializationProvenanceMap private constructor(
 ) {
     companion object {
         /** Validates snapshot binding, non-empty outputs, and configured
-         * size (materialization.rs:288-318). */
+         * size (materialization.rs). */
         fun new(
             entries: List<MaterializationProvenanceEntry>,
             target: SnapshotIdentity,
@@ -285,7 +285,7 @@ class MaterializationProvenanceMap private constructor(
 }
 
 /** Stable materialization failure kinds and their frozen registered codes
- * (materialization.rs:327-351; RFC 0004 §17). */
+ * (materialization.rs; RFC 0004 §17). */
 enum class MaterializationFailureKind(val code: String) {
     /** Request fields contradict the target contract. */
     INVALID_REQUEST("core.materialization.invalid-request@1"),
@@ -332,7 +332,7 @@ class MaterializationException(
 }
 
 /** Failed attempt without a Document or partial output bytes (RFC 0004 §7;
- * materialization.rs:393-402). */
+ * materialization.rs). */
 data class FailedMaterializationAttempt(
     /** Stable failure. */
     val failure: MaterializationException,
@@ -344,7 +344,7 @@ data class FailedMaterializationAttempt(
 
 /**
  * Complete successful materialization; its document and audit facts are
- * never partial (RFC 0004 §7; materialization.rs:404-415).
+ * never partial (RFC 0004 §7; materialization.rs).
  */
 data class CompleteMaterialization<D>(
     /** Newly formed immutable target document. */
@@ -359,7 +359,7 @@ data class CompleteMaterialization<D>(
 
 /**
  * Closed materialization completion algebra (RFC 0004 §7;
- * materialization.rs:417-424): exactly one of Complete or Failed; failed
+ * materialization.rs): exactly one of Complete or Failed; failed
  * attempts contain no Document and no partial output bytes.
  */
 sealed class MaterializationResult<out D> {

@@ -5,18 +5,18 @@
 // Data authority:
 //   - conformance/vectors/plist-v1.json cases plist.edit.xml-six-operations
 //     (plist-v1.json:257-325), plist.edit.binary-structural (plist-v1.json:
-//     327-361), plist.edit.conflicts (plist-v1.json:363-407) pin the
+//), plist.edit.conflicts (plist-v1.json) pin the
 //     outcomes.
 //   - https://github.com/consema/consema-rs/blob/main/consema-plist/src/edit.rs is the byte authority: the fold rule
-//     (edit.rs:668-728 record_edit) folds a later operation whose span lies
+//     (edit.rs record_edit) folds a later operation whose span lies
 //     inside an earlier replacement and merges containing base spans at
-//     commit (edit.rs:1947-1979); two zero-width insertions at one base
-//     position conflict (edit.rs:710-719); a boundary insertion at a
-//     replaced span's start is its own record (edit.rs:687-690); a replaced
+//     commit (edit.rs); two zero-width insertions at one base
+//     position conflict (edit.rs); a boundary insertion at a
+//     replaced span's start is its own record (edit.rs); a replaced
 //     container loses its slots so later operations through it fail
-//     WrongRole (edit.rs:749-768); a binary key rename binds a fresh key
-//     object so shared keys stay byte-exact (edit.rs:1700-1721).
-//   - RFC 0013 §11 (https://github.com/consema/consema/blob/main/docs/rfcs/0013-plist-family-profiles-v1.md:683-715).
+//     WrongRole (edit.rs); a binary key rename binds a fresh key
+//     object so shared keys stay byte-exact (edit.rs).
+//   - RFC 0013 §11 (https://github.com/consema/consema/blob/main/docs/rfcs/0013-plist-family-profiles-v1.md).
 //
 // This file runs in the verified toolchain gate (kotlin-gates gradlew
 // test / the scripts/kotlin-verify-*.ps1 direct path): the toolchain is
@@ -199,7 +199,7 @@ class EditTest {
     }
 
     /** insert-dict-entry honors End, Before, and After placement (RFC 0013
-     * §11; edit.rs:132-143). */
+     * §11; edit.rs). */
     @Test
     fun insertDictEntryPlacements() {
         val document = xml("<plist version=\"1.0\"><dict><key>a</key><integer>1</integer><key>b</key><integer>2</integer></dict></plist>")
@@ -256,7 +256,7 @@ class EditTest {
     }
 
     /** Array indexing is sequential: the removal targets the state after
-     * the earlier insertion (RFC 0013 §11; edit.rs:187-191). */
+     * the earlier insertion (RFC 0013 §11; edit.rs). */
     @Test
     fun arrayInsertionShiftsRemovalIndex() {
         val document = xml("<plist version=\"1.0\"><array><integer>1</integer><integer>2</integer><integer>3</integer></array></plist>")
@@ -271,7 +271,7 @@ class EditTest {
     }
 
     /** The fold rule, same-span case: two set-values on one target — the
-     * later replacement folds the earlier one (edit.rs:691-706). */
+     * later replacement folds the earlier one (edit.rs). */
     @Test
     fun foldSameTargetSetTwice() {
         val document = xml("<plist version=\"1.0\"><string>a</string></plist>")
@@ -287,7 +287,7 @@ class EditTest {
 
     /** The fold rule, containing case: a later set-value on a container
      * folds an earlier insertion inside it (the inserted bytes are
-     * subsumed by the replacement; edit.rs:1947-1979 run merge). */
+     * subsumed by the replacement; edit.rs run merge). */
     @Test
     fun foldInsertThenSetValueOnContainer() {
         val document = xml("<plist version=\"1.0\"><dict><key>a</key><integer>1</integer></dict></plist>")
@@ -302,7 +302,7 @@ class EditTest {
     }
 
     /** A later set-value on a virtual slot rewrites the insertion fragment
-     * in place (the fold of edit.rs:691-706); no separate edit exists. */
+     * in place (the fold of edit.rs); no separate edit exists. */
     @Test
     fun foldSetValueOnInsertedEntry() {
         val document = xml("<plist version=\"1.0\"><dict><key>a</key><integer>1</integer></dict></plist>")
@@ -332,7 +332,7 @@ class EditTest {
     }
 
     /** A later removal of an inserted entry folds the insertion to empty:
-     * the final document never contained the entry (edit.rs:691-706
+     * the final document never contained the entry (edit.rs
      * merge). */
     @Test
     fun foldRemoveInsertedEntry() {
@@ -364,7 +364,7 @@ class EditTest {
 
     /** A boundary insertion at a replaced span's start is its own record:
      * removing an entry and inserting at the same base position are both
-     * recorded, and the inserted fragment survives (edit.rs:687-690). */
+     * recorded, and the inserted fragment survives (edit.rs). */
     @Test
     fun boundaryRemoveThenInsertAtSamePosition() {
         val document = xml("<plist version=\"1.0\"><dict><key>a</key><integer>1</integer><key>b</key><integer>2</integer></dict></plist>")
@@ -380,7 +380,7 @@ class EditTest {
     }
 
     /** Two zero-width insertions at one base position conflict
-     * (edit.rs:710-719 ConflictingEdits). */
+     * (edit.rs ConflictingEdits). */
     @Test
     fun twoInsertionsAtSamePositionConflict() {
         val document = xml("<plist version=\"1.0\"><dict><key>a</key><integer>1</integer></dict></plist>")
@@ -396,7 +396,7 @@ class EditTest {
 
     /** A replaced container loses its slots: a later operation resolving
      * through it fails WrongRole like the Rust sequential reparse
-     * (edit.rs:749-768). */
+     * (edit.rs). */
     @Test
     fun setValueOnContainerThenChildOperationWrongRole() {
         val document = xml("<plist version=\"1.0\"><dict><key>a</key><dict><key>b</key><integer>1</integer></dict></dict></plist>")
@@ -454,7 +454,7 @@ class EditTest {
 
     /** The binary trailer names the actual root object: an edit on a
      * document whose root is not object 0 keeps the root identity
-     * (edit.rs:1561). */
+     * (edit.rs). */
     @Test
     fun binaryRootIndexNotZeroPreserved() {
         val document = binary("62706c6973743030517810020908a20203233ff80000000000005161516251635164d40607080900010405080a0c0d0e111a1c1e20220000000000000101000000000000000b000000000000000a000000000000002b")
@@ -479,7 +479,7 @@ class EditTest {
     }
 
     /** A binary key rename binds a fresh key object: another dictionary
-     * sharing the old key object keeps it byte-exact (edit.rs:1700-1721,
+     * sharing the old key object keeps it byte-exact (edit.rs,
      * RFC 0013 §11). */
     @Test
     fun binaryRenameKeepsSharedKeyObjectByteExact() {

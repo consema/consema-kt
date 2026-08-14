@@ -2,7 +2,7 @@
 //
 // Data authority: the frozen `core.protocol.*@1` codes are registered in the
 // semantic-model v1 error registry (https://github.com/consema/consema-rs/blob/main/consema-protocol/src/
-// error_registry.rs:72-90 area; see ErrorRegistry.kt) and mapped from the
+// error_registry.rs area; see ErrorRegistry.kt) and mapped from the
 // Rust ProtocolErrorKind (https://github.com/consema/consema-rs/blob/main/consema-protocol/src/error.rs).
 // consema-go/go/protocol/errors.go is a cross-reference.
 //

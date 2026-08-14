@@ -1,9 +1,9 @@
 // The operator validation table and semantic argument checks.
 //
-// Data authority: https://github.com/consema/consema-rs/blob/main/consema-core/src/query.rs:899-1897 (the operator
+// Data authority: https://github.com/consema/consema-rs/blob/main/consema-core/src/query.rs (the operator
 // rows: expected input role, output role, argument value kinds; the
-// argument-value semantic checks at query.rs:1634-1897; the kind
-// vocabularies at query.rs:1900-2209). Every row and vocabulary spelling is
+// argument-value semantic checks at query.rs; the kind
+// vocabularies at query.rs). Every row and vocabulary spelling is
 // transcribed VERBATIM as data; the semantic checks follow in the Rust
 // order. consema-go/go/protocol/query_validate.go is a cross-reference.
 
@@ -131,7 +131,7 @@ internal val operatorTable: Map<String, OperatorSpec> = buildMap {
         OperatorSpec(Roles.INI_ENTRY, Roles.INI_ENTRY, listOf(ArgSpec("state", KIND_STRING))),
     )
     // ini.duplicate-group is the input-dependent row (RoleAny placeholder);
-    // checkInputDependentRoles types it by the input role (query.rs:1056-1065).
+    // checkInputDependentRoles types it by the input role (query.rs).
     put("ini.native-semantic-query/ini.duplicate-group", OperatorSpec(ROLE_ANY, ROLE_ANY))
     put("ini.native-semantic-query/ini.physical-lines", OperatorSpec(Roles.INI_DOCUMENT, Roles.INI_PHYSICAL_LINE))
     put("ini.native-semantic-query/ini.logical-lines", OperatorSpec(Roles.INI_DOCUMENT, Roles.INI_LOGICAL_LINE))
@@ -429,7 +429,7 @@ internal val operatorTable: Map<String, OperatorSpec> = buildMap {
 
 /**
  * Validates one operator call against its domain and input role
- * (query.rs:899-1897). The semantic argument checks (kind-name
+ * (query.rs). The semantic argument checks (kind-name
  * vocabularies, non-empty tags, state sets) mirror the Rust checks in
  * order. Returns the output role.
  */
@@ -488,7 +488,7 @@ internal fun validateOperator(
             )
         }
     }
-    // Semantic argument-value checks (query.rs:1634-1897).
+    // Semantic argument-value checks (query.rs).
     checkOperatorArguments(domain, operator)
     return output
 }
@@ -563,7 +563,7 @@ private fun checkInputDependentRoles(
         domainId == "plist.binary-structure-query" -> {
             // The structure facts are document-level; every operator accepts
             // any binary-structure match as input so that chains of
-            // structure operators validate (query.rs:1406-1442). The table
+            // structure operators validate (query.rs). The table
             // row already pins the operator's output role.
             if (!plistBinaryInputRoles(input)) {
                 throw QueryFailureException(
@@ -660,7 +660,7 @@ private fun hclErrorRegionInputRoles(input: MatchRole): Boolean = when (input) {
 }
 
 /** Applies the semantic argument-value checks of the Rust validator
- * (query.rs:1634-1897), in order. */
+ * (query.rs), in order. */
 private fun checkOperatorArguments(domain: QueryDomain, operator: OperatorCall) {
     fun stringArg(name: String): String? {
         val value = operator.arguments[name] ?: return null
@@ -888,7 +888,7 @@ private fun checkOperatorArguments(domain: QueryDomain, operator: OperatorCall) 
 }
 
 /** Accepts the frozen fifteen-kind vocabulary of the value-kind arguments
- * (query.rs:2187-2209), matching the closed core model. */
+ * (query.rs), matching the closed core model. */
 internal fun isValueKindName(kind: String): Boolean = when (kind) {
     "Null", "Boolean", "Integer", "Decimal", "BinaryFloat32", "BinaryFloat64",
     "String", "Bytes", "Date", "Time", "LocalDateTime", "OffsetDateTime",
@@ -897,7 +897,7 @@ internal fun isValueKindName(kind: String): Boolean = when (kind) {
     else -> false
 }
 
-// The frozen syntax-kind and value-kind vocabularies (query.rs:1900-2185).
+// The frozen syntax-kind and value-kind vocabularies (query.rs).
 // Spellings are language-neutral and byte-exact.
 
 private fun isJsonSyntaxKind(domainVersion: Int, kind: String): Boolean = when (kind) {

@@ -1,7 +1,7 @@
 // HCL native semantic and lossless syntax query execution.
 //
 // Data authority:
-//   - RFC 0014 §7 (https://github.com/consema/consema/blob/main/docs/rfcs/0014-hcl-family-profiles-v1.md:448-507): the
+//   - RFC 0014 §7 (https://github.com/consema/consema/blob/main/docs/rfcs/0014-hcl-family-profiles-v1.md): the
 //     frozen domains `hcl.native-semantic-query@1` (the operator table of
 //     §7.1) and `hcl.lossless-syntax-query@1` (the exact kind and
 //     decoded-text filters of §7.2); results preserve source order;
@@ -10,7 +10,7 @@
 //     that validate literal-completeness and the requested type before
 //     returning; a non-literal expression is `hcl.query.non-literal@1` and
 //     a type mismatch is `hcl.query.type-mismatch@1` — never a null, empty,
-//     or converted result (query.rs:802-803); `hcl.error-regions@1` exposes
+//     or converted result (query.rs); `hcl.error-regions@1` exposes
 //     the ordered error regions of a Recovered document, one match per
 //     `hcl.parse.*@1`-coded region in source order; no operator evaluates
 //     anything (hard gate 1).
@@ -18,9 +18,9 @@
 //     facts (kind, text, literal, value, ordinal) and the failure codes.
 //   - https://github.com/consema/consema-rs/blob/main/consema-hcl/src/query.rs pins the operator semantics;
 //     kotlin/src/main/kotlin/consema/protocol/QueryValidate.kt pins the validated operator
-//     table (QueryValidate.kt:377-425) and role typing
-//     (QueryValidate.kt:578-628); the frozen roles are the Hcl* spellings
-//     of protocol/Query.kt:89-96.
+//     table (kotlin/src/main/kotlin/consema/protocol/QueryValidate.kt) and role typing
+//     (kotlin/src/main/kotlin/consema/protocol/QueryValidate.kt); the frozen roles are the Hcl* spellings
+//     of kotlin/src/main/kotlin/consema/protocol/Query.kt.
 //   - consema-go/go/hcl is a cross-reference only.
 //
 // Kotlin-idiomatic design: definition validation and capability binding
@@ -49,7 +49,7 @@ import consema.protocol.QuerySelection
 import java.math.BigInteger
 import java.util.concurrent.atomic.AtomicBoolean
 
-/** Owned snapshot-bound HCL native semantic query match (query.rs:9-41). */
+/** Owned snapshot-bound HCL native semantic query match (query.rs). */
 sealed class HclMatch {
     /** A body: the root or a nested block body. */
     data class Body(
@@ -138,7 +138,7 @@ data class HclSyntaxMatch(
     val ordinal: Int,
 )
 
-/** Query execution resource limits (query.rs:2967-2983: the frozen
+/** Query execution resource limits (query.rs: the frozen
  * defaults are 100,000 steps and 100,000 results). */
 data class HclQueryLimits(
     /** Maximum evaluation steps. */
@@ -147,12 +147,12 @@ data class HclQueryLimits(
     val maxResults: Int,
 ) {
     companion object {
-        /** The frozen defaults (query.rs:2977-2978). */
+        /** The frozen defaults (query.rs). */
         val default = HclQueryLimits(maxSteps = 100_000, maxResults = 100_000)
     }
 }
 
-/** Cooperative execution cancellation (query.rs:2985-3006). */
+/** Cooperative execution cancellation (query.rs). */
 class HclCancellationToken {
     private val cancelled = AtomicBoolean(false)
 
@@ -360,7 +360,7 @@ internal fun executeSyntaxExpression(
     }
 }
 
-/** Applies one validated native operator (query.rs:551-592). */
+/** Applies one validated native operator (query.rs). */
 internal fun applyOperator(
     operator: OperatorCall,
     input: List<HclMatch>,
@@ -640,11 +640,11 @@ private fun templatePartRank(context: HclQueryContext, part: HclTemplatePart): L
     return (start shl 32) or (end and 0xffff_ffffL)
 }
 
-/** The typed literal accessor family (RFC 0014 §7.1; query.rs:805-855):
+/** The typed literal accessor family (RFC 0014 §7.1; query.rs):
  * each accessor validates literal-completeness and the requested type; a
  * non-literal expression throws the frozen `hcl.query.non-literal@1` and a
  * type mismatch the frozen `hcl.query.type-mismatch@1` — never a null,
- * empty, or converted result (query.rs:802-803). */
+ * empty, or converted result (query.rs). */
 internal fun literalAccessorValue(
     handle: HclExpressionHandle,
     accessor: String,
@@ -689,11 +689,11 @@ internal fun literalAccessorValue(
     }
 }
 
-/** The frozen `hcl.query.non-literal@1` failure (query.rs:802). */
+/** The frozen `hcl.query.non-literal@1` failure (query.rs). */
 internal fun queryNonLiteral(): HclQueryException =
     HclQueryException(HCL_QUERY_NON_LITERAL, QueryFailureKind.TARGET_UNAVAILABLE)
 
-/** The frozen `hcl.query.type-mismatch@1` failure (query.rs:803). */
+/** The frozen `hcl.query.type-mismatch@1` failure (query.rs). */
 internal fun queryTypeMismatch(): HclQueryException =
     HclQueryException(HCL_QUERY_TYPE_MISMATCH, QueryFailureKind.REQUIRED_TYPE_MISMATCH)
 
@@ -717,7 +717,7 @@ internal fun decimalFromCanonical(canonical: String): PvDecimal {
 }
 
 /** The typed literal projection of a literal-complete expression (RFC 0014
- * §8.2; expression.rs:1596-1712). Null when the expression is derived — a
+ * §8.2; expression.rs). Null when the expression is derived — a
  * non-literal failure, never a null/empty/converted result. */
 internal fun literalValue(expression: HclExpression): HclLiteralValue? {
     val kind = expression.kind
@@ -788,7 +788,7 @@ internal fun literalValue(expression: HclExpression): HclLiteralValue? {
     }
 }
 
-/** The typed literal value of RFC 0014 §8.2 (expression.rs:1722-1741). */
+/** The typed literal value of RFC 0014 §8.2 (expression.rs). */
 internal sealed class HclLiteralValue {
     /** Integer value: canonical decimal without a fraction, optional
      * leading `-`. */
@@ -815,13 +815,13 @@ internal sealed class HclLiteralValue {
     data class Object(val entries: List<HclLiteralObjectEntry>) : HclLiteralValue()
 }
 
-/** One ordered object literal entry (expression.rs:1743-1748). */
+/** One ordered object literal entry (expression.rs). */
 internal data class HclLiteralObjectEntry(
     val key: HclLiteralKey,
     val value: HclLiteralValue,
 )
 
-/** One object literal key (expression.rs:1764-1800). */
+/** One object literal key (expression.rs). */
 internal sealed class HclLiteralKey {
     /** Bare identifier key. */
     data class Identifier(val name: kotlin.String) : HclLiteralKey()
@@ -845,7 +845,7 @@ private fun numberLiteral(canonical: String): HclLiteralValue =
 
 /** Applies the `<<-` indentation stripping: removes the minimum number of
  * leading spaces from each line's leading literal text (RFC 0014 §4.5;
- * expression.rs:1692-1712). */
+ * expression.rs). */
 internal fun stripHeredocIndentation(text: String): String {
     var minimum: Int? = null
     for (line in text.split('\n')) {

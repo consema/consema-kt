@@ -3,13 +3,13 @@
 // lossless coverage index.
 //
 // Data authority:
-//   - RFC 0009 §4 (https://github.com/consema/consema/blob/main/docs/rfcs/0009-ini-family-profiles-v1.md:118-146):
+//   - RFC 0009 §4 (https://github.com/consema/consema/blob/main/docs/rfcs/0009-ini-family-profiles-v1.md):
 //     formation continues to use Complete | Recovered | FatalFormationFailure;
 //     Recovered retains the complete source, exhaustive syntax/error-region
 //     coverage, ordered diagnostics, and every independently proven section
 //     or entry; syntax and native queries may inspect proven records and
 //     distinguish them from error regions.
-//   - RFC 0009 §8 (https://github.com/consema/consema/blob/main/docs/rfcs/0009-ini-family-profiles-v1.md:254-283): the immutable INI Document
+//   - RFC 0009 §8 (https://github.com/consema/consema/blob/main/docs/rfcs/0009-ini-family-profiles-v1.md): the immutable INI Document
 //     retains ordered physical lines with exact raw/decoded ranges, logical
 //     lines with constituent physical-line identities, BOM/newline/quote/
 //     comment facts, section/entry identities with original and comparison
@@ -17,10 +17,10 @@
 //     duplicate groups without collapsing, error-line identities, and
 //     exhaustive non-overlapping syntax pieces; all handles are
 //     snapshot-bound NodeRefs with the INI roles.
-//   - https://github.com/consema/consema-rs/blob/main/consema-ini/src/lib.rs:230-506 pins the handle shapes (node,
+//   - https://github.com/consema/consema-rs/blob/main/consema-ini/src/lib.rs pins the handle shapes (node,
 //     span, content_span, line_break_span, name_span, key_span, value_span,
 //     comparison names, quote style, duplicate group, error code) and the
-//     resolver behavior lib.rs:605-660. consema-go/go/ini/document.go is a
+//     resolver behavior lib.rs. consema-go/go/ini/document.go is a
 //     cross-reference only.
 //
 // Kotlin-idiomatic design (NOT a translation): the Rust borrowed handles are
@@ -28,7 +28,7 @@
 // of the Go handle structs — and `when` over the closed kinds is exhaustive.
 // The document keeps its own consema.document.DocumentAuthority
 // (module-internal, shared across family packages per
-// kotlin/src/main/kotlin/consema/document/Location.kt:17-21).
+// kotlin/src/main/kotlin/consema/document/Location.kt).
 
 package consema.ini
 
@@ -44,7 +44,7 @@ import consema.document.Span
 import consema.document.StructuralPiece
 import consema.protocol.Diagnostic
 
-/** One exact physical source line (lib.rs:230-263). */
+/** One exact physical source line (lib.rs). */
 data class IniPhysicalLine(
     /** Snapshot-bound physical-line identity. */
     val nodeRef: NodeRef,
@@ -57,7 +57,7 @@ data class IniPhysicalLine(
 )
 
 /** One logical record and its ordered physical constituents
- * (lib.rs:265-291). */
+ * (lib.rs). */
 data class IniLogicalLine(
     /** Snapshot-bound logical-line identity. */
     val nodeRef: NodeRef,
@@ -67,7 +67,7 @@ data class IniLogicalLine(
     val physicalLines: List<NodeRef>,
 )
 
-/** One distinct section-header occurrence (lib.rs:293-354). */
+/** One distinct section-header occurrence (lib.rs). */
 data class IniSection(
     /** Snapshot-bound section occurrence identity. */
     val nodeRef: NodeRef,
@@ -87,7 +87,7 @@ data class IniSection(
     val duplicateGroup: Int?,
 )
 
-/** One distinct key/value occurrence (lib.rs:356-445). */
+/** One distinct key/value occurrence (lib.rs). */
 data class IniEntry(
     /** Snapshot-bound entry occurrence identity. */
     val nodeRef: NodeRef,
@@ -115,7 +115,7 @@ data class IniEntry(
     val duplicateGroup: Int?,
 )
 
-/** One recovered physical error record (lib.rs:447-487). */
+/** One recovered physical error record (lib.rs). */
 data class IniErrorLine(
     /** Snapshot-bound error identity. */
     val nodeRef: NodeRef,
@@ -130,7 +130,7 @@ data class IniErrorLine(
 )
 
 /**
- * Immutable lossless INI document (lib.rs:489-661). Parsing happens in
+ * Immutable lossless INI document (lib.rs). Parsing happens in
  * Parser.kt; this file pins the read surface and the module-internal access
  * shared by query, projection, materialization, and edit.
  */
@@ -151,58 +151,58 @@ class IniDocument internal constructor(
     internal val rootNode: NodeRef,
 ) {
     /** Snapshot identity to which every INI handle and span belongs
-     * (lib.rs:508-513). */
+     * (lib.rs). */
     val snapshotIdentity: SnapshotIdentity
         get() = authority.identity
 
-    /** Exact immutable source (lib.rs:515-519). */
+    /** Exact immutable source (lib.rs). */
     fun source(): IniSource = sourceSnapshot
 
-    /** Default rendering is the exact current source bytes (lib.rs:521-525). */
+    /** Default rendering is the exact current source bytes (lib.rs). */
     fun render(): ByteArray = sourceSnapshot.bytes()
 
-    /** INI format family contract (lib.rs:527-531). */
+    /** INI format family contract (lib.rs). */
     fun formatFamily(): FormatFamilyId = FormatFamilyId("ini", 1)
 
-    /** Exact language profile (lib.rs:533-537). */
+    /** Exact language profile (lib.rs). */
     fun profileId(): ProfileId = profile.id()
 
-    /** Root INI document identity (lib.rs:539-543). */
+    /** Root INI document identity (lib.rs). */
     fun nodeRef(): NodeRef = rootNode
 
-    /** Whether recovery structure was required (lib.rs:545-549). */
+    /** Whether recovery structure was required (lib.rs). */
     fun formationStatus(): FormationStatus = formationStatus
 
-    /** Deterministically ordered document diagnostics (lib.rs:551-555). */
+    /** Deterministically ordered document diagnostics (lib.rs). */
     fun diagnostics(): List<Diagnostic> = diagnosticsList
 
-    /** Exhaustive token/trivia/error-region byte coverage (lib.rs:557-561). */
+    /** Exhaustive token/trivia/error-region byte coverage (lib.rs). */
     fun losslessStructuralIndex(): LosslessStructuralIndex = structuralIndex
 
     /** Format-specific kind for every structural piece, in the same source
-     * order (lib.rs:563-567). */
+     * order (lib.rs). */
     fun losslessSyntaxKinds(): List<IniSyntaxKind> = syntaxKinds
 
-    /** Ordered physical source lines (lib.rs:569-573). */
+    /** Ordered physical source lines (lib.rs). */
     fun physicalLines(): List<IniPhysicalLine> = physicalLinesList
 
-    /** Ordered logical records (lib.rs:575-579). */
+    /** Ordered logical records (lib.rs). */
     fun logicalLines(): List<IniLogicalLine> = logicalLinesList
 
-    /** Ordered distinct section occurrences (lib.rs:581-585). */
+    /** Ordered distinct section occurrences (lib.rs). */
     fun sections(): List<IniSection> = sectionsList
 
-    /** Ordered distinct entry occurrences (lib.rs:587-591). */
+    /** Ordered distinct entry occurrences (lib.rs). */
     fun entries(): List<IniEntry> = entriesList
 
-    /** Ordered recovered error records (lib.rs:593-597). */
+    /** Ordered recovered error records (lib.rs). */
     fun errorLines(): List<IniErrorLine> = errorLinesList
 
-    /** Resource contract used to form this snapshot (lib.rs:599-603). */
+    /** Resource contract used to form this snapshot (lib.rs). */
     fun parseLimits(): IniParseLimits = parseLimits
 
     /** Resolves one physical-line handle only within this snapshot
-     * (lib.rs:605-618). Throws [IniAccessException]: WrongSnapshot,
+     * (lib.rs). Throws [IniAccessException]: WrongSnapshot,
      * WrongRole, or UnknownNode. */
     fun physicalLine(node: NodeRef): IniPhysicalLine {
         validate(node, NodeRole.IniPhysicalLine)
@@ -211,7 +211,7 @@ class IniDocument internal constructor(
     }
 
     /** Resolves one logical-line handle only within this snapshot
-     * (lib.rs:620-633). */
+     * (lib.rs). */
     fun logicalLine(node: NodeRef): IniLogicalLine {
         validate(node, NodeRole.IniLogicalLine)
         return logicalLinesList.firstOrNull { it.nodeRef == node }
@@ -219,7 +219,7 @@ class IniDocument internal constructor(
     }
 
     /** Resolves one section/default-section handle only within this snapshot
-     * (lib.rs:635-648). */
+     * (lib.rs). */
     fun section(node: NodeRef): IniSection {
         if (node.snapshot != snapshotIdentity) {
             throw IniAccessException(IniAccessErrorKind.WrongSnapshot)
@@ -231,17 +231,17 @@ class IniDocument internal constructor(
             ?: throw IniAccessException(IniAccessErrorKind.UnknownNode)
     }
 
-    /** Resolves one entry handle only within this snapshot (lib.rs:650-660). */
+    /** Resolves one entry handle only within this snapshot (lib.rs). */
     fun entry(node: NodeRef): IniEntry {
         validate(node, NodeRole.IniEntry)
         return entriesList.firstOrNull { it.nodeRef == node }
             ?: throw IniAccessException(IniAccessErrorKind.UnknownNode)
     }
 
-    /** Structural coverage pieces (lib.rs:557-561). */
+    /** Structural coverage pieces (lib.rs). */
     internal fun pieces(): List<StructuralPiece> = structuralIndex.pieces()
 
-    /** Verifies snapshot binding and one exact role (lib.rs:605-660). */
+    /** Verifies snapshot binding and one exact role (lib.rs). */
     private fun validate(node: NodeRef, role: NodeRole) {
         if (node.snapshot != snapshotIdentity) {
             throw IniAccessException(IniAccessErrorKind.WrongSnapshot)

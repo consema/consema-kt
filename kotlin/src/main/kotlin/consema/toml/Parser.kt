@@ -9,7 +9,7 @@
 //   - TOML 1.0.0 grammar; the semantic state machine (dotted keys, standard/
 //     implicit/dotted tables, arrays of tables, inline-table extension
 //     prohibition, implicit-table reuse with remove-and-reinsert) follows
-//     toml_edit 0.22.27 (the frozen Rust backend, IMPLEMENTATION.md:104) as
+//     toml_edit 0.22.27 (the frozen Rust backend, IMPLEMENTATION.md) as
 //     transcribed by the Go parser (consema-go/go/toml/parser.go:280-2030, a
 //     cross-reference only): parseDocument BOM skip, parseComment/lineTrailing
 //     trivia rules, parseKey dotted keys, parseKeyval with the dotted-vs-table
@@ -17,7 +17,7 @@
 //     finalize with AOT append, parseValue dispatch order, the four string
 //     forms with mlb-escaped-nl, tryDateTime/tryFloatToken/trySpecialFloat/
 //     parseIntToken number grammar, parseArray, parseInlineTableValue.
-//   - https://github.com/consema/consema-rs/blob/main/consema-toml/src/parser.rs:84-337 (EntityBuilder): the exact
+//   - https://github.com/consema/consema-rs/blob/main/consema-toml/src/parser.rs (EntityBuilder): the exact
 //     entity order (item first, then per entry key/item/entry), the span
 //     fallback rules, and the node-count/nesting limits.
 //
@@ -1444,11 +1444,11 @@ private class ByteArrayOutputStreamKt {
 }
 
 // ---------------------------------------------------------------------------
-// Entity building (consema-toml/src/parser.rs:84-337)
+// Entity building (consema-toml/src/parser.rs)
 
 /** The parse-tree to immutable-entity converter. The entity order is the
  * exact Rust order: an item entity first, then for every association a key
- * entity, the child item, and the entry entity (parser.rs:190-243). */
+ * entity, the child item, and the entry entity (parser.rs). */
 internal class EntityBuilder(
     private val authority: DocumentAuthority,
     private val sourceLen: Int,
@@ -1641,7 +1641,7 @@ internal class EntityBuilder(
     fun build(): List<Entity> = entities
 }
 
-/** One immutable structural entity in the document (parser.rs:577-589). */
+/** One immutable structural entity in the document (parser.rs). */
 internal data class Entity(val span: Span, val kind: EntityKind)
 
 internal sealed class EntityKind {
@@ -1673,6 +1673,6 @@ internal data class KeyEntity(val name: String)
 
 internal data class ElementEntity(val ordinal: Int, val item: Int)
 
-/** The Rust TomlItem::node_ref role used for item handles (lib.rs:237-239). */
+/** The Rust TomlItem::node_ref role used for item handles (lib.rs). */
 internal fun itemNodeRef(authority: DocumentAuthority, index: Int): consema.document.NodeRef =
     authority.nodeRef(index.toLong(), NodeRole.TomlItem)

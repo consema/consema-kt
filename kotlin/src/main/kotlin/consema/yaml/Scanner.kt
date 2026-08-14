@@ -3,15 +3,15 @@
 // with exact spans.
 //
 // Data authority:
-//   - RFC 0007 §7 (https://github.com/consema/consema/blob/main/docs/rfcs/0007-yaml-family-profiles-and-safety-v1.md:
-//     168-192): the lossless Document retains comments, whitespace, line
+//   - RFC 0007 §7 (https://github.com/consema/consema/blob/main/docs/rfcs/0007-yaml-family-profiles-and-safety-v1.md
+//): the lossless Document retains comments, whitespace, line
 //     breaks, directives, markers, styles, and exhaustive non-overlapping
 //     raw-byte coverage; the syntax kinds are stable style subfacts.
 //   - conformance/vectors/yaml-v1.json cases syntax.styles-and-trivia
 //     (piece_count 48 with the exact required kinds, lines 31-34) and
 //     query.syntax-comments (Comment ordinals [5, 12], lines 61-64) pin the
 //     exact piece segmentation byte-for-byte.
-//   - https://github.com/consema/consema-rs/blob/main/consema-yaml/src/syntax.rs:16-421 is the byte-arbitration
+//   - https://github.com/consema/consema-rs/blob/main/consema-yaml/src/syntax.rs is the byte-arbitration
 //     authority for the lexeme rules (plain-line continuation, node-property
 //     characters inside plain scalars, block-scalar content regions
 //     including their trailing line break, quote scanning, and the
@@ -30,7 +30,7 @@ import consema.document.SourceSnapshot
 import consema.document.StructuralPiece
 import consema.document.StructuralPieceKind
 
-/** One classified lexeme over decoded scalar offsets (syntax.rs:9-14). */
+/** One classified lexeme over decoded scalar offsets (syntax.rs). */
 internal class Lexeme(
     val start: Int,
     val end: Int,
@@ -38,13 +38,13 @@ internal class Lexeme(
 )
 
 /** One named anchor or alias occurrence with its exact raw span
- * (syntax.rs:73-77). */
+ * (syntax.rs). */
 internal class NamedOccurrence(
     val name: String,
     val span: consema.document.Span,
 )
 
-/** The scanned lossless facts (syntax.rs:79-84). */
+/** The scanned lossless facts (syntax.rs). */
 internal class Tokenized(
     val index: LosslessStructuralIndex,
     val kinds: List<YamlSyntaxKind>,
@@ -54,8 +54,8 @@ internal class Tokenized(
 
 /**
  * Scans the complete decoded source into lossless lexemes, resolving every
- * boundary to exact raw bytes through one forward walk (syntax.rs:16-71;
- * offsets.rs:15-80). Throws [YamlFormationException] on the token limit.
+ * boundary to exact raw bytes through one forward walk (syntax.rs;
+ * offsets.rs). Throws [YamlFormationException] on the token limit.
  */
 internal fun tokenize(
     source: SourceSnapshot,
@@ -116,7 +116,7 @@ private class Cursor(val chars: IntArray) {
         if (offset + relative < chars.size) chars[offset + relative] else -1
 }
 
-/** The single-pass presentation scanner (syntax.rs:86-421). */
+/** The single-pass presentation scanner (syntax.rs). */
 internal class Scanner(private val chars: IntArray, private val maxTokens: Int) {
     private val cursor = Cursor(chars)
     private val output = ArrayList<Lexeme>()
@@ -269,7 +269,7 @@ internal class Scanner(private val chars: IntArray, private val maxTokens: Int) 
 
     /** Whether a more-indented continuation line starts an indented
      * structure (sequence entry, explicit key, or mapping key) that must
-     * not be folded into the plain scalar (syntax.rs:257-282). */
+     * not be folded into the plain scalar (syntax.rs). */
     private fun startsIndentedStructure(): Boolean {
         val current = chars.getOrNull(cursor.offset) ?: return false
         if ((current == '-'.code || current == '?'.code) &&
@@ -348,7 +348,7 @@ internal class Scanner(private val chars: IntArray, private val maxTokens: Int) 
     }
 
     /** Consumes one indented block-scalar content region (including its
-     * trailing line break) at a line start (syntax.rs:335-364). */
+     * trailing line break) at a line start (syntax.rs). */
     private fun scanBlockContent(): Boolean {
         val parentIndent = pendingBlockParentIndent!!
         val start = cursor.offset

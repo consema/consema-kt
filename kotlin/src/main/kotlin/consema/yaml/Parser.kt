@@ -3,8 +3,8 @@
 // immutable native model.
 //
 // Data authority:
-//   - RFC 0007 §3-§4 (https://github.com/consema/consema/blob/main/docs/rfcs/0007-yaml-family-profiles-and-safety-v1.md:
-//     54-97): both profiles accept UTF-8 (with or without BOM) and
+//   - RFC 0007 §3-§4 (https://github.com/consema/consema/blob/main/docs/rfcs/0007-yaml-family-profiles-and-safety-v1.md
+//): both profiles accept UTF-8 (with or without BOM) and
 //     UTF-16LE/BE with BOM; formation states Complete | Recovered |
 //     FatalFormationFailure; backend success is never sufficient evidence
 //     for a Complete Document.
@@ -12,11 +12,11 @@
 //     identity when a node starts, register an anchor before descending,
 //     resolve an alias to the most recent preceding anchor, never expand
 //     aliases, permit backward self/mutual cycles.
-//   - https://github.com/consema/consema-rs/blob/main/consema-yaml/src/lib.rs:259-320 (parse entry), lib.rs:789-858
+//   - https://github.com/consema/consema-rs/blob/main/consema-yaml/src/lib.rs (parse entry), lib.rs
 //     (version-directive validation and backend failure mapping),
-//     https://github.com/consema/consema-rs/blob/main/consema-yaml/src/backend.rs:71-176 (event surface, depth and
-//     event limits), https://github.com/consema/consema-rs/blob/main/consema-yaml/src/native.rs:111-508 (composition)
-//     and native.rs:510-539 (the empty-plain-scalar placeholder rewrite)
+//     https://github.com/consema/consema-rs/blob/main/consema-yaml/src/backend.rs (event surface, depth and
+//     event limits), https://github.com/consema/consema-rs/blob/main/consema-yaml/src/native.rs (composition)
+//     and native.rs (the empty-plain-scalar placeholder rewrite)
 //     are the byte-arbitration authority for every event shape, span
 //     convention, and failure code; consema-go/go/yaml/parser.go is a cross-reference
 //     only.
@@ -30,7 +30,7 @@
 // immutable backend event list that composition consumes. Event spans are
 // decoded-scalar offsets in the full decoded text (including any BOM, which
 // the parser skips before content), exactly like the Rust scalar_offset_base
-// convention (backend.rs:138-141).
+// convention (backend.rs).
 
 package consema.yaml
 
@@ -41,17 +41,17 @@ import consema.document.SourceEncoding
 import consema.document.SourceLimits
 import consema.document.SourceSnapshot
 
-/** Backend event span over decoded scalar offsets (backend.rs:3-7). */
+/** Backend event span over decoded scalar offsets (backend.rs). */
 internal class BackendSpan(val startScalar: Int, val endScalar: Int)
 
-/** Backend scalar presentation style (backend.rs:9-16). */
+/** Backend scalar presentation style (backend.rs). */
 internal enum class BackendScalarStyle { Plain, SingleQuoted, DoubleQuoted, Literal, Folded }
 
 /** Backend tag facts; the resolved tag URI is prefix + suffix
- * (backend.rs:18-22). */
+ * (backend.rs). */
 internal class BackendTag(val prefix: String, val suffix: String)
 
-/** The closed backend event surface (backend.rs:24-57). */
+/** The closed backend event surface (backend.rs). */
 internal sealed class BackendEventKind {
     data object StreamStart : BackendEventKind()
     data object StreamEnd : BackendEventKind()
@@ -70,12 +70,12 @@ internal sealed class BackendEventKind {
     data object MappingEnd : BackendEventKind()
 }
 
-/** One backend event with its decoded-scalar span (backend.rs:54-57). */
+/** One backend event with its decoded-scalar span (backend.rs). */
 internal class BackendEvent(val kind: BackendEventKind, val span: BackendSpan)
 
 /**
  * Parses one exact YAML stream into a complete immutable Document snapshot
- * (lib.rs:259-320). Exceeding a configured limit or failing source
+ * (lib.rs). Exceeding a configured limit or failing source
  * construction is fatal and throws [YamlFormationException]; grammar and
  * composition failures throw the frozen registered codes
  * (yaml.profile.version-directive@1, yaml.parse.syntax@1, yaml.native.*,
@@ -125,7 +125,7 @@ fun parse(
 }
 
 /** Validates every `%YAML` directive against the selected profile before
- * grammar parsing (lib.rs:789-831). A conflicting version is fatal with
+ * grammar parsing (lib.rs). A conflicting version is fatal with
  * yaml.profile.version-directive@1 and the frozen arguments. */
 internal fun validateVersionDirectives(text: String, profile: YamlProfile) {
     for ((index, rawLine) in text.lines().withIndex()) {
@@ -157,7 +157,7 @@ private fun isSeparationChar(value: Char): Boolean =
 
 /**
  * Parses the complete stream into backend events with decoded-scalar spans
- * (backend.rs:71-176). Grammar failures throw yaml.parse.syntax@1; the
+ * (backend.rs). Grammar failures throw yaml.parse.syntax@1; the
  * nesting-depth and syntax-event limits are resource failures.
  */
 internal fun parseEvents(
@@ -548,7 +548,7 @@ private class EventParser(
     }
 
     /** Parses one tag property and resolves it through the directive table
-     * (backend.rs:90-98; saphyr keep_tags(false) semantics). */
+     * (backend.rs; saphyr keep_tags(false) semantics). */
     private fun parseTag(): BackendTag {
         val start = position
         position++
@@ -1039,7 +1039,7 @@ private class EventParser(
     }
 
     private fun parseEmptyScalar(properties: Properties?, nodeStart: Int) {
-        // The backend empty-plain placeholder "~" (native.rs:510-539) with a
+        // The backend empty-plain placeholder "~" (native.rs) with a
         // zero-width span; composition rewrites it to "".
         emitScalar(properties, nodeStart, "~", BackendScalarStyle.Plain, position, position)
     }

@@ -2,7 +2,7 @@
 // execution.
 //
 // Data authority:
-//   - RFC 0010 §10 (https://github.com/consema/consema/blob/main/docs/rfcs/0010-java-properties-profiles-v1.md:269-308):
+//   - RFC 0010 §10 (https://github.com/consema/consema/blob/main/docs/rfcs/0010-java-properties-profiles-v1.md):
 //     java-properties.native-semantic-query@1 operators
 //     (document-properties, natural-lines, logical-lines,
 //     logical-line-natural-lines, property-key-equals, property-value-state-
@@ -15,19 +15,19 @@
 //     duplicate/escape counts, UTF16BE hex keys, ordinals, and the
 //     cancellation/limit outcomes.
 //   - https://github.com/consema/consema-rs/blob/main/consema-properties/src/query.rs is the byte-arbitration
-//     authority (execution query.rs:123-225, operators query.rs:398-607,
-//     source order query.rs:609-634, text/boundary helpers query.rs:636-673);
-//     consema-core/src/query.rs:2967-2993 pins QueryLimits defaults
+//     authority (execution query.rs, operators query.rs,
+//     source order query.rs, text/boundary helpers query.rs);
+//     consema-core/src/query.rs pins QueryLimits defaults
 //     (max_steps 100_000, max_results 100_000) and the CancellationToken
 //     shape.
 //   - The operator argument schemas and the UTF16BE/1 validation live in the
-//     protocol package (kotlin/src/main/kotlin/consema/protocol/QueryValidate.kt:139-169,
-//     213-228, 801-816); execution here consumes only validated operators.
+//     protocol package (kotlin/src/main/kotlin/consema/protocol/QueryValidate.kt,
+//); execution here consumes only validated operators.
 //
 // Kotlin-idiomatic design: execution throws the protocol package's typed
 // [consema.protocol.QueryFailureException] carrying the registered code; the
 // cursor terminal contract (RFC 0003 §9) is a synchronous complete result
-// list here (the JSON family precedent, kotlin/src/main/kotlin/consema/json/Query.kt:21-25),
+// list here (the JSON family precedent, kotlin/src/main/kotlin/consema/json/Query.kt),
 // with the terminal state always Completed after a successful execution and
 // cancellation surfacing as a CANCELLED failure.
 
@@ -49,7 +49,7 @@ import consema.protocol.QuerySelection
 import java.math.BigInteger
 import java.util.concurrent.atomic.AtomicBoolean
 
-/** Query resource limits (query.rs:2967-2981). */
+/** Query resource limits (query.rs). */
 data class QueryLimits(
     /** Maximum operator steps. */
     val maxSteps: Int,
@@ -57,13 +57,13 @@ data class QueryLimits(
     val maxResults: Int,
 ) {
     companion object {
-        /** The frozen defaults (query.rs:2974-2981): 100,000 steps and
+        /** The frozen defaults (query.rs): 100,000 steps and
          * 100,000 results. */
         val default = QueryLimits(maxSteps = 100_000, maxResults = 100_000)
     }
 }
 
-/** Cooperative cancellation flag (query.rs:2984-2993). */
+/** Cooperative cancellation flag (query.rs). */
 class CancellationToken {
     private val cancelled = AtomicBoolean(false)
 
@@ -77,7 +77,7 @@ class CancellationToken {
 }
 
 /** Owned snapshot-bound Java Properties native semantic query match
- * (query.rs:12-86). */
+ * (query.rs). */
 sealed class PropertiesMatch {
     /** Complete Properties document. */
     data class Document(
@@ -154,7 +154,7 @@ sealed class PropertiesMatch {
 }
 
 /** Owned snapshot-bound Java Properties lossless syntax query match
- * (query.rs:88-121). */
+ * (query.rs). */
 data class PropertiesSyntaxMatch(
     /** Process-local syntax-piece identity. */
     val node: NodeRef,
@@ -168,7 +168,7 @@ data class PropertiesSyntaxMatch(
 
 /**
  * Executes a validated Properties native semantic query against one
- * immutable snapshot (query.rs:123-150). The root Document is the first
+ * immutable snapshot (query.rs). The root Document is the first
  * standard result; it must not bypass result limits.
  */
 fun executePropertiesQuery(
@@ -195,7 +195,7 @@ fun executePropertiesQuery(
 
 /**
  * Executes a validated Properties lossless syntax query against every source
- * piece in raw order (query.rs:166-211). Matches carry the format-owned kind
+ * piece in raw order (query.rs). Matches carry the format-owned kind
  * and the source ordinal.
  */
 fun executePropertiesSyntaxQuery(
@@ -229,7 +229,7 @@ fun executePropertiesSyntaxQuery(
     return applySelection(matches, definition.selection)
 }
 
-/** Execution context carrying limits and cancellation (query.rs:227-324). */
+/** Execution context carrying limits and cancellation (query.rs). */
 private class QueryContext(
     val document: Document,
     val limits: QueryLimits,
@@ -521,7 +521,7 @@ private fun pushResult(output: ArrayList<PropertiesMatch>, value: PropertiesMatc
     output.add(value)
 }
 
-/** The deterministic source-order key of one match (query.rs:609-634). */
+/** The deterministic source-order key of one match (query.rs). */
 private fun sourceOrder(document: Document, item: PropertiesMatch): Pair<Int, Int> =
     when (item) {
         is PropertiesMatch.Document -> 0 to 0
@@ -540,7 +540,7 @@ private fun sourceOrder(document: Document, item: PropertiesMatch): Pair<Int, In
         is PropertiesMatch.Escape -> item.span.startByte to item.ordinal
     }
 
-/** Exact UTF16BE/1 comparison of one Java string (query.rs:653-660). */
+/** Exact UTF16BE/1 comparison of one Java string (query.rs). */
 private fun javaStringEqualsUtf16Be(value: JavaString, expected: ByteArray): Boolean {
     if (value.length * 2 != expected.size) {
         return false
@@ -558,7 +558,7 @@ private fun javaStringEqualsUtf16Be(value: JavaString, expected: ByteArray): Boo
 }
 
 /** Exact UTF16BE/1 comparison of one well-formed decoded span text
- * (query.rs:662-673). */
+ * (query.rs). */
 private fun unicodeTextEqualsUtf16Be(value: String, expected: ByteArray): Boolean {
     var index = 0
     for (unit in value.toCharArray()) {
@@ -576,7 +576,7 @@ private fun unicodeTextEqualsUtf16Be(value: String, expected: ByteArray): Boolea
     return index == expected.size
 }
 
-/** Applies the cardinality selection (query.rs:675-692). */
+/** Applies the cardinality selection (query.rs). */
 internal fun <T> applySelection(values: List<T>, selection: QuerySelection): List<T> =
     when (selection) {
         QuerySelection.All -> values

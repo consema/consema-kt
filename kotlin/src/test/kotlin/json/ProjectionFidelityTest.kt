@@ -2,7 +2,7 @@
 // conformance/vectors/json-family-v2.json.
 //
 // Vector case json5.projection.duplicates-nonfinite (json-family-v2.json:
-// 126-130) pins the EntryMapping result with the frozen binary bits; vector
+//) pins the EntryMapping result with the frozen binary bits; vector
 // case json5.projection.old-target-rejected (json-family-v2.json:132-136)
 // pins target-not-applicable; vector case json5.convert.finite-to-strict
 // (json-family-v2.json:156-160) pins the dialect-conversion closure
@@ -32,7 +32,7 @@ import kotlin.test.assertTrue
 class ProjectionFidelityTest {
 
     /** Vector case json5.projection.duplicates-nonfinite (json-family-v2.json:
-     * 126-130): duplicate names map exactly to an EntryMapping under
+ *): duplicate names map exactly to an EntryMapping under
      * json5.projection.best-exact-core@1 with fidelity Transformed and the
      * frozen non-finite bits preserved (RFC 0005 §8). */
     @Test
@@ -67,7 +67,7 @@ class ProjectionFidelityTest {
     }
 
     /** Vector case json5.projection.old-target-rejected (json-family-v2.json:
-     * 132-136): the frozen json.projection.best-exact-core@1 target does not
+ *): the frozen json.projection.best-exact-core@1 target does not
      * apply to a JSON5 document — target-not-applicable, never a silent
      * widening (RFC 0005 §8). */
     @Test
@@ -80,7 +80,7 @@ class ProjectionFidelityTest {
     }
 
     /** Vector case json5.convert.finite-to-strict (json-family-v2.json:
-     * 156-160): projection of the JSON5 document followed by strict
+ *): projection of the JSON5 document followed by strict
      * materialization reproduces the canonical strict output — the two-stage
      * conversion closure with fidelity Exact (RFC 0005 §9). */
     @Test
@@ -164,7 +164,7 @@ class ProjectionFidelityTest {
     }
 
     /** Recovered documents never reach projection: the Recovered gate emits
-     * json.projection.incomplete-document@1 (projection.rs:754-757; 0.13.0
+     * json.projection.incomplete-document@1 (projection.rs; 0.13.0
      * audit finding F3). */
     @Test
     fun recoveredDocumentsAreRejectedAtProjection() {

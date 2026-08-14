@@ -3,7 +3,7 @@
 // predicate.
 //
 // Data authority:
-//   - RFC 0014 §4.3-§4.6 (https://github.com/consema/consema/blob/main/docs/rfcs/0014-hcl-family-profiles-v1.md:215-357):
+//   - RFC 0014 §4.3-§4.6 (https://github.com/consema/consema/blob/main/docs/rfcs/0014-hcl-family-profiles-v1.md):
 //     the frozen expression grammar, operator precedence, templates,
 //     heredocs, constructors, and for-expressions.
 //   - RFC 0014 §6 (:395-446): an expression is a first-class native role
@@ -18,14 +18,14 @@
 //     (:564-650, "number"/"boolean"/"null"/"template"/"function-call"/
 //     "variable-ref"/"traversal"/"unary"/"binary"/"conditional"/"for-tuple"/
 //     "for-object"/"tuple"/"object"/"parenthesized"), the kind family
-//     spelling of the `hcl.expression@1` record (projection.rs:996-1040:
+//     spelling of the `hcl.expression@1` record (projection.rs
 //     "variable" for VariableRef|Traversal, "for" for ForTuple|ForObject),
 //     canonical_decimal (:737-851), the operator spellings (:856-956), and
 //     the traversal/template/heredoc/for/object shapes (:958-1504).
 //   - The structural fingerprint is the FNV-1a 64-bit hash over the
 //     canonical structural serialization defined by the materialization
-//     codec (materialization.rs:1496-1758), the shared adaptation point of
-//     the `hcl.expression@1` payload (projection.rs:581-592).
+//     codec (materialization.rs), the shared adaptation point of
+//     the `hcl.expression@1` payload (projection.rs).
 //   - consema-go/go/hcl is a cross-reference only.
 //
 // Kotlin-idiomatic design (NOT a translation): the closed kind set is a
@@ -38,7 +38,7 @@ import consema.document.Span
 import java.math.BigInteger
 
 /** Unary operator set; exactly `-` and `!` exist, and unary `+` is a grammar
- * error (RFC 0014 §4.3; expression.rs:856-861). */
+ * error (RFC 0014 §4.3; expression.rs). */
 enum class HclUnaryOp(val spelling: String) {
     /** `-` negation. */
     Minus("-"),
@@ -48,13 +48,13 @@ enum class HclUnaryOp(val spelling: String) {
     ;
 
     companion object {
-        /** Resolves one operator spelling (expression.rs:875-881). */
+        /** Resolves one operator spelling (expression.rs). */
         fun fromName(name: String): HclUnaryOp? = entries.firstOrNull { it.spelling == name }
     }
 }
 
 /** Binary operator set, frozen by the RFC 0014 §4.3 precedence table
- * (expression.rs:886-913). */
+ * (expression.rs). */
 enum class HclBinaryOp(val spelling: String, val precedence: Int) {
     /** `==` equality. */
     Equal("==", 4),
@@ -97,14 +97,14 @@ enum class HclBinaryOp(val spelling: String, val precedence: Int) {
     ;
 
     companion object {
-        /** Resolves one operator spelling (expression.rs:938-955). */
+        /** Resolves one operator spelling (expression.rs). */
         fun fromName(name: String): HclBinaryOp? = entries.firstOrNull { it.spelling == name }
     }
 }
 
 /** Traversal root; keyword spellings are dual-read roots, behaving as if
  * they were references to variables of those names without ever being
- * evaluated (RFC 0014 §4.1; expression.rs:962-969). */
+ * evaluated (RFC 0014 §4.1; expression.rs). */
 sealed class HclTraversalRoot {
     /** A variable-name root. */
     data class Variable(val name: kotlin.String) : HclTraversalRoot()
@@ -116,7 +116,7 @@ sealed class HclTraversalRoot {
     data object Null : HclTraversalRoot()
 }
 
-/** One static traversal step (RFC 0014 §4.3; expression.rs:978-1003).
+/** One static traversal step (RFC 0014 §4.3; expression.rs).
  * Attribute steps admit identifiers only: the numeric form `foo.0` is a
  * grammar error (RFC 0014 §12 D-5). */
 sealed class HclTraversalStep {
@@ -142,7 +142,7 @@ sealed class HclTraversalStep {
     data class FullSplat(val steps: List<HclTraversalStep>) : HclTraversalStep()
 }
 
-/** One template directive kind (RFC 0014 §4.4; expression.rs:1138-1155).
+/** One template directive kind (RFC 0014 §4.4; expression.rs).
  * The single-identifier for-directive `%{ for x in list }` is valid (RFC
  * 0014 §12 D-7). */
 sealed class HclDirectiveKind {
@@ -162,10 +162,10 @@ sealed class HclDirectiveKind {
     data object EndFor : HclDirectiveKind()
 }
 
-/** One ordered template part (RFC 0014 §6; expression.rs:1052-1077). */
+/** One ordered template part (RFC 0014 §6; expression.rs). */
 sealed class HclTemplatePart {
     /** Exact span of the whole part, including delimiters and strip
-     * markers (expression.rs:1079-1089). */
+     * markers (expression.rs). */
     abstract val span: Span
 
     /** Literal text; escaped `$${` and `%%{` sequences decode to literal
@@ -194,7 +194,7 @@ sealed class HclTemplatePart {
     ) : HclTemplatePart()
 }
 
-/** Heredoc mode fact: `<<` or `<<-` (RFC 0014 §4.5; expression.rs:1159-1165). */
+/** Heredoc mode fact: `<<` or `<<-` (RFC 0014 §4.5; expression.rs). */
 enum class HclHeredocMode(val spelling: String) {
     /** `<<` plain heredoc: no indentation stripping. */
     Plain("<<"),
@@ -205,8 +205,8 @@ enum class HclHeredocMode(val spelling: String) {
 }
 
 /** Heredoc representation facts of one template (RFC 0014 §4.5, §6;
- * expression.rs:1186-1234). Structural equality compares the mode and
- * marker spelling only (expression.rs:1236-1242). */
+ * expression.rs). Structural equality compares the mode and
+ * marker spelling only (expression.rs). */
 data class HclHeredocFacts(
     /** Heredoc mode (`<<` or `<<-`). */
     val mode: HclHeredocMode,
@@ -220,7 +220,7 @@ data class HclHeredocFacts(
 )
 
 /** One function-call argument with its expansion marker fact (RFC 0014
- * §4.3; expression.rs:1254-1277). */
+ * §4.3; expression.rs). */
 data class HclCallArg(
     val expression: HclExpression,
     /** `...` expansion marker fact; only the final argument may carry it. */
@@ -228,7 +228,7 @@ data class HclCallArg(
 )
 
 /** The `for` introduction of a for-expression or for-directive (RFC 0014
- * §4.6; expression.rs:1283-1331). */
+ * §4.6; expression.rs). */
 data class HclForIntro(
     /** Optional key identifier; null is the single-identifier form (RFC
      * 0014 §12 D-7). */
@@ -241,7 +241,7 @@ data class HclForIntro(
     val span: Span,
 )
 
-/** One object-constructor key (RFC 0014 §4.6; expression.rs:1355-1364). */
+/** One object-constructor key (RFC 0014 §4.6; expression.rs). */
 sealed class HclObjectKey {
     /** Bare identifier key. */
     data class Identifier(val name: String) : HclObjectKey()
@@ -256,7 +256,7 @@ sealed class HclObjectKey {
     data class Paren(val inner: HclExpression) : HclObjectKey()
 }
 
-/** A quoted-template object key (RFC 0014 §4.6; expression.rs:1405-1428). */
+/** A quoted-template object key (RFC 0014 §4.6; expression.rs). */
 data class HclTemplateKey(
     /** Ordered parts, including the quote delimiters' span facts. */
     val parts: List<HclTemplatePart>,
@@ -265,7 +265,7 @@ data class HclTemplateKey(
 )
 
 /** Object-constructor key/value separator source fact (RFC 0014 §4.6;
- * expression.rs:1488-1504). */
+ * expression.rs). */
 enum class HclObjectSeparator(val spelling: String) {
     /** `=`. */
     Equals("="),
@@ -275,7 +275,7 @@ enum class HclObjectSeparator(val spelling: String) {
 }
 
 /** One ordered object-constructor entry (RFC 0014 §4.6;
- * expression.rs:1450-1484). Duplicate keys are preserved as ordered native
+ * expression.rs). Duplicate keys are preserved as ordered native
  * facts and are never collapsed. */
 data class HclObjectEntry(
     val key: HclObjectKey,
@@ -284,8 +284,8 @@ data class HclObjectEntry(
 )
 
 /** A decimal number literal with its exact spelling span and canonical
- * decimal value (RFC 0014 §4.1, §6; expression.rs:658-703). Equality is
- * canonical-decimal equality (expression.rs:705-709). */
+ * decimal value (RFC 0014 §4.1, §6; expression.rs). Equality is
+ * canonical-decimal equality (expression.rs). */
 data class HclNumber(
     /** Exact source span of the number spelling. */
     val span: Span,
@@ -313,7 +313,7 @@ data class HclExpression(
 )
 
 /** Closed unevaluated expression kind set (RFC 0014 §4.3-§4.6;
- * expression.rs:200-312). */
+ * expression.rs). */
 sealed class HclExpressionKind {
     /** A decimal number literal with its exact spelling and canonical
      * decimal value (RFC 0014 §4.1, §6). */
@@ -411,7 +411,7 @@ sealed class HclExpressionKind {
     data class Paren(val inner: HclExpression) : HclExpressionKind()
 
     /** Closed payload-free kind name (RFC 0014 §7.1
-     * `hcl.expression-kind-is@1`; expression.rs:314-335). */
+     * `hcl.expression-kind-is@1`; expression.rs). */
     val kindName: HclExpressionKindName
         get() = when (this) {
             is Number -> HclExpressionKindName.NUMBER
@@ -432,7 +432,7 @@ sealed class HclExpressionKind {
         }
 
     /** Kind family spelling of the `hcl.expression@1` record (RFC 0014
-     * §4.1, §4.6, §8.2; projection.rs:996-1020). */
+     * §4.1, §4.6, §8.2; projection.rs). */
     val kindFamily: String
         get() = when (this) {
             is Number -> "number"
@@ -450,7 +450,7 @@ sealed class HclExpressionKind {
             is Paren -> "parenthesized"
         }
 
-    /** Ordered direct child expressions (expression.rs:89-180). */
+    /** Ordered direct child expressions (expression.rs). */
     val children: List<HclExpression>
         get() = when (this) {
             is Number, is Boolean, is Null -> emptyList()
@@ -487,7 +487,7 @@ sealed class HclExpressionKind {
 }
 
 /** Closed payload-free expression kind name set (RFC 0014 §7.1
- * `hcl.expression-kind-is@1`; expression.rs:564-650). */
+ * `hcl.expression-kind-is@1`; expression.rs). */
 enum class HclExpressionKindName(val spelling: String) {
     /** Number literal. */
     NUMBER("number"),
@@ -536,7 +536,7 @@ enum class HclExpressionKindName(val spelling: String) {
     ;
 
     companion object {
-        /** Resolves one stable kind spelling (expression.rs:622-648). */
+        /** Resolves one stable kind spelling (expression.rs). */
         fun fromName(name: String): HclExpressionKindName? =
             entries.firstOrNull { it.spelling == name }
     }
@@ -545,7 +545,7 @@ enum class HclExpressionKindName(val spelling: String) {
 /**
  * Normalizes one decimal number spelling to its canonical form by pure
  * decimal string arithmetic — zero floating-point computation (hard
- * gate 1; expression.rs:737-851).
+ * gate 1; expression.rs).
  *
  * The grammar is frozen by RFC 0014 §4.1: `decimal+ ("." decimal+)?
  * (expmark decimal+)?` with `expmark = ("e" | "E") ("+" | "-")?`, no
@@ -614,7 +614,7 @@ internal fun canonicalDecimalBounded(spelling: String, maxDigits: Int): String? 
     val out = StringBuilder()
     if (point <= 0) {
         // `0.` plus `zeros` zero digits plus the significant digits, with
-        // trailing fraction zeros trimmed (expression.rs:806-826).
+        // trailing fraction zeros trimmed (expression.rs).
         val zeros = try {
             Math.negateExact(point)
         } catch (e: ArithmeticException) {
@@ -634,7 +634,7 @@ internal fun canonicalDecimalBounded(spelling: String, maxDigits: Int): String? 
         val positive = point
         if (positive >= stripped.length) {
             // The canonical spelling is the significant digits followed by
-            // `positive - stripped.length` zeros (expression.rs:827-840).
+            // `positive - stripped.length` zeros (expression.rs).
             if (positive > maxDigits) {
                 return null
             }
@@ -653,7 +653,7 @@ internal fun canonicalDecimalBounded(spelling: String, maxDigits: Int): String? 
 }
 
 /** Normalizes one number spelling with the frozen default digit budget
- * (RFC 0014 §11; expression.rs:736-739). */
+ * (RFC 0014 §11; expression.rs). */
 internal fun canonicalDecimal(spelling: String): String? =
     canonicalDecimalBounded(spelling, HclParseLimits.default.maxNumberDigits)
 
@@ -741,7 +741,7 @@ fun isLiteralComplete(expression: HclExpression): Boolean =
 /**
  * The structural fingerprint of one expression: a 64-bit FNV-1a hash over
  * the canonical structural serialization (RFC 0014 §8.2;
- * materialization.rs:1496-1516). The serialization covers the frozen
+ * materialization.rs). The serialization covers the frozen
  * structural equality of RFC 0014 §6 and never source spans or identities,
  * so structurally equal expressions always carry the same fingerprint.
  */
@@ -757,7 +757,7 @@ fun structuralFingerprint(expression: HclExpression): ULong {
 }
 
 /** The closed family spelling set of the `hcl.expression@1` record kind
- * (projection.rs:1022-1040). */
+ * (projection.rs). */
 internal val EXPRESSION_KIND_FAMILY_SPELLINGS: Set<String> = setOf(
     "number", "boolean", "null", "template", "function-call", "variable",
     "unary", "binary", "conditional", "for", "tuple", "object",
@@ -775,7 +775,7 @@ private fun pushByte(value: Int, out: ArrayList<Byte>) {
 }
 
 /** Appends the canonical structural serialization of one expression
- * (materialization.rs:1524-1667). */
+ * (materialization.rs). */
 private fun writeExpressionStructure(expression: HclExpression, out: ArrayList<Byte>) {
     when (val kind = expression.kind) {
         is HclExpressionKind.Number -> {
@@ -907,7 +907,7 @@ private fun writeExpressionStructure(expression: HclExpression, out: ArrayList<B
 }
 
 /** Appends the canonical structural serialization of one template
- * directive (materialization.rs:1669-1685). */
+ * directive (materialization.rs). */
 private fun writeDirectiveStructure(kind: HclDirectiveKind, out: ArrayList<Byte>) {
     when (kind) {
         is HclDirectiveKind.If -> {
@@ -925,7 +925,7 @@ private fun writeDirectiveStructure(kind: HclDirectiveKind, out: ArrayList<Byte>
 }
 
 /** Appends the canonical structural serialization of one `for`
- * introduction (materialization.rs:1687-1699). */
+ * introduction (materialization.rs). */
 private fun writeForIntro(intro: HclForIntro, out: ArrayList<Byte>) {
     val key = intro.key
     if (key != null) {
@@ -939,7 +939,7 @@ private fun writeForIntro(intro: HclForIntro, out: ArrayList<Byte>) {
 }
 
 /** Appends the canonical structural serialization of one traversal step
- * (materialization.rs:1701-1725). */
+ * (materialization.rs). */
 private fun writeTraversalStep(step: HclTraversalStep, out: ArrayList<Byte>) {
     when (step) {
         is HclTraversalStep.GetAttr -> {
@@ -966,7 +966,7 @@ private fun writeTraversalStep(step: HclTraversalStep, out: ArrayList<Byte>) {
 }
 
 /** Appends the canonical structural serialization of one object key
- * (materialization.rs:1727-1761). */
+ * (materialization.rs). */
 private fun writeObjectKeyStructure(key: HclObjectKey, out: ArrayList<Byte>) {
     when (key) {
         is HclObjectKey.Identifier -> {

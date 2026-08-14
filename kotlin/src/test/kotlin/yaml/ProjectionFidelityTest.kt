@@ -2,7 +2,7 @@
 // projection policies, fidelity and events, and the frozen failure codes.
 //
 // Data authority: RFC 0007 §10 (https://github.com/consema/consema/blob/main/docs/rfcs/0007-yaml-family-profiles-and-
-// safety-v1.md:260-302) and the vector cases projection.sharing-policy,
+// safety-v1.md) and the vector cases projection.sharing-policy,
 // projection.cycle, projection.tag-policy, projection.mapping-policy,
 // projection.graph-provenance, graph.shared-cycle, resource.graph-provenance
 // (conformance/vectors/yaml-v1.json:45-49, 70-94, 130-134). The PGCE golden

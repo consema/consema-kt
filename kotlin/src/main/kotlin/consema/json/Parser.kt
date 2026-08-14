@@ -1,7 +1,7 @@
 // The byte-exact JSON/JSONC/JSON5 lexer and recovery parser.
 //
 // Data authority:
-//   - RFC 0005 §3-§6 (https://github.com/consema/consema/blob/main/docs/rfcs/0005-json-family-production-v1.md:51-149):
+//   - RFC 0005 §3-§6 (https://github.com/consema/consema/blob/main/docs/rfcs/0005-json-family-production-v1.md):
 //     JSON5 whitespace is the exact frozen scalar set; IdentifierName keys
 //     follow ECMAScript ID_Start/ID_Continue with U+200C/U+200D; string
 //     escapes and line continuations; number forms and the frozen non-finite
@@ -10,11 +10,11 @@
 //   - conformance/vectors/json-family-v2.json pins the recover/complete
 //     outcomes and the diagnostic codes case by case.
 //   - https://github.com/consema/consema-rs/blob/main/consema-json/src/parser.rs is the byte-arbitration authority
-//     (lexing parser.rs:174-402, JSON5 lexing parser.rs:404-581, number
-//     validation parser.rs:701-815, string decoding parser.rs:1232-1347,
-//     object/array recovery parser.rs:953-1133, diagnostic sink
-//     parser.rs:1500-1537, deterministic sort consema-core/src/diagnostic.rs:
-//     106-123). consema-go/go/json/parser.go is a cross-reference only.
+//     (lexing parser.rs, JSON5 lexing parser.rs, number
+//     validation parser.rs, string decoding parser.rs,
+//     object/array recovery parser.rs, diagnostic sink
+//     parser.rs, deterministic sort consema-core/src/diagnostic.rs
+//). consema-go/go/json/parser.go is a cross-reference only.
 //
 // Kotlin-idiomatic design (NOT a translation): the lexer emits immutable
 // lexemes over byte offsets; JSON5 classification reads UTF-8 scalars
@@ -42,7 +42,7 @@ import java.math.BigInteger
 
 /**
  * Parses a complete immutable JSON/JSONC/JSON5 document snapshot
- * (parser.rs:73-166). Exceeding a configured limit or failing source
+ * (parser.rs). Exceeding a configured limit or failing source
  * construction is fatal and throws [JsonFormationException]; lexical and
  * syntactic recovery never throws and produces a Recovered document.
  */
@@ -116,7 +116,7 @@ fun parse(
 }
 
 /** Wraps a source construction failure with the frozen code mapping of
- * FatalFormationFailure::source_error (lib.rs:676-707). */
+ * FatalFormationFailure::source_error (lib.rs). */
 private fun wrapSourceError(error: consema.document.SourceException): JsonFormationException =
     when (error.kind) {
         consema.document.SourceErrorKind.INVALID_UTF8 ->
@@ -158,7 +158,7 @@ private fun wrapSourceError(error: consema.document.SourceException): JsonFormat
             )
     }
 
-/** Deterministic diagnostic order (consema-core/src/diagnostic.rs:106-123):
+/** Deterministic diagnostic order (consema-core/src/diagnostic.rs):
  * primary start (missing primary sorts last), category, code, occurrence. */
 internal val deterministicDiagnosticOrder: Comparator<Diagnostic> =
     compareBy<Diagnostic> { it.primary?.startByte ?: ULong.MAX_VALUE }
@@ -224,7 +224,7 @@ internal class Lexed(
     val recovered: Boolean,
 )
 
-/** Lexes strict JSON and JSONC on exact UTF-8 bytes (parser.rs:174-402). */
+/** Lexes strict JSON and JSONC on exact UTF-8 bytes (parser.rs). */
 private fun lex(
     bytes: ByteArray,
     profile: JsonProfile,
@@ -481,7 +481,7 @@ private fun lex(
     return Lexed(lexemes, tokens, recovered)
 }
 
-/** Lexes Standard JSON5 on decoded UTF-8 scalars (parser.rs:404-581). */
+/** Lexes Standard JSON5 on decoded UTF-8 scalars (parser.rs). */
 private fun lexJson5(
     bytes: ByteArray,
     authority: DocumentAuthority,
@@ -718,11 +718,11 @@ private fun startsWith(bytes: ByteArray, offset: Int, prefix: String): Boolean {
     return true
 }
 
-/** The JSON5 line terminators (parser.rs:590-592). */
+/** The JSON5 line terminators (parser.rs). */
 internal fun isJson5LineTerminator(scalar: Int): Boolean =
     scalar == 0x0a || scalar == 0x0d || scalar == 0x2028 || scalar == 0x2029
 
-/** The exact JSON5 whitespace union (parser.rs:594-614; RFC 0005 §3). */
+/** The exact JSON5 whitespace union (parser.rs; RFC 0005 §3). */
 internal fun isJson5Whitespace(scalar: Int): Boolean =
     scalar == 0x09 || scalar == 0x0a || scalar == 0x0b || scalar == 0x0c || scalar == 0x0d ||
         scalar == 0x20 || scalar == 0xa0 || scalar == 0x1680 ||
@@ -730,7 +730,9 @@ internal fun isJson5Whitespace(scalar: Int): Boolean =
         scalar == 0x202f || scalar == 0x205f || scalar == 0x3000 || scalar == 0xfeff
 
 /**
- * JSON5 IdentifierName start (parser.rs:616-618): `$`, `_`, or Unicode
+ * JSON5 IdentifierName start
+ * (https://github.com/consema/consema-rs/blob/main/consema-json/src/parser.rs 的 is_json5_identifier_start):
+ * `$`, `_`, or Unicode
  * ID_Start. The JDK identifier tables approximate the pinned unicode-id-start
  * 1.4.0 (Unicode 17.0.0) table (RFC 0005 §4); newer-script characters need
  * differential verification.
@@ -738,14 +740,14 @@ internal fun isJson5Whitespace(scalar: Int): Boolean =
 internal fun isJson5IdentifierStart(scalar: Int): Boolean =
     scalar == 0x24 || scalar == 0x5f || Character.isUnicodeIdentifierStart(scalar)
 
-/** JSON5 IdentifierName continue (parser.rs:620-623): start characters,
+/** JSON5 IdentifierName continue (parser.rs): start characters,
  * Unicode ID_Continue, U+200C, or U+200D. */
 internal fun isJson5IdentifierContinue(scalar: Int): Boolean =
     scalar == 0x24 || scalar == 0x5f || scalar == 0x200c || scalar == 0x200d ||
         Character.isUnicodeIdentifierPart(scalar)
 
 /** Scans one JSON5 IdentifierName candidate, decoding `\uXXXX` escapes
- * (parser.rs:625-658). Returns (end, valid). */
+ * (parser.rs). Returns (end, valid). */
 private fun scanJson5Identifier(bytes: ByteArray, start: Int): Pair<Int, Boolean> {
     var offset = start
     var first = true
@@ -782,7 +784,7 @@ private fun scanJson5Identifier(bytes: ByteArray, start: Int): Pair<Int, Boolean
     return Pair(offset, valid && !first)
 }
 
-/** Extends an invalid identifier word to the next delimiter (parser.rs:660-675). */
+/** Extends an invalid identifier word to the next delimiter (parser.rs). */
 private fun scanJson5InvalidWord(bytes: ByteArray, start: Int): Int {
     var offset = start
     while (offset < bytes.size) {
@@ -799,7 +801,7 @@ private fun scanJson5InvalidWord(bytes: ByteArray, start: Int): Int {
 }
 
 /** Decodes one `\uXXXX` identifier escape from the raw byte buffer
- * (parser.rs:677-687). */
+ * (parser.rs). */
 private fun decodeIdentifierEscape(bytes: ByteArray, offset: Int): Int? {
     if (offset + 5 >= bytes.size) return null
     if (bytes[offset] != 0x5c.toByte() || bytes[offset + 1] != 0x75.toByte()) return null
@@ -811,7 +813,7 @@ private fun decodeIdentifierEscape(bytes: ByteArray, offset: Int): Int? {
     return if (Character.isValidCodePoint(value)) value else null
 }
 
-/** Scans a JSON5 number candidate (parser.rs:689-699). */
+/** Scans a JSON5 number candidate (parser.rs). */
 private fun scanJson5NumberCandidate(bytes: ByteArray, start: Int): Int {
     var offset = start
     while (offset < bytes.size) {
@@ -829,7 +831,7 @@ private fun scanJson5NumberCandidate(bytes: ByteArray, start: Int): Int {
 private fun Int.isAsciiAlphanumeric(): Boolean =
     (this in 0x30..0x39) || (this in 0x41..0x5a) || (this in 0x61..0x7a)
 
-/** Validates one complete strict JSON number (parser.rs:776-815). */
+/** Validates one complete strict JSON number (parser.rs). */
 private fun validJsonNumber(bytes: ByteArray, start: Int, end: Int): Boolean {
     var index = start
     if (index < end && bytes[index] == 0x2d.toByte()) {
@@ -867,7 +869,7 @@ private fun validJsonNumber(bytes: ByteArray, start: Int, end: Int): Boolean {
     return index == end
 }
 
-/** Validates one complete JSON5 number (parser.rs:701-760). */
+/** Validates one complete JSON5 number (parser.rs). */
 internal fun validJson5Number(text: String): Boolean {
     var unsigned = text
     if (unsigned.startsWith("+") || unsigned.startsWith("-")) {
@@ -940,7 +942,7 @@ private fun utf8Width(leading: Int): Int =
 // Parsing
 // ---------------------------------------------------------------------------
 
-/** Recursive descent parser over the token stream (parser.rs:817-1225). */
+/** Recursive descent parser over the token stream (parser.rs). */
 private class Parser(
     private val source: String,
     private val sourceBytes: ByteArray,
@@ -1033,7 +1035,7 @@ private class Parser(
                 if (!profile.isJson5()) {
                     // The strict/JSONC lexer never emits Identifier tokens;
                     // this arm mirrors the Rust catch-all expected-value path
-                    // (parser.rs:938-949).
+                    // (parser.rs).
                     position += 1
                     syntaxDiagnostic("json.syntax.expected-value@1", token.start, token.end)
                     recovered = true
@@ -1327,7 +1329,7 @@ private data class LiteralRange(val start: Int, val end: Int)
 // ---------------------------------------------------------------------------
 
 /**
- * Decodes one string literal (parser.rs:1232-1347). Returns (decoded,
+ * Decodes one string literal (parser.rs). Returns (decoded,
  * has_unescaped_line_separator) or null on an invalid escape or a control
  * character that is not a legal escape target.
  */
@@ -1438,7 +1440,7 @@ internal fun decodeJsonString(literal: String, profile: JsonProfile): Pair<Strin
     return output.toString() to hasUnescapedLineSeparator
 }
 
-/** Reads two hex digits (parser.rs:1317-1331). */
+/** Reads two hex digits (parser.rs). */
 private fun readHexPair(content: String, index: Int): Int? {
     var value = 0
     for (i in 0 until 2) {
@@ -1449,7 +1451,7 @@ private fun readHexPair(content: String, index: Int): Int? {
     return value
 }
 
-/** Reads four hex digits (parser.rs:1333-1347). */
+/** Reads four hex digits (parser.rs). */
 private fun readHexQuad(content: String, index: Int): Int? {
     var value = 0
     for (i in 0 until 4) {
@@ -1468,7 +1470,7 @@ private fun hexDigit(scalar: Int): Int? =
         else -> null
     }
 
-/** Decodes one validated JSON5 IdentifierName literal (parser.rs:1349-1373). */
+/** Decodes one validated JSON5 IdentifierName literal (parser.rs). */
 internal fun decodeJson5Identifier(literal: String): String {
     val output = StringBuilder()
     var offset = 0
@@ -1497,7 +1499,7 @@ internal fun decodeJson5Identifier(literal: String): String {
     return output.toString()
 }
 
-/** Decodes one `\uXXXX` escape inside a decoded string (parser.rs:677-687). */
+/** Decodes one `\uXXXX` escape inside a decoded string (parser.rs). */
 private fun decodeIdentifierEscapeFromString(literal: String, offset: Int): Int? {
     if (offset + 5 >= literal.length) return null
     if (literal.codePointAt(offset) != 0x5c || literal.codePointAt(offset + 1) != 0x75) return null
@@ -1510,7 +1512,7 @@ private fun decodeIdentifierEscapeFromString(literal: String, offset: Int): Int?
 }
 
 /** Decodes one JSON5 number literal to its exact native category
- * (parser.rs:1375-1443). */
+ * (parser.rs). */
 internal fun parseJson5Number(text: String): InternalValueKind {
     val negative = text.startsWith("-")
     val unsigned = if (negative) {
@@ -1563,7 +1565,7 @@ internal fun parseJson5Number(text: String): InternalValueKind {
 }
 
 /** Decodes one canonical strict JSON number to an exact Decimal
- * (value.rs:295-323: coefficient = sign+whole+fraction, exponent =
+ * (value.rs: coefficient = sign+whole+fraction, exponent =
  * explicit - fraction.len(), normalized by PvDecimal.of). */
 internal fun parseJsonDecimal(text: String): PvDecimal {
     val exponentIndex = text.indexOfFirst { it == 'e' || it == 'E' }
@@ -1584,7 +1586,7 @@ internal fun parseJsonDecimal(text: String): PvDecimal {
 // Diagnostic sink
 // ---------------------------------------------------------------------------
 
-/** Ordered diagnostic collection with explicit truncation (parser.rs:1500-1537). */
+/** Ordered diagnostic collection with explicit truncation (parser.rs). */
 internal class DiagnosticSink(private val max: Int) {
     private val diagnostics = ArrayList<Diagnostic>()
     private var occurrenceCounter = 0uL

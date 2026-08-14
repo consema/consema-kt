@@ -1,13 +1,13 @@
 // TOML native semantic and lossless syntax query execution.
 //
 // Data authority:
-//   - RFC 0001 §4 (https://github.com/consema/consema/blob/main/docs/rfcs/0001-toml-1.0-profile.md:64-76): the frozen
+//   - RFC 0001 §4 (https://github.com/consema/consema/blob/main/docs/rfcs/0001-toml-1.0-profile.md): the frozen
 //     domain `toml.native-semantic-query@1` with the six standard operators
 //     (toml.try-table-entries@1, toml.entry-name-equals@1, toml.entry-item@1,
 //     toml.try-array-elements@1, toml.array-element-item@1, plus
 //     core.take@1 and core.distinct-by-identity@1); validation completes
 //     before execution.
-//   - https://github.com/consema/consema-rs/blob/main/consema-toml/src/query.rs:9-87 (TomlMatch, TomlSyntaxMatch),
+//   - https://github.com/consema/consema-rs/blob/main/consema-toml/src/query.rs (TomlMatch, TomlSyntaxMatch),
 //     :88-180 (execute_toml_query / execute_toml_syntax_query and cursors),
 //     :182-488 (Context::step with the frozen QueryLimits defaults
 //     max_steps 100_000 / max_results 100_000, the expression evaluator,
@@ -15,7 +15,7 @@
 //     checks. The frozen failure codes are the registered core.query.*@1
 //     codes of consema-protocol (QueryFailureException).
 //   - conformance/vectors/syntax-query-v1.json syntax.toml.* cases (lines
-//     54-99) pin the match facts (kind, text, ordinal, TomlSyntaxPiece
+//) pin the match facts (kind, text, ordinal, TomlSyntaxPiece
 //     role) and the failure codes.
 //   - consema-go/go/toml/query.go is a cross-reference only.
 //
@@ -39,7 +39,7 @@ import consema.protocol.QueryFailureKind
 import consema.protocol.QuerySelection
 import java.util.concurrent.atomic.AtomicBoolean
 
-/** Owned snapshot-bound TOML native semantic query match (query.rs:9-41). */
+/** Owned snapshot-bound TOML native semantic query match (query.rs). */
 sealed class TomlMatch {
     /** TOML native item. */
     data class Item(
@@ -80,7 +80,7 @@ sealed class TomlMatch {
     }
 }
 
-/** Owned snapshot-bound TOML lossless syntax query match (query.rs:53-86). */
+/** Owned snapshot-bound TOML lossless syntax query match (query.rs). */
 data class TomlSyntaxMatch(
     /** Process-local syntax-piece identity. */
     val nodeRef: NodeRef,
@@ -92,7 +92,7 @@ data class TomlSyntaxMatch(
     val ordinal: Int,
 )
 
-/** Query execution resource limits (query.rs:2967-2983: the frozen
+/** Query execution resource limits (query.rs: the frozen
  * defaults are 100,000 steps and 100,000 results). */
 data class TomlQueryLimits(
     /** Maximum evaluation steps. */
@@ -101,12 +101,12 @@ data class TomlQueryLimits(
     val maxResults: Int,
 ) {
     companion object {
-        /** The frozen defaults (query.rs:2977-2978). */
+        /** The frozen defaults (query.rs). */
         val default = TomlQueryLimits(maxSteps = 100_000, maxResults = 100_000)
     }
 }
 
-/** Cooperative execution cancellation (query.rs:2985-3006). */
+/** Cooperative execution cancellation (query.rs). */
 class TomlCancellationToken {
     private val cancelled = AtomicBoolean(false)
 
@@ -132,7 +132,7 @@ enum class TomlQueryTerminal {
     Failed,
 }
 
-/** The complete result of one query execution (query.rs:3008-3046). */
+/** The complete result of one query execution (query.rs). */
 class TomlQueryExecution<T> private constructor(
     private val matches: List<T>,
     val terminal: TomlQueryTerminal,
@@ -147,7 +147,7 @@ class TomlQueryExecution<T> private constructor(
     fun matches(): List<T> = matches
 }
 
-/** Ordered query-result cursor with deterministic yields (query.rs:3049-).
+/** Ordered query-result cursor with deterministic yields (query.rs).
  * The conformance surface is the terminal behavior. */
 class TomlOrderedQueryCursor<T> private constructor(
     private val values: List<T>,
@@ -175,7 +175,7 @@ class TomlOrderedQueryCursor<T> private constructor(
 }
 
 /** Executes a validated TOML native semantic query against one immutable
- * snapshot (query.rs:88-113). The domain must be
+ * snapshot (query.rs). The domain must be
  * `toml.native-semantic-query@1`; violations throw the frozen
  * core.query.domain-mismatch@1. */
 fun executeTomlQuery(
@@ -200,7 +200,7 @@ fun executeTomlQuery(
 }
 
 /** Executes a TOML lossless syntax query against every source piece in raw
- * order (query.rs:129-169). The domain must be
+ * order (query.rs). The domain must be
  * `toml.lossless-syntax-query@1`. */
 fun executeTomlSyntaxQuery(
     executable: ExecutableQuery,
@@ -233,7 +233,7 @@ fun executeTomlSyntaxQuery(
 }
 
 /** The shared execution context: step/results limits and cancellation
- * (query.rs:182-211). */
+ * (query.rs). */
 internal class TomlQueryContext(
     internal val document: TomlDocument,
     private val limits: TomlQueryLimits,
@@ -263,7 +263,7 @@ internal class TomlQueryContext(
             ?: error("typed TOML element")
 }
 
-/** Evaluates one native expression tree (query.rs:213-254). */
+/** Evaluates one native expression tree (query.rs). */
 internal fun executeExpression(
     expression: consema.protocol.QueryExpression,
     input: List<TomlMatch>,
@@ -306,7 +306,7 @@ internal fun executeExpression(
 private fun documentIndex(context: TomlQueryContext, match: TomlMatch): Int =
     context.document.validateRef(match.identity(), match.identity().role)
 
-/** Evaluates one lossless syntax expression tree (query.rs:256-288). */
+/** Evaluates one lossless syntax expression tree (query.rs). */
 internal fun executeSyntaxExpression(
     expression: consema.protocol.QueryExpression,
     input: List<TomlSyntaxMatch>,
@@ -336,7 +336,7 @@ internal fun executeSyntaxExpression(
     }
 }
 
-/** Applies one validated native operator (query.rs:341-469). */
+/** Applies one validated native operator (query.rs). */
 internal fun applyOperator(
     operator: consema.protocol.OperatorCall,
     input: List<TomlMatch>,
@@ -434,7 +434,7 @@ internal fun applyOperator(
     return output
 }
 
-/** Applies one validated lossless syntax operator (query.rs:290-339). */
+/** Applies one validated lossless syntax operator (query.rs). */
 internal fun applySyntaxOperator(
     operator: consema.protocol.OperatorCall,
     input: List<TomlSyntaxMatch>,
@@ -477,7 +477,7 @@ internal fun applySyntaxOperator(
 }
 
 /** Applies the cardinality selection to the complete standard result
- * (query.rs:471-488). */
+ * (query.rs). */
 internal fun <T> applySelection(values: List<T>, selection: QuerySelection): List<T> =
     when (selection) {
         QuerySelection.All -> values

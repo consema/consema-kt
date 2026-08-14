@@ -2,10 +2,10 @@
 // per-profile operation registries (Kotlin).
 //
 // Data authority (language-neutral sources first):
-//   - https://github.com/consema/consema-rs/blob/main/consema/src/lib.rs:42-489 (the additive facade `registry`
+//   - https://github.com/consema/consema-rs/blob/main/consema/src/lib.rs (the additive facade `registry`
 //     module: format_families, profiles, query_domains, operation_registry,
 //     parse_document; the drift guard is the facade's own tests at the same
-//     file, lib.rs:317-488, asserting enumerated ids against parsed backend
+//     file, lib.rs, asserting enumerated ids against parsed backend
 //     documents).
 //   - RFC 0015 §6.2 (`families`, `profiles`, `query_domains`, `operations`
 //     facts the CLI derives exclusively from this surface;

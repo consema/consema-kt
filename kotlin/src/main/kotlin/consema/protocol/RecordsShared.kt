@@ -2,10 +2,10 @@
 // terminal and the external match locator helpers.
 //
 // Data authority (language-neutral sources first):
-//   - https://github.com/consema/consema-rs/blob/main/consema-protocol/src/execution.rs:40-187 (Completion: the
+//   - https://github.com/consema/consema-rs/blob/main/consema-protocol/src/execution.rs (Completion: the
 //     status-specific invariant table and the fixed core.completion@1 wire
 //     form).
-//   - https://github.com/consema/consema-rs/blob/main/consema-protocol/src/query.rs:449-598 (the semantic-model v5/v6
+//   - https://github.com/consema/consema-rs/blob/main/consema-protocol/src/query.rs (the semantic-model v5/v6
 //     query result records all carry one Completion) and line_query.rs /
 //     yaml_query.rs / graph_query.rs (the locator identities).
 //   - conformance/vectors/semantic-model-v5.json and semantic-model-v6.json
@@ -22,7 +22,7 @@ import consema.core.PvObject
 import consema.core.PvString
 import consema.core.PortableValue
 
-/** The closed completion status spellings (execution.rs:25-38). */
+/** The closed completion status spellings (execution.rs). */
 object CompletionStatus {
     const val SUCCESS = "Success"
     const val CANCELLED = "Cancelled"
@@ -33,7 +33,7 @@ object CompletionStatus {
 }
 
 /**
- * The `core.completion@1` control-flow facts (execution.rs:40-187): the
+ * The `core.completion@1` control-flow facts (execution.rs): the
  * terminal status, the processed/produced counts, and the status-consistent
  * limit or failure facts. Construction validates the status-specific
  * invariant table and the failure code against one explicit semantic-model
@@ -53,7 +53,7 @@ class Completion private constructor(
 ) {
     companion object {
         /** Validates completion facts against one explicit semantic-model
-         * registry (execution.rs:70-107). */
+         * registry (execution.rs). */
         fun newWithRegistry(
             status: String,
             processed: Long,
@@ -82,7 +82,7 @@ class Completion private constructor(
         }
 
         /** Validates completion facts against the v1 registry
-         * (execution.rs:52-67). */
+         * (execution.rs). */
         fun new(
             status: String,
             processed: Long,
@@ -96,7 +96,7 @@ class Completion private constructor(
             )
 
         /** Strictly decodes `core.completion@1` under one explicit registry
-         * (execution.rs:160-186). */
+         * (execution.rs). */
         fun fromValueWithRegistry(value: PortableValue, registry: ErrorCodeRegistry): Completion {
             val fields = schemaFields(
                 value,
@@ -118,7 +118,7 @@ class Completion private constructor(
         }
     }
 
-    /** Encodes `core.completion@1` (execution.rs:141-153). */
+    /** Encodes `core.completion@1` (execution.rs). */
     fun toValue(): PortableValue =
         PvObject(
             listOf(

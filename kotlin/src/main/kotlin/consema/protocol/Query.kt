@@ -1,6 +1,6 @@
 // Versioned typed query definitions and their validation/binding.
 //
-// Data authority: RFC 0016 §5.4 (https://github.com/consema/consema/blob/main/docs/rfcs/0016-go-api-mapping-v1.md:189-192)
+// Data authority: RFC 0016 §5.4 (https://github.com/consema/consema/blob/main/docs/rfcs/0016-go-api-mapping-v1.md)
 // and https://github.com/consema/consema-rs/blob/main/consema-core/src/query.rs (the domain/operator tables and the
 // operator validation contract). The domain ids and operator ids are pinned
 // spellings, not invented names; the operator table is transcribed as data
@@ -17,7 +17,7 @@ import java.math.BigInteger
 
 /** One typed match role of the query model. The roles use the
  * language-neutral spelling of the Rust MatchRole enum
- * (consema-core/src/query.rs:169-316); they type operator composition during
+ * (consema-core/src/query.rs); they type operator composition during
  * validation and name the output matches of query results. */
 typealias MatchRole = String
 
@@ -100,10 +100,10 @@ object Roles {
  * operator role checks replace it. */
 internal const val ROLE_ANY: MatchRole = ""
 
-/** A versioned query domain (consema-core/src/query.rs:12-166). */
+/** A versioned query domain (consema-core/src/query.rs). */
 data class QueryDomain(val id: String, val version: Int)
 
-/** The frozen domain constructors (query.rs:30-153). */
+/** The frozen domain constructors (query.rs). */
 object Domains {
     fun portableValueV1(): QueryDomain = QueryDomain("core.portable-value-query", 1)
     fun portableGraphV1(): QueryDomain = QueryDomain("core.portable-graph-query", 1)
@@ -131,7 +131,7 @@ object Domains {
 
 /**
  * One versioned operator call with deterministic arguments
- * (query.rs:318-361).
+ * (query.rs).
  */
 class OperatorCall(
     val id: String,
@@ -162,7 +162,7 @@ enum class ExpressionKind {
 }
 
 /**
- * The declarative operator tree (query.rs:363-390).
+ * The declarative operator tree (query.rs).
  */
 class QueryExpression(
     val kind: ExpressionKind,
@@ -179,7 +179,7 @@ class QueryExpression(
 }
 
 /** The cardinality selection applied to the complete standard result
- * sequence (query.rs:434-447). */
+ * sequence (query.rs). */
 enum class QuerySelection(val wireName: String) {
     All("All"),
     First("First"),
@@ -189,7 +189,7 @@ enum class QuerySelection(val wireName: String) {
 }
 
 /**
- * A transferable, not-yet-validated query definition (query.rs:449-598).
+ * A transferable, not-yet-validated query definition (query.rs).
  */
 class QueryDefinition(
     val domain: QueryDomain,
@@ -209,7 +209,7 @@ class QueryDefinition(
     }
 
     /** Validates the domain, argument schemas, composition, and role typing
-     * (query.rs:500-530). The required capability set of a validated query
+     * (query.rs). The required capability set of a validated query
      * is always [core.query.ordered-results@1]. */
     fun validate(): ValidatedQuery {
         val inputRole = domainInputRole(domain.id, domain.version)
@@ -220,7 +220,7 @@ class QueryDefinition(
     }
 
     /** Encodes `core.query-definition@1` through the fixed-field
-     * PortableValue schema (query.rs:532-559). */
+     * PortableValue schema (query.rs). */
     fun toProtocolValue(): PortableValue = PvObject(
         listOf(
             consema.core.Entry("schema", PvString("core.query-definition@1")),
@@ -232,7 +232,7 @@ class QueryDefinition(
     )
 
     companion object {
-        /** Strictly decodes `core.query-definition@1` (query.rs:561-598).
+        /** Strictly decodes `core.query-definition@1` (query.rs).
          * Unknown, reordered, or missing fields are rejected;
          * structural/operator validation remains the explicit next
          * lifecycle step. */
@@ -259,20 +259,20 @@ class QueryDefinition(
     }
 }
 
-/** A definition proven structurally valid for its domain (query.rs:
- * 768-798). */
+/** A definition proven structurally valid for its domain (query.rs
+ *). */
 class ValidatedQuery internal constructor(
     val definition: QueryDefinition,
     val outputRole: MatchRole,
     val requiredCapabilities: List<CapabilityId>,
 )
 
-/** A fully validated and capability-bound query (query.rs:800-865).
+/** A fully validated and capability-bound query (query.rs).
  * Execution against PortableValue values is provided by the family
  * packages; this milestone pins the definition surface. */
 class ExecutableQuery internal constructor(val validated: ValidatedQuery) {
     /** Binds the validated definition to implementation capabilities
-     * (query.rs:789-798). */
+     * (query.rs). */
     companion object {
         fun bind(validated: ValidatedQuery, capabilities: CapabilitySet): ExecutableQuery {
             for (capability in validated.requiredCapabilities) {
@@ -288,7 +288,7 @@ class ExecutableQuery internal constructor(val validated: ValidatedQuery) {
     }
 }
 
-/** Maps a domain to its root match role (query.rs:502-523). */
+/** Maps a domain to its root match role (query.rs). */
 internal fun domainInputRole(id: String, version: Int): MatchRole? = when {
     id == "core.portable-value-query" && version == 1 -> Roles.VALUE
     id == "core.portable-graph-query" && version == 1 -> Roles.GRAPH_NODE
@@ -313,7 +313,7 @@ internal fun domainInputRole(id: String, version: Int): MatchRole? = when {
 }
 
 /** Checks the whole operator tree and returns its output role
- * (query.rs:867-897). */
+ * (query.rs). */
 internal fun validateExpression(
     domain: QueryDomain,
     expression: QueryExpression,
@@ -349,7 +349,7 @@ internal fun validateExpression(
     }
 }
 
-/** Encodes one expression node (query.rs:610-656). */
+/** Encodes one expression node (query.rs). */
 private fun encodeExpression(expression: QueryExpression, depth: Int): PortableValue {
     if (depth > 256) {
         throw QueryFailureException(QueryFailureKind.RESOURCE_LIMIT)
@@ -376,7 +376,7 @@ private fun encodeExpression(expression: QueryExpression, depth: Int): PortableV
     }
 }
 
-/** Encodes one operator call (query.rs:658-679). */
+/** Encodes one operator call (query.rs). */
 private fun encodeOperator(operator: OperatorCall): PortableValue {
     val arguments = operator.arguments.toSortedMap().map { (name, value) ->
         consema.core.Entry(name, value)
@@ -390,7 +390,7 @@ private fun encodeOperator(operator: OperatorCall): PortableValue {
     )
 }
 
-/** Strictly validates a fixed-field object (query.rs:736-751). */
+/** Strictly validates a fixed-field object (query.rs). */
 private fun exactObjectFields(value: PortableValue, names: List<String>, context: String): List<PortableValue> {
     val objectValue = value as? PvObject
         ?: throw QueryFailureException(QueryFailureKind.INVALID_ARGUMENT, argument = context)
@@ -406,7 +406,7 @@ private fun exactObjectFields(value: PortableValue, names: List<String>, context
     }
 }
 
-/** Strictly decodes one expression node (query.rs:681-718). */
+/** Strictly decodes one expression node (query.rs). */
 private fun decodeExpression(value: PortableValue, depth: Int): QueryExpression {
     if (depth > 256) {
         throw QueryFailureException(QueryFailureKind.RESOURCE_LIMIT)
@@ -450,7 +450,7 @@ private fun decodeExpression(value: PortableValue, depth: Int): QueryExpression 
     }
 }
 
-/** Strictly decodes one operator call (query.rs:720-734). */
+/** Strictly decodes one operator call (query.rs). */
 private fun decodeOperator(value: PortableValue): OperatorCall {
     val fields = exactObjectFields(value, listOf("id", "version", "arguments"), "operator")
     val id = fields[0] as? PvString
@@ -477,8 +477,8 @@ private fun queryUnsigned32(value: PortableValue, name: String): Int {
 }
 
 /** One failure class of query definition validation and binding
- * (consema-core/src/query.rs:3114+; the query_failure_code mapping,
- * error_registry.rs:1515-1529). */
+ * (consema-core/src/query.rs; the query_failure_code mapping,
+ * error_registry.rs). */
 enum class QueryFailureKind(val code: String) {
     /** The domain ID or version is unavailable or mismatched. */
     DOMAIN_MISMATCH("core.query.domain-mismatch@1"),

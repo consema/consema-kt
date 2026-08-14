@@ -4,9 +4,9 @@
 // Data authority: the operation semantics and the render outcomes are
 // pinned by the vector cases; the conformance runner resolves name/ordinal
 // selectors to NodeRefs exactly as these tests do
-// (https://github.com/consema/consema-rs/blob/main/consema-conformance/src/xml_v1.rs:581-813). The operation IDs
+// (https://github.com/consema/consema-rs/blob/main/consema-conformance/src/xml_v1.rs). The operation IDs
 // are the frozen xml.edit.*@1 registrations
-// (https://github.com/consema/consema-rs/blob/main/consema-xml/src/operation_registry.rs:16-75).
+// (https://github.com/consema/consema-rs/blob/main/consema-xml/src/operation_registry.rs).
 
 package xml
 
@@ -56,7 +56,7 @@ class EditTest {
 
     private fun textRef(document: consema.xml.Document, ordinal: Long): consema.document.NodeRef {
         // The NodeRef index is the text occurrence ordinal (the Rust runner
-        // find_text, xml_v1.rs:780-795: occurrence_node_ref(data.ordinal,
+        // find_text, xml_v1.rs: occurrence_node_ref(data.ordinal,
         // NodeRole::XmlText)).
         val text = document.nodes()
             .mapNotNull { content -> (content as? consema.xml.XmlContent.Text)?.data }
@@ -77,7 +77,7 @@ class EditTest {
     @Test
     fun `insert and remove element compose in one transaction`() {
         // Case xml.edit.insert-and-remove-element (xml-1-0-safe-v1.json:
-        // 455-475).
+ //).
         val document = parseUtf8("<root><a/></root>")
         val transaction = EditTransactionBuilder.new(document)
             .insertElement(
@@ -94,7 +94,7 @@ class EditTest {
     @Test
     fun `rename element rewrites both tags`() {
         // Case xml.edit.rename-element-both-tags (xml-1-0-safe-v1.json:
-        // 477-493).
+ //).
         val document = parseUtf8("<old><child>t</child></old>")
         val transaction = EditTransactionBuilder.new(document)
             .renameElement(elementRef(document, "old"), NameFacts(null, "new", null))
@@ -130,7 +130,7 @@ class EditTest {
     @Test
     fun `replace text targets the exact occurrence ordinal`() {
         // Case xml.edit.replace-text-occurrence (xml-1-0-safe-v1.json:
-        // 532-548). The operation targets a text occurrence (RoleXmlText);
+ //). The operation targets a text occurrence (RoleXmlText);
         // CDATA is never a replacement target (RFC 0012 §11).
         val document = parseUtf8("<root><a>one</a><b>two</b></root>")
         val transaction = EditTransactionBuilder.new(document)

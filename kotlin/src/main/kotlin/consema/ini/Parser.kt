@@ -1,7 +1,7 @@
 // The byte-exact three-profile INI scanner and recovery parser.
 //
 // Data authority:
-//   - RFC 0009 §4-§7 (https://github.com/consema/consema/blob/main/docs/rfcs/0009-ini-family-profiles-v1.md:118-252):
+//   - RFC 0009 §4-§7 (https://github.com/consema/consema/blob/main/docs/rfcs/0009-ini-family-profiles-v1.md):
 //     Complete | Recovered | FatalFormationFailure; the portable grammar and
 //     its deliberate restrictions; the Windows section plus key=string
 //     model, `;` comments, exact single/double-quoted values, ASCII
@@ -13,10 +13,10 @@
 //     diagnostic codes case by case (formation.*, resource.formation-limit-
 //     matrix).
 //   - https://github.com/consema/consema-rs/blob/main/consema-ini/src/parser.rs is the byte-arbitration authority
-//     (physical-line scan parser.rs:228-301, per-line parse parser.rs:303-
-//     578, continuation parser.rs:580-747, records parser.rs:749-867,
-//     recovery parser.rs:869-905, pieces parser.rs:907-1125, duplicate
-//     groups parser.rs:1212-1304). consema-go/go/ini/parser.go is a cross-reference
+//     (physical-line scan parser.rs, per-line parse parser.rs
+//     578, continuation parser.rs, records parser.rs,
+//     recovery parser.rs, pieces parser.rs, duplicate
+//     groups parser.rs). consema-go/go/ini/parser.go is a cross-reference
 //     only.
 //
 // Kotlin-idiomatic design (NOT a translation): scanning works over the
@@ -43,7 +43,7 @@ import consema.protocol.Severity
 
 /**
  * Parses a complete immutable INI snapshot under exactly one selected
- * profile (lib.rs:663-671; parser.rs:16-35). Source construction failures,
+ * profile (lib.rs; parser.rs). Source construction failures,
  * profile-encoding conflicts, and exceeding a configured limit are fatal and
  * throw [IniFormationException]; lexical and syntactic recovery never throws
  * and produces a Recovered document.
@@ -72,14 +72,14 @@ fun parse(
 }
 
 /** Builds the source-encoding request of one profile/selection pair
- * (parser.rs:37-59). */
+ * (parser.rs). */
 private fun encodingRequest(profile: IniProfile, selection: IniEncodingSelection): IniEncodingRequest {
     val selected = when (selection) {
         IniEncodingSelection.ProfileDefault -> IniSourceEncoding.Utf8
         is IniEncodingSelection.Explicit -> selection.encoding
     }
     // The portable profile-encoding rejection fires before any source
-    // construction, matching the Rust ordering (parser.rs:55-57).
+    // construction, matching the Rust ordering (parser.rs).
     if (profile == IniProfile.PortableV1 && selected !== IniSourceEncoding.Utf8) {
         throw IniFormationException(
             "ini.profile.encoding@1",
@@ -100,7 +100,7 @@ private fun encodingRequest(profile: IniProfile, selection: IniEncodingSelection
     }
 }
 
-/** Applies the frozen profile-encoding validation (parser.rs:61-94). */
+/** Applies the frozen profile-encoding validation (parser.rs). */
 private fun validateProfileEncoding(
     source: IniSource,
     profile: IniProfile,
@@ -136,7 +136,7 @@ private fun validateProfileEncoding(
 
         IniProfile.PythonConfigParserV1 ->
             // Any complete text source; Binary cannot be expressed in the
-            // INI encoding vocabulary (parser.rs:87).
+            // INI encoding vocabulary (parser.rs).
             true
     }
     if (!valid) {
@@ -148,7 +148,7 @@ private fun validateProfileEncoding(
 }
 
 /** Wraps a source construction failure with the frozen code mapping of
- * FatalFormationFailure::source_error (lib.rs:676-707). */
+ * FatalFormationFailure::source_error (lib.rs). */
 private fun wrapSourceError(error: IniSourceException): IniFormationException =
     when (error.kind) {
         consema.document.SourceErrorKind.INVALID_UTF8 ->
@@ -191,7 +191,7 @@ private fun wrapSourceError(error: IniSourceException): IniFormationException =
     }
 
 /** One scanned physical line with its decoded UTF-8 byte offsets
- * (parser.rs:106-113). */
+ * (parser.rs). */
 private data class ScannedLine(
     val decodedStart: Int,
     val decodedContentEnd: Int,
@@ -200,7 +200,7 @@ private data class ScannedLine(
     val physicalIndex: Int,
 )
 
-/** Active Python entry awaiting continuation lines (parser.rs:115-124). */
+/** Active Python entry awaiting continuation lines (parser.rs). */
 private class PythonEntryState(
     val entryIndex: Int,
     val logicalIndex: Int,
@@ -211,7 +211,7 @@ private class PythonEntryState(
     val pendingBlankLines: MutableList<Int> = ArrayList(),
 )
 
-/** The single-pass three-profile parser (parser.rs:126-147). */
+/** The single-pass three-profile parser (parser.rs). */
 private class Parser(
     private val source: IniSource,
     private val profile: IniProfile,
@@ -278,7 +278,7 @@ private class Parser(
     }
 
     // ------------------------------------------------------------------
-    // Physical-line scan (parser.rs:228-301)
+    // Physical-line scan (parser.rs)
     // ------------------------------------------------------------------
 
     private fun scanPhysicalLines() {
@@ -338,7 +338,7 @@ private class Parser(
     }
 
     // ------------------------------------------------------------------
-    // Per-line dispatch (parser.rs:303-346)
+    // Per-line dispatch (parser.rs)
     // ------------------------------------------------------------------
 
     private fun parseLine(lineIndex: Int) {
@@ -631,7 +631,7 @@ private class Parser(
     }
 
     // ------------------------------------------------------------------
-    // Python continuation (parser.rs:580-747)
+    // Python continuation (parser.rs)
     // ------------------------------------------------------------------
 
     private fun addPythonContinuation(lineIndex: Int, indent: Int) {
@@ -670,7 +670,7 @@ private class Parser(
         )
         val fragment = decodedSubstring(valueStart, valueEnd)
         val entry = entries[state.entryIndex]
-        // The Rust value.len() counts UTF-8 bytes (parser.rs:680-696);
+        // The Rust value.len() counts UTF-8 bytes (parser.rs);
         // Kotlin String.length counts UTF-16 units, so the byte size is
         // measured explicitly.
         val valueStorageBytes = checkedAddChecked(
@@ -711,7 +711,7 @@ private class Parser(
         pythonEntry = state
     }
 
-    /** Checked add with an immediate limit failure (parser.rs:594-677). */
+    /** Checked add with an immediate limit failure (parser.rs). */
     private fun checkedAddChecked(value: Int, name: String, limit: Int): Int {
         if (value > limit) {
             throw resourceLimit(name, value, limit)
@@ -720,7 +720,7 @@ private class Parser(
     }
 
     // ------------------------------------------------------------------
-    // Records (parser.rs:749-905)
+    // Records (parser.rs)
     // ------------------------------------------------------------------
 
     private fun addSection(
@@ -829,7 +829,7 @@ private class Parser(
         diagnostic(
             code,
             // `ini.parse.missing-section@1` is registered Conformance; every
-            // other recovery code is Syntax (ErrorRegistry.kt:339-344).
+            // other recovery code is Syntax (kotlin/src/main/kotlin/consema/protocol/ErrorRegistry.kt).
             if (code == "ini.parse.missing-section@1") {
                 DiagnosticCategory.Conformance
             } else {
@@ -842,7 +842,7 @@ private class Parser(
     }
 
     // ------------------------------------------------------------------
-    // Syntax pieces (parser.rs:907-1125)
+    // Syntax pieces (parser.rs)
     // ------------------------------------------------------------------
 
     private fun pushBom() {
@@ -1008,7 +1008,7 @@ private class Parser(
         String(utf8, start, end - start, Charsets.UTF_8)
 
     // ------------------------------------------------------------------
-    // Node identity and diagnostics (parser.rs:1132-1195)
+    // Node identity and diagnostics (parser.rs)
     // ------------------------------------------------------------------
 
     private fun issueNode(role: NodeRole): NodeRef {
@@ -1054,7 +1054,7 @@ private class Parser(
     }
 
     // ------------------------------------------------------------------
-    // Profile comparison and duplicate groups (parser.rs:1197-1304)
+    // Profile comparison and duplicate groups (parser.rs)
     // ------------------------------------------------------------------
 
     private fun sectionComparison(name: String): String =
@@ -1144,7 +1144,7 @@ private class Parser(
 }
 
 // ---------------------------------------------------------------------------
-// Byte helpers over the decoded UTF-8 buffer (parser.rs:1307-1362)
+// Byte helpers over the decoded UTF-8 buffer (parser.rs)
 // ---------------------------------------------------------------------------
 
 private fun isHorizontal(byte: Byte): Boolean = byte == 0x20.toByte() || byte == 0x09.toByte()
@@ -1171,7 +1171,7 @@ private fun trimHorizontalBounds(bytes: ByteArray, start: Int, end: Int): Pair<I
         trailing -= 1
     }
     // All-horizontal content trims to the empty range at the slice end,
-    // matching the Rust rposition fallback (parser.rs:1314-1321).
+    // matching the Rust rposition fallback (parser.rs).
     val trimmedEnd = if (trailing < start) end else trailing + 1
     val s = start + leading
     return (s.coerceAtMost(trimmedEnd)) to trimmedEnd
@@ -1256,7 +1256,7 @@ private fun allWindowsName(bytes: ByteArray, start: Int, end: Int): Boolean {
 }
 
 /** The Windows profile's exact single/double-quoted value rule
- * (parser.rs:1341-1358). */
+ * (parser.rs). */
 private fun quotedWindowsValue(
     bytes: ByteArray,
     literalStart: Int,
@@ -1278,7 +1278,7 @@ private fun quotedWindowsValue(
 }
 
 /** The first `=` or `:` byte of the trimmed Python option line
- * (parser.rs:1360-1362). */
+ * (parser.rs). */
 private fun firstPythonDelimiter(bytes: ByteArray, start: Int, end: Int): Int {
     for (index in start until end) {
         val value = bytes[index].toInt() and 0xff
@@ -1288,7 +1288,7 @@ private fun firstPythonDelimiter(bytes: ByteArray, start: Int, end: Int): Int {
 }
 
 /** ASCII-only case folding (the Windows profile never folds non-ASCII;
- * parser.rs:1197-1210). */
+ * parser.rs). */
 internal fun asciiLowercase(value: String): String {
     val output = CharArray(value.length)
     for ((index, character) in value.withIndex()) {

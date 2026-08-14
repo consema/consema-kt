@@ -2,21 +2,21 @@
 //
 // Data authority:
 //   - RFC 0004 §15 (https://github.com/consema/consema/blob/main/docs/rfcs/0004-materialization-conversion-and-structural-
-//     edit-v1.md:358-372) freezes the proof contract: an ordered cover of all
+//     edit-v1.md) freezes the proof contract: an ordered cover of all
 //     old-source intervals outside replacements mapped to target intervals;
 //     old regions exactly cover every non-replaced old byte once, new regions
 //     exactly cover every non-inserted new byte once, each mapped region has
 //     equal length and equal bytes, region order is monotonic, and base and
 //     target digests match the proof. The proof asserts only that bytes
 //     outside planned replacements are identical.
-//   - https://github.com/consema/consema-rs/blob/main/consema-document/src/untouched_proof.rs:1-317 pins the shapes
+//   - https://github.com/consema/consema-rs/blob/main/consema-document/src/untouched_proof.rs pins the shapes
 //     and validation rules; consema-go/go/document/untouched.go is a cross-reference
 //     only.
 
 package consema.document
 
 /** One maximal unchanged raw-byte interval mapped across two source
- * snapshots (untouched_proof.rs:7-59). The enclosing proof validates length
+ * snapshots (untouched_proof.rs). The enclosing proof validates length
  * and ordering. */
 data class UntouchedByteRegion(
     /** Inclusive start in the base snapshot. */
@@ -30,7 +30,7 @@ data class UntouchedByteRegion(
 )
 
 /** Stable proof construction or verification failure
- * (untouched_proof.rs:134-172). */
+ * (untouched_proof.rs). */
 enum class UntouchedByteProofErrorKind {
     /** Base and target encoding facts differ. */
     EncodingMismatch,
@@ -78,7 +78,7 @@ class UntouchedByteProofException(
 
 /**
  * Immutable evidence for every byte outside one exact replacement plan
- * (RFC 0004 §15; untouched_proof.rs:61-132).
+ * (RFC 0004 §15; untouched_proof.rs).
  */
 class UntouchedByteProof private constructor(
     /** Required base digest. */
@@ -90,7 +90,7 @@ class UntouchedByteProof private constructor(
     companion object {
         /**
          * Creates a proof only when the replacements exactly produce the
-         * supplied target snapshot (untouched_proof.rs:70-82).
+         * supplied target snapshot (untouched_proof.rs).
          */
         fun create(
             base: SourceSnapshot,
@@ -103,7 +103,7 @@ class UntouchedByteProof private constructor(
 
         /**
          * Constructs transferable proof facts after validating their
-         * canonical structure (untouched_proof.rs:84-96).
+         * canonical structure (untouched_proof.rs).
          */
         fun fromFacts(
             baseDigest: ContentDigest,
@@ -120,7 +120,7 @@ class UntouchedByteProof private constructor(
 
     /**
      * Rechecks digests, replacement preconditions, exact target bytes, and
-     * every region fact (untouched_proof.rs:98-113; RFC 0004 §15).
+     * every region fact (untouched_proof.rs; RFC 0004 §15).
      */
     fun verify(
         base: SourceSnapshot,
@@ -138,7 +138,7 @@ class UntouchedByteProof private constructor(
 }
 
 /** Computes the canonical maximal unchanged regions of one replacement set
- * (untouched_proof.rs:182-245). */
+ * (untouched_proof.rs). */
 private fun expectedRegions(
     base: SourceSnapshot,
     target: SourceSnapshot,
@@ -190,7 +190,7 @@ private fun expectedRegions(
 }
 
 /** Validates one replacement's range, order, and original-byte precondition
- * (untouched_proof.rs:247-281). */
+ * (untouched_proof.rs). */
 private fun validateReplacement(
     base: SourceSnapshot,
     previous: SourceReplacement?,
@@ -198,7 +198,7 @@ private fun validateReplacement(
     index: Int,
 ) {
     // Negative offsets are impossible in the Rust usize surface; Kotlin
-    // Ints require the explicit guard (untouched_proof.rs:253-258).
+    // Ints require the explicit guard (untouched_proof.rs).
     if (replacement.oldStart < 0 || replacement.oldEnd < 0 ||
         replacement.oldStart > replacement.oldEnd ||
         replacement.oldEnd > base.rawBytes().size ||
@@ -229,7 +229,7 @@ private fun validateReplacement(
     }
 }
 
-/** Merges adjacent regions and skips zero-width ones (untouched_proof.rs:283-295). */
+/** Merges adjacent regions and skips zero-width ones (untouched_proof.rs). */
 private fun pushRegion(regions: MutableList<UntouchedByteRegion>, region: UntouchedByteRegion) {
     if (region.oldStart == region.oldEnd) {
         return
@@ -242,7 +242,7 @@ private fun pushRegion(regions: MutableList<UntouchedByteRegion>, region: Untouc
     regions.add(region)
 }
 
-/** Validates the canonical region structure (untouched_proof.rs:297-317). */
+/** Validates the canonical region structure (untouched_proof.rs). */
 private fun validateRegions(regions: List<UntouchedByteRegion>) {
     var previous: UntouchedByteRegion? = null
     for ((index, region) in regions.withIndex()) {

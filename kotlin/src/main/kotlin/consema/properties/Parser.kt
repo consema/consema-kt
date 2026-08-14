@@ -1,7 +1,7 @@
 // The byte-exact Java Properties Reader/Latin-1 scanner and recovery parser.
 //
 // Data authority:
-//   - RFC 0010 §5-§8 (https://github.com/consema/consema/blob/main/docs/rfcs/0010-java-properties-profiles-v1.md:132-235):
+//   - RFC 0010 §5-§8 (https://github.com/consema/consema/blob/main/docs/rfcs/0010-java-properties-profiles-v1.md):
 //     natural/logical lines; continuation by an odd run of terminal
 //     backslashes with the JDK end-of-source rule; the key/separator/element
 //     grammar (leading whitespace, unescaped `=`/`:`/whitespace terminates
@@ -11,10 +11,10 @@
 //   - conformance/vectors/java-properties-v1.json pins the per-case
 //     formations, counts, hex values, statuses, and codes.
 //   - https://github.com/consema/consema-rs/blob/main/consema-properties/src/parser.rs is the byte-arbitration
-//     authority (atoms parser.rs:93-99, natural-line scan parser.rs:230-298,
-//     logical-line assembly parser.rs:352-469, key/split parser.rs:471-507,
-//     escape decoding parser.rs:909-996, recovery parser.rs:626-666,
-//     duplicate groups parser.rs:668-696, coverage parser.rs:698-729).
+//     authority (atoms parser.rs, natural-line scan parser.rs,
+//     logical-line assembly parser.rs, key/split parser.rs,
+//     escape decoding parser.rs, recovery parser.rs,
+//     duplicate groups parser.rs, coverage parser.rs).
 //     consema-go/go/properties/parser.go is a cross-reference only.
 //
 // Kotlin-idiomatic design (NOT a translation): the parser works over
@@ -44,7 +44,7 @@ import consema.protocol.Severity
 
 /**
  * Parses one immutable Java Properties snapshot under one exact
- * profile/source contract (parser.rs:17-36). Exceeding a configured limit
+ * profile/source contract (parser.rs). Exceeding a configured limit
  * or failing source construction is fatal and throws
  * [PropertiesFormationException]; malformed Unicode escapes recover as
  * deterministic error lines and produce a Recovered document.
@@ -61,7 +61,7 @@ fun parse(
 }
 
 /** Parses Reader input using one explicit published text encoding
- * (lib.rs:788-799). */
+ * (lib.rs). */
 fun parseReader(
     bytes: ByteArray,
     encoding: consema.document.SourceEncoding,
@@ -70,7 +70,7 @@ fun parseReader(
     parse(bytes, PropertiesProfile.ReaderV1, PropertiesEncoding.Reader(encoding), limits)
 
 /** Parses InputStream-compatible Latin-1 bytes with marker bytes as content
- * (lib.rs:801-812). */
+ * (lib.rs). */
 fun parseLatin1(
     bytes: ByteArray,
     limits: PropertiesParseLimits = PropertiesParseLimits.default,
@@ -78,7 +78,7 @@ fun parseLatin1(
     parse(bytes, PropertiesProfile.Latin1V1, PropertiesEncoding.Latin1, limits)
 
 /** One decoded scalar with its exact raw span and mutable syntax class
- * (parser.rs:93-99). The scalar is a Unicode code point (the Rust char
+ * (parser.rs). The scalar is a Unicode code point (the Rust char
  * analogue), so a supplementary scalar occupies one atom and two UTF-16
  * code units. */
 internal data class Atom(
@@ -88,7 +88,7 @@ internal data class Atom(
     var syntax: PropertiesSyntaxKind? = null,
 )
 
-/** One scanned natural line over atom coordinates (parser.rs:101-107). */
+/** One scanned natural line over atom coordinates (parser.rs). */
 internal data class ScannedLine(
     val atomStart: Int,
     val atomContentEnd: Int,
@@ -96,7 +96,7 @@ internal data class ScannedLine(
     val naturalIndex: Int,
 )
 
-/** One escape occurrence inside a decoded key/value (parser.rs:109-115). */
+/** One escape occurrence inside a decoded key/value (parser.rs). */
 internal data class EscapeSpec(
     val atomIndices: List<Int>,
     val kind: PropertiesEscapeKind,
@@ -104,14 +104,14 @@ internal data class EscapeSpec(
     val outputEnd: Int,
 )
 
-/** One decoded Java string and its escape facts (parser.rs:117-122). */
+/** One decoded Java string and its escape facts (parser.rs). */
 internal data class DecodedJavaString(
     val units: CharArray,
     val escapes: List<EscapeSpec>,
     val unicodeEscapes: Int,
 )
 
-/** One malformed-escape recovery record (parser.rs:124-128). */
+/** One malformed-escape recovery record (parser.rs). */
 internal data class DecodeError(val atomStart: Int, val atomEnd: Int)
 
 /** The closed decode outcome of one key/value range. */
@@ -196,7 +196,7 @@ private class Parser(
     // ------------------------------------------------------------------
 
     /** Builds one atom per decoded scalar with its exact raw span
-     * (parser.rs:882-907). Kotlin Strings iterate by UTF-16 code unit, so
+     * (parser.rs). Kotlin Strings iterate by UTF-16 code unit, so
      * the scan advances by code point. */
     private fun buildAtoms() {
         val decoded = text.text
@@ -212,7 +212,7 @@ private class Parser(
         }
     }
 
-    /** Scans natural lines with exact terminators (parser.rs:230-298). */
+    /** Scans natural lines with exact terminators (parser.rs). */
     private fun scanNaturalLines() {
         var start = 0
         if (source.encodingFacts.bom != null && atoms.firstOrNull()?.ch == 0xfeff) {
@@ -276,7 +276,7 @@ private class Parser(
     }
 
     /** One comment natural line; a comment never continues even if it ends
-     * in backslash (RFC 0010 §5; parser.rs:320-350). */
+     * in backslash (RFC 0010 §5; parser.rs). */
     private fun addComment(lineIndex: Int) {
         checkLimit("comments", commentEntities.size + 1, limits.maxComments)
         val line = lines[lineIndex]
@@ -301,7 +301,7 @@ private class Parser(
     // ------------------------------------------------------------------
 
     /** Assembles one property/error logical line across continuation
-     * natural lines (parser.rs:352-469). Returns the next line index. */
+     * natural lines (parser.rs). Returns the next line index. */
     private fun addLogicalLine(firstLine: Int): Int {
         checkLimit("logical-lines", logicalLineEntities.size + 1, limits.maxLogicalLines)
         var lineIndex = firstLine
@@ -405,7 +405,7 @@ private class Parser(
         return nextLine
     }
 
-    /** Key/separator/value split over one logical line (parser.rs:471-507). */
+    /** Key/separator/value split over one logical line (parser.rs). */
     private fun splitProperty(
         logicalAtoms: List<Int>,
         keyStart: Int,
@@ -449,7 +449,7 @@ private class Parser(
         val hadSeparator: Boolean,
     )
 
-    /** Completes one property occurrence (parser.rs:509-624). */
+    /** Completes one property occurrence (parser.rs). */
     private fun finishProperty(
         logicalNode: NodeRef,
         naturalIndices: List<Int>,
@@ -533,7 +533,7 @@ private class Parser(
         totalUnicodeEscapes += addedUnicodeEscapes
     }
 
-    /** One recovered malformed logical line (parser.rs:626-666). */
+    /** One recovered malformed logical line (parser.rs). */
     private fun recoverLogicalLine(
         logicalNode: NodeRef,
         naturalIndices: List<Int>,
@@ -578,7 +578,7 @@ private class Parser(
     // Duplicate groups and structural coverage
     // ------------------------------------------------------------------
 
-    /** Deterministic exact-code-unit duplicate groups (parser.rs:668-696). */
+    /** Deterministic exact-code-unit duplicate groups (parser.rs). */
     private fun assignDuplicateGroups() {
         val groups = HashMap<JavaString, MutableList<Int>>()
         for ((index, property) in propertyEntities.withIndex()) {
@@ -596,7 +596,7 @@ private class Parser(
     }
 
     /** Collapses adjacent same-kind atoms into structural pieces
-     * (parser.rs:698-729). */
+     * (parser.rs). */
     private fun buildStructuralPieces(): Pair<List<StructuralPiece>, List<PropertiesSyntaxKind>> {
         val pieces = ArrayList<StructuralPiece>()
         val syntaxKinds = ArrayList<PropertiesSyntaxKind>()
@@ -636,7 +636,7 @@ private class Parser(
     }
 
     /** Ordered raw fragments of one key/value range, split at continuation
-     * gaps (parser.rs:748-769). */
+     * gaps (parser.rs). */
     private fun fragmentSpans(logicalAtoms: List<Int>, range: IntRange): List<Span> {
         if (range.isEmpty()) {
             return emptyList()
@@ -656,14 +656,14 @@ private class Parser(
         return spans
     }
 
-    /** The complete first-to-last logical source range (parser.rs:771-779). */
+    /** The complete first-to-last logical source range (parser.rs). */
     private fun logicalSourceSpan(firstLine: Int, lastLine: Int): Span {
         val first = lines[firstLine]
         val last = lines[lastLine]
         return atomSpan(first.atomStart, last.atomContentEnd)
     }
 
-    /** Zero-width key/value anchor span (parser.rs:781-798). */
+    /** Zero-width key/value anchor span (parser.rs). */
     private fun logicalAnchorSpan(
         logicalAtoms: List<Int>,
         position: Int,
@@ -746,7 +746,7 @@ private class Parser(
 // ---------------------------------------------------------------------------
 
 /**
- * Decodes one key/value atom range (parser.rs:909-996). A malformed Unicode
+ * Decodes one key/value atom range (parser.rs). A malformed Unicode
  * escape returns its exact atom range for the recovery record.
  */
 private fun decodeJavaString(atoms: List<Atom>, atomIndices: List<Int>): JavaStringDecode {
@@ -837,11 +837,11 @@ private fun hexDigit(scalar: Int): Int? =
     }
 
 /** Properties whitespace is exactly space, tab, and form feed (RFC 0010 §5;
- * parser.rs:998-1000). */
+ * parser.rs). */
 internal fun isPropertiesWhitespace(scalar: Int): Boolean =
     scalar == 0x20 || scalar == 0x09 || scalar == 0x0c
 
-/** Piece classification (parser.rs:1002-1017). */
+/** Piece classification (parser.rs). */
 private fun structuralKind(syntax: PropertiesSyntaxKind): StructuralPieceKind =
     when (syntax) {
         PropertiesSyntaxKind.Whitespace,
@@ -862,7 +862,7 @@ private fun structuralKind(syntax: PropertiesSyntaxKind): StructuralPieceKind =
         -> StructuralPieceKind.Token
     }
 
-/** Deterministic diagnostic order (consema-core/src/diagnostic.rs:106-123):
+/** Deterministic diagnostic order (consema-core/src/diagnostic.rs):
  * primary start (missing primary sorts last), category, code, occurrence. */
 internal val deterministicDiagnosticOrder: Comparator<Diagnostic> =
     compareBy<Diagnostic> { it.primary?.startByte ?: ULong.MAX_VALUE }

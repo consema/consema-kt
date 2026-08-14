@@ -140,7 +140,7 @@ class FormationGoldenTest {
         // Byte-exact span check: the text occurrence covers exactly the raw
         // bytes of the decoded content under the source index, decoded with
         // the source encoding (the Rust runner's decode_utf16,
-        // xml_v1.rs:835-853).
+        // xml_v1.rs).
         val span = text.span
         val spanBytes = document.source().rawBytes().copyOfRange(span.startByte, span.endByte)
         assertEquals("中文", String(spanBytes, Charsets.UTF_16LE))

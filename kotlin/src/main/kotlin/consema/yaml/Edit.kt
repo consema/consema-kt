@@ -2,8 +2,8 @@
 // commit, dry-run plan, untouched-byte proof, and SourcePatch derivation.
 //
 // Data authority:
-//   - RFC 0007 §12 (https://github.com/consema/consema/blob/main/docs/rfcs/0007-yaml-family-profiles-and-safety-v1.md:
-//     355-399): the eight operation ids; transactions are snapshot-bound and
+//   - RFC 0007 §12 (https://github.com/consema/consema/blob/main/docs/rfcs/0007-yaml-family-profiles-and-safety-v1.md
+//): the eight operation ids; transactions are snapshot-bound and
 //     validate all operations before publishing a candidate; common edits
 //     retain indentation, flow/block style, scalar style, comments, line
 //     endings, delimiters, and untouched raw bytes where compatible;
@@ -15,22 +15,22 @@
 //     alias requires an earlier visible anchor; scalar edits of anchored
 //     nodes change the shared graph node).
 //   - RFC 0004 §13-§16 (https://github.com/consema/consema/blob/main/docs/rfcs/0004-materialization-conversion-and-
-//     structural-edit-v1.md:271-386): the conflict algebra, the dry-run
+//     structural-edit-v1.md): the conflict algebra, the dry-run
 //     plan, the untouched-byte proof, the derived SourcePatch.
 //   - conformance/vectors/yaml-v1.json pins the golden outputs
 //     (edit.scalar-atomic, edit.anchor-rename, edit.structural-insert,
 //     edit.anchor-dependency at lines 106-124).
 //   - https://github.com/consema/consema-rs/blob/main/consema-yaml/src/edit.rs is the byte-arbitration authority
-//     (commit edit.rs:401-551, dry-run edit.rs:554-568, prepare edit.rs:
-//     570-1344, anchor rules edit.rs:1346-1442, validation edit.rs:
-//     1444-2014, candidate model edit.rs:2017-2324, literal preservation
-//     edit.rs:2326-2452, metadata edit.rs:2577-2697).
+//     (commit edit.rs, dry-run edit.rs, prepare edit.rs
+// anchor rules edit.rs, validation edit.rs
+// candidate model edit.rs, literal preservation
+//     edit.rs, metadata edit.rs).
 //
 // Kotlin-idiomatic design: failures are a sealed hierarchy whose [name] is
 // the exact vector spelling; commit/dry-run throw the typed
 // [EditFailureException] so callers match exhaustively on the failure class.
 // ChangeSet is not shipped in the Kotlin YAML family (recorded gap,
-// six-repo audit G090; json/Edit.kt:244-255, toml/Edit.kt:349-369),
+// six-repo audit G090; kotlin/src/main/kotlin/consema/json/Edit.kt, kotlin/src/main/kotlin/consema/toml/Edit.kt),
 // so this commit carries the ordered diagnostics and
 // the old-to-new node mapping facts instead.
 
@@ -63,7 +63,7 @@ import consema.protocol.Diagnostic
 import consema.protocol.DiagnosticCategory
 import consema.protocol.Severity
 
-/** Explicit semantic scalar representation policy (edit.rs:21-32). */
+/** Explicit semantic scalar representation policy (edit.rs). */
 enum class RepresentationPolicy {
     /** Caller must use an exact literal operation instead. */
     ExactLiteral,
@@ -78,8 +78,8 @@ enum class RepresentationPolicy {
     PreserveElseCanonical,
 }
 
-/** One scalar operation bound to the transaction's base snapshot (edit.rs:
- * 34-61). */
+/** One scalar operation bound to the transaction's base snapshot (edit.rs
+ *). */
 sealed class ScalarReplacement {
     /** Exact target NodeRef. */
     abstract val target: NodeRef
@@ -103,7 +103,7 @@ sealed class ScalarReplacement {
 }
 
 /** One typed YAML edit operation bound to an immutable base snapshot
- * (edit.rs:63-114). */
+ * (edit.rs). */
 sealed class EditOperation {
     /** Existing scalar semantic or literal replacement. */
     data class ReplaceScalar(val replacement: ScalarReplacement) : EditOperation()
@@ -157,7 +157,7 @@ sealed class EditOperation {
 }
 
 /** Immutable transaction; every operation resolves against one base snapshot
- * (edit.rs:116-135). */
+ * (edit.rs). */
 class EditTransaction internal constructor(
     /** Base snapshot identity. */
     val baseSnapshot: SnapshotIdentity,
@@ -165,18 +165,18 @@ class EditTransaction internal constructor(
     val operations: List<EditOperation>,
 )
 
-/** Builder that is not a committed edit (edit.rs:137-258). */
+/** Builder that is not a committed edit (edit.rs). */
 class EditTransactionBuilder internal constructor(private val base: SnapshotIdentity) {
     private val operations = ArrayList<EditOperation>()
 
     companion object {
         /** Binds a new transaction to one immutable base document
-         * (edit.rs:145-152). */
+         * (edit.rs). */
         fun new(document: Document): EditTransactionBuilder =
             EditTransactionBuilder(document.snapshotIdentity)
     }
 
-    /** Adds one semantic scalar replacement (edit.rs:154-167). */
+    /** Adds one semantic scalar replacement (edit.rs). */
     fun semanticScalar(
         target: NodeRef,
         value: PortableValue,
@@ -186,21 +186,21 @@ class EditTransactionBuilder internal constructor(private val base: SnapshotIden
         return this
     }
 
-    /** Adds one exact literal scalar replacement (edit.rs:169-178). */
+    /** Adds one exact literal scalar replacement (edit.rs). */
     fun literalScalar(target: NodeRef, literal: ByteArray): EditTransactionBuilder {
         operations.add(EditOperation.ReplaceScalar(ScalarReplacement.Literal(target, literal)))
         return this
     }
 
     /** Adds one anchor rename that also updates every dependent alias
-     * (edit.rs:180-187). */
+     * (edit.rs). */
     fun renameAnchor(target: NodeRef, name: String): EditTransactionBuilder {
         operations.add(EditOperation.RenameAnchor(target, name))
         return this
     }
 
-    /** Adds one arbitrary-key mapping association insertion (edit.rs:
-     * 189-204). */
+    /** Adds one arbitrary-key mapping association insertion (edit.rs
+ *). */
     fun insertMappingEntry(
         mapping: NodeRef,
         key: PortableValue,
@@ -211,13 +211,13 @@ class EditTransactionBuilder internal constructor(private val base: SnapshotIden
         return this
     }
 
-    /** Adds one exact mapping-association removal (edit.rs:206-211). */
+    /** Adds one exact mapping-association removal (edit.rs). */
     fun removeMappingEntry(target: NodeRef): EditTransactionBuilder {
         operations.add(EditOperation.RemoveMappingEntry(target))
         return this
     }
 
-    /** Adds one sequence value insertion (edit.rs:213-225). */
+    /** Adds one sequence value insertion (edit.rs). */
     fun insertSequenceElement(
         sequence: NodeRef,
         value: PortableValue,
@@ -227,14 +227,14 @@ class EditTransactionBuilder internal constructor(private val base: SnapshotIden
         return this
     }
 
-    /** Adds one exact sequence-association removal (edit.rs:227-233). */
+    /** Adds one exact sequence-association removal (edit.rs). */
     fun removeSequenceElement(target: NodeRef): EditTransactionBuilder {
         operations.add(EditOperation.RemoveSequenceElement(target))
         return this
     }
 
     /** Adds one sequence alias insertion to an earlier visible anchor
-     * (edit.rs:235-247). */
+     * (edit.rs). */
     fun insertAlias(
         sequence: NodeRef,
         anchor: NodeRef,
@@ -245,14 +245,14 @@ class EditTransactionBuilder internal constructor(private val base: SnapshotIden
     }
 
     /** Completes the immutable request; validation happens atomically at
-     * commit (edit.rs:249-257). */
+     * commit (edit.rs). */
     fun build(): EditTransaction = EditTransaction(base, operations.toList())
 }
 
-/** Atomic edit success (edit.rs:260-271). ChangeSet is not shipped in the
+/** Atomic edit success (edit.rs). ChangeSet is not shipped in the
  * Kotlin YAML family (recorded gap, six-repo audit G090); the commit
  * carries the ordered edit diagnostics and the old-to-new node mapping
- * facts instead (json/Edit.kt:244-255). */
+ * facts instead (kotlin/src/main/kotlin/consema/json/Edit.kt). */
 class EditCommit(
     /** New immutable document. */
     val document: Document,
@@ -264,13 +264,13 @@ class EditCommit(
     val diagnostics: List<Diagnostic>,
     /** Old-to-new node mapping facts (the Rust ChangeSet node mappings of
      * the not-shipped-in-Kotlin ChangeSet, recorded gap, six-repo audit
-     * G090; edit.rs:444-523). */
+     * G090; edit.rs). */
     val nodeMappings: List<YamlNodeMapping>,
 )
 
 /** One old-to-new node mapping fact (the Rust NodeMapping of the
  * not-shipped-in-Kotlin ChangeSet, recorded gap, six-repo audit G090;
- * edit.rs:498-513). */
+ * edit.rs). */
 data class YamlNodeMapping(
     /** Base structural identity. */
     val old: NodeRef,
@@ -294,9 +294,9 @@ enum class YamlNodeMappingStatus {
     Unmapped,
 }
 
-/** Stable YAML edit validation or commit failure (edit.rs:273-314). The
+/** Stable YAML edit validation or commit failure (edit.rs). The
  * [name] is the exact vector spelling; [code] is the frozen registered
- * code (edit.rs:318-343). */
+ * code (edit.rs). */
 sealed class EditFailure(val name: String) {
     /** Transaction or target belongs to another snapshot. */
     data object WrongSnapshot : EditFailure("WrongSnapshot")
@@ -364,7 +364,7 @@ sealed class EditFailure(val name: String) {
      * topology. */
     data object NewDocumentFormationFailed : EditFailure("NewDocumentFormationFailed")
 
-    /** The frozen registered code of the failure (edit.rs:318-343). */
+    /** The frozen registered code of the failure (edit.rs). */
     val code: String
         get() = when (this) {
             is WrongSnapshot -> "core.edit.wrong-snapshot@1"
@@ -392,14 +392,14 @@ sealed class EditFailure(val name: String) {
 class EditFailureException(val failure: EditFailure) :
     Exception("edit: ${failure.name}")
 
-/** One prepared byte edit (edit.rs:380-385). */
+/** One prepared byte edit (edit.rs). */
 private data class PreparedEdit(
     val oldSpan: Span,
     val replacement: ByteArray,
     val mapping: Pair<NodeRef, MappingPlan>? = null,
 )
 
-/** The old-to-new mapping plan of one prepared edit (edit.rs:393-399). */
+/** The old-to-new mapping plan of one prepared edit (edit.rs). */
 private sealed class MappingPlan {
     data class Node(val index: Int) : MappingPlan()
     data class Anchor(val index: Int) : MappingPlan()
@@ -408,7 +408,7 @@ private sealed class MappingPlan {
 }
 
 /** The validated old-to-new identity map of a reparsed candidate
- * (edit.rs:386-391). */
+ * (edit.rs). */
 private class CandidateMap {
     val nodes = HashMap<Int, Int>()
     val aliases = HashMap<Int, Int>()
@@ -422,7 +422,7 @@ private class SourceEdit(
 
 /**
  * Atomically commits validated YAML scalar, collection, anchor, and alias
- * operations (edit.rs:401-551). On failure the document remains unchanged;
+ * operations (edit.rs). On failure the document remains unchanged;
  * a failure returns none of the successful artifacts (RFC 0004 §13).
  */
 fun Document.commit(transaction: EditTransaction): EditCommit {
@@ -533,7 +533,7 @@ fun Document.commit(transaction: EditTransaction): EditCommit {
 }
 
 /** Fully validates and plans an edit without returning a new Document
- * (edit.rs:554-568). */
+ * (edit.rs). */
 fun Document.dryRun(
     transaction: EditTransaction,
     sourceId: EditPlanSourceId,
@@ -911,7 +911,7 @@ private fun Document.resolveSequenceItem(target: NodeRef): Pair<Int, Int> {
 }
 
 /** Extends an association span back over its tag/anchor/explicit-key
- * properties (edit.rs:1018-1051). */
+ * properties (edit.rs). */
 private fun Document.associationSpan(span: Span): Span {
     val pieces = structuralIndex.pieces()
     var start = span.startByte
@@ -1170,7 +1170,7 @@ private fun Document.emptyBlockReplacement(owned: Span, occurrence: Span, empty:
 }
 
 /** Inserting an alias requires the exact latest visible definition of its
- * name (edit.rs:1346-1396). */
+ * name (edit.rs). */
 private fun Document.validateVisibleAnchor(sequence: Int, anchor: Int, insertion: Int) {
     val anchorSpan = native.nodes[anchor].anchorSpan
         ?: throw EditFailureException(EditFailure.WrongRole)
@@ -1207,8 +1207,8 @@ private fun Document.validateVisibleAnchor(sequence: Int, anchor: Int, insertion
 }
 
 /** Only collect deleted subtrees: removing an anchored definition while a
- * live alias remains outside the owned span is rejected (edit.rs:
- * 1398-1418; RFC 0007 §12). */
+ * live alias remains outside the owned span is rejected (edit.rs
+ * ; RFC 0007 §12). */
 private fun Document.validateRemovalDependencies(
     owned: Span,
     roots: List<Pair<Int, Int?>>,
@@ -1272,7 +1272,7 @@ private fun Document.resolveNode(target: NodeRef, role: NodeRole): Int {
     return index.toInt()
 }
 
-/** The exact literal span of a scalar node (edit.rs:1468-1497). */
+/** The exact literal span of a scalar node (edit.rs). */
 private fun Document.scalarLiteralSpan(index: Int): Span? {
     val node = native.nodes.getOrNull(index) ?: return null
     val scalar = (node.content as? NativeContent.Scalar)?.scalar ?: return null
@@ -1322,7 +1322,7 @@ private fun Document.syntaxBetween(
 }
 
 /** An exact literal must be one complete scalar with no node properties or
- * markers (edit.rs:1536-1567). */
+ * markers (edit.rs). */
 private fun Document.validateLiteral(literal: ByteArray) {
     if (literal.isEmpty()) {
         throw EditFailureException(EditFailure.InvalidLiteral)
@@ -1354,8 +1354,8 @@ private fun Document.validateLiteral(literal: ByteArray) {
     }
 }
 
-/** The canonical tag/literal fragment of one scalar value (edit.rs:
- * 1569-1614). The canonical content is read from the materialized document
+/** The canonical tag/literal fragment of one scalar value (edit.rs
+ *). The canonical content is read from the materialized document
  * itself, exactly like the reference implementation. */
 private fun Document.canonicalScalarFragment(value: PortableValue): CanonicalScalar {
     val request = MaterializationRequest.new(
@@ -1392,7 +1392,7 @@ private fun Document.canonicalScalarFragment(value: PortableValue): CanonicalSca
     return CanonicalScalar(parts[0], parts[1], scalar.canonical())
 }
 
-/** The canonical flow fragment of one inserted value (edit.rs:1616-1644). */
+/** The canonical flow fragment of one inserted value (edit.rs). */
 private fun Document.canonicalValueFragment(value: PortableValue): String =
     materializeScalarFragment(value) {
         EditFailure.UnsupportedInsertedValue(it)
@@ -1438,8 +1438,8 @@ private fun Document.editParseLimits(): ParseLimits =
         maxDiagnostics = parseLimits.maxDiagnostics,
     )
 
-/** A new anchor name must form one exact anchor property (edit.rs:
- * 1646-1672). */
+/** A new anchor name must form one exact anchor property (edit.rs
+ *). */
 private fun Document.validateAnchorName(name: String) {
     if (name.isEmpty() || name.length > parseLimits.maxSourceBytes) {
         throw EditFailureException(EditFailure.InvalidAnchorName)
@@ -1500,7 +1500,7 @@ private fun standaloneSource(fragment: ByteArray, encoding: SourceEncoding): Byt
     }
 
 /** Validates the reparsed candidate against the declared operations
- * (edit.rs:1682-2014). */
+ * (edit.rs). */
 private fun Document.validateCandidate(
     candidate: Document,
     transaction: EditTransaction,
@@ -1699,7 +1699,7 @@ private fun Document.validationModelForValue(value: PortableValue): ValidationMo
 }
 
 /** Duplicate targets and same-container structural conflicts are rejected
- * before any byte planning (edit.rs:1974-2014). */
+ * before any byte planning (edit.rs). */
 private fun Document.validateDependencies(transaction: EditTransaction) {
     val targets = HashSet<NodeRef>()
     val structuralContainers = HashSet<Int>()
@@ -1732,7 +1732,7 @@ private fun Document.validateDependencies(transaction: EditTransaction) {
 }
 
 /** The validation model used for structural candidate isomorphism
- * (edit.rs:2017-2324). */
+ * (edit.rs). */
 private class ValidationModel(
     val roots: List<Int>,
     val nodes: MutableList<ValidationNode>,
@@ -1799,7 +1799,7 @@ private class ValidationModel(
     }
 
     /** Imports one single-root model into this model's node space
-     * (edit.rs:2131-2174). */
+     * (edit.rs). */
     fun appendRoot(imported: ValidationModel): Int {
         if (imported.roots.size != 1) {
             throw EditFailureException(EditFailure.NewDocumentFormationFailed)
@@ -1831,7 +1831,7 @@ private class ValidationModel(
     }
 
     /** Compares this expected model against a candidate model and returns
-     * the old-to-new mapping (edit.rs:2176-2317). */
+     * the old-to-new mapping (edit.rs). */
     fun compare(candidate: ValidationModel): CandidateMap {
         if (roots.size != candidate.roots.size) {
             throw EditFailureException(EditFailure.NewDocumentFormationFailed)
@@ -2009,7 +2009,7 @@ private class ValidationComparison {
 private class CanonicalScalar(val tag: String, val literal: String, val canonical: String)
 
 /** Preserves the target scalar category and presentation style when
- * compatible (edit.rs:2326-2362). */
+ * compatible (edit.rs). */
 private fun preservedLiteral(
     oldKind: YamlScalarKind,
     oldStyle: YamlScalarStyle,
@@ -2138,7 +2138,7 @@ private fun validatePreparedOwnership(prepared: List<PreparedEdit>) {
 }
 
 /** Reports the authorized canonical fallback of a PreserveElseCanonical
- * scalar edit (edit.rs:2469-2489). */
+ * scalar edit (edit.rs). */
 private fun Document.pushFallbackDiagnostic(diagnostics: MutableList<Diagnostic>, span: Span) {
     val occurrence = diagnostics.size.toULong()
     diagnostics.add(

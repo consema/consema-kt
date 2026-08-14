@@ -1,15 +1,15 @@
 // Stable content identity of exact raw source bytes.
 //
 // Data authority (language-neutral sources first):
-//   - RFC 0003 §3 (https://github.com/consema/consema/blob/main/docs/rfcs/0003-source-syntax-query-and-patch-v1.md:45-62):
+//   - RFC 0003 §3 (https://github.com/consema/consema/blob/main/docs/rfcs/0003-source-syntax-query-and-patch-v1.md):
 //     the v1 content digest is SHA-256 over the complete original byte
 //     sequence with no decoding, BOM removal, newline normalization, or
 //     metadata mixed in; algorithm exactly "sha256", hex exactly 64 lowercase
 //     hexadecimal characters.
 //   - conformance/vectors/source-v1.json:6-16 (cases source.digest.sha256-
 //     empty and source.digest.sha256-abc) pins the golden hex values.
-//   - https://github.com/consema/consema-rs/blob/main/consema-document/src/source.rs:15-54 (ContentDigest) and
-//     lib.rs:39-51 (SnapshotIdentity) pin the shapes; consema-go/go/document/digest.go
+//   - https://github.com/consema/consema-rs/blob/main/consema-document/src/source.rs (ContentDigest) and
+//     lib.rs (SnapshotIdentity) pin the shapes; consema-go/go/document/digest.go
 //     is a cross-reference only.
 //
 // Kotlin-idiomatic design: SHA-256 is computed with java.security.
@@ -25,7 +25,7 @@ import kotlin.jvm.JvmInline
 
 /**
  * Stable SHA-256 identity of exact raw source bytes (RFC 0003 §3;
- * source.rs:15-54).
+ * source.rs).
  *
  * Equal raw bytes always produce equal content digests across processes and
  * languages. A digest mismatch proves different bytes. Digest equality is
@@ -36,12 +36,12 @@ class ContentDigest private constructor(private val bytes: ByteArray) {
     companion object {
         private const val HEX_DIGITS = "0123456789abcdef"
 
-        /** Computes the digest of exact raw bytes (source.rs:22-24). */
+        /** Computes the digest of exact raw bytes (source.rs). */
         fun of(bytes: ByteArray): ContentDigest =
             ContentDigest(MessageDigest.getInstance("SHA-256").digest(bytes))
 
         /** Constructs a digest value from an already decoded 32-byte record
-         * (source.rs:39-42). */
+         * (source.rs). */
         fun fromBytes(bytes: ByteArray): ContentDigest {
             require(bytes.size == 32) { "content digest must be exactly 32 bytes" }
             return ContentDigest(bytes.copyOf())
@@ -49,15 +49,15 @@ class ContentDigest private constructor(private val bytes: ByteArray) {
     }
 
     /** Digest algorithm identifier frozen by the v1 source contract
-     * (source.rs:27-30; RFC 0003 §3: exactly "sha256"). */
+     * (source.rs; RFC 0003 §3: exactly "sha256"). */
     val algorithm: String
         get() = "sha256"
 
-    /** Exact 32 digest bytes; returns a defensive copy (source.rs:33-36). */
+    /** Exact 32 digest bytes; returns a defensive copy (source.rs). */
     fun bytes(): ByteArray = bytes.copyOf()
 
     /** Lowercase hexadecimal representation, exactly 64 characters
-     * (source.rs:44-53; RFC 0003 §3). */
+     * (source.rs; RFC 0003 §3). */
     fun toHex(): String {
         val hex = CharArray(64)
         for (i in bytes.indices) {
@@ -78,7 +78,7 @@ class ContentDigest private constructor(private val bytes: ByteArray) {
 
 /**
  * Opaque identity of exactly one immutable document snapshot
- * (lib.rs:41-51). Fresh for every formed Document: parsing the same bytes
+ * (lib.rs). Fresh for every formed Document: parsing the same bytes
  * twice produces equal content digests and distinct snapshot identities
  * (RFC 0003 §3; conformance/vectors/source-v1.json:18-22, case
  * source.identity.equal-bytes-distinct-snapshots). Never serialized

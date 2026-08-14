@@ -1,7 +1,7 @@
 // Projection tests: exact EntryMapping preservation, explicit Object
 // collapse, provenance relations, and limit failures.
 //
-// Authority: RFC 0009 §10 (https://github.com/consema/consema/blob/main/docs/rfcs/0009-ini-family-profiles-v1.md:347-385)
+// Authority: RFC 0009 §10 (https://github.com/consema/consema/blob/main/docs/rfcs/0009-ini-family-profiles-v1.md)
 // and the vector cases projection.exact-duplicate-entry-mapping,
 // projection.explicit-object-collapse, and
 // projection.fragmented-value-provenance (ini-v1.json:60-73);
@@ -31,7 +31,7 @@ import kotlin.test.assertTrue
 class ProjectionTest {
 
     /** Vector case projection.exact-duplicate-entry-mapping (ini-v1.json:
-     * 60-62): duplicate sections and keys remain duplicate associations in
+ *): duplicate sections and keys remain duplicate associations in
      * order with Exact fidelity, zero events, and EntryMappingEntry
      * provenance. */
     @Test

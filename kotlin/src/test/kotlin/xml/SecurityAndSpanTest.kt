@@ -1,7 +1,7 @@
 // Security boundary and span-exactness intent checks for the xml family.
 //
 // Data authority:
-//   - RFC 0012 §3 (https://github.com/consema/consema/blob/main/docs/rfcs/0012-xml-1.0-safe-profile-v1.md:83-130):
+//   - RFC 0012 §3 (https://github.com/consema/consema/blob/main/docs/rfcs/0012-xml-1.0-safe-profile-v1.md):
 //     entity deny-by-default — no external entity expansion, no external
 //     subset fetch, no markup-generating replacement text; the parser never
 //     opens another entity, file, URI, network connection, registry,
@@ -68,7 +68,7 @@ class SecurityAndSpanTest {
     @Test
     fun `markup generating entity replacement is denied`() {
         // RFC 0012 §3: an internal entity whose replacement text can create
-        // markup never triggers fallback behavior (parser.rs:787-790,
+        // markup never triggers fallback behavior (parser.rs,
         // xml.entity.markup@1).
         val document = parseUtf8("<!DOCTYPE root [<!ENTITY x \"a<b\">]><root>&x;</root>")
         assertEquals(FormationStatus.Recovered, document.formationStatus())
@@ -80,7 +80,7 @@ class SecurityAndSpanTest {
         // Case xml.limit.entity-amplification-recovered
         // (xml-1-0-safe-v1.json:568-579): ratio 2 with 6 references of a
         // 20-byte replacement breaches the amplification budget
-        // (parser.rs:1751-1757, xml.entity.amplification@1).
+        // (parser.rs, xml.entity.amplification@1).
         val limits = XmlParseLimits.default.copy(maxEntityAmplificationRatio = 2)
         val document = parseUtf8(
             "<!DOCTYPE root [<!ENTITY a \"xxxxxxxxxxxxxxxxxxxx\">]><root>&a;&a;&a;&a;&a;&a;</root>",
@@ -93,7 +93,7 @@ class SecurityAndSpanTest {
     @Test
     fun `mixed content budget drops children with a diagnostic`() {
         // Case xml.limit.mixed-content-diagnostic (xml-1-0-safe-v1.json:
-        // 580-592): max_mixed_content_items 1 drops the child element with
+ //): max_mixed_content_items 1 drops the child element with
         // xml.limit.mixed-content@1.
         val limits = XmlParseLimits.default.copy(maxMixedContentItems = 1)
         val document = parseUtf8("<root>a<child/></root>", limits)

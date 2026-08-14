@@ -1,4 +1,4 @@
-// The no-evaluation contract (SECURITY.md:38; RFC 0014 §1, hard gate 1):
+// The no-evaluation contract (SECURITY.md; RFC 0014 §1, hard gate 1):
 // HCL is NEVER evaluated — parse, query, projection, materialization, and
 // edit carry only syntax facts. This test proves the contract: derived
 // expressions (variables, function calls, binary operators, interpolations,

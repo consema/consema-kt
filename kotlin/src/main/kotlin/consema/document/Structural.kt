@@ -1,13 +1,13 @@
 // Formation status and the exhaustive structural coverage indexes.
 //
 // Data authority:
-//   - RFC 0016 §5.1 F10 (https://github.com/consema/consema/blob/main/docs/rfcs/0016-go-api-mapping-v1.md:172-176):
+//   - RFC 0016 §5.1 F10 (https://github.com/consema/consema/blob/main/docs/rfcs/0016-go-api-mapping-v1.md):
 //     FormationStatus is a closed two-value enum (Complete, Recovered).
-//   - RFC 0003 §7 (https://github.com/consema/consema/blob/main/docs/rfcs/0003-source-syntax-query-and-patch-v1.md:163-171):
+//   - RFC 0003 §7 (https://github.com/consema/consema/blob/main/docs/rfcs/0003-source-syntax-query-and-patch-v1.md):
 //     text and binary coverage obey the same no-gap/no-overlap/final-length
 //     invariant; empty source has an empty valid index; non-empty source
 //     requires at least one non-empty region.
-//   - https://github.com/consema/consema-rs/blob/main/consema-document/src/lib.rs:404-579 pins the shapes and the
+//   - https://github.com/consema/consema-rs/blob/main/consema-document/src/lib.rs pins the shapes and the
 //     LocationError validation outcomes; conformance/vectors/source-v1.json
 //     cases source.binary.* (lines 102-118) pin the coverage semantics.
 //   - consema-go/go/document/structural.go and consema-go/go/document/formation.go are
@@ -16,7 +16,7 @@
 package consema.document
 
 /**
- * Successful document formation state (RFC 0016 §5.1 F10; lib.rs:404-411).
+ * Successful document formation state (RFC 0016 §5.1 F10; lib.rs).
  * Closed binary enum: exactly [Complete] and [Recovered] exist; the facade
  * exposes only the formation-status equivalent, no status alias (RFC 0016
  * §5.1).
@@ -29,7 +29,7 @@ enum class FormationStatus {
     Recovered,
 }
 
-/** One exhaustive source-byte classification (lib.rs:413-422). */
+/** One exhaustive source-byte classification (lib.rs). */
 enum class StructuralPieceKind {
     /** Lexical token. */
     Token,
@@ -41,7 +41,7 @@ enum class StructuralPieceKind {
     ErrorRegion,
 }
 
-/** One source byte interval and its lossless class (lib.rs:424-449). */
+/** One source byte interval and its lossless class (lib.rs). */
 data class StructuralPiece(
     /** Exact source range. */
     val span: Span,
@@ -51,7 +51,7 @@ data class StructuralPiece(
 
 /**
  * Exhaustive ordered token/trivia/error-region coverage of one text source
- * (RFC 0003 §7; lib.rs:451-490). Validates exact snapshot binding and the
+ * (RFC 0003 §7; lib.rs). Validates exact snapshot binding and the
  * no-gap/no-overlap/final-length invariant.
  */
 class LosslessStructuralIndex private constructor(
@@ -59,7 +59,7 @@ class LosslessStructuralIndex private constructor(
 ) {
     companion object {
         /** Validates exact source coverage and stores pieces in structural
-         * order (lib.rs:458-483). Throws [LocationException] on a gap,
+         * order (lib.rs). Throws [LocationException] on a gap,
          * overlap, empty interval, wrong final length, or wrong snapshot. */
         fun new(identity: SnapshotIdentity, sourceLen: Int, pieces: List<StructuralPiece>):
             LosslessStructuralIndex {
@@ -87,7 +87,7 @@ class LosslessStructuralIndex private constructor(
     fun pieces(): List<StructuralPiece> = pieces
 }
 
-/** One format-owned region in an opaque binary source (lib.rs:492-528). */
+/** One format-owned region in an opaque binary source (lib.rs). */
 data class BinaryRegion(
     /** Process-local structural identity. */
     val nodeRef: NodeRef,
@@ -99,7 +99,7 @@ data class BinaryRegion(
 
 /**
  * Exhaustive ordered format-owned region coverage for one opaque binary
- * source (RFC 0003 §7; lib.rs:530-579). Binary coverage obeys the same
+ * source (RFC 0003 §7; lib.rs). Binary coverage obeys the same
  * no-gap/no-overlap/final-length invariant but does not call bytes tokens or
  * trivia. Empty source has an empty valid index; non-empty source requires
  * at least one non-empty region.
@@ -109,7 +109,7 @@ class BinaryStructuralIndex private constructor(
 ) {
     companion object {
         /** Validates exact raw-byte coverage, snapshot binding, roles, kinds,
-         * and unique identities (lib.rs:537-572). Throws [LocationException]
+         * and unique identities (lib.rs). Throws [LocationException]
          * on any violation. */
         fun new(identity: SnapshotIdentity, sourceLen: Int, regions: List<BinaryRegion>):
             BinaryStructuralIndex {

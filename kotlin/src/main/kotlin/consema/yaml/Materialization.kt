@@ -1,8 +1,8 @@
 // Canonical PortableGraph and PortableValue materialization for YAML.
 //
 // Data authority:
-//   - RFC 0007 §11 (https://github.com/consema/consema/blob/main/docs/rfcs/0007-yaml-family-profiles-and-safety-v1.md:
-//     303-353): styles yaml.canonical-block@1 and yaml.canonical-flow@1;
+//   - RFC 0007 §11 (https://github.com/consema/consema/blob/main/docs/rfcs/0007-yaml-family-profiles-and-safety-v1.md
+//): styles yaml.canonical-block@1 and yaml.canonical-flow@1;
 //     graph materialization uses canonical graph numbering, emits explicit
 //     document starts for every root, and introduces deterministic anchors
 //     `&g0`, `&g1`, ... for nodes whose topology requires an alias; a graph
@@ -18,19 +18,19 @@
 //     always carries the matching BOM; raw encoded bytes are charged to
 //     max_output_bytes.
 //   - RFC 0004 §3-§8 (https://github.com/consema/consema/blob/main/docs/rfcs/0004-materialization-conversion-and-
-//     structural-edit-v1.md:56-218) pins the common request, the completion
+//     structural-edit-v1.md) pins the common request, the completion
 //     algebra, and the provenance direction.
 //   - conformance/vectors/yaml-v1.json pins the golden output bytes
 //     (materialization.graph-cycle-flow: "--- &g0 !!seq [!!str \"one\",
 //     *g0]\n"; materialization.value-flow: "--- !!map {? !!str \"a\" :
 //     !!seq [!!int \"1\", !!bool \"true\"]}\n").
 //   - https://github.com/consema/consema-rs/blob/main/consema-yaml/src/materialization.rs is the byte-arbitration
-//     authority (graph writer materialization.rs:430-728, scalar
-//     presentation materialization.rs:719-728, quoted escaping
-//     materialization.rs:689-709, output encoding materialization.rs:
-//     775-819, value preparation materialization.rs:1146-1335, graph
-//     conversion materialization.rs:1337-1503, provenance builders
-//     materialization.rs:821-1056 and 1611-1824).
+//     authority (graph writer materialization.rs, scalar
+//     presentation materialization.rs, quoted escaping
+//     materialization.rs, output encoding materialization.rs
+// value preparation materialization.rs, graph
+//     conversion materialization.rs, provenance builders
+//     materialization.rs and 1611-1824).
 //
 // Kotlin-idiomatic design: the completion algebra is a sealed class; the
 // bounded output buffer is a StringBuilder with checked appends; failures
@@ -91,7 +91,7 @@ import consema.protocol.Severity
 import java.math.BigInteger
 
 /** A PortableGraph location consumed by YAML materialization
- * (materialization.rs:32-60). */
+ * (materialization.rs). */
 sealed class GraphMaterializationInputLocation {
     /** Ordered graph root occurrence. */
     data class Root(val ordinal: Long) : GraphMaterializationInputLocation()
@@ -125,7 +125,7 @@ sealed class GraphMaterializationInputLocation {
 }
 
 /** One graph-input location mapped to one or more generated YAML origins
- * (materialization.rs:62-69). */
+ * (materialization.rs). */
 data class GraphMaterializationProvenanceEntry(
     /** Exact input location. */
     val input: GraphMaterializationInputLocation,
@@ -134,7 +134,7 @@ data class GraphMaterializationProvenanceEntry(
 )
 
 /** Complete deterministic graph-to-YAML provenance multimap
- * (materialization.rs:71-83). */
+ * (materialization.rs). */
 class GraphMaterializationProvenanceMap internal constructor(
     internal val entriesList: List<GraphMaterializationProvenanceEntry>,
 ) {
@@ -148,7 +148,7 @@ class GraphMaterializationProvenanceMap internal constructor(
 }
 
 /** Stable PortableGraph-to-YAML materialization failure
- * (materialization.rs:85-117). */
+ * (materialization.rs). */
 sealed class GraphMaterializationFailure {
     /** A common request, formation, or resource contract failed. */
     data class Materialization(val cause: MaterializationException) : GraphMaterializationFailure()
@@ -168,7 +168,7 @@ sealed class GraphMaterializationFailure {
 }
 
 /** Stable semantic-model v5 diagnostic code for graph-to-YAML
- * materialization (materialization.rs:143-152). */
+ * materialization (materialization.rs). */
 fun graphMaterializationCode(failure: GraphMaterializationFailure): String =
     when (failure) {
         is GraphMaterializationFailure.Materialization -> failure.cause.code
@@ -183,7 +183,7 @@ class GraphMaterializationException(val failure: GraphMaterializationFailure) :
     Exception("yaml graph materialization: ${graphMaterializationCode(failure)}")
 
 /** Failed graph attempt without a Document or partial output bytes
- * (materialization.rs:160-167). */
+ * (materialization.rs). */
 data class FailedGraphMaterializationAttempt(
     /** Stable failure. */
     val failure: GraphMaterializationFailure,
@@ -192,7 +192,7 @@ data class FailedGraphMaterializationAttempt(
 )
 
 /** Complete exact PortableGraph-to-YAML materialization
- * (materialization.rs:169-180). */
+ * (materialization.rs). */
 data class CompleteGraphMaterialization(
     /** Newly formed immutable YAML stream. */
     val document: Document,
@@ -204,8 +204,8 @@ data class CompleteGraphMaterialization(
     val provenance: GraphMaterializationProvenanceMap,
 )
 
-/** Closed graph materialization completion algebra (materialization.rs:
- * 182-189). */
+/** Closed graph materialization completion algebra (materialization.rs
+ *). */
 sealed class GraphMaterializationResult {
     /** Complete success with every required artifact. */
     data class Complete(val materialization: CompleteGraphMaterialization) : GraphMaterializationResult()
@@ -215,7 +215,7 @@ sealed class GraphMaterializationResult {
 }
 
 /** Materializes one complete PortableGraph as a canonical YAML stream
- * (materialization.rs:191-205). */
+ * (materialization.rs). */
 fun materializeGraph(
     graph: Graph,
     request: MaterializationRequest,
@@ -312,7 +312,7 @@ private fun parseLimits(limits: MaterializationLimits): ParseLimits = ParseLimit
 )
 
 /** The canonical graph layout: which nodes need anchors and their
- * deterministic `g{index}` names (materialization.rs:292-401). */
+ * deterministic `g{index}` names (materialization.rs). */
 private class GraphLayout(val anchorNames: Map<NodeId, Int>) {
     companion object {
         fun analyze(graph: Graph, limits: MaterializationLimits): GraphLayout {
@@ -440,7 +440,7 @@ private fun graphResourceLimit(name: String): GraphMaterializationException =
         ),
     )
 
-/** The canonical graph writer (materialization.rs:430-717). */
+/** The canonical graph writer (materialization.rs). */
 private class GraphWriter(
     private val graph: Graph,
     private val layout: GraphLayout,
@@ -613,8 +613,8 @@ private class GraphWriter(
         pushStr("!!$suffix")
     }
 
-    /** The canonical double-quoted scalar spelling (materialization.rs:
-     * 689-709). */
+    /** The canonical double-quoted scalar spelling (materialization.rs
+ *). */
     private fun writeQuoted(value: String) {
         pushChar('"')
         for (character in value) {
@@ -654,7 +654,7 @@ private class GraphWriter(
 }
 
 /** The canonical scalar presentation: floats that would lose their decimal
- * nature get an explicit `e0` (materialization.rs:719-728). */
+ * nature get an explicit `e0` (materialization.rs). */
 internal fun scalarPresentation(tag: String, canonical: String): String =
     if (tag == TAG_FLOAT &&
         canonical != ".inf" && canonical != "-.inf" && canonical != ".nan" &&
@@ -666,7 +666,7 @@ internal fun scalarPresentation(tag: String, canonical: String): String =
     }
 
 /** Encodes the generated text under the selected encoding with the matching
- * BOM for UTF-16 (materialization.rs:775-819). */
+ * BOM for UTF-16 (materialization.rs). */
 internal fun encodeOutput(text: String, encoding: SourceEncoding, max: Int): ByteArray =
     when (encoding) {
         SourceEncoding.Utf8 -> {
@@ -731,8 +731,8 @@ private fun collectGraphProvenance(
     return GraphMaterializationProvenanceMap(builder.entries)
 }
 
-/** Builds the graph-to-YAML provenance multimap (materialization.rs:
- * 860-1056). */
+/** Builds the graph-to-YAML provenance multimap (materialization.rs
+ *). */
 private class GraphProvenanceBuilder(
     private val document: Document,
     private val limits: MaterializationLimits,
@@ -868,7 +868,7 @@ private class GraphProvenanceBuilder(
 }
 
 /** Materializes one complete PortableValue into a canonical YAML document
- * (materialization.rs:1058-1078). Exact local Object/EntryMapping
+ * (materialization.rs). Exact local Object/EntryMapping
  * reconstruction is verified through the frozen best-exact YAML
  * projection. */
 fun materializeValue(
@@ -884,7 +884,7 @@ fun materializeValue(
         } catch (limitFailure: MaterializationException) {
             // The failed attempt's report degrades to empty when the
             // report limit itself was the failure (the Rust
-            // unwrap_or_default, materialization.rs:1071-1075).
+            // unwrap_or_default, materialization.rs).
             MaterializationReport.new(emptyList(), request.limits)
         }
         MaterializationResult.Failed(
@@ -957,7 +957,7 @@ private fun materializeValueComplete(
     )
 }
 
-/** Prepares the portable value for exact YAML representation (materialization.rs:1146-1246). */
+/** Prepares the portable value for exact YAML representation (materialization.rs). */
 private fun prepareValue(
     value: PortableValue,
     path: ValuePath,
@@ -1061,7 +1061,7 @@ private fun unrepresentable(path: ValuePath, kind: Kind): MaterializationExcepti
     )
 
 /** EntryMapping preparation with the explicit UniqueStringEntriesToObject
- * conversion (materialization.rs:1248-1335). */
+ * conversion (materialization.rs). */
 private fun prepareMapping(
     entries: List<consema.core.EntryMappingEntry>,
     path: ValuePath,
@@ -1139,7 +1139,7 @@ private fun prepareMapping(
 }
 
 /** Converts one prepared PortableValue to a single-root graph
- * (materialization.rs:1337-1503). */
+ * (materialization.rs). */
 private fun valueGraph(value: PortableValue, limits: MaterializationLimits): Graph {
     val maxNodes = limits.maxInputNodes.saturatingMul(2).saturatingAdd(1)
     val builder = Builder.withLimits(
@@ -1232,7 +1232,7 @@ private fun defineValueNode(
 }
 
 /** The canonical `YYYY-MM-DD` spelling, or null outside 0..=9999
- * (materialization.rs:1505-1510). */
+ * (materialization.rs). */
 internal fun canonicalDate(value: PvDate): String? {
     if (value.year.signum() < 0 || value.year > BIGINT_9999) {
         return null
@@ -1244,7 +1244,7 @@ internal fun canonicalDate(value: PvDate): String? {
 private val BIGINT_9999: BigInteger = BigInteger.valueOf(9999)
 
 /** The canonical timestamp spelling with `Z` for zero and `±HH:MM`
- * otherwise (materialization.rs:1512-1543). */
+ * otherwise (materialization.rs). */
 internal fun canonicalOffsetDateTime(
     value: PvOffsetDateTime,
     maxOutputBytes: Int,
@@ -1273,8 +1273,8 @@ internal fun canonicalOffsetDateTime(
     return output
 }
 
-/** The minimal exact fractional-second spelling (materialization.rs:
- * 1545-1572). */
+/** The minimal exact fractional-second spelling (materialization.rs
+ *). */
 internal fun canonicalFraction(value: PvDecimal, max: Int): String? {
     if (value.coefficient.signum() == 0) {
         return ""
@@ -1302,7 +1302,7 @@ internal fun canonicalFraction(value: PvDecimal, max: Int): String? {
     return ".${"0".repeat(places - digits.length)}$digits"
 }
 
-/** Standard base64 encoding (materialization.rs:1574-1609). */
+/** Standard base64 encoding (materialization.rs). */
 internal fun encodeBase64(value: ByteArray, max: Int): String {
     val alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
     val length = (value.size + 2) / 3 * 4
@@ -1330,8 +1330,8 @@ internal fun encodeBase64(value: ByteArray, max: Int): String {
     return output.toString()
 }
 
-/** Builds the value-to-YAML provenance multimap (materialization.rs:
- * 1611-1824). */
+/** Builds the value-to-YAML provenance multimap (materialization.rs
+ *). */
 private class ValueProvenanceBuilder(
     private val document: Document,
     private val request: MaterializationRequest,

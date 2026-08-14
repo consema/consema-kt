@@ -16,7 +16,7 @@
 //     two documents, anchor-heavy with five aliases).
 //
 // Facts (counts) mirror https://github.com/consema/consema-rs/blob/main/consema-conformance/tests/
-// line_format_fixtures.rs:48-179 and yaml_fixtures.rs:22-51. The fixture
+// line_format_fixtures.rs and yaml_fixtures.rs. The fixture
 // directory resolves through the same repository-relative rule as the
 // runner (CONSEMA_REPO or an ancestor carrying conformance/vectors +
 // docs/fc-manifest-0.13.0.json); when the shared tree is not reachable

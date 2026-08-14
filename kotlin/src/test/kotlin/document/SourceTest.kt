@@ -241,7 +241,7 @@ class SourceTest {
         assertEquals(snapshot.digest, consema.document.ContentDigest.of(hexToBytes(raw)))
     }
 
-    /** fromBinary never interprets a BOM (source.rs:570-576): the UTF-32
+    /** fromBinary never interprets a BOM (source.rs): the UTF-32
      * marker bytes are content. */
     @Test
     fun fromBinaryKeepsBomShapedBytesAsContent() {

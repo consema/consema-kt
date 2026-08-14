@@ -2,7 +2,7 @@
 // Latin-1, published Windows code pages, and the decoded-text carrier.
 //
 // Data authority (language-neutral sources first):
-//   - RFC 0010 §3 (https://github.com/consema/consema/blob/main/docs/rfcs/0010-java-properties-profiles-v1.md:65-106):
+//   - RFC 0010 §3 (https://github.com/consema/consema/blob/main/docs/rfcs/0010-java-properties-profiles-v1.md):
 //     reader@1 operates on an explicitly decoded character source with the
 //     charset chosen outside `load(Reader)`; latin1@1 maps every input byte
 //     to the same-numbered ISO-8859-1 character with BOM bytes as ordinary
@@ -12,11 +12,11 @@
 //     encodings (lines 40-49) pins Reader UTF-8/UTF-16LE/UTF-16BE/
 //     WindowsCodePage(1252) decoding and formation.latin1-byte-and-bom-
 //     content (lines 50-54) pins Latin-1 BOM-as-content.
-//   - https://github.com/consema/consema-rs/blob/main/consema-properties/src/parser.rs:17-91 pins the encoding
+//   - https://github.com/consema/consema-rs/blob/main/consema-properties/src/parser.rs pins the encoding
 //     request construction and the profile/encoding validation
 //     (java-properties.source.profile-encoding@1); the published Windows
 //     code-page registry is the Rust SourceEncoding::WindowsCodePage set
-//     (https://github.com/consema/consema-rs/blob/main/consema-document/src/materialization.rs:633-652: 874, 932,
+//     (https://github.com/consema/consema-rs/blob/main/consema-document/src/materialization.rs: 874, 932,
 //     936, 949, 950, 1250-1258, 65001). consema-go/go/properties is a cross-reference
 //     only.
 //
@@ -41,7 +41,7 @@ import java.nio.charset.Charset
 
 /**
  * Explicit source contract; no extension, locale, or platform default is
- * consulted (RFC 0010 §3; lib.rs:52-59). The profile is always selected by
+ * consulted (RFC 0010 §3; lib.rs). The profile is always selected by
  * the caller; a `.properties` extension never chooses between Reader and
  * Latin-1 semantics.
  */
@@ -60,11 +60,11 @@ sealed class PropertiesEncoding {
 
 /**
  * One published Windows code page of the portable registry (the Rust
- * WindowsCodePage registry; materialization.rs:633-652).
+ * WindowsCodePage registry; materialization.rs).
  */
 data class WindowsCodePage(val number: Int) {
     companion object {
-        /** The published registry (materialization.rs:633-652). */
+        /** The published registry (materialization.rs). */
         private val PUBLISHED = setOf(874, 932, 936, 949, 950, 1250, 1251, 1252, 1253, 1254, 1255, 1256, 1257, 1258, 65001)
 
         /** Resolves one published code page (the Rust from_number). */
@@ -148,7 +148,7 @@ private val CP1252_REVERSE: Map<Int, Int> = buildMap {
  * layer's closed v1 encoding set has no code-page decoding) and every raw
  * byte maps to exactly one decoded scalar, so the boundary index is a
  * per-char table (RFC 0003 §5 boundary semantics, kotlin/src/main/kotlin/consema/document/
- * Source.kt:239-272).
+ * Source.kt).
  */
 internal class PropertiesText(
     /** The decoded text view (validated exactly once at construction). */
@@ -158,7 +158,7 @@ internal class PropertiesText(
 ) {
     /** The exact UTF-8 representation of the decoded text; the decoded
      * offsets are byte offsets into this array (the Rust
-     * decoded_span_text, query.rs:636-651). */
+     * decoded_span_text, query.rs). */
     private val decodedUtf8 = text.toByteArray(Charsets.UTF_8)
 
     /** Decoded UTF-8 byte offset -> decoded char index (one entry per
@@ -180,7 +180,7 @@ internal class PropertiesText(
     fun rawByteAt(decodedUtf8Byte: Int): Int = decodedToRaw(decodedUtf8Byte)
 
     /** Decoded text of one raw span (the Rust decoded_span_text,
-     * query.rs:636-651). */
+     * query.rs). */
     fun spanText(span: Span): String {
         val start = rawToDecoded(span.startByte)
         val end = rawToDecoded(span.endByte)
@@ -188,14 +188,14 @@ internal class PropertiesText(
     }
 
     /** Whether the decoded text up to one raw boundary ends with a line
-     * terminator (the Rust is_line_boundary, edit.rs:685-691). */
+     * terminator (the Rust is_line_boundary, edit.rs). */
     fun endsWithLineBreak(rawByte: Int): Boolean {
         val end = byteToChar[rawToDecoded(rawByte)]
         return end > 0 && (text[end - 1] == '\r' || text[end - 1] == '\n')
     }
 
     companion object {
-        /** The snapshot-backed carrier (parser.rs:882-907). */
+        /** The snapshot-backed carrier (parser.rs). */
         fun ofSnapshot(source: SourceSnapshot): PropertiesText {
             val text = source.decodedText()
                 ?: error("Properties source profiles always select text decoding")
@@ -242,10 +242,10 @@ internal fun utf8Length(scalar: Int): Int =
 
 /**
  * Constructs the bounded SourceSnapshot for one exact profile/selection
- * (parser.rs:17-55). The selection is validated against the profile FIRST
- * (java-properties.source.profile-encoding@1, parser.rs:38-91); source
+ * (parser.rs). The selection is validated against the profile FIRST
+ * (java-properties.source.profile-encoding@1, parser.rs); source
  * construction failures map through the frozen core.source.* codes
- * (FatalFormationFailure::source_error, source_v1.rs:410-421).
+ * (FatalFormationFailure::source_error, source_v1.rs).
  */
 internal fun buildPropertiesSource(
     bytes: ByteArray,
@@ -275,7 +275,7 @@ internal fun buildPropertiesSource(
         }
         is PropertiesEncoding.WindowsCodePage -> {
             // The published registry check (the Rust WindowsCodePage
-            // from_number; error_registry.rs:967-977 registers
+            // from_number; error_registry.rs registers
             // core.source.unsupported-code-page@1).
             if (WindowsCodePage.fromNumber(encoding.number) == null) {
                 throw PropertiesFormationException(
@@ -284,9 +284,9 @@ internal fun buildPropertiesSource(
                 )
             }
             // The Reader source contract keeps the frozen DetectUnicode BOM
-            // rule (encoding_request, parser.rs:42-54): marker-shaped
+            // rule (encoding_request, parser.rs): marker-shaped
             // prefixes are BOM evidence and conflict with the code page
-            // before any decoding (source.rs:727-738, resolveEncoding).
+            // before any decoding (source.rs, resolveEncoding).
             rejectUnicodeBomEvidence(bytes)
             val text = decodeCodePage(bytes, encoding.number)
             // A code page is a byte-per-scalar text encoding; the snapshot
@@ -302,7 +302,7 @@ internal fun buildPropertiesSource(
     }
 }
 
-/** The frozen profile/encoding compatibility (parser.rs:38-91). */
+/** The frozen profile/encoding compatibility (parser.rs). */
 private fun validateSelection(
     profile: PropertiesProfile,
     encoding: PropertiesEncoding,
@@ -322,8 +322,8 @@ private fun validateSelection(
 }
 
 /** Wraps a source construction failure with the frozen code mapping of
- * FatalFormationFailure::source_error (parser.rs:24-33; source_v1.rs:
- * 410-421). */
+ * FatalFormationFailure::source_error (parser.rs; source_v1.rs
+ *). */
 private fun constructSource(
     bytes: ByteArray,
     request: EncodingRequest,
@@ -380,7 +380,7 @@ internal fun decodeCodePage(bytes: ByteArray, number: Int): String {
 }
 
 /** The frozen DetectUnicode BOM rule for Reader code-page sources
- * (source.rs:327-348, detectBom; resolveAssertions, source.rs:277-320). */
+ * (source.rs, detectBom; resolveAssertions, source.rs). */
 private fun rejectUnicodeBomEvidence(bytes: ByteArray) {
     if (bytes.size >= 4 && bytes[0] == 0xff.toByte() && bytes[1] == 0xfe.toByte() &&
         bytes[2] == 0x00.toByte() && bytes[3] == 0x00.toByte()

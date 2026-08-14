@@ -7,7 +7,7 @@
 // .source-contract (:387-430), .recovery-matrix (:432-492), .leading-digit-
 // rejection (:1684-1707), .invalid-escapes (:1709-1737), .for-key-ambiguity
 // (:1751-1779), and the assertion semantics of
-// https://github.com/consema/consema-rs/blob/main/consema-conformance/src/hcl_v1.rs:464-516 (status exact; the
+// https://github.com/consema/consema-rs/blob/main/consema-conformance/src/hcl_v1.rs (status exact; the
 // expected diagnostic code present; canonical value of the first attribute
 // expression; proven attribute names exact).
 
@@ -76,7 +76,7 @@ class FormationMatrixTest {
     }
 
     /** Vector case hcl.native-formation.identifiers-keywords (hcl-v1.json:
-     * 171-224): the identifier matrix including Unicode, keyword spellings
+ *): the identifier matrix including Unicode, keyword spellings
      * as names, and leading-underscore rejection. */
     @Test
     fun identifiersAndKeywords() {
@@ -130,7 +130,7 @@ class FormationMatrixTest {
     }
 
     /** Vector case hcl.native-formation.operators-precedence (hcl-v1.json:
-     * 281-349): precedence edges, parens with embedded newlines, trailing
+ *): precedence edges, parens with embedded newlines, trailing
      * commas and `...` in calls, and the `**`/`foo.0`/`foo::bar()`
      * rejections. */
     @Test
@@ -266,7 +266,7 @@ class FormationMatrixTest {
     }
 
     /** Vector case hcl.native-formation.for-key-ambiguity (hcl-v1.json:
-     * 1751-1779): a literal `for` key must be parenthesized or quoted. */
+ *): a literal `for` key must be parenthesized or quoted. */
     @Test
     fun forKeyAmbiguity() {
         val bare = form("a = { for = 1 }\n")
@@ -280,7 +280,7 @@ class FormationMatrixTest {
     }
 
     /** Vector case hcl.native-formation.directive-strip-markers (hcl-v1.json:
-     * 1739-1748): `~` strip markers on directives. */
+ *): `~` strip markers on directives. */
     @Test
     fun directiveStripMarkers() {
         val source = "a = \"%{~ if x ~}yes%{ endif }\"\nb = \"%{ for k, v in m ~}\${k}%{ endfor }\"\n"

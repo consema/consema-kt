@@ -2,23 +2,23 @@
 // query execution.
 //
 // Data authority:
-//   - RFC 0013 §8.1 (https://github.com/consema/consema/blob/main/docs/rfcs/0013-plist-family-profiles-v1.md:539-558):
+//   - RFC 0013 §8.1 (https://github.com/consema/consema/blob/main/docs/rfcs/0013-plist-family-profiles-v1.md):
 //     the native domain operator set, source-order results, exact Unicode
 //     key comparison without case folding, duplicate-key-group expansion,
 //     and typed accessors that validate the value type before returning (a
 //     type mismatch is a query failure, never a null or converted result).
-//   - RFC 0013 §8.2 (https://github.com/consema/consema/blob/main/docs/rfcs/0013-plist-family-profiles-v1.md:560-582): the lossless syntax
+//   - RFC 0013 §8.2 (https://github.com/consema/consema/blob/main/docs/rfcs/0013-plist-family-profiles-v1.md): the lossless syntax
 //     domain provides exact kind and decoded-text filters over pieces.
-//   - RFC 0013 §8.3 (https://github.com/consema/consema/blob/main/docs/rfcs/0013-plist-family-profiles-v1.md:584-596): the binary structure
+//   - RFC 0013 §8.3 (https://github.com/consema/consema/blob/main/docs/rfcs/0013-plist-family-profiles-v1.md): the binary structure
 //     domain exposes the object/offset/reference/trailer facts with exact
 //     byte spans; the domain exists only for the `plist.binary@1`
 //     representation (hard gate 1: no invented text trivia).
 //   - conformance/vectors/plist-v1.json (plist.query.*) pins the match
 //     facts and the terminal states; https://github.com/consema/consema-rs/blob/main/consema-plist/src/query.rs is
-//     the byte-arbitration authority (native operators query.rs:333-660,
-//     binary operators query.rs:1330-1511, selection query.rs:440-459).
+//     the byte-arbitration authority (native operators query.rs,
+//     binary operators query.rs, selection query.rs).
 //   - The operator table and role validation live in the protocol package
-//     (kotlin/src/main/kotlin/consema/protocol/QueryValidate.kt:330-375); this file executes
+//     (kotlin/src/main/kotlin/consema/protocol/QueryValidate.kt); this file executes
 //     validated definitions.
 //
 // Kotlin-idiomatic design: execution returns a closed sealed outcome
@@ -43,8 +43,8 @@ import consema.protocol.QueryFailureKind
 import consema.protocol.QuerySelection
 import java.util.concurrent.atomic.AtomicBoolean
 
-/** Query resource limits (query.rs:2967-2981; the json-family precedent
- * kotlin/src/main/kotlin/consema/json/Query.kt:44-56). */
+/** Query resource limits (query.rs; the json-family precedent
+ * kotlin/src/main/kotlin/consema/json/Query.kt). */
 data class QueryLimits(
     /** Maximum operator steps. */
     val maxSteps: Int,
@@ -52,13 +52,13 @@ data class QueryLimits(
     val maxResults: Int,
 ) {
     companion object {
-        /** The frozen defaults (query.rs:2974-2981): 100,000 steps and
+        /** The frozen defaults (query.rs): 100,000 steps and
          * 100,000 results. */
         val default = QueryLimits(maxSteps = 100_000, maxResults = 100_000)
     }
 }
 
-/** Cooperative cancellation flag (query.rs:2984-2993). */
+/** Cooperative cancellation flag (query.rs). */
 class CancellationToken {
     private val cancelled = AtomicBoolean(false)
 
@@ -88,7 +88,7 @@ sealed class TypedValue {
     data class BooleanV(val value: Boolean) : TypedValue()
 }
 
-/** Owned snapshot-bound plist native semantic query match (query.rs:11-43;
+/** Owned snapshot-bound plist native semantic query match (query.rs;
  * RFC 0013 §8.1). */
 sealed class PlistMatch {
     /** A native value. */
@@ -137,7 +137,7 @@ sealed class PlistMatch {
 }
 
 /** Owned snapshot-bound plist lossless syntax query match (RFC 0013 §8.2;
- * query.rs:55-88). */
+ * query.rs). */
 data class PlistSyntaxMatch(
     /** Process-local syntax-piece identity. */
     val node: NodeRef,
@@ -149,7 +149,7 @@ data class PlistSyntaxMatch(
     val ordinal: Int,
 )
 
-/** Owned snapshot-bound plist binary structure query match (query.rs:53-171;
+/** Owned snapshot-bound plist binary structure query match (query.rs;
  * RFC 0013 §8.3). */
 sealed class PlistBinaryMatch {
     /** One proven object-table entry fact. */
@@ -215,7 +215,7 @@ sealed class PlistBinaryMatch {
 }
 
 /** The closed execution outcome; [Failed] carries the frozen
- * `plist.query.*@1` code the vectors assert (plist_v1.rs:1143-1153). */
+ * `plist.query.*@1` code the vectors assert (plist_v1.rs). */
 sealed class PlistQueryOutcome<out T> {
     /** Successful complete execution with ordered matches. */
     data class Completed<T>(val matches: List<T>) : PlistQueryOutcome<T>()
@@ -238,7 +238,7 @@ class PlistQueryException(
 
 /**
  * Executes a validated plist native semantic query against one immutable
- * snapshot (query.rs:91-125). The root value is the first standard input;
+ * snapshot (query.rs). The root value is the first standard input;
  * the domain is available on both representations. A Recovered document
  * without a provable native graph fails with TargetUnavailable.
  */
@@ -309,7 +309,7 @@ fun executePlistSyntaxQuery(
 
 /**
  * Executes a validated plist binary structure query (RFC 0013 §8.3;
- * query.rs:386-423). The domain exists only for the `plist.binary@1`
+ * query.rs). The domain exists only for the `plist.binary@1`
  * representation (hard gate 1).
  */
 fun executePlistBinaryQuery(
@@ -852,7 +852,7 @@ private fun rootValueMatch(document: Document): PlistMatch.Value =
     )
 
 /** Applies the validated cardinality selection to a complete standard result
- * sequence (query.rs:440-459). */
+ * sequence (query.rs). */
 private fun applySelection(values: List<Any>, selection: QuerySelection): List<Any> =
     when (selection) {
         QuerySelection.All -> values

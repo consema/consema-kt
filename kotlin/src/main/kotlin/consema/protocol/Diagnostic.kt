@@ -1,9 +1,9 @@
 // The transferable `core.diagnostic@1` record.
 //
-// Data authority: RFC 0016 §6 (https://github.com/consema/consema/blob/main/docs/rfcs/0016-go-api-mapping-v1.md:194-):
+// Data authority: RFC 0016 §6 (https://github.com/consema/consema/blob/main/docs/rfcs/0016-go-api-mapping-v1.md):
 // "unknown code or category contradiction is a protocol error"; the record
 // shape follows https://github.com/consema/consema-rs/blob/main/consema-protocol/src/diagnostic.rs (construction
-// validation at diagnostic.rs:336-351). Construction validates the code
+// validation at diagnostic.rs). Construction validates the code
 // against the frozen error registry and the category against the registry
 // record. consema-go/go/protocol/diagnostic.go is a cross-reference.
 
@@ -42,7 +42,7 @@ fun parseFixApplicability(name: String): FixApplicability =
 
 /**
  * A transferable source location bound to a caller-assigned stable source
- * ID (diagnostic.rs:13-59).
+ * ID (diagnostic.rs).
  */
 data class SourceLocation(
     /** The caller-assigned stable source identity. */
@@ -110,7 +110,7 @@ class Diagnostic private constructor(
         /** Validates the code/category consistency against the error
          * registry and constructs the diagnostic (the Rust
          * DiagnosticMessage::from_core_with_registry validation,
-         * diagnostic.rs:336-351). */
+         * diagnostic.rs). */
         fun of(
             code: String,
             category: DiagnosticCategory,
@@ -132,7 +132,7 @@ class Diagnostic private constructor(
         }
 
         /** Strictly decodes `core.diagnostic@1` under one explicit error
-         * registry (diagnostic.rs:252-333). */
+         * registry (diagnostic.rs). */
         fun fromValue(value: PortableValue, registry: ErrorCodeRegistry): Diagnostic {
             val fields = schemaFields(
                 value,
@@ -170,7 +170,7 @@ class Diagnostic private constructor(
         }
     }
 
-    /** Encodes `core.diagnostic@1` (diagnostic.rs:187-250). */
+    /** Encodes `core.diagnostic@1` (diagnostic.rs). */
     fun toValue(): PortableValue {
         val relatedValues = related.map { item ->
             PvObject(
@@ -216,7 +216,7 @@ class Diagnostic private constructor(
 }
 
 /** Requires the code to be registered and its category to match the
- * registry record (diagnostic.rs:336-351). */
+ * registry record (diagnostic.rs). */
 internal fun validateDiagnosticCode(
     code: String,
     category: DiagnosticCategory,
@@ -239,7 +239,7 @@ private fun locationValue(location: SourceLocation): PortableValue =
         ),
     )
 
-/** Strictly decodes one source location (diagnostic.rs:386-393). */
+/** Strictly decodes one source location (diagnostic.rs). */
 private fun parseLocation(value: PortableValue, path: String): SourceLocation {
     val fields = exactFields(value, listOf("source_id", "start_byte", "end_byte"), path)
     val sourceId = stringOf(fields[0], "$path.source_id")
@@ -248,7 +248,7 @@ private fun parseLocation(value: PortableValue, path: String): SourceLocation {
     return SourceLocation.of(sourceId, startByte, endByte)
 }
 
-/** Strictly decodes one fix proposal (diagnostic.rs:395-431). The wire
+/** Strictly decodes one fix proposal (diagnostic.rs). The wire
  * replacement field is a Bytes leaf accepted at the value level with full
  * byte fidelity; any other shape (including Null) is a wrong-type error. */
 private fun decodeFix(value: PortableValue, path: String): FixProposal {

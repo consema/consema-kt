@@ -1,7 +1,7 @@
 // XML native and lossless syntax query execution (RFC 0012 §8).
 //
 // Data authority:
-//   - RFC 0012 §8 (https://github.com/consema/consema/blob/main/docs/rfcs/0012-xml-1.0-safe-profile-v1.md:284-312):
+//   - RFC 0012 §8 (https://github.com/consema/consema/blob/main/docs/rfcs/0012-xml-1.0-safe-profile-v1.md):
 //     domains `xml.native-semantic-query@1` and `xml.lossless-syntax-query@1`;
 //     native order is document order; attributes and namespace declarations
 //     preserve source order; child content preserves mixed-content order;
@@ -10,19 +10,19 @@
 //   - conformance/vectors/xml-1-0-safe-v1.json cases xml.syntax-query.* and
 //     xml.native-query.* pin the operator spellings, the match order, and
 //     the ordinal facts (the conformance runner build_filters,
-//     https://github.com/consema/consema-rs/blob/main/consema-conformance/src/xml_v1.rs:231-258).
+//     https://github.com/consema/consema-rs/blob/main/consema-conformance/src/xml_v1.rs).
 //   - https://github.com/consema/consema-rs/blob/main/consema-xml/src/query.rs is the byte-arbitration authority:
-//     XmlReferenceKind (query.rs:20-29), XmlMatch (query.rs:31-165), the
-//     operator table (query.rs:583-619), the per-operator semantics
-//     (query.rs:624-1376), selection (query.rs:251-269, 337-355), and the
-//     syntax-piece input construction (query.rs:305-330).
+//     XmlReferenceKind (query.rs), XmlMatch (query.rs), the
+//     operator table (query.rs), the per-operator semantics
+//     (query.rs), selection (query.rs), and the
+//     syntax-piece input construction (query.rs).
 //   - The operator validation tables live in the protocol package
-//     (kotlin/src/main/kotlin/consema/protocol/QueryValidate.kt:253-326) and already pin the
+//     (kotlin/src/main/kotlin/consema/protocol/QueryValidate.kt) and already pin the
 //     xml operator roles; execution below dispatches on the operator IDs.
 //
 // Kotlin-idiomatic design: execution throws the protocol package's typed
 // [consema.protocol.QueryFailureException] carrying the registered code
-// (the json family pattern, kotlin/src/main/kotlin/consema/json/Query.kt:141-152); the cursor
+// (the json family pattern, kotlin/src/main/kotlin/consema/json/Query.kt); the cursor
 // terminal contract (RFC 0003 §9) is a synchronous complete result list
 // here, with the terminal state always Completed after a successful
 // execution.
@@ -41,8 +41,8 @@ import consema.protocol.QuerySelection
 import java.nio.charset.StandardCharsets
 import java.util.concurrent.atomic.AtomicBoolean
 
-/** Query resource limits (consema-core query.rs:2967-2981; the json family
- * transcription kotlin/src/main/kotlin/consema/json/Query.kt:44-56). */
+/** Query resource limits (consema-core query.rs; the json family
+ * transcription kotlin/src/main/kotlin/consema/json/Query.kt). */
 data class QueryLimits(
     /** Maximum operator steps. */
     val maxSteps: Int,
@@ -50,13 +50,13 @@ data class QueryLimits(
     val maxResults: Int,
 ) {
     companion object {
-        /** The frozen defaults (query.rs:2974-2981): 100,000 steps and
+        /** The frozen defaults (query.rs): 100,000 steps and
          * 100,000 results. */
         val default = QueryLimits(maxSteps = 100_000, maxResults = 100_000)
     }
 }
 
-/** Cooperative cancellation flag (query.rs:2984-2993). */
+/** Cooperative cancellation flag (query.rs). */
 class CancellationToken {
     private val cancelled = AtomicBoolean(false)
 
@@ -69,7 +69,7 @@ class CancellationToken {
     }
 }
 
-/** One XML reference occurrence kind (query.rs:20-29). */
+/** One XML reference occurrence kind (query.rs). */
 enum class XmlReferenceKind {
     /** Decimal or hexadecimal character reference. */
     Character,
@@ -82,7 +82,7 @@ enum class XmlReferenceKind {
 }
 
 /**
- * Owned snapshot-bound XML native semantic query match (query.rs:31-165).
+ * Owned snapshot-bound XML native semantic query match (query.rs).
  * The sealed hierarchy makes exhaustive `when` over every match kind
  * mandatory.
  */
@@ -202,7 +202,7 @@ sealed class XmlMatch {
         }
 }
 
-/** Owned snapshot-bound XML lossless syntax query match (query.rs:187-220). */
+/** Owned snapshot-bound XML lossless syntax query match (query.rs). */
 data class XmlSyntaxMatch(
     /** Process-local syntax-piece identity. */
     val node: NodeRef,
@@ -216,7 +216,7 @@ data class XmlSyntaxMatch(
 
 /**
  * Executes a validated XML native semantic query against one immutable
- * snapshot (query.rs:222-249). The document node is the first standard
+ * snapshot (query.rs). The document node is the first standard
  * result; it must not bypass result limits. The domain binding rejects
  * other domains with a DomainMismatch failure.
  */
@@ -243,7 +243,7 @@ fun executeXmlQuery(
 }
 
 /** Executes a validated XML lossless syntax query in raw source order
- * (query.rs:285-335). */
+ * (query.rs). */
 fun executeXmlSyntaxQuery(
     executable: ExecutableQuery,
     document: Document,
@@ -275,7 +275,7 @@ fun executeXmlSyntaxQuery(
     return applySyntaxSelection(matches, definition.selection)
 }
 
-/** Applies the validated cardinality selection (query.rs:251-269). */
+/** Applies the validated cardinality selection (query.rs). */
 private fun applySelection(values: List<XmlMatch>, selection: QuerySelection): List<XmlMatch> =
     when (selection) {
         QuerySelection.All -> values
@@ -304,7 +304,7 @@ private fun applySelection(values: List<XmlMatch>, selection: QuerySelection): L
     }
 
 /** Applies the validated cardinality selection to syntax matches
- * (query.rs:337-355). */
+ * (query.rs). */
 private fun applySyntaxSelection(
     values: List<XmlSyntaxMatch>,
     selection: QuerySelection,
@@ -335,7 +335,7 @@ private fun applySyntaxSelection(
         }
     }
 
-/** Execution context carrying limits and cancellation (query.rs:371-482). */
+/** Execution context carrying limits and cancellation (query.rs). */
 private class Context(
     val document: Document,
     val limits: QueryLimits,
@@ -489,7 +489,7 @@ private fun executeSyntaxExpression(
         }
     }
 
-/** Structural identity order of one native match (query.rs:556-576). */
+/** Structural identity order of one native match (query.rs). */
 private fun sourceOrder(item: XmlMatch): Int =
     when (item) {
         is XmlMatch.Document -> 0
@@ -553,7 +553,7 @@ private fun applyOperator(
 }
 
 /** `xml.document-root`: the one document element, when formation proved it
- * (query.rs:624-638). */
+ * (query.rs). */
 private fun documentRoot(
     input: List<XmlMatch>,
     context: Context,
@@ -570,7 +570,7 @@ private fun documentRoot(
 }
 
 /** `xml.document-declaration`: the XML declaration, when present
- * (query.rs:640-654). */
+ * (query.rs). */
 private fun documentDeclaration(
     input: List<XmlMatch>,
     context: Context,
@@ -593,7 +593,7 @@ private fun documentDeclaration(
 }
 
 /** `xml.document-doctype`: the DOCTYPE occurrence, when present
- * (query.rs:656-670). */
+ * (query.rs). */
 private fun documentDoctype(
     input: List<XmlMatch>,
     context: Context,
@@ -615,7 +615,7 @@ private fun documentDoctype(
 
 /** `xml.document-prolog` / `xml.document-epilog`: ordered prolog or epilog
  * occurrences that publish a match (processing instruction and comment)
- * (query.rs:672-695). */
+ * (query.rs). */
 private fun documentPrologEpilog(
     id: String,
     input: List<XmlMatch>,
@@ -637,7 +637,7 @@ private fun documentPrologEpilog(
 }
 
 /** `xml.element-children`: every child content occurrence, mixed order
- * (query.rs:696-723). */
+ * (query.rs). */
 private fun elementChildren(
     input: List<XmlMatch>,
     context: Context,
@@ -664,7 +664,7 @@ private fun elementChildren(
     }
 }
 
-/** One child text occurrence match (query.rs:725-735). */
+/** One child text occurrence match (query.rs). */
 private fun textMatch(context: Context, index: Int, parent: NodeRef): XmlMatch {
     val data = (context.document.nodes[index] as XmlContent.Text).data
     return XmlMatch.Text(
@@ -674,7 +674,7 @@ private fun textMatch(context: Context, index: Int, parent: NodeRef): XmlMatch {
     )
 }
 
-/** One child CDATA occurrence match (query.rs:737-747). */
+/** One child CDATA occurrence match (query.rs). */
 private fun cdataMatch(context: Context, index: Int, parent: NodeRef): XmlMatch {
     val data = (context.document.nodes[index] as XmlContent.Cdata).data
     return XmlMatch.Cdata(
@@ -684,7 +684,7 @@ private fun cdataMatch(context: Context, index: Int, parent: NodeRef): XmlMatch 
     )
 }
 
-/** One child comment occurrence match (query.rs:749-759). */
+/** One child comment occurrence match (query.rs). */
 private fun commentMatch(context: Context, index: Int, parent: NodeRef): XmlMatch {
     val data = (context.document.nodes[index] as XmlContent.Comment).data
     return XmlMatch.Comment(
@@ -694,7 +694,7 @@ private fun commentMatch(context: Context, index: Int, parent: NodeRef): XmlMatc
     )
 }
 
-/** One child processing-instruction match (query.rs:761-772). */
+/** One child processing-instruction match (query.rs). */
 private fun piMatch(context: Context, index: Int, parent: NodeRef): XmlMatch {
     val data = (context.document.nodes[index] as XmlContent.ProcessingInstruction).data
     return XmlMatch.ProcessingInstruction(
@@ -706,7 +706,7 @@ private fun piMatch(context: Context, index: Int, parent: NodeRef): XmlMatch {
 }
 
 /** `xml.element-child-elements`: child element occurrences only
- * (query.rs:774-792). */
+ * (query.rs). */
 private fun elementChildElements(
     input: List<XmlMatch>,
     context: Context,
@@ -724,7 +724,7 @@ private fun elementChildElements(
     }
 }
 
-/** `xml.element-child-text`: child text occurrences only (query.rs:794-812). */
+/** `xml.element-child-text`: child text occurrences only (query.rs). */
 private fun elementChildText(
     input: List<XmlMatch>,
     context: Context,
@@ -742,7 +742,7 @@ private fun elementChildText(
     }
 }
 
-/** `xml.element-child-cdata`: child CDATA occurrences only (query.rs:814-832). */
+/** `xml.element-child-cdata`: child CDATA occurrences only (query.rs). */
 private fun elementChildCdata(
     input: List<XmlMatch>,
     context: Context,
@@ -761,7 +761,7 @@ private fun elementChildCdata(
 }
 
 /** `xml.element-child-comments`: child comment occurrences only
- * (query.rs:834-852). */
+ * (query.rs). */
 private fun elementChildComments(
     input: List<XmlMatch>,
     context: Context,
@@ -780,7 +780,7 @@ private fun elementChildComments(
 }
 
 /** `xml.element-child-pi`: child processing-instruction occurrences only
- * (query.rs:854-875). */
+ * (query.rs). */
 private fun elementChildPi(
     input: List<XmlMatch>,
     context: Context,
@@ -799,7 +799,7 @@ private fun elementChildPi(
 }
 
 /** `xml.element-descendants`: bounded pre-order traversal with an explicit
- * stack; the input element itself is never included (query.rs:877-903). */
+ * stack; the input element itself is never included (query.rs). */
 private fun elementDescendants(
     input: List<XmlMatch>,
     context: Context,
@@ -826,7 +826,7 @@ private fun elementDescendants(
 }
 
 /** `xml.element-attributes`: ordered attributes, excluding declarations
- * (query.rs:905-921). */
+ * (query.rs). */
 private fun elementAttributes(
     input: List<XmlMatch>,
     context: Context,
@@ -844,7 +844,7 @@ private fun elementAttributes(
 
 /** `xml.element-namespace-bindings` / `xml.element-in-scope-namespaces`:
  * local declarations, or the full ancestry-derived chain oldest first
- * (query.rs:923-959). */
+ * (query.rs). */
 private fun namespaceBindings(
     id: String,
     input: List<XmlMatch>,
@@ -878,7 +878,7 @@ private fun namespaceBindings(
     }
 }
 
-/** One namespace binding match on one owning element (query.rs:961-976). */
+/** One namespace binding match on one owning element (query.rs). */
 private fun namespaceBindingMatch(
     binding: XmlNamespaceBindingData,
     element: NodeRef,
@@ -892,7 +892,7 @@ private fun namespaceBindingMatch(
     )
 
 /** `xml.content-parent` / `xml.attribute-element` / `xml.reference-text`:
- * one step back to the owning element (query.rs:978-1004). */
+ * one step back to the owning element (query.rs). */
 private fun contentParent(
     input: List<XmlMatch>,
     context: Context,
@@ -929,7 +929,7 @@ private fun contentParent(
 }
 
 /** `xml.text-references`: the ordered reference occurrences of one text
- * (query.rs:1006-1053). */
+ * (query.rs). */
 private fun textReferences(
     input: List<XmlMatch>,
     context: Context,
@@ -975,7 +975,7 @@ private fun textReferences(
 }
 
 /** `xml.name-equals`: original-spelling or expanded-name comparison
- * (query.rs:1055-1114). */
+ * (query.rs). */
 private fun nameEquals(
     operator: OperatorCall,
     input: List<XmlMatch>,
@@ -1015,7 +1015,7 @@ private fun nameEquals(
 }
 
 /** `xml.attribute-value-equals`: CDATA-normalized value equality
- * (query.rs:1116-1132). */
+ * (query.rs). */
 private fun attributeValueEquals(
     operator: OperatorCall,
     input: List<XmlMatch>,
@@ -1031,7 +1031,7 @@ private fun attributeValueEquals(
 }
 
 /** `xml.pi-target-equals`: processing-instruction target equality
- * (query.rs:1134-1153). */
+ * (query.rs). */
 private fun piTargetEquals(
     operator: OperatorCall,
     input: List<XmlMatch>,
@@ -1046,7 +1046,7 @@ private fun piTargetEquals(
     }
 }
 
-/** `xml.reference-kind-is`: reference kind equality (query.rs:1155-1177). */
+/** `xml.reference-kind-is`: reference kind equality (query.rs). */
 private fun referenceKindIs(
     operator: OperatorCall,
     input: List<XmlMatch>,
@@ -1070,7 +1070,7 @@ private fun referenceKindIs(
     }
 }
 
-/** `xml.reference-name-equals`: reference name equality (query.rs:1179-1195). */
+/** `xml.reference-name-equals`: reference name equality (query.rs). */
 private fun referenceNameEquals(
     operator: OperatorCall,
     input: List<XmlMatch>,
@@ -1085,7 +1085,7 @@ private fun referenceNameEquals(
     }
 }
 
-/** `xml.node-kind-is`: match-kind filter over mixed output (query.rs:1197-1228). */
+/** `xml.node-kind-is`: match-kind filter over mixed output (query.rs). */
 private fun nodeKindIs(
     operator: OperatorCall,
     input: List<XmlMatch>,
@@ -1115,7 +1115,7 @@ private fun nodeKindIs(
     }
 }
 
-/** `core.take`: the first `count` input items (query.rs:1230-1245). */
+/** `core.take`: the first `count` input items (query.rs). */
 private fun take(
     operator: OperatorCall,
     input: List<XmlMatch>,
@@ -1129,7 +1129,7 @@ private fun take(
 }
 
 /** `core.distinct-by-identity`: first occurrence of every identity
- * (query.rs:1247-1260). */
+ * (query.rs). */
 private fun distinctByIdentity(
     input: List<XmlMatch>,
     context: Context,
@@ -1223,8 +1223,8 @@ private fun applySyntaxOperator(
 }
 
 /** Raw decoded text of one syntax piece span, decoded under the selected
- * source encoding (the conformance runner xml_v1.rs:306-323 decodes UTF-16
- * spans endianness-aware; query.rs:1378-1381 is the UTF-8 authority). */
+ * source encoding (the conformance runner xml_v1.rs decodes UTF-16
+ * spans endianness-aware; query.rs is the UTF-8 authority). */
 private fun decodedSpanText(document: Document, span: Span): String {
     val bytes = document.source.rawBytes().copyOfRange(span.startByte, span.endByte)
     return when (document.source.encodingFacts.selected) {
@@ -1236,7 +1236,7 @@ private fun decodedSpanText(document: Document, span: Span): String {
 }
 
 /** Decodes one raw-byte span under the selected UTF-16 endianness
- * (xml_v1.rs:835-853). */
+ * (xml_v1.rs). */
 private fun decodeUtf16(bytes: ByteArray, littleEndian: Boolean): String {
     val content = when {
         littleEndian && bytes.size >= 2 && bytes[0] == 0xff.toByte() && bytes[1] == 0xfe.toByte() ->

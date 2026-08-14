@@ -94,7 +94,7 @@ class GoldenTranscriptionTest {
     }
 
     /** Vector case plist.binary-formation.minimal-document (plist-v1.json:
-     * 451-467): the 42-byte minimum document forms Complete with the exact
+ *): the 42-byte minimum document forms Complete with the exact
      * trailer facts. */
     @Test
     fun binaryFormationMinimalDocument() {
@@ -114,7 +114,7 @@ class GoldenTranscriptionTest {
     }
 
     /** Vector case plist.binary-formation.all-types-document (plist-v1.json:
-     * 469-508): all admitted marker kinds form Complete with the exact typed
+ *): all admitted marker kinds form Complete with the exact typed
      * values, object count, and offset table facts. */
     @Test
     fun binaryFormationAllTypesDocument() {
@@ -148,7 +148,7 @@ class GoldenTranscriptionTest {
     }
 
     /** Vector case plist.materialization.xml-canonical-text (plist-v1.json:
-     * 1223-1254): the golden XML render, byte-exact. */
+ *): the golden XML render, byte-exact. */
     @Test
     fun materializationXmlCanonicalText() {
         val record = valueTreeRecord(
@@ -208,7 +208,7 @@ class GoldenTranscriptionTest {
     }
 
     /** Vector case plist.materialization.binary-canonical-hex (plist-v1.json:
-     * 1256-1287): the golden binary object table, byte-exact. */
+ *): the golden binary object table, byte-exact. */
     @Test
     fun materializationBinaryCanonicalHex() {
         val record = valueTreeRecord(
@@ -242,7 +242,7 @@ class GoldenTranscriptionTest {
     }
 
     /** Vector case plist.xml-formation.doctype-violations (plist-v1.json:
-     * 59-88): a wrong DOCTYPE name, an internal subset, and a SYSTEM-only
+ *): a wrong DOCTYPE name, an internal subset, and a SYSTEM-only
      * DOCTYPE each recover with their frozen codes. */
     @Test
     fun xmlFormationDoctypeViolations() {
@@ -455,7 +455,7 @@ class GoldenTranscriptionTest {
     }
 
     /** Builds one `plist.value-tree@1` record with the fixed record/root
-     * spelling (RFC 0013 §9; materialization.rs:142). */
+     * spelling (RFC 0013 §9; materialization.rs). */
     private fun valueTreeRecord(vararg rootEntries: Pair<String, consema.core.PortableValue>):
         consema.core.PortableValue = PvObject(
         listOf(

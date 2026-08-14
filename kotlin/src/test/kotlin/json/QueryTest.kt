@@ -44,7 +44,7 @@ class QueryTest {
             .toString(Charsets.UTF_8)
 
     /** Vector case json5.query.syntax-v2-identifier (json-family-v2.json:
-     * 114-118): under the v2 lossless domain, both unquoted keys are
+ *): under the v2 lossless domain, both unquoted keys are
      * Identifier pieces in source order; the v1 domain is rejected for a
      * JSON5 document (RFC 0005 §7). */
     @Test
@@ -196,7 +196,7 @@ class QueryTest {
     }
 
     /** Vector case syntax.json.reject-invalid-kind (syntax-query-v1.json:
-     * 48-52): an unregistered kind name is an invalid-argument failure, not
+ *): an unregistered kind name is an invalid-argument failure, not
      * an empty result. */
     @Test
     fun syntaxRejectsInvalidKindName() {

@@ -1,7 +1,7 @@
 // Materialization tests: all canonical styles, atomic failures, and the
 // Windows code-page path.
 //
-// Authority: RFC 0009 §11 (https://github.com/consema/consema/blob/main/docs/rfcs/0009-ini-family-profiles-v1.md:387-
+// Authority: RFC 0009 §11 (https://github.com/consema/consema/blob/main/docs/rfcs/0009-ini-family-profiles-v1.md
 // 435), the vector cases materialization.all-canonical-styles and
 // materialization.atomic-failures-and-limits (ini-v1.json:75-86), and
 // https://github.com/consema/consema-rs/blob/main/consema-ini/src/materialization.rs (the byte-arbitration
@@ -42,7 +42,7 @@ private fun nestedEntryMapping(sections: List<Pair<String, List<Pair<String, Str
     return outer.build()
 }
 
-/** The frozen request of one profile (materialization.rs:896-913). */
+/** The frozen request of one profile (materialization.rs). */
 private fun request(profile: consema.ini.IniProfile): MaterializationRequest =
     when (profile) {
         consema.ini.IniProfile.PortableV1 -> MaterializationRequest.new(
@@ -104,7 +104,7 @@ class MaterializationTest {
     }
 
     /** Vector case materialization.atomic-failures-and-limits (ini-v1.json:
-     * 83-86): a scalar input is Unrepresentable; max_input_nodes,
+ *): a scalar input is Unrepresentable; max_input_nodes,
      * max_output_bytes, max_depth, and max_provenance_entries fail with
      * resource-limit while max_report_entries (an empty report) succeeds. */
     @Test
@@ -143,7 +143,7 @@ class MaterializationTest {
         assertEquals(listOf("Failed", "Failed", "Failed", "Complete", "Failed"), outcomes)
     }
 
-    /** The Windows code page materialization path (materialization.rs:971-
+    /** The Windows code page materialization path (materialization.rs
      * 991): cp1252 encodes café with the exact byte 0xE9 and the document
      * reparses under the explicit code page. */
     @Test

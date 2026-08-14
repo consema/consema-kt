@@ -1,9 +1,9 @@
 // The wire forms of the source records carried by the CLI machine payloads.
 //
 // Data authority: https://github.com/consema/consema-rs/blob/main/consema-protocol/src/source.rs (core.source-
-// encoding@1 at source.rs:497-514; the source-patch@2 encoding facts at
-// source.rs:598-631; the patch record at source.rs:222-371) and
-// https://github.com/consema/consema-rs/blob/main/consema-document/src/source.rs:58-76 (the Windows code-page
+// encoding@1 at source.rs; the source-patch@2 encoding facts at
+// source.rs; the patch record at source.rs) and
+// https://github.com/consema/consema-rs/blob/main/consema-document/src/source.rs (the Windows code-page
 // registry). The document milestone (L1) owns the full source model; this
 // package validates the record structure and carries the facts so the
 // batch-plan record can round-trip them. consema-go/go/protocol/records_source.go is a
@@ -17,7 +17,7 @@ import consema.core.PvObject
 import consema.core.PvString
 import consema.core.PortableValue
 
-/** The resource bounds of source snapshots (document source.rs:411-419). */
+/** The resource bounds of source snapshots (document source.rs). */
 data class SourceLimits(
     /** Maximum retained raw bytes. */
     val maxRawBytes: Int,
@@ -28,7 +28,7 @@ data class SourceLimits(
 ) {
     companion object {
         /** The frozen defaults (64 MiB raw, 128 MiB decoded, 64 MiB
-         * scalars; document source.rs:411-419). */
+         * scalars; document source.rs). */
         val default = SourceLimits(
             maxRawBytes = 64 shl 20,
             maxDecodedUtf8Bytes = 128 shl 20,
@@ -37,7 +37,7 @@ data class SourceLimits(
     }
 }
 
-/** The resource bounds of source patches (document source_patch.rs:10-32). */
+/** The resource bounds of source patches (document source_patch.rs). */
 data class SourcePatchLimits(
     /** The limits for the resulting source snapshot. */
     val source: SourceLimits,
@@ -47,7 +47,7 @@ data class SourcePatchLimits(
     val maxPatchBytes: Int,
 ) {
     companion object {
-        /** The frozen defaults (document source_patch.rs:23-32). */
+        /** The frozen defaults (document source_patch.rs). */
         val default = SourcePatchLimits(
             source = SourceLimits.default,
             maxReplacements = 100_000,
@@ -58,7 +58,7 @@ data class SourcePatchLimits(
 
 /**
  * The wire form of one core.source-encoding@1 record
- * (protocol/src/source.rs:497-514): the kind spelling and the optional
+ * (protocol/src/source.rs): the kind spelling and the optional
  * Windows code page.
  */
 data class SourceEncoding(
@@ -69,7 +69,7 @@ data class SourceEncoding(
     val windowsCodePage: Int?,
 ) {
     /** Strictly decodes one core.source-encoding@1 record
-     * (protocol/src/source.rs:497-514). */
+     * (protocol/src/source.rs). */
     companion object {
         fun fromValue(value: PortableValue, path: String): SourceEncoding {
             val fields = schemaFields(
@@ -119,7 +119,7 @@ data class SourceEncoding(
 
 /**
  * Resolves one numeric code page only when source contract v2 publishes it
- * (document source.rs:58-76).
+ * (document source.rs).
  */
 fun windowsCodePageFromNumber(number: Int): SourceEncoding? {
     if (number !in intArrayOf(
@@ -132,7 +132,7 @@ fun windowsCodePageFromNumber(number: Int): SourceEncoding? {
 }
 
 /**
- * The source-patch@2 encoding facts record (protocol/src/source.rs:598-631).
+ * The source-patch@2 encoding facts record (protocol/src/source.rs).
  * The semantic consistency checks of the facts (BOM policy, code-page
  * registration, selected-encoding reconciliation) belong to the document
  * milestone; this package validates the record structure and carries the
@@ -215,7 +215,7 @@ data class EncodingFacts(
 
 /**
  * One structural replacement of a wire source patch
- * (consema-document source_patch.rs:31-90).
+ * (consema-document source_patch.rs).
  */
 data class SourceReplacement(
     /** The inclusive start offset of the replaced range. */
@@ -234,7 +234,7 @@ data class SourceReplacement(
 
 /**
  * The wire form of a source patch (core.source-patch@2 record;
- * protocol/src/source.rs:222-238, 323-371). The document milestone owns
+ * protocol/src/source.rs). The document milestone owns
  * the applied patch type; this package carries the transferable
  * verification facts so the batch-plan record can round-trip them.
  */

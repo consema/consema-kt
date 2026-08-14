@@ -3,7 +3,7 @@
 // Data authority: conformance/vectors/toml-v1.json (cases toml.projection.
 // all-core-kinds, toml.projection.provenance, toml.projection.reject-leap-
 // second, cited in each test), RFC 0001 §5, and the Rust crate projection
-// tests (consema-toml/src/projection.rs:437-526). The L5 conformance runner
+// tests (consema-toml/src/projection.rs). The L5 conformance runner
 // executes the shared vectors directly; these tests are the L1 intent
 // documents.
 
@@ -88,7 +88,7 @@ class TomlProjectionTest {
         assertTrue(failed.attempt.partialAnalysis.isEmpty())
     }
 
-    /** projection.rs:451-491: all TOML value categories project exactly
+    /** projection.rs: all TOML value categories project exactly
      * with provenance. */
     @Test
     fun allTomlValueCategoriesProjectExactly() {
@@ -125,7 +125,7 @@ class TomlProjectionTest {
         assertTrue(complete.projection.provenance.entries().isNotEmpty())
     }
 
-    /** projection.rs:493-525: a projection limit fails the whole operation
+    /** projection.rs: a projection limit fails the whole operation
      * with the frozen core.projection.resource-limit@1 code. */
     @Test
     fun projectionLimitFailsWholeOperation() {

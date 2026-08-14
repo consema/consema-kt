@@ -1,18 +1,18 @@
 // The frozen plist-family format operation registry.
 //
 // Data authority:
-//   - RFC 0013 §11 (https://github.com/consema/consema/blob/main/docs/rfcs/0013-plist-family-profiles-v1.md:683-715):
+//   - RFC 0013 §11 (https://github.com/consema/consema/blob/main/docs/rfcs/0013-plist-family-profiles-v1.md):
 //     both profiles publish the same six snapshot-bound structural
 //     operations, independently typed per profile.
 //   - RFC 0004 §10 (https://github.com/consema/consema/blob/main/docs/rfcs/0004-materialization-conversion-and-
-//     structural-edit-v1.md:244-269): every structural operation has an
+//     structural-edit-v1.md): every structural operation has an
 //     immutable ID/version, target role, argument schema, and support
 //     classification; the registry does not claim that operations with
 //     similar names have identical format semantics.
-//   - https://github.com/consema/consema-rs/blob/main/consema-plist/src/operation_registry.rs:20-101 is the exact
+//   - https://github.com/consema/consema-rs/blob/main/consema-plist/src/operation_registry.rs is the exact
 //     byte-arbitration source of the six descriptor records (ids, target
 //     roles, argument names/kinds, support class); the frozen surface test
-//     (operation_registry.rs:107-132) pins the sorted six-operation list
+//     (operation_registry.rs) pins the sorted six-operation list
 //     for both profiles. consema-go/go/plist is a cross-reference only.
 //
 // Kotlin-idiomatic design: the registry is an immutable list of descriptor
@@ -25,7 +25,7 @@ package consema.plist
 
 import consema.document.FormatOperationId
 
-/** Argument kind of one operation descriptor (operation_registry.rs:22-25). */
+/** Argument kind of one operation descriptor (operation_registry.rs). */
 enum class OperationArgumentKind {
     /** Exact structural target (NodeRef). */
     NodeRef,
@@ -40,13 +40,13 @@ enum class OperationArgumentKind {
     Placement,
 }
 
-/** Support classification of one operation (operation_registry.rs:26). */
+/** Support classification of one operation (operation_registry.rs). */
 enum class OperationSupport {
     /** Structural operation supported by every plist profile. */
     Supported,
 }
 
-/** One immutable operation descriptor (operation_registry.rs:85-101). */
+/** One immutable operation descriptor (operation_registry.rs). */
 data class PlistOperationDescriptor(
     /** Exact immutable operation ID/version. */
     val id: FormatOperationId,
@@ -60,8 +60,8 @@ data class PlistOperationDescriptor(
 
 /**
  * Returns the validated operation registry for one exact plist profile
- * (operation_registry.rs:10-18). Both profiles publish the same frozen
- * six-record surface (operation_registry.rs:107-132).
+ * (operation_registry.rs). Both profiles publish the same frozen
+ * six-record surface (operation_registry.rs).
  */
 fun formatOperationRegistry(profile: PlistProfile): List<PlistOperationDescriptor> =
     descriptors()
@@ -78,7 +78,7 @@ private fun descriptor(
         OperationSupport.Supported,
     )
 
-/** The frozen six descriptor records (operation_registry.rs:20-83). */
+/** The frozen six descriptor records (operation_registry.rs). */
 private fun descriptors(): List<PlistOperationDescriptor> =
     listOf(
         descriptor(

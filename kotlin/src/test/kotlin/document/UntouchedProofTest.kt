@@ -1,13 +1,13 @@
 // UntouchedByteProof behavior tests.
 //
 // Data authority: RFC 0004 §15 (https://github.com/consema/consema/blob/main/docs/rfcs/0004-materialization-conversion-
-// and-structural-edit-v1.md:358-372) — the proof is an ordered cover of all
+// and-structural-edit-v1.md) — the proof is an ordered cover of all
 // old-source intervals outside replacements mapped to target intervals, with
 // equal length and equal bytes per mapped region, monotonic order, and base
 // and target digests matching the proof. The scenario (base "abXXcd!" ->
 // target ">abYYYcd" with three replacements) and the expected regions
 // (0,2)->(1,3) and (4,6)->(6,8) follow https://github.com/consema/consema-rs/blob/main/consema-document/src/
-// untouched_proof.rs:335-401 (the crate's own test data, which the vector
+// untouched_proof.rs (the crate's own test data, which the vector
 // suite does not cover directly).
 
 package document
@@ -33,7 +33,7 @@ class UntouchedProofTest {
         SourceReplacement.new(6, 7, "!".toByteArray(Charsets.UTF_8), ByteArray(0)),
     )
 
-    /** RFC 0004 §15 + untouched_proof.rs:336-349: the proof covers every
+    /** RFC 0004 §15 + untouched_proof.rs: the proof covers every
      * and only the untouched byte, and verification succeeds. */
     @Test
     fun proofCoversEveryAndOnlyUntouchedByte() {
@@ -50,7 +50,7 @@ class UntouchedProofTest {
         proof.verify(base, target, replacements())
     }
 
-    /** untouched_proof.rs:351-377: tampering with a region, the target
+    /** untouched_proof.rs: tampering with a region, the target
      * digest, or the target bytes is detected. */
     @Test
     fun proofDetectsRegionDigestAndTargetTampering() {
@@ -80,7 +80,7 @@ class UntouchedProofTest {
         assertEquals(UntouchedByteProofErrorKind.TargetMismatch, targetError.kind)
     }
 
-    /** untouched_proof.rs:379-385: no replacements prove the complete
+    /** untouched_proof.rs: no replacements prove the complete
      * snapshot as one region. */
     @Test
     fun noReplacementsProveTheCompleteSnapshot() {
@@ -90,7 +90,7 @@ class UntouchedProofTest {
         proof.verify(source, source, emptyList())
     }
 
-    /** untouched_proof.rs:388-401: transferred proofs reject non-canonical
+    /** untouched_proof.rs: transferred proofs reject non-canonical
      * (mergeable-adjacent) regions. */
     @Test
     fun transferredProofRejectsNonCanonicalRegions() {
@@ -109,7 +109,7 @@ class UntouchedProofTest {
         assertEquals(1, error.index)
     }
 
-    /** untouched_proof.rs:187-189: a proof across differing encoding facts
+    /** untouched_proof.rs: a proof across differing encoding facts
      * is refused. */
     @Test
     fun proofRequiresEqualEncodingFacts() {

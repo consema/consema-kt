@@ -3,13 +3,13 @@
 //
 // Data authority:
 //   - RFC 0004 §11-§16 (https://github.com/consema/consema/blob/main/docs/rfcs/0004-materialization-conversion-and-
-//     structural-edit-v1.md:271-384): snapshot-bound operations; inserted
+//     structural-edit-v1.md): snapshot-bound operations; inserted
 //     literals use the target profile's canonical fragment; removal owns
 //     only the record and its unambiguously attached delimiter/newline;
 //     comments are not moved or deleted without explicit ownership; the
 //     conflict algebra; the dry-run plan; the untouched-byte proof; the
 //     derived SourcePatch.
-//   - RFC 0009 §12 (https://github.com/consema/consema/blob/main/docs/rfcs/0009-ini-family-profiles-v1.md:437-472):
+//   - RFC 0009 §12 (https://github.com/consema/consema/blob/main/docs/rfcs/0009-ini-family-profiles-v1.md):
 //     semantic replacement preserves a compatible quote/multiline
 //     representation or records a canonical fallback; literal replacement
 //     must form exactly one value under the selected profile and cannot
@@ -22,22 +22,22 @@
 //   - conformance/vectors/ini-v1.json (edit.all-eight-operations,
 //     edit.dry-run-patch-proof-and-atomic-failure) pins the golden output
 //     bytes and the wrong-snapshot code; https://github.com/consema/consema-rs/blob/main/consema-ini/src/edit.rs is
-//     the byte-arbitration authority (commit edit.rs:305-553, dry-run
-//     edit.rs:556-570, preparation edit.rs:572-861, dependencies edit.rs:
-//     863-920, names/collisions edit.rs:950-1069, canonical entry text
-//     edit.rs:1101-1167, semantic value styles edit.rs:1228-1430,
-//     ownership edit.rs:1445-1475, failure codes edit.rs:1754-1779).
+//     the byte-arbitration authority (commit edit.rs, dry-run
+//     edit.rs, preparation edit.rs, dependencies edit.rs
+// names/collisions edit.rs, canonical entry text
+//     edit.rs, semantic value styles edit.rs,
+//     ownership edit.rs, failure codes edit.rs).
 //   - Kotlin document owns SourcePatch
-//     (kotlin/src/main/kotlin/consema/document/Patch.kt:147-296) and
+//     (kotlin/src/main/kotlin/consema/document/Patch.kt) and
 //     UntouchedByteProof (kotlin/src/main/kotlin/consema/document/
 //     UntouchedProof.kt). The ChangeSet is not shipped in the Kotlin INI
 //     family (recorded gap, six-repo audit G090;
-//     kotlin/src/main/kotlin/consema/document/Patch.kt:31-33); the commit
+//     kotlin/src/main/kotlin/consema/document/Patch.kt); the commit
 //     carries the ordered edit diagnostics instead.
 //
 // Kotlin-idiomatic design: failures are a sealed hierarchy whose [name] is
 // the exact Rust variant spelling and whose [diagnosticCode] is the frozen
-// registered code (edit.rs:1754-1779); commit/dry-run throw the typed
+// registered code (edit.rs); commit/dry-run throw the typed
 // [EditFailureException] so callers match exhaustively on the failure class.
 
 package consema.ini
@@ -64,7 +64,7 @@ import consema.protocol.Diagnostic
 import consema.protocol.DiagnosticCategory
 import consema.protocol.Severity
 
-/** Explicit semantic value representation policy (edit.rs:15-26). */
+/** Explicit semantic value representation policy (edit.rs). */
 enum class RepresentationPolicy {
     /** Caller must use an exact literal operation instead. */
     ExactLiteral,
@@ -82,7 +82,7 @@ enum class RepresentationPolicy {
 }
 
 /** One INI value replacement bound to a transaction base snapshot
- * (edit.rs:28-47). */
+ * (edit.rs). */
 sealed class ValueReplacement {
     /** Exact INI entry target. */
     abstract val target: NodeRef
@@ -105,7 +105,7 @@ sealed class ValueReplacement {
 }
 
 /** One typed INI edit operation bound to an immutable base snapshot
- * (edit.rs:57-106). */
+ * (edit.rs). */
 sealed class EditOperation {
     /** Replaces one exact entry's value. */
     data class ReplaceValue(val replacement: ValueReplacement) : EditOperation()
@@ -162,7 +162,7 @@ sealed class EditOperation {
 }
 
 /** Immutable edit transaction; every operation resolves against one base
- * snapshot (edit.rs:108-127). */
+ * snapshot (edit.rs). */
 class EditTransaction internal constructor(
     /** Base snapshot identity. */
     val baseSnapshot: SnapshotIdentity,
@@ -170,18 +170,18 @@ class EditTransaction internal constructor(
     val operations: List<EditOperation>,
 )
 
-/** Builder for one immutable edit transaction (edit.rs:129-243). */
+/** Builder for one immutable edit transaction (edit.rs). */
 class EditTransactionBuilder internal constructor(private val base: SnapshotIdentity) {
     private val operations = ArrayList<EditOperation>()
 
     companion object {
         /** Binds a new transaction to one immutable INI document
-         * (edit.rs:137-144). */
+         * (edit.rs). */
         fun new(document: IniDocument): EditTransactionBuilder =
             EditTransactionBuilder(document.snapshotIdentity)
     }
 
-    /** Adds one semantic stored-value replacement (edit.rs:146-160). */
+    /** Adds one semantic stored-value replacement (edit.rs). */
     fun semanticValue(
         target: NodeRef,
         value: String,
@@ -191,13 +191,13 @@ class EditTransactionBuilder internal constructor(private val base: SnapshotIden
         return this
     }
 
-    /** Adds one exact raw value-representation replacement (edit.rs:162-170). */
+    /** Adds one exact raw value-representation replacement (edit.rs). */
     fun literalValue(target: NodeRef, literal: ByteArray): EditTransactionBuilder {
         operations.add(EditOperation.ReplaceValue(ValueReplacement.Literal(target, literal)))
         return this
     }
 
-    /** Adds one canonical section insertion (edit.rs:172-181). */
+    /** Adds one canonical section insertion (edit.rs). */
     fun insertSection(
         document: NodeRef,
         name: String,
@@ -208,19 +208,19 @@ class EditTransactionBuilder internal constructor(private val base: SnapshotIden
     }
 
     /** Adds one exact section removal, including that occurrence's owned
-     * entries (edit.rs:183-192). */
+     * entries (edit.rs). */
     fun removeSection(target: NodeRef): EditTransactionBuilder {
         operations.add(EditOperation.RemoveSection(target))
         return this
     }
 
-    /** Adds one exact section-name replacement (edit.rs:194-201). */
+    /** Adds one exact section-name replacement (edit.rs). */
     fun renameSection(target: NodeRef, name: String): EditTransactionBuilder {
         operations.add(EditOperation.RenameSection(target, name))
         return this
     }
 
-    /** Adds one canonical entry insertion (edit.rs:203-218). */
+    /** Adds one canonical entry insertion (edit.rs). */
     fun insertEntry(
         section: NodeRef,
         key: String,
@@ -231,31 +231,31 @@ class EditTransactionBuilder internal constructor(private val base: SnapshotIden
         return this
     }
 
-    /** Adds one exact entry removal (edit.rs:220-224). */
+    /** Adds one exact entry removal (edit.rs). */
     fun removeEntry(target: NodeRef): EditTransactionBuilder {
         operations.add(EditOperation.RemoveEntry(target))
         return this
     }
 
-    /** Adds one exact entry-key replacement (edit.rs:226-233). */
+    /** Adds one exact entry-key replacement (edit.rs). */
     fun renameEntry(target: NodeRef, key: String): EditTransactionBuilder {
         operations.add(EditOperation.RenameEntry(target, key))
         return this
     }
 
     /** Completes the immutable request; validation happens atomically at
-     * commit or dry-run (edit.rs:235-242). */
+     * commit or dry-run (edit.rs). */
     fun build(): EditTransaction = EditTransaction(base, operations.toList())
 }
 
 /**
- * Atomic edit success (edit.rs:245-256). The ChangeSet is not shipped in
+ * Atomic edit success (edit.rs). The ChangeSet is not shipped in
  * the Kotlin INI family (recorded gap, six-repo audit G090); the commit
  * carries the ordered edit diagnostics instead. For
  * base documents whose selected encoding is a Windows code page, the
  * document-contract artifacts are null: the WindowsCodePage extension
  * lives on the ini family surface, not on the document v1 source contract
- * (kotlin/src/main/kotlin/consema/document/Encoding.kt:18-25), so no v1
+ * (kotlin/src/main/kotlin/consema/document/Encoding.kt), so no v1
  * snapshot exists to build SourcePatch / UntouchedByteProof from.
  */
 class EditCommit(
@@ -271,9 +271,9 @@ class EditCommit(
     val diagnostics: List<Diagnostic>,
 )
 
-/** Stable edit validation or commit failure (edit.rs:258-303). The [name]
+/** Stable edit validation or commit failure (edit.rs). The [name]
  * is the exact Rust variant spelling; [diagnosticCode] is the frozen
- * registered code (edit.rs:1754-1779). */
+ * registered code (edit.rs). */
 sealed class EditFailure(open val name: String) {
     /** Edits are forbidden on a recovered document. */
     data object RecoveredDocument : EditFailure("RecoveredDocument")
@@ -342,7 +342,7 @@ sealed class EditFailure(open val name: String) {
      * original contract. */
     data object NewDocumentFormationFailed : EditFailure("NewDocumentFormationFailed")
 
-    /** The frozen registered diagnostic code (edit.rs:1754-1779). */
+    /** The frozen registered diagnostic code (edit.rs). */
     fun diagnosticCode(): String =
         when (this) {
             is RecoveredDocument -> "core.edit.incomplete-target@1"
@@ -371,7 +371,7 @@ sealed class EditFailure(open val name: String) {
 class EditFailureException(val failure: EditFailure) :
     Exception("ini edit: ${failure.name}")
 
-/** One prepared byte edit with its planned mappings (edit.rs:1782-1811). */
+/** One prepared byte edit with its planned mappings (edit.rs). */
 private data class PreparedEdit(
     val oldSpan: Span,
     val replacement: ByteArray,
@@ -379,7 +379,7 @@ private data class PreparedEdit(
     val mappings: List<PlannedMapping>,
 )
 
-/** The value replacement's mapping expectation (edit.rs:1794-1811). */
+/** The value replacement's mapping expectation (edit.rs). */
 private sealed class MappingPlan {
     /** The new entry with [expectedKey] must own exactly the new span. */
     data class ReplacedValue(val expectedKey: String, val literal: Boolean) : MappingPlan()
@@ -401,11 +401,11 @@ private sealed class MappingPlan {
     data object Deleted : MappingPlan()
 }
 
-/** One planned mapping of a prepared edit (edit.rs:1789-1792). */
+/** One planned mapping of a prepared edit (edit.rs). */
 private data class PlannedMapping(val old: NodeRef, val plan: MappingPlan)
 
 /**
- * Atomically commits all declared operations (edit.rs:305-553). On failure
+ * Atomically commits all declared operations (edit.rs). On failure
  * the document remains unchanged and none of the successful artifacts
  * exist.
  */
@@ -484,7 +484,7 @@ fun IniDocument.commit(transaction: EditTransaction): EditCommit {
         )
     }
 
-    // Structural verification of every replacement (edit.rs:444-516): a
+    // Structural verification of every replacement (edit.rs): a
     // literal replacement must form exactly one value at the target, and a
     // semantic replacement must reproduce the promised record.
     var delta = 0
@@ -540,15 +540,15 @@ fun IniDocument.commit(transaction: EditTransaction): EditCommit {
     return EditCommit(newDocument, sourcePatch, untouchedProof, diagnostics)
 }
 
-/** One prepared edit plus its target span (edit.rs:425-443). */
+/** One prepared edit plus its target span (edit.rs). */
 private data class SourceEditFacts(val edit: PreparedEdit, val newSpan: Span)
 
 /**
  * Fully validates and plans an edit without returning a new Document
- * (edit.rs:556-570; RFC 0004 §14). Dry-run and commit produce the same
+ * (edit.rs; RFC 0004 §14). Dry-run and commit produce the same
  * replacement set and target digest (RFC 0004 §20). Code-page documents
  * cannot produce the transferable plan until the document source-v2
- * extension lands (kotlin/src/main/kotlin/consema/document/Encoding.kt:18-25).
+ * extension lands (kotlin/src/main/kotlin/consema/document/Encoding.kt).
  */
 fun IniDocument.dryRun(
     transaction: EditTransaction,
@@ -571,7 +571,7 @@ fun IniDocument.dryRun(
 }
 
 // ---------------------------------------------------------------------------
-// Operation preparation (edit.rs:572-861)
+// Operation preparation (edit.rs)
 // ---------------------------------------------------------------------------
 
 private fun IniDocument.prepareOperation(
@@ -750,7 +750,7 @@ private fun IniDocument.prepareRenameEntry(target: NodeRef, key: String): Prepar
 }
 
 // ---------------------------------------------------------------------------
-// Dependency validation (edit.rs:863-920)
+// Dependency validation (edit.rs)
 // ---------------------------------------------------------------------------
 
 private fun IniDocument.validateDependencies(transaction: EditTransaction) {
@@ -816,7 +816,7 @@ private fun IniDocument.validateDependencies(transaction: EditTransaction) {
 }
 
 // ---------------------------------------------------------------------------
-// Target resolution and validation (edit.rs:922-1069)
+// Target resolution and validation (edit.rs)
 // ---------------------------------------------------------------------------
 
 private fun IniDocument.resolveDocument(target: NodeRef) {
@@ -926,7 +926,7 @@ private fun IniDocument.validateEntryCollision(section: NodeRef, key: String, ex
 }
 
 // ---------------------------------------------------------------------------
-// Span helpers (edit.rs:1071-1226)
+// Span helpers (edit.rs)
 // ---------------------------------------------------------------------------
 
 private fun IniDocument.entryLineStart(entry: IniEntry): Int =
@@ -987,7 +987,7 @@ private fun IniDocument.coalesceAdjacentDeletions(
 }
 
 /** The exact source-ownership interval of one entry's value
- * (edit.rs:1445-1475). */
+ * (edit.rs). */
 private fun IniDocument.valueOwnership(entry: IniEntry): Span {
     val (start, end) = when (profile) {
         IniProfile.PortableV1 ->
@@ -1009,7 +1009,7 @@ private fun IniDocument.valueOwnership(entry: IniEntry): Span {
     return authority.span(start, end)
 }
 
-/** The full record span of one entry (edit.rs:1477-1494). */
+/** The full record span of one entry (edit.rs). */
 private fun IniDocument.entryRecordSpan(entry: IniEntry): Span {
     val logical = logicalLinesList.firstOrNull { it.nodeRef == entry.logicalLine }
         ?: throw EditFailureException(EditFailure.NewDocumentFormationFailed)
@@ -1022,7 +1022,7 @@ private fun IniDocument.entryRecordSpan(entry: IniEntry): Span {
     return authority.span(first.span.startByte, last.span.endByte)
 }
 
-/** The first syntax piece of one kind inside a range (edit.rs:1496-1508). */
+/** The first syntax piece of one kind inside a range (edit.rs). */
 private fun IniDocument.syntaxSpan(kind: IniSyntaxKind, within: Span): Span? =
     pieces().zip(losslessSyntaxKinds()).firstNotNullOfOrNull { (piece, candidate) ->
         val span = piece.span
@@ -1033,7 +1033,7 @@ private fun IniDocument.syntaxSpan(kind: IniSyntaxKind, within: Span): Span? =
         }
     }
 
-/** Structural verification of one replacement (edit.rs:444-516). */
+/** Structural verification of one replacement (edit.rs). */
 private fun verifyMapping(
     document: IniDocument,
     mapping: PlannedMapping,
@@ -1087,7 +1087,7 @@ private fun verifyMapping(
 }
 
 // ---------------------------------------------------------------------------
-// Semantic value styles (edit.rs:1228-1430)
+// Semantic value styles (edit.rs)
 // ---------------------------------------------------------------------------
 
 private fun IniDocument.semanticValue(
@@ -1219,7 +1219,7 @@ private fun IniDocument.canonicalPythonValue(entry: IniEntry, value: String): By
     return output.bytes()
 }
 
-/** The frozen semantic-value validation of one profile (edit.rs:1518-1535). */
+/** The frozen semantic-value validation of one profile (edit.rs). */
 private fun validateSemanticValue(profile: IniProfile, value: String) {
     val valid = when (profile) {
         IniProfile.PortableV1 -> value.all { isPortableValueChar(it) }
@@ -1277,7 +1277,7 @@ private fun endsWithNewline(text: String): Boolean =
     text.endsWith('\n') || text.endsWith('\r')
 
 /** Bounded byte accumulation with the replacement-byte limit
- * (edit.rs:1577-1590). */
+ * (edit.rs). */
 private class ByteArrayOutputStreamBounded(private val max: Int) {
     private val bytes = java.io.ByteArrayOutputStream()
 
@@ -1303,11 +1303,11 @@ private fun destructiveTarget(operation: EditOperation): NodeRef? =
     }
 
 // ---------------------------------------------------------------------------
-// Patch metadata and summaries (edit.rs:1604-1720)
+// Patch metadata and summaries (edit.rs)
 // ---------------------------------------------------------------------------
 
 /** Patch metadata: operation.{index} -> frozen operation id@version
- * (edit.rs:1604-1627). */
+ * (edit.rs). */
 private fun operationMetadata(transaction: EditTransaction): Map<String, String> {
     val metadata = LinkedHashMap<String, String>()
     for ((index, operation) in transaction.operations.withIndex()) {
@@ -1316,7 +1316,7 @@ private fun operationMetadata(transaction: EditTransaction): Map<String, String>
     return metadata
 }
 
-/** The frozen operation id@version (edit.rs:1609-1623). */
+/** The frozen operation id@version (edit.rs). */
 internal fun operationId(operation: EditOperation): FormatOperationId =
     FormatOperationId(
         when (operation) {
@@ -1334,7 +1334,7 @@ internal fun operationId(operation: EditOperation): FormatOperationId =
         1,
     )
 
-/** Content-free operation summaries (edit.rs:1629-1702). */
+/** Content-free operation summaries (edit.rs). */
 private fun operationSummaries(transaction: EditTransaction): List<EditOperationSummary> =
     transaction.operations.map { operation ->
         val (id, arguments) = when (operation) {
@@ -1384,7 +1384,7 @@ private fun placementName(placement: AssociationPlacement): String =
         is AssociationPlacement.After -> "after"
     }
 
-/** The patch limits of one commit (edit.rs:1592-1602). */
+/** The patch limits of one commit (edit.rs). */
 private fun IniDocument.sourcePatchLimits(operationCount: Int): SourcePatchLimits =
     SourcePatchLimits(
         source = SourceLimits(
@@ -1402,7 +1402,7 @@ private fun Int.saturatingMul(other: Int): Int =
     (toLong() * other).coerceAtMost(Int.MAX_VALUE.toLong()).toInt()
 
 // ---------------------------------------------------------------------------
-// Portable character rules (edit.rs:1518-1568)
+// Portable character rules (edit.rs)
 // ---------------------------------------------------------------------------
 
 private fun isPortableNameChar(character: Char): Boolean {

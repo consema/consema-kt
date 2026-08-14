@@ -1,7 +1,7 @@
 // Formation closure and recovery tests transcribed from
 // conformance/vectors/json-family-v2.json.
 //
-// RFC 0016 §5.1 F10 (https://github.com/consema/consema/blob/main/docs/rfcs/0016-go-api-mapping-v1.md:172-176):
+// RFC 0016 §5.1 F10 (https://github.com/consema/consema/blob/main/docs/rfcs/0016-go-api-mapping-v1.md):
 // FormationStatus is a closed two-value enum (Complete, Recovered); a valid
 // strict JSON document is valid under JSON5, and every Complete
 // jsonc.bounded@1 document is also valid under JSON5 (RFC 0005 §2).
@@ -33,7 +33,7 @@ class FormationClosureTest {
     }
 
     /** Vector case json5.parse.extended-whitespace-comments (json-family-v2.json:
-     * 24-28): NBSP and U+1680 whitespace, U+2028 line-comment termination,
+ *): NBSP and U+1680 whitespace, U+2028 line-comment termination,
      * and a closed block comment all form Complete with the Whitespace /
      * LineComment / BlockComment pieces. */
     @Test
@@ -64,7 +64,7 @@ class FormationClosureTest {
     }
 
     /** Vector case json5.parse.unescaped-separator-warning (json-family-v2.json:
-     * 30-34): an unescaped U+2028 inside a JSON5 string stays Complete but
+ *): an unescaped U+2028 inside a JSON5 string stays Complete but
      * emits json5.string.unescaped-line-separator@1 (RFC 0005 §5). */
     @Test
     fun json5UnescapedSeparatorWarning() {
@@ -97,7 +97,7 @@ class FormationClosureTest {
     }
 
     /** Vector case json5.reject.leading-zero-decimal (json-family-v2.json:
-     * 42-46): a leading-zero decimal is recovered as
+ *): a leading-zero decimal is recovered as
      * json.syntax.invalid-number@1 (RFC 0005 §6). */
     @Test
     fun json5RejectsLeadingZeroDecimal() {
@@ -111,28 +111,28 @@ class FormationClosureTest {
     }
 
     /** Vector case json5.reject.decimal-string-escape (json-family-v2.json:
-     * 54-58): \1 through \9 are invalid escapes. */
+ *): \1 through \9 are invalid escapes. */
     @Test
     fun json5RejectsDecimalStringEscape() {
         assertRecoveredWith("'\\1'", "json.syntax.invalid-string-escape@1")
     }
 
     /** Vector case json5.reject.isolated-surrogate (json-family-v2.json:
-     * 60-64): an isolated \uD800 fails local semantic decoding. */
+ *): an isolated \uD800 fails local semantic decoding. */
     @Test
     fun json5RejectsIsolatedSurrogate() {
         assertRecoveredWith("'\\uD800'", "json.syntax.invalid-string-escape@1")
     }
 
     /** Vector case json5.reject.unterminated-comment (json-family-v2.json:
-     * 66-70): an open block comment is an explicit error region. */
+ *): an open block comment is an explicit error region. */
     @Test
     fun json5RejectsUnterminatedComment() {
         assertRecoveredWith("1/* open", "json.syntax.unterminated-block-comment@1")
     }
 
     /** Vector case json5.reject.invalid-escaped-identifier (json-family-v2.json:
-     * 36-40): 0 decodes to a non-start character, so the identifier is
+ *): 0 decodes to a non-start character, so the identifier is
      * recovered as json5.syntax.invalid-identifier@1 and never acquires a
      * decoded name (RFC 0005 §4). */
     @Test
@@ -141,7 +141,7 @@ class FormationClosureTest {
     }
 
     /** Vector case json.strict.reject-json5-surface (json-family-v2.json:
-     * 72-76): the strict profile rejects comments and trailing commas while
+ *): the strict profile rejects comments and trailing commas while
      * still forming the Object root. */
     @Test
     fun strictRejectsJson5Surface() {

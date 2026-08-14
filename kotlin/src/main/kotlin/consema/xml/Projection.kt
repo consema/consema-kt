@@ -1,7 +1,7 @@
 // XML projection targets and explicit mapping policies (RFC 0012 §9).
 //
 // Data authority:
-//   - RFC 0012 §9 (https://github.com/consema/consema/blob/main/docs/rfcs/0012-xml-1.0-safe-profile-v1.md:313-348): the
+//   - RFC 0012 §9 (https://github.com/consema/consema/blob/main/docs/rfcs/0012-xml-1.0-safe-profile-v1.md): the
 //     exact default target `xml.projection.element-tree@1` produces a
 //     versioned `xml.element-tree@1` PortableValue record containing
 //     declaration facts, admitted internal entity declarations, one
@@ -14,14 +14,14 @@
 //   - conformance/vectors/xml-1-0-safe-v1.json cases xml.projection.* pin
 //     the record spelling and the recovered-document failure.
 //   - https://github.com/consema/consema-rs/blob/main/consema-xml/src/projection.rs is the byte-arbitration
-//     authority: targets (projection.rs:20-29), policies (projection.rs:
-//     31-124), ProjectionRequest (projection.rs:126-213), limits
-//     (projection.rs:215-237), the completion algebra (projection.rs:
-//     239-419), ProjectionFailure codes (projection.rs:421-469), the
-//     element-tree record (projection.rs:600-797), content items
-//     (projection.rs:799-973), text content (projection.rs:975-1095), and
-//     the entry mapping (projection.rs:1097-1236).
-//   - RFC 0004 §7-§8 (https://github.com/consema/consema/blob/main/docs/rfcs/0004-materialization-conversion-and-structural-edit-v1.md:171-218) pins the completion
+//     authority: targets (projection.rs), policies (projection.rs
+//), ProjectionRequest (projection.rs), limits
+//     (projection.rs), the completion algebra (projection.rs
+//), ProjectionFailure codes (projection.rs), the
+//     element-tree record (projection.rs), content items
+//     (projection.rs), text content (projection.rs), and
+//     the entry mapping (projection.rs).
+//   - RFC 0004 §7-§8 (https://github.com/consema/consema/blob/main/docs/rfcs/0004-materialization-conversion-and-structural-edit-v1.md) pins the completion
 //     algebra and the provenance direction (portable locations to source
 //     origins).
 //
@@ -50,7 +50,7 @@ import consema.document.Span
 import consema.protocol.DiagnosticCategory
 import consema.protocol.Severity
 
-/** Versioned XML projection target (projection.rs:20-29). */
+/** Versioned XML projection target (projection.rs). */
 enum class ProjectionTarget {
     /** Exact `xml.element-tree@1` record projection. */
     ElementTreeV1,
@@ -63,7 +63,7 @@ enum class ProjectionTarget {
 }
 
 /** Descendant text inclusion for [ProjectionTarget.TextContentV1]
- * (projection.rs:31-38). */
+ * (projection.rs). */
 enum class TextContentInclude {
     /** Include descendant text and CDATA occurrences. */
     TextAndCdata,
@@ -73,7 +73,7 @@ enum class TextContentInclude {
 }
 
 /** Attribute handling for [ProjectionTarget.SimpleEntryMappingV1]
- * (projection.rs:40-49). */
+ * (projection.rs). */
 enum class AttributePolicy {
     /** Reject the projection when any attribute is present. */
     RejectAttributes,
@@ -86,7 +86,7 @@ enum class AttributePolicy {
 }
 
 /** Text child handling for [ProjectionTarget.SimpleEntryMappingV1]
- * (projection.rs:51-58). */
+ * (projection.rs). */
 enum class TextKeyPolicy {
     /** Reject the projection when any non-whitespace text is present. */
     RejectText,
@@ -96,7 +96,7 @@ enum class TextKeyPolicy {
 }
 
 /** Repeated expanded-child-name handling for
- * [ProjectionTarget.SimpleEntryMappingV1] (projection.rs:60-69). */
+ * [ProjectionTarget.SimpleEntryMappingV1] (projection.rs). */
 enum class RepeatedChildPolicy {
     /** Reject every repeated expanded child name. */
     Reject,
@@ -109,7 +109,7 @@ enum class RepeatedChildPolicy {
 }
 
 /** Entry-key spelling for [ProjectionTarget.SimpleEntryMappingV1]
- * (projection.rs:71-81). */
+ * (projection.rs). */
 enum class ExpandedNameKeyPolicy {
     /** Key is the local name; namespace collisions must be resolved by
      * another policy or the projection fails. */
@@ -123,7 +123,7 @@ enum class ExpandedNameKeyPolicy {
 }
 
 /** Collision resolution direction shared by both entry policies
- * (projection.rs:83-89). */
+ * (projection.rs). */
 private enum class KeepPolicy {
     Reject,
     First,
@@ -131,7 +131,7 @@ private enum class KeepPolicy {
 }
 
 /** Explicit mapping behavior for [ProjectionTarget.SimpleEntryMappingV1]
- * (projection.rs:115-124). */
+ * (projection.rs). */
 enum class CollisionPolicy {
     /** Reject every collision. */
     Reject,
@@ -144,7 +144,7 @@ enum class CollisionPolicy {
 }
 
 /** Explicit XML projection request; every policy is mandatory
- * (projection.rs:126-213). */
+ * (projection.rs). */
 data class ProjectionRequest(
     /** Versioned projection target. */
     val target: ProjectionTarget,
@@ -167,7 +167,7 @@ data class ProjectionRequest(
 ) {
     companion object {
         /** Exact `xml.element-tree@1` record request for the document root
-         * (projection.rs:140-155). */
+         * (projection.rs). */
         fun elementTree(): ProjectionRequest =
             ProjectionRequest(
                 target = ProjectionTarget.ElementTreeV1,
@@ -182,7 +182,7 @@ data class ProjectionRequest(
             )
 
         /** Explicit `SimpleEntryMappingV1` request over one subtree
-         * (projection.rs:157-178). */
+         * (projection.rs). */
         fun simpleEntryMapping(
             subtree: NodeRef,
             attributes: AttributePolicy,
@@ -204,7 +204,7 @@ data class ProjectionRequest(
             )
 
         /** Explicit `TextContentV1` request over one subtree
-         * (projection.rs:180-194). */
+         * (projection.rs). */
         fun textContent(subtree: NodeRef, include: TextContentInclude): ProjectionRequest =
             ProjectionRequest(
                 target = ProjectionTarget.TextContentV1,
@@ -220,7 +220,7 @@ data class ProjectionRequest(
     }
 }
 
-/** XML projection resource limits (projection.rs:215-237). */
+/** XML projection resource limits (projection.rs). */
 data class ProjectionLimits(
     /** Maximum inspected source nodes. */
     val maxSourceNodes: Int,
@@ -232,7 +232,7 @@ data class ProjectionLimits(
     val maxProvenanceUnits: Int,
 ) {
     companion object {
-        /** The frozen defaults (projection.rs:228-237): 2,000,000 source
+        /** The frozen defaults (projection.rs): 2,000,000 source
          * nodes, 2,000,000 value nodes, 100,000 report entries, 4,000,000
          * provenance units. */
         val default = ProjectionLimits(
@@ -244,7 +244,7 @@ data class ProjectionLimits(
     }
 }
 
-/** Projection fidelity classification (projection.rs:239-248). */
+/** Projection fidelity classification (projection.rs). */
 enum class Fidelity {
     /** Target directly represents every native association. */
     Exact,
@@ -257,7 +257,7 @@ enum class Fidelity {
     Lossy,
 }
 
-/** Projected value or association location (projection.rs:250-257). */
+/** Projected value or association location (projection.rs). */
 sealed class ProjectedLocation {
     /** Portable value location. */
     data class Value(val path: ValuePath) : ProjectedLocation()
@@ -266,7 +266,7 @@ sealed class ProjectedLocation {
     data class Association(val location: AssociationLocation) : ProjectedLocation()
 }
 
-/** Source-to-projection relation (projection.rs:259-270). */
+/** Source-to-projection relation (projection.rs). */
 enum class ProvenanceRelation {
     /** Direct native semantic origin. */
     Direct,
@@ -281,7 +281,7 @@ enum class ProvenanceRelation {
     ReferenceDerived,
 }
 
-/** One exact source origin (projection.rs:272-283). */
+/** One exact source origin (projection.rs). */
 data class SourceOrigin(
     /** Source document snapshot. */
     val snapshot: SnapshotIdentity,
@@ -293,7 +293,7 @@ data class SourceOrigin(
     val relation: ProvenanceRelation,
 )
 
-/** One many-valued provenance entry (projection.rs:285-292). */
+/** One many-valued provenance entry (projection.rs). */
 data class ProvenanceEntry(
     /** Projected value or association. */
     val projected: ProjectedLocation,
@@ -301,7 +301,7 @@ data class ProvenanceEntry(
     val origins: List<SourceOrigin>,
 )
 
-/** Immutable many-valued provenance mapping (projection.rs:294-323). */
+/** Immutable many-valued provenance mapping (projection.rs). */
 class ProvenanceMap private constructor(private val entries: List<ProvenanceEntry>) {
     companion object {
         fun empty(): ProvenanceMap = ProvenanceMap(emptyList())
@@ -318,7 +318,7 @@ class ProvenanceMap private constructor(private val entries: List<ProvenanceEntr
     override fun hashCode(): Int = entries.hashCode()
 }
 
-/** Projection report category (projection.rs:325-346). */
+/** Projection report category (projection.rs). */
 enum class ProjectionEventKind {
     /** Element discarded by policy. */
     ElementDiscarded,
@@ -348,7 +348,7 @@ enum class ProjectionEventKind {
     NamespaceCollapsed,
 }
 
-/** One explicit transformation event (projection.rs:348-357). */
+/** One explicit transformation event (projection.rs). */
 data class ProjectionEvent(
     /** Stable event kind. */
     val kind: ProjectionEventKind,
@@ -358,7 +358,7 @@ data class ProjectionEvent(
     val impact: Fidelity,
 )
 
-/** Complete ordered projection report (projection.rs:359-388). */
+/** Complete ordered projection report (projection.rs). */
 class ProjectionReport private constructor(private val events: List<ProjectionEvent>) {
     companion object {
         fun empty(): ProjectionReport = ProjectionReport(emptyList())
@@ -375,7 +375,7 @@ class ProjectionReport private constructor(private val events: List<ProjectionEv
     override fun hashCode(): Int = events.hashCode()
 }
 
-/** Complete successful projection (projection.rs:390-401). */
+/** Complete successful projection (projection.rs). */
 data class CompleteProjection(
     /** Complete immutable projected value. */
     val value: PortableValue,
@@ -387,7 +387,7 @@ data class CompleteProjection(
     val provenance: ProvenanceMap,
 )
 
-/** Failed projection attempt without a partial value (projection.rs:403-410). */
+/** Failed projection attempt without a partial value (projection.rs). */
 data class FailedProjectionAttempt(
     /** Stable ordered diagnostics. */
     val diagnostics: List<XmlDiagnosticWithArguments>,
@@ -396,7 +396,7 @@ data class FailedProjectionAttempt(
     val report: ProjectionReport,
 )
 
-/** Projection completion algebra (projection.rs:412-419). */
+/** Projection completion algebra (projection.rs). */
 sealed class ProjectionResult {
     /** Complete success. */
     data class Complete(val projection: CompleteProjection) : ProjectionResult()
@@ -405,7 +405,7 @@ sealed class ProjectionResult {
     data class Failed(val attempt: FailedProjectionAttempt) : ProjectionResult()
 }
 
-/** Stable XML projection failure (projection.rs:421-469). */
+/** Stable XML projection failure (projection.rs). */
 sealed class ProjectionFailure : Exception() {
     /** Recovered documents cannot publish partial semantic values. */
     data object RecoveredDocument : ProjectionFailure()
@@ -425,7 +425,7 @@ sealed class ProjectionFailure : Exception() {
     /** PortableValue construction invariant failed. */
     data object CoreInvariant : ProjectionFailure()
 
-    /** The frozen diagnostic code (projection.rs:459-467). */
+    /** The frozen diagnostic code (projection.rs). */
     fun code(): String =
         when (this) {
             RecoveredDocument -> "xml.projection.recovered-document@1"
@@ -438,7 +438,7 @@ sealed class ProjectionFailure : Exception() {
 }
 
 /** Projects one snapshot under one explicit target and policy contract
- * (projection.rs:471-503). */
+ * (projection.rs). */
 fun Document.project(request: ProjectionRequest): ProjectionResult {
     if (formationStatus != FormationStatus.Complete) {
         return failedProjection(ProjectionFailure.RecoveredDocument)
@@ -479,7 +479,7 @@ private fun failedProjection(failure: ProjectionFailure): ProjectionResult {
 }
 
 /** The stable failure-kind name used by the diagnostic argument (the Rust
- * Debug rendering of the variant, projection.rs:1460-1475). */
+ * Debug rendering of the variant, projection.rs). */
 private fun ProjectionFailure.name(): String =
     when (this) {
         ProjectionFailure.RecoveredDocument -> "RecoveredDocument"
@@ -496,7 +496,7 @@ private sealed class ProjectionOutcome {
 }
 
 /** Ordered mapping entries with their expanded-name identities
- * (projection.rs:91-113). */
+ * (projection.rs). */
 private class EntrySet {
     val ordered = ArrayList<Pair<String, PortableValue>>()
     val seen = HashMap<String, Pair<Int, ExpandedName?>>()
@@ -510,7 +510,7 @@ private class EntrySet {
     }
 }
 
-/** One projection run over one immutable snapshot (projection.rs:505-599). */
+/** One projection run over one immutable snapshot (projection.rs). */
 private class ProjectionContext(
     private val document: Document,
     private val limits: ProjectionLimits,
@@ -571,7 +571,7 @@ private class ProjectionContext(
         document.authority.nodeRef(ordinal, role)
 
     /** Value path of one item inside an ordered record array
-     * (projection.rs:593-598). */
+     * (projection.rs). */
     private fun itemPath(container: ValuePath, field: String, index: Int): ValuePath =
         container.child(ValuePathSegment.ObjectValue(field))
             .child(ValuePathSegment.SequenceElement(index.toLong()))
@@ -579,7 +579,7 @@ private class ProjectionContext(
     // -- element tree ---------------------------------------------------------
 
     /** Exact `xml.element-tree@1` record for the document root
-     * (projection.rs:600-644). */
+     * (projection.rs). */
     fun projectElementTree(): ProjectionOutcome {
         val root = document.root() ?: return ProjectionOutcome.Failure(
             ProjectionFailure.MappingAdmission("missing root"),
@@ -620,7 +620,7 @@ private class ProjectionContext(
     }
 
     /** Recursive element record; `path` is the location of this element
-     * record inside the projected value (projection.rs:669-797). */
+     * record inside the projected value (projection.rs). */
     private fun elementValue(index: Int, path: ValuePath): Pair<PortableValue, Int> {
         step()
         val data = elementData(index)
@@ -693,7 +693,7 @@ private class ProjectionContext(
     }
 
     /** One ordered content item record; `path` is the item's location
-     * (projection.rs:799-973). */
+     * (projection.rs). */
     private fun contentValue(index: Int, path: ValuePath): Pair<PortableValue, Int> {
         step()
         return when (val content = document.nodes[index]) {
@@ -805,7 +805,7 @@ private class ProjectionContext(
         }
     }
 
-    // -- text content (projection.rs:975-1095) --------------------------------
+    // -- text content (projection.rs) --------------------------------
 
     /** Always-transformed descendant text content. */
     fun projectTextContent(subtree: Long?, include: TextContentInclude): ProjectionOutcome {
@@ -900,7 +900,7 @@ private class ProjectionContext(
         }
     }
 
-    // -- entry mapping (projection.rs:1097-1236) ------------------------------
+    // -- entry mapping (projection.rs) ------------------------------
 
     /** Explicit-policy entry mapping of one selected subtree. */
     fun projectEntryMapping(request: ProjectionRequest): ProjectionOutcome {
@@ -945,7 +945,7 @@ private class ProjectionContext(
 
     /**
      * Resolves the entry ordinal under the explicit request policies
-     * (projection.rs:1144-1200). A repeated *expanded name* is governed by
+     * (projection.rs). A repeated *expanded name* is governed by
      * `repeated_child`; a key collision after key-spelling is governed by
      * `collision`.
      */
@@ -983,7 +983,7 @@ private class ProjectionContext(
     }
 
     /** Records one committed entry and its value/association provenance
-     * (projection.rs:1202-1236). */
+     * (projection.rs). */
     private fun commitEntry(
         entries: EntrySet,
         key: String,
@@ -1155,7 +1155,7 @@ private class ProjectionContext(
     }
 
     /** The leaf value of one element without element children
-     * (projection.rs:1404-1457). */
+     * (projection.rs). */
     private fun leafValue(element: Int, request: ProjectionRequest): PortableValue {
         val data = elementData(element)
         val text = StringBuilder()

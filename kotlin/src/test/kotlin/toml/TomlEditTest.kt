@@ -5,7 +5,7 @@
 // (operations.v1.toml-root-insert, toml-inline-rename, toml-array-remove,
 // toml-conflict-atomic, toml-dry-run-proof-patch, toml-structural-matrix,
 // toml-conflict-matrix), plus the Rust crate edit tests
-// (consema-toml/src/edit.rs:1653-2156). The L5 conformance runner executes
+// (consema-toml/src/edit.rs). The L5 conformance runner executes
 // the shared vectors directly; these unit tests pin the golden
 // transcriptions in the committed CI.
 
@@ -325,7 +325,7 @@ class TomlEditTest {
         commit.untouchedProof.verify(document.source(), commit.document.source(), commit.sourcePatch.replacements())
     }
 
-    /** edit.rs:1685-1732: literal and semantic edits change only the scalar
+    /** edit.rs: literal and semantic edits change only the scalar
      * spans and the ChangeSet facts map to the reparsed items. */
     @Test
     fun literalAndSemanticEditsChangeOnlyScalarSpans() {
@@ -358,7 +358,7 @@ class TomlEditTest {
         commit.untouchedProof.verify(document.source(), commit.document.source(), commit.sourcePatch.replacements())
     }
 
-    /** edit.rs:1734-1765: invalid or conflicting transactions leave the
+    /** edit.rs: invalid or conflicting transactions leave the
      * base unchanged. */
     @Test
     fun invalidOrConflictingTransactionsLeaveBaseUnchanged() {
@@ -390,7 +390,7 @@ class TomlEditTest {
         assertTrue(document.render().contentEquals("value = 1\narray = [1, 2]\n".toByteArray()))
     }
 
-    /** edit.rs:1819-1837: exact literal validation rejects trivia,
+    /** edit.rs: exact literal validation rejects trivia,
      * containers, and extra assignments. */
     @Test
     fun exactLiteralRejectsTriviaContainersAndExtraAssignments() {
@@ -408,7 +408,7 @@ class TomlEditTest {
         )
     }
 
-    /** edit.rs:1767-1817: semantic boundaries are rejected instead of
+    /** edit.rs: semantic boundaries are rejected instead of
      * rounded. */
     @Test
     fun semanticBoundariesAreRejectedInsteadOfRounded() {
@@ -465,7 +465,7 @@ class TomlEditTest {
         assertIs<EditFailureKind.UnsupportedSemanticValue>(offsetFailure.kind)
     }
 
-    /** edit.rs:1839-1892: root and standard table insertions preserve
+    /** edit.rs: root and standard table insertions preserve
      * ownership. */
     @Test
     fun rootAndStandardTableInsertionsPreserveOwnership() {
@@ -505,7 +505,7 @@ class TomlEditTest {
         )
     }
 
-    /** edit.rs:1942-1977: array insertions cover empty and commented
+    /** edit.rs: array insertions cover empty and commented
      * arrays. */
     @Test
     fun arrayInsertAndRemoveCoverEmptyAndCommentedArrays() {
@@ -538,7 +538,7 @@ class TomlEditTest {
         )
     }
 
-    /** edit.rs:1979-2093: structural dependencies and table rules fail
+    /** edit.rs: structural dependencies and table rules fail
      * atomically. */
     @Test
     fun structuralDependenciesFailAtomically() {
@@ -606,7 +606,7 @@ class TomlEditTest {
         assertTrue(document.render().contentEquals("a = 1\nb = 2\n\n[service]\nport = 80\n".toByteArray()))
     }
 
-    /** edit.rs:2095-2120: an empty standard table insertion uses its header
+    /** edit.rs: an empty standard table insertion uses its header
      * newline and preserves CRLF. */
     @Test
     fun emptyStandardTableInsertionUsesHeaderNewlineAndCrlf() {

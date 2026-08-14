@@ -1,7 +1,7 @@
 // HCL-specific formation, structure, recovery, and report limits.
 //
 // Data authority:
-//   - RFC 0014 §11 (https://github.com/consema/consema/blob/main/docs/rfcs/0014-hcl-family-profiles-v1.md:674-714): the
+//   - RFC 0014 §11 (https://github.com/consema/consema/blob/main/docs/rfcs/0014-hcl-family-profiles-v1.md): the
 //     `HclParseLimits` bounds at least raw bytes and decoded scalars, body
 //     nesting depth (blocks), expression depth, and template nesting depth,
 //     attribute/block/label/body-item counts, identifier/string/number/
@@ -11,8 +11,8 @@
 //     All size arithmetic is checked before allocation, and limit failure
 //     never masquerades as an empty body, truncated expression, shortened
 //     query, partial target, or successful edit (hard gate 4).
-//   - https://github.com/consema/consema-rs/blob/main/consema-hcl/src/lib.rs:166-273 pins the exact field set and the
-//     frozen R-3 defaults (lib.rs:236-273: 64 MiB source, 128 body depth,
+//   - https://github.com/consema/consema-rs/blob/main/consema-hcl/src/lib.rs pins the exact field set and the
+//     frozen R-3 defaults (lib.rs: 64 MiB source, 128 body depth,
 //     24 expression depth, 256 template depth, ...); the conformance vectors
 //     hcl.limit.* pin the frozen limit-code spellings
 //     (`hcl.limit.expression-depth@1`, `hcl.limit.body-depth@1`,
@@ -25,7 +25,7 @@
 //
 // Kotlin-idiomatic design: one immutable data class with the common
 // consema.document.ParseLimits embedded, exactly like the Rust
-// `HclParseLimits { common: ParseLimits, ... }` shape (lib.rs:179-234).
+// `HclParseLimits { common: ParseLimits, ... }` shape (lib.rs).
 
 package consema.hcl
 
@@ -33,14 +33,14 @@ import consema.document.ParseLimits
 
 /**
  * HCL-specific formation, structure, recovery, and report limits (RFC 0014
- * §11; lib.rs:166-234). The common limits bound source bytes, generic
+ * §11; lib.rs). The common limits bound source bytes, generic
  * nesting, token and node counts, and diagnostics; the flat fields bound the
  * HCL-specific facts. Every limit failure is a fatal formation failure or an
  * atomic operation failure (hard gate 4).
  */
 data class HclParseLimits(
     /** Common source, nesting, token, node, and diagnostic limits; includes
-     * `max_source_bytes` and `max_diagnostics` (lib.rs:182-183). */
+     * `max_source_bytes` and `max_diagnostics` (lib.rs). */
     val common: ParseLimits,
 
     /** Maximum decoded UTF-8 bytes. */
@@ -116,7 +116,7 @@ data class HclParseLimits(
     val maxReportEvents: Int,
 ) {
     companion object {
-        /** The frozen R-3 defaults (lib.rs:245-272): 64 MiB source bytes,
+        /** The frozen R-3 defaults (lib.rs): 64 MiB source bytes,
          * 128 body levels, 24 expression levels, 256 template levels, and
          * generous flat count limits. */
         val default = HclParseLimits(

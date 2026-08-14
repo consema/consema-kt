@@ -1,10 +1,10 @@
 // The frozen canonical TOML 1.0 scalar spellings.
 //
 // Data authority:
-//   - https://github.com/consema/consema-rs/blob/main/consema-toml/src/edit.rs:1516-1636 (canonical_string,
+//   - https://github.com/consema/consema-rs/blob/main/consema-toml/src/edit.rs (canonical_string,
 //     canonical_float, canonical_date, canonical_time, canonical_local_
 //     datetime, canonical_offset_datetime, exact_nanoseconds) and
-//     https://github.com/consema/consema-rs/blob/main/consema-toml/src/materialization.rs:353-407 (write_string,
+//     https://github.com/consema/consema-rs/blob/main/consema-toml/src/materialization.rs (write_string,
 //     write_float, write_date, write_time) pin the deterministic canonical
 //     representations used by both materialization and every structural
 //     edit insertion.
@@ -26,7 +26,7 @@ import consema.core.PvDecimal
 import java.math.BigDecimal
 import java.math.BigInteger
 
-/** The canonical basic-string spelling (edit.rs:1516-1537): `\b \t \n \f
+/** The canonical basic-string spelling (edit.rs): `\b \t \n \f
  * \r \" \\` short escapes and `\uXXXX` for U+0000..U+001F and U+007F; all
  * other scalars are emitted as UTF-8. */
 internal fun canonicalString(value: String): String {
@@ -52,7 +52,7 @@ internal fun canonicalString(value: String): String {
 
 /**
  * The canonical binary64 spelling, or null when the payload has no legal
- * deterministic TOML representation (edit.rs:1539-1560; RFC 0004 §6).
+ * deterministic TOML representation (edit.rs; RFC 0004 §6).
  * Canonical NaNs are `nan`/`-nan`; all other NaN payloads fail. The sign
  * of zero is preserved. Finite values use the shortest-round-trip decimal
  * in plain (non-exponent) notation, suffixed with `.0` when integral.
@@ -66,7 +66,7 @@ internal fun canonicalFloatText(bits: Long): String? {
     val value = java.lang.Double.longBitsToDouble(bits)
     if (value.isNaN()) {
         // Any other NaN payload is not canonically representable
-        // (materialization.rs:389-394).
+        // (materialization.rs).
         return null
     }
     // The JDK toString is the correctly-rounded shortest representation;
@@ -80,7 +80,7 @@ internal fun canonicalFloatText(bits: Long): String? {
 }
 
 /** The canonical date spelling `YYYY-MM-DD`, or null outside the frozen
- * 0..=9999 year range (edit.rs:1562-1568). */
+ * 0..=9999 year range (edit.rs). */
 internal fun canonicalDateText(year: Int, month: Int, day: Int): String? {
     if (year < 0 || year > 9999) {
         return null
@@ -89,7 +89,7 @@ internal fun canonicalDateText(year: Int, month: Int, day: Int): String? {
 }
 
 /** The canonical time spelling `HH:MM:SS` with the minimal exact
- * fractional digits (edit.rs:1570-1587; materialization.rs:426-448).
+ * fractional digits (edit.rs; materialization.rs).
  * [nanoseconds] must be the exact_nanoseconds result (0 when the fraction
  * is zero). */
 internal fun canonicalTimeText(hour: Int, minute: Int, second: Int, nanoseconds: Long): String {
@@ -106,7 +106,7 @@ internal fun canonicalTimeText(hour: Int, minute: Int, second: Int, nanoseconds:
 }
 
 /** The canonical local date-time spelling `YYYY-MM-DDTHH:MM:SS...`
- * (edit.rs:1589-1595). */
+ * (edit.rs). */
 internal fun canonicalLocalDateTimeText(
     year: Int,
     month: Int,
@@ -121,7 +121,7 @@ internal fun canonicalLocalDateTimeText(
 
 /** The canonical offset date-time spelling with `Z` for zero and `±HH:MM`
  * otherwise; offsets with a non-whole minute or |offset| >= 24 hours fail
- * (edit.rs:1597-1616). */
+ * (edit.rs). */
 internal fun canonicalOffsetDateTimeText(
     year: Int,
     month: Int,
@@ -151,8 +151,8 @@ internal fun canonicalOffsetDateTimeText(
 
 /**
  * The exact nanosecond count of a fractional-second decimal, or null when
- * the decimal is not an exact nanosecond fraction (edit.rs:1618-1636;
- * materialization.rs:549-567): coefficient zero maps to zero; the exponent
+ * the decimal is not an exact nanosecond fraction (edit.rs;
+ * materialization.rs): coefficient zero maps to zero; the exponent
  * must be in -9..0, the scaled coefficient must fit, and the result must
  * be below 10^9.
  */

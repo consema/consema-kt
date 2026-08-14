@@ -1,7 +1,7 @@
 // Snapshot-bound XML structural edit (RFC 0012 §11; RFC 0004 §13-16).
 //
 // Data authority:
-//   - RFC 0012 §11 (https://github.com/consema/consema/blob/main/docs/rfcs/0012-xml-1.0-safe-profile-v1.md:375-403):
+//   - RFC 0012 §11 (https://github.com/consema/consema/blob/main/docs/rfcs/0012-xml-1.0-safe-profile-v1.md):
 //     V1 publishes eight versioned operations; each operation targets one
 //     exact NodeRef; placement uses one exact parent and an optional
 //     sibling/attribute anchor; duplicate expanded attributes, invalid
@@ -17,27 +17,27 @@
 //     dry-run and commit have identical replacement sets and target digest.
 //     XML ReplaceText excludes CDATA: the target role is RoleXmlText only.
 //   - https://github.com/consema/consema-rs/blob/main/consema-xml/src/edit.rs is the byte-arbitration authority:
-//     NameFacts (edit.rs:58-89), placements (edit.rs:91-111), the operation
-//     enum (edit.rs:113-176), transaction/builder (edit.rs:178-304), the
-//     commit algebra and EditFailure codes (edit.rs:306-595), dependency
-//     checks (edit.rs:597-641), encoding helpers (edit.rs:643-743), the
-//     per-operation span planning (edit.rs:745-1307), the extent helpers
-//     (edit.rs:1309-1344), patch limits and operation metadata
-//     (edit.rs:1346-1370), operation summaries (edit.rs:1385-1435).
-//   - The Kotlin document package owns SourcePatch (Patch.kt:147-296),
-//     UntouchedByteProof (UntouchedProof.kt:83-138), and EditPlan
-//     (EditPlan.kt:123-232). ChangeSet is not shipped in the Kotlin XML
+//     NameFacts (edit.rs), placements (edit.rs), the operation
+//     enum (edit.rs), transaction/builder (edit.rs), the
+//     commit algebra and EditFailure codes (edit.rs), dependency
+//     checks (edit.rs), encoding helpers (edit.rs), the
+//     per-operation span planning (edit.rs), the extent helpers
+//     (edit.rs), patch limits and operation metadata
+//     (edit.rs), operation summaries (edit.rs).
+//   - The Kotlin document package owns SourcePatch (kotlin/src/main/kotlin/consema/document/Patch.kt),
+//     UntouchedByteProof (kotlin/src/main/kotlin/consema/document/UntouchedProof.kt), and EditPlan
+//     (kotlin/src/main/kotlin/consema/document/EditPlan.kt). ChangeSet is not shipped in the Kotlin XML
 //     family (recorded gap, six-repo audit G090); the commit carries the
 //     ordered edit diagnostics instead (the json family precedent,
-//     kotlin/src/main/kotlin/consema/json/Edit.kt:244-255).
+//     kotlin/src/main/kotlin/consema/json/Edit.kt).
 //   - conformance/vectors/xml-1-0-safe-v1.json cases xml.edit.* pin the
 //     render outcomes; the conformance runner resolves name/ordinal
-//     selectors to NodeRefs (https://github.com/consema/consema-rs/blob/main/consema-conformance/src/xml_v1.rs:
-//     581-813).
+//     selectors to NodeRefs (https://github.com/consema/consema-rs/blob/main/consema-conformance/src/xml_v1.rs
+//).
 //
 // Kotlin-idiomatic design: operations are immutable data classes; failures
 // are a sealed hierarchy carrying the language-neutral name and the frozen
-// core.edit.* registered code (RFC 0004 §17, https://github.com/consema/consema/blob/main/docs/rfcs/0004-materialization-conversion-and-structural-edit-v1.md:395-411);
+// core.edit.* registered code (RFC 0004 §17, https://github.com/consema/consema/blob/main/docs/rfcs/0004-materialization-conversion-and-structural-edit-v1.md);
 // commit is atomic — on failure the base document remains unchanged.
 
 package consema.xml
@@ -62,7 +62,7 @@ import java.nio.charset.StandardCharsets
 
 /**
  * A validated element or attribute name for structural operations
- * (edit.rs:58-89). The prefix must already be bound to `namespace` in the
+ * (edit.rs). The prefix must already be bound to `namespace` in the
  * target's in-scope scope; the edit never guesses or fabricates namespace
  * declarations.
  */
@@ -74,12 +74,12 @@ data class NameFacts(
     /** Namespace URI the prefix must resolve to; null forbids a prefix. */
     val namespace: String?,
 ) {
-    /** The lexical spelling `prefix:local` or `local` (edit.rs:83-88). */
+    /** The lexical spelling `prefix:local` or `local` (edit.rs). */
     fun spelling(): String =
         if (prefix == null) local else "$prefix:$local"
 }
 
-/** Attribute insertion placement inside one start tag (edit.rs:91-100). */
+/** Attribute insertion placement inside one start tag (edit.rs). */
 sealed class AttributePlacement {
     /** Insert immediately before one anchor attribute. */
     data class Before(val anchor: NodeRef) : AttributePlacement()
@@ -91,7 +91,7 @@ sealed class AttributePlacement {
     data object End : AttributePlacement()
 }
 
-/** Content insertion placement inside one element (edit.rs:101-111). */
+/** Content insertion placement inside one element (edit.rs). */
 sealed class ContentPlacement {
     /** Insert immediately before one anchor content item. */
     data class Before(val anchor: NodeRef) : ContentPlacement()
@@ -103,7 +103,7 @@ sealed class ContentPlacement {
     data object End : ContentPlacement()
 }
 
-/** One snapshot-bound XML structural operation (edit.rs:113-176). */
+/** One snapshot-bound XML structural operation (edit.rs). */
 sealed class EditOperation {
     /** Replaces one text occurrence with new escaped literal content
      * (RoleXmlText only; RFC 0012 §11 excludes CDATA). */
@@ -174,7 +174,7 @@ sealed class EditOperation {
         val name: NameFacts,
     ) : EditOperation()
 
-    /** The frozen operation ID including the version suffix (edit.rs:1372-1383). */
+    /** The frozen operation ID including the version suffix (edit.rs). */
     internal fun operationId(): String =
         when (this) {
             is ReplaceText -> "xml.edit.replace-text@1"
@@ -187,7 +187,7 @@ sealed class EditOperation {
             is RenameElement -> "xml.edit.rename-element@1"
         }
 
-    /** The unversioned operation ID (edit.rs:1393-1431). */
+    /** The unversioned operation ID (edit.rs). */
     internal fun operationIdUnversioned(): String =
         when (this) {
             is ReplaceText -> "xml.edit.replace-text"
@@ -201,7 +201,7 @@ sealed class EditOperation {
         }
 }
 
-/** Immutable snapshot-bound transaction (edit.rs:178-197). */
+/** Immutable snapshot-bound transaction (edit.rs). */
 class EditTransaction internal constructor(
     /** Base snapshot identity. */
     val baseSnapshot: SnapshotIdentity,
@@ -209,25 +209,25 @@ class EditTransaction internal constructor(
     val operations: List<EditOperation>,
 )
 
-/** Builder that is not a committed edit (edit.rs:199-304). */
+/** Builder that is not a committed edit (edit.rs). */
 class EditTransactionBuilder internal constructor(private val base: SnapshotIdentity) {
     private val operations = ArrayList<EditOperation>()
 
     companion object {
         /** Binds a new transaction to one immutable base document
-         * (edit.rs:206-214). */
+         * (edit.rs). */
         fun new(document: Document): EditTransactionBuilder =
             EditTransactionBuilder(document.snapshotIdentity)
     }
 
     /** Replaces one text occurrence with new literal content
-     * (edit.rs:216-224). */
+     * (edit.rs). */
     fun replaceText(target: NodeRef, text: String): EditTransactionBuilder {
         operations.add(EditOperation.ReplaceText(target, text))
         return this
     }
 
-    /** Inserts one attribute with explicit placement (edit.rs:225-240). */
+    /** Inserts one attribute with explicit placement (edit.rs). */
     fun insertAttribute(
         target: NodeRef,
         name: NameFacts,
@@ -238,25 +238,25 @@ class EditTransactionBuilder internal constructor(private val base: SnapshotIden
         return this
     }
 
-    /** Removes one attribute association (edit.rs:241-247). */
+    /** Removes one attribute association (edit.rs). */
     fun removeAttribute(target: NodeRef): EditTransactionBuilder {
         operations.add(EditOperation.RemoveAttribute(target))
         return this
     }
 
-    /** Renames one attribute (edit.rs:248-254). */
+    /** Renames one attribute (edit.rs). */
     fun renameAttribute(target: NodeRef, name: NameFacts): EditTransactionBuilder {
         operations.add(EditOperation.RenameAttribute(target, name))
         return this
     }
 
-    /** Replaces one attribute value (edit.rs:255-263). */
+    /** Replaces one attribute value (edit.rs). */
     fun setAttributeValue(target: NodeRef, value: String): EditTransactionBuilder {
         operations.add(EditOperation.SetAttributeValue(target, value))
         return this
     }
 
-    /** Inserts one element into a parent's mixed content (edit.rs:264-280). */
+    /** Inserts one element into a parent's mixed content (edit.rs). */
     fun insertElement(
         target: NodeRef,
         name: NameFacts,
@@ -267,27 +267,27 @@ class EditTransactionBuilder internal constructor(private val base: SnapshotIden
         return this
     }
 
-    /** Removes one element subtree (edit.rs:281-287). */
+    /** Removes one element subtree (edit.rs). */
     fun removeElement(target: NodeRef): EditTransactionBuilder {
         operations.add(EditOperation.RemoveElement(target))
         return this
     }
 
-    /** Renames one element (edit.rs:288-294). */
+    /** Renames one element (edit.rs). */
     fun renameElement(target: NodeRef, name: NameFacts): EditTransactionBuilder {
         operations.add(EditOperation.RenameElement(target, name))
         return this
     }
 
     /** Completes the immutable request; target validation happens atomically
-     * at commit (edit.rs:296-303). */
+     * at commit (edit.rs). */
     fun build(): EditTransaction = EditTransaction(base, operations.toList())
 }
 
-/** Atomic edit success (edit.rs:306-317). ChangeSet is not shipped in the
+/** Atomic edit success (edit.rs). ChangeSet is not shipped in the
  * Kotlin XML family (recorded gap, six-repo audit G090); the commit
  * carries the ordered edit diagnostics instead (the json family precedent,
- * kotlin/src/main/kotlin/consema/json/Edit.kt:244-255). */
+ * kotlin/src/main/kotlin/consema/json/Edit.kt). */
 class EditCommit(
     /** New immutable document. */
     val document: Document,
@@ -299,9 +299,9 @@ class EditCommit(
     val diagnostics: List<Diagnostic>,
 )
 
-/** Stable edit validation or commit failure (edit.rs:319-360). The [name]
+/** Stable edit validation or commit failure (edit.rs). The [name]
  * is the exact vector spelling; [code] is the frozen registered code
- * (edit.rs:388-407; RFC 0004 §17). */
+ * (edit.rs; RFC 0004 §17). */
 sealed class EditFailure(val name: String) {
     /** Transaction or target belongs to another snapshot. */
     data object WrongSnapshot : EditFailure("WrongSnapshot")
@@ -353,7 +353,7 @@ sealed class EditFailure(val name: String) {
     /** Replacement document could not be formed under the original limits. */
     data object NewDocumentFormationFailed : EditFailure("NewDocumentFormationFailed")
 
-    /** The frozen registered code (edit.rs:388-407). */
+    /** The frozen registered code (edit.rs). */
     fun code(): String =
         when (this) {
             WrongSnapshot -> "core.edit.wrong-snapshot@1"
@@ -382,21 +382,21 @@ sealed class EditFailure(val name: String) {
 class EditFailureException(val failure: EditFailure) :
     Exception("edit: ${failure.name}")
 
-/** One prepared raw-byte edit owned by the transaction (edit.rs:44-56). */
+/** One prepared raw-byte edit owned by the transaction (edit.rs). */
 private data class PreparedEdit(
     val oldSpan: Span,
     val replacement: ByteArray,
     val mapping: Pair<NodeRef, MappingPlan>?,
 )
 
-/** One node-mapping plan (edit.rs:51-56). */
+/** One node-mapping plan (edit.rs). */
 private enum class MappingPlan {
     Replaced,
     Deleted,
 }
 
 /** One source ownership interval helper (the json family precedent,
- * kotlin/src/main/kotlin/consema/json/Edit.kt:339-344). */
+ * kotlin/src/main/kotlin/consema/json/Edit.kt). */
 private data class SourceEdit(
     val oldSpan: Span,
     val newSpan: Span,
@@ -405,7 +405,7 @@ private data class SourceEdit(
 
 /**
  * Atomically commits structural operations. On failure the document remains
- * unchanged (edit.rs:410-570).
+ * unchanged (edit.rs).
  */
 fun Document.commit(transaction: EditTransaction): EditCommit {
     if (transaction.baseSnapshot != snapshotIdentity) {
@@ -502,7 +502,7 @@ fun Document.commit(transaction: EditTransaction): EditCommit {
 
 /**
  * Fully validates and plans an edit without returning a new Document
- * (edit.rs:572-588; RFC 0004 §14). Dry-run and commit produce the same
+ * (edit.rs; RFC 0004 §14). Dry-run and commit produce the same
  * replacement set and target digest (RFC 0004 §20).
  */
 fun Document.dryRun(
@@ -524,7 +524,7 @@ fun Document.dryRun(
 }
 
 /** Cross-operation dependency checks before any span is computed
- * (edit.rs:597-641). */
+ * (edit.rs). */
 private fun validateDependencies(transaction: EditTransaction) {
     val targets = HashSet<NodeRef>()
     for (operation in transaction.operations) {
@@ -558,7 +558,7 @@ private fun validateDependencies(transaction: EditTransaction) {
     }
 }
 
-/** Raw bytes per decoded character under the source encoding (edit.rs:643-649). */
+/** Raw bytes per decoded character under the source encoding (edit.rs). */
 private fun charWidth(encoding: SourceEncoding): Int =
     when (encoding) {
         SourceEncoding.Utf16Le, SourceEncoding.Utf16Be -> 2
@@ -566,7 +566,7 @@ private fun charWidth(encoding: SourceEncoding): Int =
     }
 
 /** Whether the element tag ending at `spanEnd` is written with a `/>`
- * close, probed in raw bytes (edit.rs:650-664). */
+ * close, probed in raw bytes (edit.rs). */
 private fun emptyElementTagClose(source: ByteArray, spanEnd: Int, encoding: SourceEncoding): Boolean {
     val offset = spanEnd - 2 * charWidth(encoding)
     if (offset < 0) {
@@ -577,7 +577,7 @@ private fun emptyElementTagClose(source: ByteArray, spanEnd: Int, encoding: Sour
 }
 
 /** Appends literal text to a replacement buffer under the source encoding
- * (edit.rs:666-687). Every replacement byte is written in the encoding the
+ * (edit.rs). Every replacement byte is written in the encoding the
  * source stream uses, so spliced edits never misalign a UTF-16 stream. */
 private fun pushEncodedText(out: java.io.ByteArrayOutputStream, text: String, encoding: SourceEncoding) {
     when (encoding) {
@@ -593,7 +593,7 @@ private fun pushEncodedText(out: java.io.ByteArrayOutputStream, text: String, en
     }
 }
 
-/** Encodes one name spelling under the source encoding (edit.rs:695-704). */
+/** Encodes one name spelling under the source encoding (edit.rs). */
 private fun spellingBytes(name: NameFacts, encoding: SourceEncoding): ByteArray {
     val out = java.io.ByteArrayOutputStream()
     name.prefix?.let { pushEncodedText(out, it, encoding); pushEncodedText(out, ":", encoding) }
@@ -602,7 +602,7 @@ private fun spellingBytes(name: NameFacts, encoding: SourceEncoding): ByteArray 
 }
 
 /** Encodes one source QName spelling under the source encoding
- * (edit.rs:706-715). */
+ * (edit.rs). */
 private fun qnameSpellingBytes(qname: QNameFacts, encoding: SourceEncoding): ByteArray {
     val out = java.io.ByteArrayOutputStream()
     qname.prefix?.let { pushEncodedText(out, it, encoding); pushEncodedText(out, ":", encoding) }
@@ -611,7 +611,7 @@ private fun qnameSpellingBytes(qname: QNameFacts, encoding: SourceEncoding): Byt
 }
 
 /** Escapes literal character data for text content under the source
- * encoding (edit.rs:717-728). */
+ * encoding (edit.rs). */
 private fun escapeText(text: String, encoding: SourceEncoding): ByteArray {
     val out = java.io.ByteArrayOutputStream()
     for (c in text) {
@@ -625,7 +625,7 @@ private fun escapeText(text: String, encoding: SourceEncoding): ByteArray {
 }
 
 /** One inserted attribute replacement: `name="value"` with the requested
- * surrounding space (the Before/After/End spellings of edit.rs:792-862). */
+ * surrounding space (the Before/After/End spellings of edit.rs). */
 private fun replacementFor(
     name: NameFacts,
     value: String,
@@ -648,7 +648,7 @@ private fun replacementFor(
 }
 
 /** Escapes literal text for double-quoted attribute values under the source
- * encoding (edit.rs:730-743). */
+ * encoding (edit.rs). */
 private fun escapeAttribute(text: String, encoding: SourceEncoding): ByteArray {
     val out = java.io.ByteArrayOutputStream()
     for (c in text) {
@@ -887,7 +887,7 @@ private fun Document.prepareRenameElement(target: NodeRef, name: NameFacts): Lis
     return edits
 }
 
-/** Resolves one element occurrence by arena index (edit.rs:1072-1087). */
+/** Resolves one element occurrence by arena index (edit.rs). */
 private fun Document.elementFor(target: NodeRef): XmlElementData {
     if (target.snapshot != snapshotIdentity || target.role != NodeRole.XmlElement) {
         throw EditFailureException(EditFailure.WrongSnapshot)
@@ -903,7 +903,7 @@ private fun Document.elementFor(target: NodeRef): XmlElementData {
     return content.data
 }
 
-/** Resolves one attribute association by ordinal (edit.rs:1089-1098). */
+/** Resolves one attribute association by ordinal (edit.rs). */
 private fun Document.attributeFor(target: NodeRef): XmlAttributeData {
     if (target.snapshot != snapshotIdentity || target.role != NodeRole.XmlAttribute) {
         throw EditFailureException(EditFailure.WrongSnapshot)
@@ -912,7 +912,7 @@ private fun Document.attributeFor(target: NodeRef): XmlAttributeData {
         ?: throw EditFailureException(EditFailure.TargetNotFound)
 }
 
-/** Resolves one text occurrence by ordinal (edit.rs:1100-1108). */
+/** Resolves one text occurrence by ordinal (edit.rs). */
 private fun Document.textFor(target: NodeRef): XmlTextData {
     if (target.snapshot != snapshotIdentity || target.role != NodeRole.XmlText) {
         throw EditFailureException(EditFailure.WrongSnapshot)
@@ -922,7 +922,7 @@ private fun Document.textFor(target: NodeRef): XmlTextData {
 }
 
 /** The exact end of one content item's full extent: for an element child
- * this is its closing end tag, not its start-tag end (edit.rs:1110-1144). */
+ * this is its closing end tag, not its start-tag end (edit.rs). */
 private fun Document.contentExtentEnd(index: Int): Int {
     val content = nodes[index]
     if (content !is XmlContent.Element) {
@@ -948,7 +948,7 @@ private fun Document.contentExtentEnd(index: Int): Int {
         .let { it + width }
 }
 
-/** Resolves one content item span by role (edit.rs:1146-1186). */
+/** Resolves one content item span by role (edit.rs). */
 private fun Document.contentSpanFor(target: NodeRef): Pair<NodeRole, Span> {
     if (target.snapshot != snapshotIdentity) {
         throw EditFailureException(EditFailure.WrongSnapshot)
@@ -982,7 +982,7 @@ private fun Document.contentSpanFor(target: NodeRef): Pair<NodeRole, Span> {
 }
 
 /** Validates name facts against one element's in-scope scope
- * (edit.rs:1188-1255). */
+ * (edit.rs). */
 private fun validateNameFacts(
     name: NameFacts,
     element: XmlElementData,
@@ -1036,7 +1036,7 @@ private fun validateNameFacts(
 }
 
 /** The expanded name promised by name facts, when resolvable
- * (edit.rs:1257-1287). */
+ * (edit.rs). */
 private fun Document.expandedNameForFacts(
     name: NameFacts,
     element: XmlElementData,
@@ -1056,7 +1056,7 @@ private fun Document.expandedNameForFacts(
 }
 
 /** Rejects an attribute whose expanded name already exists on the element
- * (edit.rs:1289-1306). */
+ * (edit.rs). */
 private fun Document.rejectDuplicateAttribute(element: XmlElementData, name: NameFacts) {
     val promised = expandedNameForFacts(name, element) ?: return
     if (element.attributes
@@ -1078,7 +1078,7 @@ private fun leadingWhitespaceStart(source: ByteArray, start: Int): Int {
     return cursor
 }
 
-/** Iterators over the document's occurrence families (edit.rs:1437-1497). */
+/** Iterators over the document's occurrence families (edit.rs). */
 private fun Document.attributes(): List<XmlAttributeData> =
     nodes.flatMap { content ->
         if (content is XmlContent.Element) content.data.attributes else emptyList()
@@ -1109,7 +1109,7 @@ private fun Document.elements(): List<Pair<Int, XmlElementData>> =
         if (content is XmlContent.Element) index to content.data else null
     }
 
-/** Patch limits derived from the parse limits (edit.rs:1346-1356). */
+/** Patch limits derived from the parse limits (edit.rs). */
 private fun sourcePatchLimits(limits: XmlParseLimits, operationCount: Int): SourcePatchLimits =
     SourcePatchLimits(
         source = consema.document.SourceLimits(
@@ -1124,13 +1124,13 @@ private fun sourcePatchLimits(limits: XmlParseLimits, operationCount: Int): Sour
 private fun saturatedMultiply(left: Int, right: Int): Int =
     if (left > Int.MAX_VALUE / right) Int.MAX_VALUE else left * right
 
-/** Deterministically ordered audit metadata (edit.rs:1358-1370). */
+/** Deterministically ordered audit metadata (edit.rs). */
 private fun operationMetadata(transaction: EditTransaction): Map<String, String> =
     transaction.operations.mapIndexed { index, operation ->
         "operation.$index" to operation.operationId()
     }.toMap()
 
-/** Content-free operation summaries (edit.rs:1385-1435). */
+/** Content-free operation summaries (edit.rs). */
 private fun operationSummaries(transaction: EditTransaction): List<EditOperationSummary> =
     transaction.operations.map { operation ->
         val (id, arguments) = when (operation) {

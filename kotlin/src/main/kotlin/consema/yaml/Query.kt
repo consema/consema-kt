@@ -1,29 +1,29 @@
 // Versioned YAML native-semantic and lossless-syntax query execution.
 //
 // Data authority:
-//   - RFC 0007 §9 (https://github.com/consema/consema/blob/main/docs/rfcs/0007-yaml-family-profiles-and-safety-v1.md:
-//     214-258): domains yaml.native-semantic-query@1 and
+//   - RFC 0007 §9 (https://github.com/consema/consema/blob/main/docs/rfcs/0007-yaml-family-profiles-and-safety-v1.md
+//): domains yaml.native-semantic-query@1 and
 //     yaml.lossless-syntax-query@1; native roles Stream, Document, Node,
 //     MappingEntry, SequenceElement, AnchorDefinition, AliasOccurrence; the
 //     frozen v1 operator surface; every match carries a snapshot-bound role
 //     and exact raw span; syntax text comparison uses decoded Unicode text
 //     while retaining raw byte spans.
-//   - RFC 0003 §8 (https://github.com/consema/consema/blob/main/docs/rfcs/0003-source-syntax-query-and-patch-v1.md:
-//     173-248): the standard input sequence is every lossless syntax piece
+//   - RFC 0003 §8 (https://github.com/consema/consema/blob/main/docs/rfcs/0003-source-syntax-query-and-patch-v1.md
+//): the standard input sequence is every lossless syntax piece
 //     in raw source order; each match carries its NodeRef, raw Span,
 //     format-specific kind, and source ordinal.
 //   - conformance/vectors/yaml-v1.json pins the query facts
 //     (query.mapping-entries, query.alias-target, query.syntax-comments,
 //     query.resource-limit at lines 50-69).
 //   - https://github.com/consema/consema-rs/blob/main/consema-yaml/src/query.rs is the byte-arbitration authority
-//     (matches query.rs:12-99, execution query.rs:166-269, operators
-//     query.rs:394-676, selection query.rs:690-707); consema-core/src/
-//     query.rs:2967-2993 pins QueryLimits defaults (max_steps 100_000,
+//     (matches query.rs, execution query.rs, operators
+//     query.rs, selection query.rs); consema-core/src/
+//     query.rs pins QueryLimits defaults (max_steps 100_000,
 //     max_results 100_000).
 //
 // Kotlin-idiomatic design: execution throws the protocol package's typed
 // [consema.protocol.QueryFailureException] carrying the registered code
-// (query_failure_code mapping, error_registry.rs:1515-1529); matches are a
+// (query_failure_code mapping, error_registry.rs); matches are a
 // sealed class so exhaustive `when` can never meet an unknown match.
 
 package consema.yaml
@@ -42,7 +42,7 @@ import consema.protocol.QuerySelection
 import java.math.BigInteger
 import java.util.concurrent.atomic.AtomicBoolean
 
-/** Query resource limits (query.rs:2967-2981). */
+/** Query resource limits (query.rs). */
 data class QueryLimits(
     /** Maximum operator steps. */
     val maxSteps: Int,
@@ -50,13 +50,13 @@ data class QueryLimits(
     val maxResults: Int,
 ) {
     companion object {
-        /** The frozen defaults (query.rs:2974-2981): 100,000 steps and
+        /** The frozen defaults (query.rs): 100,000 steps and
          * 100,000 results. */
         val default = QueryLimits(maxSteps = 100_000, maxResults = 100_000)
     }
 }
 
-/** Cooperative cancellation flag (query.rs:2984-2993). */
+/** Cooperative cancellation flag (query.rs). */
 class CancellationToken {
     private val cancelled = AtomicBoolean(false)
 
@@ -69,7 +69,7 @@ class CancellationToken {
     }
 }
 
-/** Owned snapshot-bound YAML native semantic query match (query.rs:12-99). */
+/** Owned snapshot-bound YAML native semantic query match (query.rs). */
 sealed class YamlMatch {
     /** Complete YAML serialization stream. */
     data class Stream(
@@ -163,7 +163,7 @@ sealed class YamlMatch {
         val span: Span,
     ) : YamlMatch()
 
-    /** Primary process-local identity for this match (query.rs:101-114). */
+    /** Primary process-local identity for this match (query.rs). */
     fun nodeRef(): NodeRef =
         when (this) {
             is Stream -> stream
@@ -175,7 +175,7 @@ sealed class YamlMatch {
             is AliasOccurrence -> alias
         }
 
-    /** Exact raw source span associated with the match (query.rs:116-128). */
+    /** Exact raw source span associated with the match (query.rs). */
     fun span(): Span =
         when (this) {
             is Stream -> span
@@ -188,7 +188,7 @@ sealed class YamlMatch {
         }
 }
 
-/** Owned snapshot-bound YAML lossless syntax query match (query.rs:131-164). */
+/** Owned snapshot-bound YAML lossless syntax query match (query.rs). */
 data class YamlSyntaxMatch(
     /** Process-local syntax-piece identity. */
     val node: NodeRef,
@@ -202,7 +202,7 @@ data class YamlSyntaxMatch(
 
 /**
  * Executes a validated YAML native semantic query against one immutable
- * stream (query.rs:166-197). The root input is the stream match; the domain
+ * stream (query.rs). The root input is the stream match; the domain
  * binding rejects other domains with a DomainMismatch failure.
  */
 fun executeYamlQuery(
@@ -235,7 +235,7 @@ fun executeYamlQuery(
 
 /**
  * Executes a validated YAML lossless syntax query against every source piece
- * in raw order (query.rs:213-255).
+ * in raw order (query.rs).
  */
 fun executeYamlSyntaxQuery(
     executable: ExecutableQuery,
@@ -268,7 +268,7 @@ fun executeYamlSyntaxQuery(
     return applySelection(matches, definition.selection)
 }
 
-/** Execution context carrying limits and cancellation (query.rs:271-311). */
+/** Execution context carrying limits and cancellation (query.rs). */
 private class Context(
     val document: Document,
     val limits: QueryLimits,
@@ -614,7 +614,7 @@ private fun applyOperator(
     return output
 }
 
-/** Applies the cardinality selection (query.rs:690-707). */
+/** Applies the cardinality selection (query.rs). */
 internal fun <T> applySelection(values: List<T>, selection: QuerySelection): List<T> =
     when (selection) {
         QuerySelection.All -> values
@@ -635,7 +635,7 @@ private fun cardinalityViolation(selection: QuerySelection, actual: Int): QueryF
     )
 
 /** Decoded-text comparison bytes under the selected source encoding
- * (query.rs:651-660). */
+ * (query.rs). */
 private fun encodedText(value: String, encoding: consema.document.SourceEncoding): ByteArray =
     when (encoding) {
         consema.document.SourceEncoding.Utf8 -> value.toByteArray(Charsets.UTF_8)
@@ -675,7 +675,7 @@ private fun nodeKindName(kind: YamlNodeKind): String =
         YamlNodeKind.Mapping -> "Mapping"
     }
 
-/** Structural merge order by role (query.rs:678-688). */
+/** Structural merge order by role (query.rs). */
 private fun roleOrder(role: NodeRole): Int =
     when (role) {
         NodeRole.YamlStream -> 0

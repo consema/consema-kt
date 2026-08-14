@@ -2,8 +2,8 @@
 // and Document -> PortableValue with fidelity, report, and provenance.
 //
 // Data authority:
-//   - RFC 0007 §10 (https://github.com/consema/consema/blob/main/docs/rfcs/0007-yaml-family-profiles-and-safety-v1.md:
-//     260-302): yaml.projection.best-exact-graph@1 is the default YAML
+//   - RFC 0007 §10 (https://github.com/consema/consema/blob/main/docs/rfcs/0007-yaml-family-profiles-and-safety-v1.md
+//): yaml.projection.best-exact-graph@1 is the default YAML
 //     target (standard resolved tags, arbitrary keys, association order,
 //     sharing, cycles); yaml.projection.best-exact-value@1 defaults to
 //     stream RequireExactlyOneDocument, sharing Reject, cycle Reject, tag
@@ -14,26 +14,26 @@
 //     alias occurrences are Reference origins; failure carries no partial
 //     value or provenance.
 //   - RFC 0004 §7-§8 (https://github.com/consema/consema/blob/main/docs/rfcs/0004-materialization-conversion-and-
-//     structural-edit-v1.md:171-218) pins the completion algebra and the
+//     structural-edit-v1.md) pins the completion algebra and the
 //     provenance direction (portable locations to source origins).
 //   - conformance/vectors/yaml-v1.json pins the per-case outcomes
 //     (projection.sharing-policy, projection.cycle, projection.tag-policy,
 //     projection.mapping-policy, projection.graph-provenance,
 //     resource.graph-provenance, graph.shared-cycle).
-//   - https://github.com/consema/consema-rs/blob/main/consema-yaml/src/native.rs:143-196 (graph projection with
+//   - https://github.com/consema/consema-rs/blob/main/consema-yaml/src/native.rs (graph projection with
 //     canonical ids) and https://github.com/consema/consema-rs/blob/main/consema-yaml/src/projection.rs are the
-//     byte-arbitration authorities (requests projection.rs:35-332, failure
-//     codes projection.rs:172-183 and 478-520, graph provenance
-//     projection.rs:605-754, value projection projection.rs:756-1147).
+//     byte-arbitration authorities (requests projection.rs, failure
+//     codes projection.rs and 478-520, graph provenance
+//     projection.rs, value projection projection.rs).
 //   - Value paths come from the L0 core agent (consema.core.ValuePath /
 //     ValuePathSegment / AssociationLocation / AssociationRole mirroring
-//     https://github.com/consema/consema-rs/blob/main/consema-core/src/location.rs:1-89; the dependency is declared
-//     by kotlin/src/main/kotlin/consema/document/Materialization.kt:27-31).
+//     https://github.com/consema/consema-rs/blob/main/consema-core/src/location.rs; the dependency is declared
+//     by kotlin/src/main/kotlin/consema/document/Materialization.kt).
 //
 // Kotlin-idiomatic design: the completion algebra is a sealed class, so
 // exhaustive `when` over Complete/Failed can never meet an unknown outcome;
 // failures carry their frozen registered code via the [valueProjectionCode]
-// and [graphProjectionCode] mappings (projection.rs:172-183, 478-520).
+// and [graphProjectionCode] mappings (projection.rs).
 
 package consema.yaml
 
@@ -66,7 +66,7 @@ import consema.document.SnapshotIdentity
 import consema.document.Span
 import java.math.BigInteger
 
-/** Graph projection resource contract (projection.rs:17-33). */
+/** Graph projection resource contract (projection.rs). */
 data class GraphProjectionLimits(
     /** PortableGraph construction and traversal limits. */
     val graph: GraphLimits,
@@ -74,7 +74,7 @@ data class GraphProjectionLimits(
     val maxProvenanceEntries: Int,
 ) {
     companion object {
-        /** The frozen defaults (projection.rs:27-33). */
+        /** The frozen defaults (projection.rs). */
         val default = GraphProjectionLimits(
             graph = GraphLimits.default,
             maxProvenanceEntries = 2_000_000,
@@ -83,20 +83,20 @@ data class GraphProjectionLimits(
 }
 
 /** Immutable `yaml.projection.best-exact-graph@1` request
- * (projection.rs:35-62). */
+ * (projection.rs). */
 class GraphProjectionRequest private constructor(val limits: GraphProjectionLimits) {
     companion object {
         /** Creates the frozen exact graph request with default limits
-         * (projection.rs:42-48). */
+         * (projection.rs). */
         fun bestExactV1(): GraphProjectionRequest = GraphProjectionRequest(GraphProjectionLimits.default)
     }
 
-    /** Replaces all graph projection limits (projection.rs:50-56). */
+    /** Replaces all graph projection limits (projection.rs). */
     fun withLimits(limits: GraphProjectionLimits): GraphProjectionRequest =
         GraphProjectionRequest(limits)
 }
 
-/** One exact projected graph location (projection.rs:64-92). */
+/** One exact projected graph location (projection.rs). */
 sealed class GraphProjectedLocation {
     /** Ordered root occurrence. */
     data class Root(val ordinal: Long) : GraphProjectedLocation()
@@ -130,7 +130,7 @@ sealed class GraphProjectedLocation {
 }
 
 /** Source relation shared by graph and tree projection provenance
- * (projection.rs:94-105). */
+ * (projection.rs). */
 enum class ProvenanceRelation {
     /** Direct native semantic origin. */
     Direct,
@@ -145,7 +145,7 @@ enum class ProvenanceRelation {
     TagStripped,
 }
 
-/** One exact YAML source origin (projection.rs:107-118). */
+/** One exact YAML source origin (projection.rs). */
 data class SourceOrigin(
     /** Owning source snapshot. */
     val snapshot: SnapshotIdentity,
@@ -157,7 +157,7 @@ data class SourceOrigin(
     val relation: ProvenanceRelation,
 )
 
-/** One graph provenance multimap entry (projection.rs:120-128). */
+/** One graph provenance multimap entry (projection.rs). */
 data class GraphProvenanceEntry(
     /** Projected graph location. */
     val projected: GraphProjectedLocation,
@@ -165,7 +165,7 @@ data class GraphProvenanceEntry(
     val origins: List<SourceOrigin>,
 )
 
-/** Complete deterministic graph provenance multimap (projection.rs:129-141). */
+/** Complete deterministic graph provenance multimap (projection.rs). */
 class GraphProvenanceMap internal constructor(
     internal val entriesList: List<GraphProvenanceEntry>,
 ) {
@@ -178,7 +178,7 @@ class GraphProvenanceMap internal constructor(
     override fun hashCode(): Int = entriesList.hashCode()
 }
 
-/** Complete exact graph projection (projection.rs:143-150). */
+/** Complete exact graph projection (projection.rs). */
 data class CompleteGraphProjection(
     /** Complete immutable graph. */
     val graph: Graph,
@@ -187,7 +187,7 @@ data class CompleteGraphProjection(
 )
 
 /** Graph projection failure; no graph or provenance is returned
- * (projection.rs:152-170). */
+ * (projection.rs). */
 sealed class GraphProjectionFailure {
     /** Custom tag has no published graph canonical semantics. */
     data class UnsupportedTag(val tag: String) : GraphProjectionFailure()
@@ -199,7 +199,7 @@ sealed class GraphProjectionFailure {
     data object ProvenanceLimit : GraphProjectionFailure()
 }
 
-/** Stable diagnostic code for exact graph projection (projection.rs:174-183). */
+/** Stable diagnostic code for exact graph projection (projection.rs). */
 fun graphProjectionCode(failure: GraphProjectionFailure): String =
     when (failure) {
         is GraphProjectionFailure.UnsupportedTag -> "yaml.projection.unsupported-tag@1"
@@ -219,7 +219,7 @@ class GraphProjectionException(val failure: GraphProjectionFailure) :
     Exception("yaml graph projection: ${graphProjectionCode(failure)}")
 
 /** Explicit YAML graph-sharing policy for PortableValue projection
- * (projection.rs:204-211). */
+ * (projection.rs). */
 enum class SharingPolicy {
     /** Sharing and aliases fail; graph identity is never silently
      * discarded. */
@@ -230,7 +230,7 @@ enum class SharingPolicy {
 }
 
 /** Explicit YAML tag policy for PortableValue projection
- * (projection.rs:213-220). */
+ * (projection.rs). */
 enum class TagPolicy {
     /** Only tags with a frozen exact PortableValue lowering are accepted. */
     RequireKnownPortableTag,
@@ -239,7 +239,7 @@ enum class TagPolicy {
     StripToNodeKind,
 }
 
-/** YAML mapping-to-tree selection policy (projection.rs:222-231). */
+/** YAML mapping-to-tree selection policy (projection.rs). */
 enum class MappingPolicy {
     /** Use Object only for unique string keys, otherwise EntryMapping. */
     BestExactObjectOrEntryMapping,
@@ -251,7 +251,7 @@ enum class MappingPolicy {
     RequireEntryMapping,
 }
 
-/** PortableValue projection resource contract (projection.rs:233-258). */
+/** PortableValue projection resource contract (projection.rs). */
 data class ValueProjectionLimits(
     /** Maximum projected native/value node visits. */
     val maxValueNodes: Int,
@@ -265,7 +265,7 @@ data class ValueProjectionLimits(
     val maxAmplificationRatio: Int,
 ) {
     companion object {
-        /** The frozen defaults (projection.rs:249-258): 1,000,000 value
+        /** The frozen defaults (projection.rs): 1,000,000 value
          * nodes, depth 256, 100,000 report entries, 2,000,000 provenance
          * entries, amplification ratio 16. */
         val default = ValueProjectionLimits(
@@ -279,7 +279,7 @@ data class ValueProjectionLimits(
 }
 
 /** Immutable `yaml.projection.best-exact-value@1` request
- * (projection.rs:260-332). */
+ * (projection.rs). */
 class ValueProjectionRequest private constructor(
     /** Selected sharing policy. */
     val sharing: SharingPolicy,
@@ -292,7 +292,7 @@ class ValueProjectionRequest private constructor(
 ) {
     companion object {
         /** Frozen default: one document, no sharing/cycles, known tags,
-         * exact-first mapping (projection.rs:271-279). */
+         * exact-first mapping (projection.rs). */
         fun bestExactV1(): ValueProjectionRequest = ValueProjectionRequest(
             sharing = SharingPolicy.Reject,
             tags = TagPolicy.RequireKnownPortableTag,
@@ -318,7 +318,7 @@ class ValueProjectionRequest private constructor(
         ValueProjectionRequest(sharing, tags, mapping, limits)
 }
 
-/** Projection fidelity classification (projection.rs:334-343). */
+/** Projection fidelity classification (projection.rs). */
 enum class Fidelity {
     /** Target completely represents all covered semantics. */
     Exact,
@@ -330,7 +330,7 @@ enum class Fidelity {
     Lossy,
 }
 
-/** One PortableValue or association location (projection.rs:345-352). */
+/** One PortableValue or association location (projection.rs). */
 sealed class ProjectedLocation {
     /** Portable value path. */
     data class Value(val path: ValuePath) : ProjectedLocation()
@@ -339,7 +339,7 @@ sealed class ProjectedLocation {
     data class Association(val location: AssociationLocation) : ProjectedLocation()
 }
 
-/** One PortableValue provenance entry (projection.rs:354-361). */
+/** One PortableValue provenance entry (projection.rs). */
 data class ProvenanceEntry(
     /** Projected tree location. */
     val projected: ProjectedLocation,
@@ -348,7 +348,7 @@ data class ProvenanceEntry(
 )
 
 /** Complete deterministic PortableValue provenance multimap
- * (projection.rs:363-375). */
+ * (projection.rs). */
 class ProvenanceMap internal constructor(
     internal val entriesList: List<ProvenanceEntry>,
 ) {
@@ -361,7 +361,7 @@ class ProvenanceMap internal constructor(
     override fun hashCode(): Int = entriesList.hashCode()
 }
 
-/** Structured YAML value projection event category (projection.rs:377-384). */
+/** Structured YAML value projection event category (projection.rs). */
 enum class ProjectionEventKind {
     /** Shared graph identity was explicitly duplicated into a tree. */
     SharingDuplicated,
@@ -371,7 +371,7 @@ enum class ProjectionEventKind {
 }
 
 /** One machine-readable projection transformation/loss event
- * (projection.rs:386-405). */
+ * (projection.rs). */
 data class ProjectionEvent(
     /** Stable event category. */
     val kind: ProjectionEventKind,
@@ -391,7 +391,7 @@ data class ProjectionEvent(
     val loss: Fidelity,
 )
 
-/** Complete ordered value projection report (projection.rs:407-419). */
+/** Complete ordered value projection report (projection.rs). */
 class ProjectionReport internal constructor(
     internal val eventsList: List<ProjectionEvent>,
 ) {
@@ -404,7 +404,7 @@ class ProjectionReport internal constructor(
     override fun hashCode(): Int = eventsList.hashCode()
 }
 
-/** Complete successful PortableValue projection (projection.rs:421-432). */
+/** Complete successful PortableValue projection (projection.rs). */
 data class CompleteValueProjection(
     /** Complete immutable tree value. */
     val value: PortableValue,
@@ -417,7 +417,7 @@ data class CompleteValueProjection(
 )
 
 /** Value projection failure; no partial value or provenance is returned
- * (projection.rs:434-476). */
+ * (projection.rs). */
 sealed class ValueProjectionFailure {
     /** Stream does not contain exactly one document. */
     data class DocumentCardinality(val actual: Int) : ValueProjectionFailure()
@@ -445,8 +445,8 @@ sealed class ValueProjectionFailure {
     data class ResourceLimit(val name: String) : ValueProjectionFailure()
 }
 
-/** Stable diagnostic code for YAML-to-tree projection (projection.rs:
- * 480-497). */
+/** Stable diagnostic code for YAML-to-tree projection (projection.rs
+ *). */
 fun valueProjectionCode(failure: ValueProjectionFailure): String =
     when (failure) {
         is ValueProjectionFailure.DocumentCardinality -> "yaml.projection.document-cardinality@1"
@@ -463,8 +463,8 @@ fun valueProjectionCode(failure: ValueProjectionFailure): String =
 class ValueProjectionException(val failure: ValueProjectionFailure) :
     Exception("yaml value projection: ${valueProjectionCode(failure)}")
 
-/** Complete-or-failed PortableValue projection algebra (projection.rs:
- * 522-529). */
+/** Complete-or-failed PortableValue projection algebra (projection.rs
+ *). */
 sealed class ValueProjectionResult {
     /** Complete result. */
     data class Complete(val projection: CompleteValueProjection) : ValueProjectionResult()
@@ -473,15 +473,15 @@ sealed class ValueProjectionResult {
     data class Failed(val failure: ValueProjectionFailure) : ValueProjectionResult()
 }
 
-/** Projects all document roots to one exact PortableGraph (native.rs:143-196).
+/** Projects all document roots to one exact PortableGraph (native.rs).
  * Unknown/custom tags fail instead of being treated as application
  * constructors or untyped strings; frozen standard repository tags remain
  * exact tagged graph nodes. */
 fun Document.projectGraph(limits: GraphLimits = GraphLimits.default): Graph =
     projectGraphWithIds(limits).first
 
-/** Projects all document roots with graph ids for provenance (native.rs:
- * 151-195). */
+/** Projects all document roots with graph ids for provenance (native.rs
+ *). */
 internal fun Document.projectGraphWithIds(limits: GraphLimits): Pair<Graph, List<NodeId>> {
     val builder = Builder.withLimits(limits)
     val ids = try {
@@ -537,7 +537,7 @@ internal fun Document.projectGraphWithIds(limits: GraphLimits): Pair<Graph, List
 }
 
 /** Applies exact graph projection with complete node/edge/alias provenance
- * (projection.rs:531-554). */
+ * (projection.rs). */
 fun Document.projectGraphWithProvenance(
     request: GraphProjectionRequest,
 ): CompleteGraphProjection {
@@ -547,7 +547,7 @@ fun Document.projectGraphWithProvenance(
     return CompleteGraphProjection(graph, builder.map)
 }
 
-/** Builds the graph provenance multimap (projection.rs:605-754). */
+/** Builds the graph provenance multimap (projection.rs). */
 private class GraphProjectionBuilder(
     private val document: Document,
     private val ids: List<NodeId>,
@@ -676,8 +676,8 @@ private class GraphProjectionBuilder(
     }
 }
 
-/** Applies explicit YAML-to-PortableValue tree projection (projection.rs:
- * 556-603). */
+/** Applies explicit YAML-to-PortableValue tree projection (projection.rs
+ *). */
 fun Document.projectValue(request: ValueProjectionRequest): ValueProjectionResult {
     if (documentCount() != 1) {
         return ValueProjectionResult.Failed(
@@ -718,7 +718,7 @@ private class ValueContext(
     private val request: ValueProjectionRequest,
 ) {
     /** Unique native nodes visited by the projection (used for the
-     * amplification-ratio check, projection.rs:584-591). */
+     * amplification-ratio check, projection.rs). */
     val seen = HashSet<Int>()
     private val stack = HashSet<Int>()
     var visits = 0
@@ -1066,7 +1066,7 @@ private class ValueContext(
 }
 
 /** Whether a tag has a frozen exact PortableValue lowering for its node
- * kind (projection.rs:1172-1181). */
+ * kind (projection.rs). */
 private fun isPortableTag(tag: String, content: NativeContent): Boolean =
     when (content) {
         is NativeContent.Scalar ->
@@ -1084,7 +1084,7 @@ private fun nodeKindName(content: NativeContent): String =
     }
 
 /** Timestamp lowering to the exact core temporal categories
- * (projection.rs:1230-1269). */
+ * (projection.rs). */
 private fun projectTimestamp(value: String): PortableValue? {
     val year = value.substring(0, 4).toBigIntegerOrNull() ?: return null
     val month = value.substring(5, 7).toIntOrNull() ?: return null

@@ -151,7 +151,7 @@ class ProjectionTest {
     }
 
     /** Vector case hcl.projection.project-expression-policy (hcl-v1.json:
-     * 1043-1081): under the explicit policy each derived expression is
+ *): under the explicit policy each derived expression is
      * substituted by the authorized `hcl.expression@1` record with kind
      * family, exact text, and fingerprint; two Transformed events with
      * provenance; literal values stay raw members. */
@@ -167,8 +167,8 @@ class ProjectionTest {
         assertEquals(3, projected.size)
 
         // The item stays an attribute; the VALUE member IS the authorized
-        // `hcl.expression@1` record itself (RFC 0014 §8.2; projection.rs:
-        // 806-840 and 933-970 — never a {kind, expression} wrapper).
+        // `hcl.expression@1` record itself (RFC 0014 §8.2; projection.rs
+ // and — never a {kind, expression} wrapper).
         val count = projected[0] as PvObject
         assertEquals("attribute", (count.get("kind") as PvString).value)
         val expressionRecord = count.get("value") as PvObject
@@ -197,7 +197,7 @@ class ProjectionTest {
     }
 
     /** Vector case hcl.projection.literal-complete-boundary (hcl-v1.json:
-     * 1083-1151): the projection completion of every boundary sample. */
+ *): the projection completion of every boundary sample. */
     @Test
     fun literalCompleteBoundary() {
         val samples = listOf(

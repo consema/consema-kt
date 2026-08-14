@@ -1,11 +1,11 @@
 // Formation status closure and structural coverage tests.
 //
-// Data authority: RFC 0016 §5.1 F10 (https://github.com/consema/consema/blob/main/docs/rfcs/0016-go-api-mapping-v1.md:
-// 172-176) — FormationStatus is a closed two-value enum (Complete,
+// Data authority: RFC 0016 §5.1 F10 (https://github.com/consema/consema/blob/main/docs/rfcs/0016-go-api-mapping-v1.md
+//) — FormationStatus is a closed two-value enum (Complete,
 // Recovered); RFC 0003 §7 — binary coverage obeys the no-gap/no-overlap/
 // final-length invariant; conformance/vectors/source-v1.json cases
 // source.binary.* (lines 102-118, capability core.source.binary-coverage@1)
-// pin the coverage semantics; https://github.com/consema/consema-rs/blob/main/consema-document/src/lib.rs:404-579
+// pin the coverage semantics; https://github.com/consema/consema-rs/blob/main/consema-document/src/lib.rs
 // pins the validation outcomes.
 
 package document
@@ -77,7 +77,7 @@ class StructuralTest {
         assertEquals("IncompleteStructuralCoverage", error.kind.name)
     }
 
-    /** RFC 0003 §7 / lib.rs:549-557: a region kind must be non-empty. */
+    /** RFC 0003 §7 / lib.rs: a region kind must be non-empty. */
     @Test
     fun emptyBinaryRegionKindIsRejected() {
         val authority = DocumentAuthority.fresh()
@@ -90,7 +90,7 @@ class StructuralTest {
         assertEquals(LocationErrorKind.InvalidBinaryRegionKind, error.kind)
     }
 
-    /** lib.rs:555-557: two regions must not reuse one process-local
+    /** lib.rs: two regions must not reuse one process-local
      * identity. */
     @Test
     fun duplicateBinaryIdentityIsRejected() {
@@ -106,7 +106,7 @@ class StructuralTest {
         assertEquals(LocationErrorKind.DuplicateStructuralIdentity, error.kind)
     }
 
-    /** lib.rs:546-551: a region handle must carry the BinaryRegion role. */
+    /** lib.rs: a region handle must carry the BinaryRegion role. */
     @Test
     fun wrongBinaryRegionRoleIsRejected() {
         val authority = DocumentAuthority.fresh()
@@ -163,7 +163,7 @@ class StructuralTest {
         assertEquals(LocationErrorKind.IncompleteStructuralCoverage, overlap.kind)
     }
 
-    /** lib.rs:463-468: a piece from another snapshot is rejected. */
+    /** lib.rs: a piece from another snapshot is rejected. */
     @Test
     fun structuralIndexRejectsForeignSpans() {
         val authority = DocumentAuthority.fresh()
@@ -178,7 +178,7 @@ class StructuralTest {
         assertEquals(LocationErrorKind.WrongSnapshot, error.kind)
     }
 
-    /** lib.rs:83-93: an inverted span is rejected at creation. */
+    /** lib.rs: an inverted span is rejected at creation. */
     @Test
     fun invertedSpanIsRejected() {
         val authority = DocumentAuthority.fresh()

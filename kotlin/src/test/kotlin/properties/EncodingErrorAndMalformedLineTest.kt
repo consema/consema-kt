@@ -5,10 +5,10 @@
 // and malformed UTF-16 sequences fail with core.source.invalid-sequence@1,
 // BOM/selection conflicts with core.source.encoding-conflict@1, and
 // UTF-32 BOMs with core.source.unsupported-bom@1 (encoding.rs / Source.kt;
-// source_v1.rs:410-421). The Latin-1 profile maps every byte to the
+// source_v1.rs). The Latin-1 profile maps every byte to the
 // same-numbered ISO-8859-1 character, so no byte sequence can fail.
 // Malformed Unicode escapes recover as deterministic error lines
-// (parser.rs:626-666, 909-996): the whole logical line is one
+// (parser.rs): the whole logical line is one
 // `java-properties.parse.malformed-unicode-escape@1` error region, no
 // partial property is published, and the surrounding lines survive
 // (lib.rs malformed_unicode_escape_recovers_without_partial_property).

@@ -3,7 +3,7 @@
 // §7-§8).
 //
 // Data authority:
-//   - RFC 0014 §8 (https://github.com/consema/consema/blob/main/docs/rfcs/0014-hcl-family-profiles-v1.md:509-572): the
+//   - RFC 0014 §8 (https://github.com/consema/consema/blob/main/docs/rfcs/0014-hcl-family-profiles-v1.md): the
 //     default exact target `hcl.projection.body@1` produces the versioned
 //     `hcl.body@1` record — one ordered body of items, each an attribute
 //     (name string + value) or a block (type, ordered labels, nested
@@ -20,13 +20,13 @@
 //   - RFC 0014 §6 (:395-446): structural equality, canonical decimals,
 //     exact decoded string text, ordered duplicates.
 //   - https://github.com/consema/consema-rs/blob/main/consema-hcl/src/projection.rs pins the record shape
-//     (projection.rs:31-96: `{ "record": "hcl.body@1", "items": [...] }`,
+//     (projection.rs: `{ "record": "hcl.body@1", "items": [...] }`,
 //     the typed members, the expression record
 //     `{ "record": "hcl.expression@1", "kind", "text", "fingerprint" }`,
-//     the kind family table), the failure codes (projection.rs:470-474),
-//     and the codec envelope (projection.rs:479-579).
+//     the kind family table), the failure codes (projection.rs),
+//     and the codec envelope (projection.rs).
 //   - The structural fingerprint is defined in Expression.kt
-//     (materialization.rs:1496-1758).
+//     (materialization.rs).
 //   - consema-go/go/hcl is a cross-reference only.
 //
 // Kotlin-idiomatic design: the completion algebra is a sealed class, so
@@ -52,31 +52,31 @@ import consema.document.SnapshotIdentity
 import consema.document.Span
 import java.math.BigInteger
 
-/** The versioned `hcl.body@1` record name (RFC 0014 §8.2; projection.rs:
- * 155-156). */
+/** The versioned `hcl.body@1` record name (RFC 0014 §8.2; projection.rs
+ *). */
 const val HCL_BODY_RECORD: String = "hcl.body@1"
 
 /** The versioned `hcl.expression@1` record name (RFC 0014 §8.2;
- * projection.rs:158-160). */
+ * projection.rs). */
 const val HCL_EXPRESSION_RECORD: String = "hcl.expression@1"
 
 /** The stable type identifier of the `hcl.expression@1` ExtendedValue
- * (projection.rs:158-160). */
+ * (projection.rs). */
 const val HCL_EXPRESSION_TYPE_ID: String = "hcl.expression"
 
 /** The canonical payload codec of the `hcl.expression@1` ExtendedValue
- * (projection.rs:163-165). */
+ * (projection.rs). */
 const val HCL_EXPRESSION_CODEC: String = "hcl.expression.canonical@1"
 
-/** Versioned projection target contract (RFC 0014 §8.2; projection.rs:13-
+/** Versioned projection target contract (RFC 0014 §8.2; projection.rs
  * 24). */
 enum class ProjectionTarget {
     /** The default exact target: one ordered `hcl.body@1` record. */
     BodyV1,
 }
 
-/** The explicit derived-expression policy (RFC 0014 §8.2; projection.rs:
- * 26-49). */
+/** The explicit derived-expression policy (RFC 0014 §8.2; projection.rs
+ *). */
 enum class ExpressionPolicy {
     /** A derived expression fails the projection atomically with
      * `hcl.projection.non-literal-expression@1`. */
@@ -88,7 +88,7 @@ enum class ExpressionPolicy {
     ProjectExpression,
 }
 
-/** Projection resource limits (projection.rs:146-168). */
+/** Projection resource limits (projection.rs). */
 data class ProjectionLimits(
     /** Maximum produced PortableValue nodes. */
     val maxValueNodes: Int,
@@ -102,7 +102,7 @@ data class ProjectionLimits(
     val maxDepth: Int,
 ) {
     companion object {
-        /** The frozen defaults (projection.rs:159-168). */
+        /** The frozen defaults (projection.rs). */
         val default = ProjectionLimits(
             maxValueNodes = 1_000_000,
             maxReportEntries = 100_000,
@@ -255,7 +255,7 @@ sealed class ProjectionResult {
     data class Failed(val attempt: FailedProjectionAttempt) : ProjectionResult()
 }
 
-/** Stable projection failure category (RFC 0014 §8.2; projection.rs:470-
+/** Stable projection failure category (RFC 0014 §8.2; projection.rs
  * 474). */
 sealed class ProjectionFailure {
     /** A Recovered document never projects. */
@@ -275,7 +275,7 @@ sealed class ProjectionFailure {
     /** An internal invariant failure of the record codec. */
     data object CoreInvariant : ProjectionFailure()
 
-    /** The frozen registered code (projection.rs:470-474). */
+    /** The frozen registered code (projection.rs). */
     val code: String
         get() = when (this) {
             IncompleteDocument -> HCL_PROJECTION_INCOMPLETE_DOCUMENT
@@ -288,7 +288,7 @@ sealed class ProjectionFailure {
 
 /** The canonical payload of one `hcl.expression@1` ExtendedValue: the kind
  * family spelling, the exact source text, and the structural fingerprint
- * (projection.rs:536-579). */
+ * (projection.rs). */
 data class ExpressionPayload(
     /** Kind family spelling. */
     val kind: String,
@@ -298,7 +298,7 @@ data class ExpressionPayload(
     val fingerprint: ULong,
 ) {
     /** Encodes the canonical payload bytes under the `hcl.expression@1`
-     * codec (projection.rs:552-558). */
+     * codec (projection.rs). */
     fun encode(): ByteArray {
         val output = ArrayList<Byte>()
         encodeBlob(kind.toByteArray(Charsets.UTF_8), output)
@@ -340,7 +340,7 @@ data class ExpressionPayload(
     }
 }
 
-/** A cursor over the canonical payload envelope (projection.rs:1042-1095). */
+/** A cursor over the canonical payload envelope (projection.rs). */
 private class PayloadCursor(private val bytes: ByteArray) {
     private var offset = 0
 
@@ -389,7 +389,7 @@ private class PayloadCursor(private val bytes: ByteArray) {
 }
 
 /** Encodes one length-prefixed blob into the canonical payload envelope
- * (projection.rs:1097-1104). */
+ * (projection.rs). */
 private fun encodeBlob(bytes: ByteArray, output: ArrayList<Byte>) {
     var length = bytes.size
     while (true) {
@@ -416,7 +416,7 @@ private class ProjectionFailureException(val failure: ProjectionFailure) :
 
 /**
  * Projects one complete HCL document under one explicit target and policy
- * contract (RFC 0014 §8; projection.rs:601-629). The projection is atomic:
+ * contract (RFC 0014 §8; projection.rs). The projection is atomic:
  * a recovered source, a derived expression under the default policy, an
  * unrepresentable native fact, or a resource limit returns no partial
  * value, provenance, or report (hard gate 4).
@@ -478,7 +478,7 @@ private fun failed(failure: ProjectionFailure): ProjectionResult {
     )
 }
 
-/** The projection state (projection.rs:631-641). */
+/** The projection state (projection.rs). */
 private class ProjectionContext(
     private val document: HclDocument,
     private val limits: ProjectionLimits,
@@ -541,7 +541,7 @@ private class ProjectionContext(
         )
     }
 
-    /** The one ordered `hcl.body@1` record of a body (projection.rs:744-
+    /** The one ordered `hcl.body@1` record of a body (projection.rs
      * 829). */
     fun projectBodyRecord(body: HclBodyHandle): PortableValue {
         reserveValue(1)
@@ -595,7 +595,7 @@ private class ProjectionContext(
 
     /** One attribute value member of the record: the raw typed member the
      * projection publishes, or the authorized `hcl.expression@1` record
-     * under the explicit policy (RFC 0014 §8.2; projection.rs:806-840). */
+     * under the explicit policy (RFC 0014 §8.2; projection.rs). */
     private fun projectLiteral(handle: HclExpressionHandle): PortableValue {
         val expression = handle.expressionValue()
         val literal = literalValue(expression)
@@ -611,7 +611,7 @@ private class ProjectionContext(
                 fingerprint = structuralFingerprint(expression),
             )
             // The authorized `hcl.expression@1` ExtendedValue record is the
-            // attribute value member itself (projection.rs:933-970); the
+            // attribute value member itself (projection.rs); the
             // `{kind: "expression", expression: ...}` wrapper is only the
             // materialization value-record spelling, never the published
             // projection member.
@@ -629,7 +629,7 @@ private class ProjectionContext(
 
     /** One literal-complete value mapped to its raw typed PortableValue
      * member — the form the projection publishes (RFC 0014 §9;
-     * projection.rs:896-929). */
+     * projection.rs). */
     private fun literalToValue(literal: HclLiteralValue): PortableValue = when (literal) {
         is HclLiteralValue.String -> PvString(literal.text)
         is HclLiteralValue.Integer -> PvInteger(BigInteger(literal.text))
@@ -641,7 +641,7 @@ private class ProjectionContext(
             // Object members project as an ordered EntryMapping, because
             // object-constructor keys may repeat and may be non-identifier
             // spellings; duplicate keys remain ordered entries
-            // (projection.rs:918-926).
+            // (projection.rs).
             val builder = EntryMappingBuilder()
             for (entry in literal.entries) {
                 builder.push(
@@ -653,7 +653,7 @@ private class ProjectionContext(
         }
     }
 
-    /** The canonical string spelling of one literal key (projection.rs:57-
+    /** The canonical string spelling of one literal key (projection.rs
      * 65). */
     private fun literalKeyString(key: HclLiteralKey): String = when (key) {
         is HclLiteralKey.Identifier -> key.name

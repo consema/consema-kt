@@ -1675,14 +1675,14 @@ private fun jsonEditCode(failure: consema.json.EditFailure): String = when (fail
 }
 
 /** The TOML edit failure code is carried by the family enum's frozen code
- * property (toml/Edit.kt, edit.rs:1308-1331). */
+ * property (toml/Edit.kt, edit.rs). */
 private fun tomlEditCode(failure: consema.toml.EditFailureKind): String = failure.code
 
 /** The YAML edit failure code is carried by the family enum's frozen code
- * property (yaml/Edit.kt, yaml edit.rs:318-343). */
+ * property (yaml/Edit.kt, yaml edit.rs). */
 private fun yamlEditCode(failure: consema.yaml.EditFailure): String = failure.code
 
-/** The INI edit failure codes (ini edit.rs:1754-1777). */
+/** The INI edit failure codes (ini edit.rs). */
 private fun iniEditCode(failure: consema.ini.EditFailure): String = when (failure) {
     consema.ini.EditFailure.RecoveredDocument -> "core.edit.incomplete-target@1"
     consema.ini.EditFailure.WrongSnapshot -> "core.edit.wrong-snapshot@1"

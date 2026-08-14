@@ -71,7 +71,7 @@ private fun runPortableGraphV1Case(case: CaseData) {
     }
 }
 
-/** The graph query cases (portable_graph_v1.rs:184-219): the pipeline
+/** The graph query cases (portable_graph_v1.rs): the pipeline
  * operators run over the graph and the final node IDs are compared by
  * builder-local numeric ID. */
 private fun graphQuery(case: CaseData) {
@@ -181,7 +181,7 @@ private fun graphFromInput(case: CaseData, name: String): Graph =
     graphFromValue(caseInput(case, name) ?: fail("missing input.$name"))
 
 /** Builds one PortableGraph from the language-neutral vector descriptor
- * (portable_graph_v1.rs:244-315): a `{nodes, roots}` object whose node
+ * (portable_graph_v1.rs): a `{nodes, roots}` object whose node
  * records carry `kind`/`tag` and `content`, `items`, or `entries`. */
 private fun graphFromValue(value: consema.core.PortableValue): Graph {
     val fields = value as? consema.core.PvObject ?: fail("graph must be Object")

@@ -275,7 +275,7 @@ fun decodeExchangeRecord(record: String, value: PortableValue): PortableValue = 
 // ---------------------------------------------------------------------------
 
 /** Strictly decodes and re-encodes `core.cancellation-request@1`
- * (execution.rs:190-236). */
+ * (execution.rs). */
 private fun exchangeCancellation(value: PortableValue): PortableValue {
     val fields = schemaFieldsOf(value, "core.cancellation-request@1", listOf("schema", "request_id", "reason"))
     val requestId = stringOf(fields[1], "$.request_id")
@@ -293,13 +293,13 @@ private fun exchangeCancellation(value: PortableValue): PortableValue {
 }
 
 /** The stable limit-name rule of the execution-policy record
- * (execution.rs:244-268). */
+ * (execution.rs). */
 private fun validLimitName(name: String): Boolean =
     name.isNotEmpty() && name.length <= 255 &&
         name.all { it in 'a'..'z' || it in '0'..'9' || it == '_' || it == '-' }
 
 /** Strictly decodes and re-encodes `core.execution-policy@1`
- * (execution.rs:240-330). */
+ * (execution.rs). */
 private fun exchangeExecutionPolicy(value: PortableValue): PortableValue {
     val fields = schemaFieldsOf(
         value,
@@ -343,8 +343,8 @@ private fun exchangeExecutionPolicy(value: PortableValue): PortableValue {
     )
 }
 
-/** Strictly decodes and re-encodes `core.change-set@1` (change_set.rs:
- * 30-160): bounded source IDs, ordered non-overlapping source edits, unique
+/** Strictly decodes and re-encodes `core.change-set@1` (change_set.rs
+ *): bounded source IDs, ordered non-overlapping source edits, unique
  * old locators, and the node-mapping status/reason invariant table. */
 private fun exchangeChangeSet(value: PortableValue): PortableValue {
     val fields = schemaFieldsOf(
@@ -480,7 +480,7 @@ private fun stringSequenceOf(value: PortableValue, path: String): List<String> =
     }
 
 /** Strictly decodes and re-encodes `core.java-utf16-string@1`
- * (java_utf16.rs:92-168): the canonical uppercase unit spellings, the
+ * (java_utf16.rs): the canonical uppercase unit spellings, the
  * UTF16BE/1 byte identity, the exact surrogate-pairing status, and the
  * canonical re-encoding. */
 private fun exchangeJavaUtf16(value: PortableValue): PortableValue {
@@ -535,7 +535,7 @@ private fun exchangeJavaUtf16(value: PortableValue): PortableValue {
 }
 
 /** Parses one code unit only in the canonical uppercase four-hex-digit
- * spelling (java_utf16.rs:181-190). */
+ * spelling (java_utf16.rs). */
 private fun parseJavaUtf16Unit(text: String): Int? {
     if (text.length != 4) {
         return null
@@ -555,7 +555,7 @@ private fun javaUtf16StatusName(status: consema.properties.JavaStringStatus): St
     }
 
 /** Strictly decodes and re-encodes `core.projection-request@1`
- * (projection.rs:99-195): the versioned target reference (non-zero version),
+ * (projection.rs): the versioned target reference (non-zero version),
  * the default policy, unique bounded rule IDs, and the limit-name rule. */
 private fun exchangeProjectionRequest(value: PortableValue): PortableValue {
     val fields = schemaFieldsOf(
@@ -611,8 +611,8 @@ private fun exchangeProjectionRequest(value: PortableValue): PortableValue {
     )
 }
 
-/** One versioned policy call of the projection records (projection.rs:
- * 60-98). */
+/** One versioned policy call of the projection records (projection.rs
+ *). */
 private fun exchangePolicy(value: PortableValue, path: String): PortableValue {
     val fields = exactFieldsOf(value, listOf("id", "version", "arguments"), path)
     val reference = parseContractReferenceOf(fields, path)
@@ -634,7 +634,7 @@ private fun exchangePolicy(value: PortableValue, path: String): PortableValue {
     )
 }
 
-/** One projection rule (projection.rs:99-145). */
+/** One projection rule (projection.rs). */
 private fun exchangeRule(value: PortableValue, path: String): PortableValue {
     val fields = exactFieldsOf(value, listOf("rule_id", "scope", "priority", "policy"), path)
     val scopeFields = exactFieldsOf(fields[1], listOf("kind"), "$path.scope")
@@ -657,9 +657,9 @@ private fun ruleIdOf(rule: PortableValue): String {
     return stringOf(fields[0], "$.rules.rule_id")
 }
 
-/** Strictly decodes one versioned contract reference (projection.rs:56-68):
+/** Strictly decodes one versioned contract reference (projection.rs):
  * the version must be non-zero (the ContractId constructor rule,
- * contract.rs:22-25). */
+ * contract.rs). */
 private fun parseContractReference(value: PortableValue, path: String): consema.protocol.ContractId {
     val fields = exactFieldsOf(value, listOf("id", "version"), path)
     return parseContractReferenceOf(fields, path)
@@ -680,7 +680,7 @@ private fun referenceValue(id: String, version: Int): PortableValue =
     )
 
 /** Strictly decodes and re-encodes `core.projection-report@1`
- * (projection.rs:446-521): registered event codes and the
+ * (projection.rs): registered event codes and the
  * loss-classification/reversible invariant table. */
 private fun exchangeProjectionReport(value: PortableValue): PortableValue {
     val fields = schemaFieldsOf(value, "core.projection-report@1", listOf("schema", "events"))
@@ -695,7 +695,7 @@ private fun exchangeProjectionReport(value: PortableValue): PortableValue {
     )
 }
 
-/** One projection event (projection.rs:446-483). */
+/** One projection event (projection.rs). */
 private fun exchangeProjectionEvent(value: PortableValue, path: String): PortableValue {
     val fields = exactFieldsOf(
         value,
@@ -731,7 +731,7 @@ private fun exchangeProjectionEvent(value: PortableValue, path: String): Portabl
 }
 
 /** Strictly decodes and re-encodes `core.projection-result@1`
- * (projection.rs:529-683): the success/value/fidelity invariant, the Lossy
+ * (projection.rs): the success/value/fidelity invariant, the Lossy
  * fidelity report requirement, and the failed-projection provenance rule. */
 private fun exchangeProjectionResult(value: PortableValue): PortableValue {
     val fields = schemaFieldsOf(
@@ -787,7 +787,7 @@ private fun provenanceHasEntries(provenance: PortableValue): Boolean {
 }
 
 /** Strictly decodes and re-encodes `core.provenance-map@1`
- * (projection.rs:328-443): sorted unique projected locations and non-empty
+ * (projection.rs): sorted unique projected locations and non-empty
  * origins. */
 private fun exchangeProvenanceMap(value: PortableValue): PortableValue {
     val fields = schemaFieldsOf(value, "core.provenance-map@1", listOf("schema", "entries"))
@@ -849,7 +849,7 @@ private fun exchangeProvenanceMap(value: PortableValue): PortableValue {
 
 private fun integerValueOf(value: Int): PortableValue = PvInteger(BigInteger.valueOf(value.toLong()))
 
-/** The roles published by `core.query-result@1` (query.rs:628-692): the
+/** The roles published by `core.query-result@1` (query.rs): the
  * portable roles plus the JSON/TOML native roles; the family roles (graph,
  * YAML, INI, Properties, XML, plist, HCL) are not published. */
 private fun isQueryResultV1Role(role: String): Boolean = when (role) {
@@ -867,7 +867,7 @@ private fun parseQueryMatchRole(role: String): String {
     return role
 }
 
-/** Strictly decodes and re-encodes `core.query-result@1` (query.rs:283-350):
+/** Strictly decodes and re-encodes `core.query-result@1` (query.rs):
  * the published roles, the match role consistency, the completion count, and
  * the strictly increasing native ordinals. */
 private fun exchangeQueryResult(value: PortableValue): PortableValue {
@@ -1010,7 +1010,7 @@ private fun matchRoleOf(match: PortableValue): String {
     }
 }
 
-/** Strictly checks one association location record (query.rs:525-553). */
+/** Strictly checks one association location record (query.rs). */
 private fun exchangeAssociation(value: PortableValue, path: String) {
     val fields = exactFieldsOf(value, listOf("container", "ordinal", "role"), path)
     exactFieldsOf(fields[0], listOf("segments"), "$path.container")

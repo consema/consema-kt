@@ -39,7 +39,7 @@ class ExpressionSyntaxTest {
     }
 
     /** The closed kind-name spellings of `hcl.expression-kind-is@1` (RFC
-     * 0014 §7.1; expression.rs:602-617). */
+     * 0014 §7.1; expression.rs). */
     @Test
     fun kindNameSpellings() {
         assertEquals(
@@ -67,7 +67,7 @@ class ExpressionSyntaxTest {
         assertEquals("parenthesized", expression("(1)").kindName())
     }
 
-    /** Operator spellings (RFC 0014 §4.3; expression.rs:856-956). */
+    /** Operator spellings (RFC 0014 §4.3; expression.rs). */
     @Test
     fun operatorSpellings() {
         assertEquals("+", HclBinaryOp.Add.spelling)
@@ -84,7 +84,7 @@ class ExpressionSyntaxTest {
     }
 
     /** Canonical decimal normalization (RFC 0014 §4.1, §6, §9;
-     * expression.rs:737-851): `1.50` and `15e-1` both normalize to `1.5`,
+     * expression.rs): `1.50` and `15e-1` both normalize to `1.5`,
      * `1e3` to `1000`, every zero to `0`; grammar violations return null. */
     @Test
     fun canonicalDecimal() {
@@ -218,7 +218,7 @@ class ExpressionSyntaxTest {
     }
 
     /** The expression children order used by `hcl.expression-children@1`
-     * (RFC 0014 §6; expression.rs:89-180). */
+     * (RFC 0014 §6; expression.rs). */
     @Test
     fun expressionChildren() {
         val binary = expression("1 + 2 * 3").kind() as HclExpressionKind.Binary

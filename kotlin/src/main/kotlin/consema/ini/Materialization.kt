@@ -2,10 +2,10 @@
 //
 // Data authority:
 //   - RFC 0004 §3-§8 (https://github.com/consema/consema/blob/main/docs/rfcs/0004-materialization-conversion-and-
-//     structural-edit-v1.md:56-218): the common MaterializationRequest v1,
+//     structural-edit-v1.md): the common MaterializationRequest v1,
 //     ExactOnly representability, the completion algebra, and the
 //     provenance direction (portable input locations to the new Document).
-//   - RFC 0009 §11 (https://github.com/consema/consema/blob/main/docs/rfcs/0009-ini-family-profiles-v1.md:387-435): the
+//   - RFC 0009 §11 (https://github.com/consema/consema/blob/main/docs/rfcs/0009-ini-family-profiles-v1.md): the
 //     canonical styles ini.portable-canonical@1 / ini.windows-canonical@1 /
 //     ini.python-configparser-canonical@1; the exact request combinations
 //     (portable UTF-8 + LF, windows UTF-16LE + BOM or one explicit
@@ -20,11 +20,11 @@
 //   - conformance/vectors/ini-v1.json (materialization.*) pins the golden
 //     output bytes and failure names; https://github.com/consema/consema-rs/blob/main/consema-ini/src/
 //     materialization.rs is the byte-arbitration authority (writer
-//     materialization.rs:191-461, encoding materialization.rs:724-850,
-//     closure materialization.rs:489-535, provenance materialization.rs:
-//     537-677).
+//     materialization.rs, encoding materialization.rs,
+//     closure materialization.rs, provenance materialization.rs
+//).
 //   - The Kotlin document package owns the completion algebra types
-//     (kotlin/src/main/kotlin/consema/document/Materialization.kt:286-371).
+//     (kotlin/src/main/kotlin/consema/document/Materialization.kt).
 //
 // Kotlin-idiomatic design: a bounded output buffer wraps the JDK byte
 // accumulation with explicit checked growth; the writer is a single
@@ -76,7 +76,7 @@ import java.nio.charset.CodingErrorAction
 
 /**
  * Materializes one complete nested String mapping into a new immutable INI
- * document (materialization.rs:26-41). A failure contains no Document, no
+ * document (materialization.rs). A failure contains no Document, no
  * partial bytes, and no provenance that can be mistaken for a result
  * (RFC 0004 §3).
  */
@@ -99,7 +99,7 @@ fun materialize(
  * page (RFC 0009 §3.2, §11). The shared [MaterializationRequest] cannot yet
  * express a code page because the document package's v1 SourceEncoding set
  * has no WindowsCodePage member (the source-v2 extension belongs to the L2
- * properties milestone, kotlin/src/main/kotlin/consema/document/Encoding.kt:18-25); this
+ * properties milestone, kotlin/src/main/kotlin/consema/document/Encoding.kt); this
  * overload takes the code page explicitly and requires the windows profile
  * with the windows-canonical style and CRLF.
  */
@@ -125,8 +125,8 @@ fun materialize(
     }
 }
 
-/** The canonical entry text used by structural edits (edit.rs:1101-1167;
- * materialization.rs:384-461). Returns the decoded text including the
+/** The canonical entry text used by structural edits (edit.rs;
+ * materialization.rs). Returns the decoded text including the
  * profile newline; the edit layer encodes it in the document's selected
  * encoding. */
 internal fun canonicalEntryText(
@@ -185,7 +185,7 @@ private fun materializeComplete(
     )
 }
 
-/** Resolves the target profile (materialization.rs:77-89). */
+/** Resolves the target profile (materialization.rs). */
 private fun requestedProfile(request: MaterializationRequest): IniProfile =
     when {
         request.targetProfile.id == "ini.portable" && request.targetProfile.version == 1 ->
@@ -200,7 +200,7 @@ private fun requestedProfile(request: MaterializationRequest): IniProfile =
         else -> throw MaterializationException(MaterializationFailureKind.UNSUPPORTED_PROFILE)
     }
 
-/** Resolves the effective INI encoding (materialization.rs:115-125). */
+/** Resolves the effective INI encoding (materialization.rs). */
 private fun requestedEncoding(
     request: MaterializationRequest,
     codePageOverride: IniSourceEncoding.WindowsCodePage?,
@@ -217,7 +217,7 @@ private fun requestedEncoding(
     }
 }
 
-/** Validates the style/newline/encoding combination (materialization.rs:91-127). */
+/** Validates the style/newline/encoding combination (materialization.rs). */
 private fun validateRequest(
     request: MaterializationRequest,
     profile: IniProfile,
@@ -252,7 +252,7 @@ private fun validateRequest(
     }
 }
 
-/** The reparse encoding selection (materialization.rs:129-135). */
+/** The reparse encoding selection (materialization.rs). */
 private fun parseEncodingSelection(
     profile: IniProfile,
     encoding: IniSourceEncoding,
@@ -268,7 +268,7 @@ private fun parseEncodingSelection(
     }
 
 /** Derives the closure parse limits from the materialization limits
- * (materialization.rs:137-160). */
+ * (materialization.rs). */
 private fun parseLimits(limits: MaterializationLimits): IniParseLimits =
     IniParseLimits(
         common = consema.document.ParseLimits(
@@ -298,20 +298,20 @@ private fun parseLimits(limits: MaterializationLimits): IniParseLimits =
 private fun Int.saturatingMul(other: Int): Int =
     (toLong() * other).coerceAtMost(Int.MAX_VALUE.toLong()).toInt()
 
-/** The mapping shape of one input level (materialization.rs:162-166). */
+/** The mapping shape of one input level (materialization.rs). */
 private enum class MappingShape {
     Object,
     EntryMapping,
 }
 
-/** One input entry with its provenance locations (materialization.rs:168-173). */
+/** One input entry with its provenance locations (materialization.rs). */
 private data class InputEntry(
     val association: MaterializationInputLocation,
     val key: MaterializationInputLocation,
     val value: MaterializationInputLocation,
 )
 
-/** One input section with its provenance locations (materialization.rs:175-181). */
+/** One input section with its provenance locations (materialization.rs). */
 private data class InputSection(
     val association: MaterializationInputLocation,
     val key: MaterializationInputLocation,
@@ -319,7 +319,7 @@ private data class InputSection(
     val entries: List<InputEntry>,
 )
 
-/** One mapping item with its locations (materialization.rs:183-189). */
+/** One mapping item with its locations (materialization.rs). */
 private data class MappingItem(
     val key: String,
     val value: PortableValue,
@@ -328,7 +328,7 @@ private data class MappingItem(
     val valuePath: ValuePath,
 )
 
-/** The bounded canonical writer (materialization.rs:191-461). */
+/** The bounded canonical writer (materialization.rs). */
 private class Writer(
     private val profile: IniProfile,
     private val encoding: IniSourceEncoding,
@@ -589,7 +589,7 @@ private fun validatePythonValueLine(line: String) {
 }
 
 /** Object input cannot fabricate Windows case-equivalent collisions
- * (RFC 0009 §11; materialization.rs:473-487). */
+ * (RFC 0009 §11; materialization.rs). */
 private fun rejectCaseEquivalentObjectNames(items: List<MappingItem>) {
     val seen = HashSet<String>()
     if (items.any { !seen.add(asciiLowercase(it.key)) }) {
@@ -600,7 +600,7 @@ private fun rejectCaseEquivalentObjectNames(items: List<MappingItem>) {
     }
 }
 
-/** The exact closure reparse-and-reproject check (materialization.rs:489-535). */
+/** The exact closure reparse-and-reproject check (materialization.rs). */
 private fun verifyClosure(
     input: PortableValue,
     request: MaterializationRequest,
@@ -648,7 +648,7 @@ private fun verifyClosure(
     }
 }
 
-/** Input-to-output provenance collection (materialization.rs:537-677). */
+/** Input-to-output provenance collection (materialization.rs). */
 private fun buildProvenance(
     input: PortableValue,
     sections: List<InputSection>,
@@ -743,7 +743,7 @@ private fun buildProvenance(
 }
 
 /** Continuation value fragments join the value's output origins
- * (materialization.rs:629-659). */
+ * (materialization.rs). */
 private fun appendContinuationOutputs(
     document: IniDocument,
     entry: IniEntry,
@@ -797,10 +797,10 @@ private fun provenanceEntry(
     )
 
 // ---------------------------------------------------------------------------
-// Output encoding (materialization.rs:679-850)
+// Output encoding (materialization.rs)
 // ---------------------------------------------------------------------------
 
-/** Bounded decoded-text accumulation (materialization.rs:679-722). The
+/** Bounded decoded-text accumulation (materialization.rs). The
  * bound counts UTF-8 bytes (the Rust String::len), not host UTF-16 units. */
 private class BoundedText(private val maxBytes: Int) {
     private val text = StringBuilder()
@@ -825,7 +825,7 @@ private class BoundedText(private val maxBytes: Int) {
     fun finish(): String = text.toString()
 }
 
-/** The decoded-text budget of one output encoding (materialization.rs:724-738). */
+/** The decoded-text budget of one output encoding (materialization.rs). */
 private fun textBudget(encoding: IniSourceEncoding, maxOutputBytes: Int): Int =
     when (encoding) {
         IniSourceEncoding.Utf16Le, IniSourceEncoding.Utf16Be, IniSourceEncoding.Latin1 ->
@@ -841,7 +841,7 @@ private fun textBudget(encoding: IniSourceEncoding, maxOutputBytes: Int): Int =
         IniSourceEncoding.Utf8 -> maxOutputBytes
     }
 
-/** Encodes the final text with the encoding's BOM prefix (materialization.rs:740-768). */
+/** Encodes the final text with the encoding's BOM prefix (materialization.rs). */
 private fun encodeText(text: String, encoding: IniSourceEncoding, maxOutputBytes: Int): ByteArray {
     val bomBytes = if (encoding === IniSourceEncoding.Utf16Le ||
         encoding === IniSourceEncoding.Utf16Be
@@ -868,7 +868,7 @@ private fun encodeText(text: String, encoding: IniSourceEncoding, maxOutputBytes
     return output
 }
 
-/** Strict encoding of one text fragment (materialization.rs:770-829). */
+/** Strict encoding of one text fragment (materialization.rs). */
 internal fun encodeFragment(
     text: String,
     encoding: IniSourceEncoding,
@@ -942,7 +942,7 @@ internal fun encodeFragment(
 }
 
 /** The JDK charset approximating one published Windows code page
- * (materialization.rs:831-850). */
+ * (materialization.rs). */
 private fun codePageCharsetPublic(number: Int): Charset =
     when (number) {
         874 -> Charset.forName("x-windows-874")
@@ -956,7 +956,7 @@ private fun codePageCharsetPublic(number: Int): Charset =
     }
 
 /** Whether a Windows canonical value needs deterministic quoting
- * (materialization.rs:874-888; RFC 0009 §11). */
+ * (materialization.rs; RFC 0009 §11). */
 internal fun windowsValueNeedsQuotes(value: String): Boolean =
     value.firstOrNull()?.let { it == ' ' || it == '\t' } == true ||
         value.lastOrNull()?.let { it == ' ' || it == '\t' } == true ||
@@ -965,7 +965,7 @@ internal fun windowsValueNeedsQuotes(value: String): Boolean =
                 (value.first() == '"' && value.last() == '"')))
 
 // ---------------------------------------------------------------------------
-// Portable character rules (materialization.rs:860-872)
+// Portable character rules (materialization.rs)
 // ---------------------------------------------------------------------------
 
 private fun isPortableNameChar(character: Char): Boolean {
@@ -987,7 +987,7 @@ private fun isWindowsNameChar(character: Char): Boolean {
 
 /** Content equality of two portable values. The core container classes
  * (PvObject, PvArray, PvEntryMapping) use reference equality
- * (kotlin/src/main/kotlin/consema/core/Value.kt:159-254), so the INI closure check compares
+ * (kotlin/src/main/kotlin/consema/core/Value.kt), so the INI closure check compares
  * recursively; the kinds INI can never produce (temporal values) fall back
  * to their own equality. */
 internal fun portableValuesEqual(left: PortableValue, right: PortableValue): Boolean {

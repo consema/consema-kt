@@ -40,14 +40,14 @@ import consema.graph.encodePgceBounded
 import java.math.BigInteger
 
 /** The canonical `core.portable-graph@1` readable value and its exact
- * PGCE/1 bytes (portable_graph.rs:15-192). */
+ * PGCE/1 bytes (portable_graph.rs). */
 class PortableGraphMessage private constructor(
     private val graph: Graph,
     private val pgce: ByteArray,
 ) {
     companion object {
         /** Canonically encodes one complete graph under explicit PGCE limits
-         * (portable_graph.rs:24-27). */
+         * (portable_graph.rs). */
         fun fromGraph(graph: Graph, limits: PgceLimits): PortableGraphMessage {
             val pgce = try {
                 encodePgceBounded(graph, limits)
@@ -58,7 +58,7 @@ class PortableGraphMessage private constructor(
         }
 
         /** Strictly decodes and cross-validates the readable graph and
-         * PGCE/1 forms (portable_graph.rs:106-173). */
+         * PGCE/1 forms (portable_graph.rs). */
         fun fromValue(value: PortableValue, limits: PgceLimits): PortableGraphMessage {
             val fields = schemaFields(
                 value,
@@ -126,7 +126,7 @@ class PortableGraphMessage private constructor(
     fun pgce(): ByteArray = pgce.copyOf()
 
     /** Encodes the fixed readable graph plus PGCE schema
-     * (portable_graph.rs:41-104). */
+     * (portable_graph.rs). */
     fun toValue(): PortableValue {
         val layout = canonicalLayout(graph)
         val roots = PvArray(graph.roots().map { integerValue((layout.ids[it] ?: error("root has no canonical ID")).toULong()) })
@@ -199,11 +199,11 @@ class PortableGraphMessage private constructor(
     }
 
     /** The canonical first-discovery order and wire IDs of the graph
-     * (portable_graph.rs:200-238). */
+     * (portable_graph.rs). */
     internal fun wireLayout(): CanonicalLayout = canonicalLayout(graph)
 }
 
-/** The canonical wire layout of one graph (portable_graph.rs:194-238). */
+/** The canonical wire layout of one graph (portable_graph.rs). */
 internal class CanonicalLayout(
     /** Graph-local node IDs in canonical first-discovery order. */
     val order: List<NodeId>,
@@ -211,7 +211,7 @@ internal class CanonicalLayout(
     val ids: Map<NodeId, Int>,
 )
 
-/** Computes the canonical first-discovery layout (portable_graph.rs:200-
+/** Computes the canonical first-discovery layout (portable_graph.rs
  * 238). */
 internal fun canonicalLayout(graph: Graph): CanonicalLayout {
     val order = ArrayList<NodeId>(graph.nodeCount())
@@ -248,7 +248,7 @@ internal fun canonicalLayout(graph: Graph): CanonicalLayout {
     return CanonicalLayout(order, ids)
 }
 
-/** Defines one readable graph node record (portable_graph.rs:240-331). */
+/** Defines one readable graph node record (portable_graph.rs). */
 private fun defineRecord(
     builder: Builder,
     ids: List<NodeId>,
@@ -314,7 +314,7 @@ private fun defineRecord(
 }
 
 /** Requires the record id to equal its canonical array index
- * (portable_graph.rs:333-348). */
+ * (portable_graph.rs). */
 private fun validateRecordId(value: PortableValue, index: Int, path: String) {
     val observed = unsigned64(value, "$path.id")
     if (observed != index.toULong()) {
@@ -323,7 +323,7 @@ private fun validateRecordId(value: PortableValue, index: Int, path: String) {
 }
 
 /** Resolves a canonical wire ID to its graph-local node ID
- * (portable_graph.rs:350-355). */
+ * (portable_graph.rs). */
 internal fun resolveId(ids: List<NodeId>, value: ULong, path: String): NodeId {
     val index = value.toLong().toInt()
     return if (value <= Int.MAX_VALUE.toULong() && index in ids.indices) {
@@ -340,7 +340,7 @@ private fun checkCount(path: String, observed: Int, limit: Int) {
 }
 
 /** Maps a graph construction failure to the protocol failure vocabulary
- * (portable_graph.rs:365-372). */
+ * (portable_graph.rs). */
 internal fun mapBuildError(error: GraphException): ProtocolException =
     if (error.kind == consema.graph.GraphErrorKind.RESOURCE_LIMIT ||
         error.kind == consema.graph.GraphErrorKind.SIZE_OVERFLOW
@@ -350,7 +350,7 @@ internal fun mapBuildError(error: GraphException): ProtocolException =
         invalid("$", "invalid graph: ${error.message}")
     }
 
-/** Maps a PGCE decode failure (portable_graph.rs:378-385). */
+/** Maps a PGCE decode failure (portable_graph.rs). */
 internal fun mapPgceDecode(error: PgceException): ProtocolException =
     if (error.kind == consema.graph.PgceErrorKind.RESOURCE_LIMIT ||
         error.kind == consema.graph.PgceErrorKind.VARINT_OVERFLOW
@@ -360,7 +360,7 @@ internal fun mapPgceDecode(error: PgceException): ProtocolException =
         invalid("$.pgce", "invalid PGCE: ${error.message}")
     }
 
-/** Maps a PGCE encode failure (portable_graph.rs:374-376). */
+/** Maps a PGCE encode failure (portable_graph.rs). */
 internal fun mapPgceResource(error: PgceException): ProtocolException =
     resource("$.pgce", "PGCE encoding failed: ${error.message}")
 
@@ -369,7 +369,7 @@ internal fun mapPgceResource(error: PgceException): ProtocolException =
 // ---------------------------------------------------------------------------
 
 /** One graph match expressed only with canonical wire node IDs
- * (graph_query.rs:16-53). */
+ * (graph_query.rs). */
 sealed class GraphQueryMatchMessage {
     /** One graph node. */
     data class Node(val node: ULong) : GraphQueryMatchMessage()
@@ -389,14 +389,14 @@ sealed class GraphQueryMatchMessage {
         val value: ULong,
     ) : GraphQueryMatchMessage()
 
-    /** The uniform match role of this match (graph_query.rs:45-53). */
+    /** The uniform match role of this match (graph_query.rs). */
     fun role(): String = when (this) {
         is Node -> Roles.GRAPH_NODE
         is SequenceElement -> Roles.GRAPH_SEQUENCE_ELEMENT
         is MappingEntry -> Roles.GRAPH_MAPPING_ENTRY
     }
 
-    /** Encodes one match record (graph_query.rs:342-371). */
+    /** Encodes one match record (graph_query.rs). */
     fun toValue(): PortableValue = when (this) {
         is Node -> PvObject(
             listOf(
@@ -424,7 +424,7 @@ sealed class GraphQueryMatchMessage {
     }
 
     companion object {
-        /** Strictly decodes one match record (graph_query.rs:373-408). */
+        /** Strictly decodes one match record (graph_query.rs). */
         fun fromValue(value: PortableValue, path: String): GraphQueryMatchMessage {
             val entries = (value as? PvObject)?.entries()
                 ?: throw protocolError(ProtocolErrorKind.WRONG_TYPE, path, "expected graph match Object")
@@ -460,7 +460,7 @@ sealed class GraphQueryMatchMessage {
     }
 }
 
-/** The graph roles of the graph-query result records (graph_query.rs:410-
+/** The graph roles of the graph-query result records (graph_query.rs
  * 415). */
 internal fun isGraphRole(role: String): Boolean =
     role == Roles.GRAPH_NODE ||
@@ -468,7 +468,7 @@ internal fun isGraphRole(role: String): Boolean =
         role == Roles.GRAPH_MAPPING_ENTRY
 
 /** Complete or explicitly non-complete `core.graph-query-result@1`
- * (graph_query.rs:56-270). */
+ * (graph_query.rs). */
 class GraphQueryResultMessage private constructor(
     /** Exact query domain. */
     val domain: QueryDomain,
@@ -485,7 +485,7 @@ class GraphQueryResultMessage private constructor(
 ) {
     companion object {
         /** Validates graph binding, uniform match roles, associations, and
-         * counts (graph_query.rs:67-99). */
+         * counts (graph_query.rs). */
         fun new(
             domain: QueryDomain,
             role: String,
@@ -507,7 +507,7 @@ class GraphQueryResultMessage private constructor(
         }
 
         /** Strictly decodes with explicit graph limits and semantic-model
-         * registry (graph_query.rs:229-269). */
+         * registry (graph_query.rs). */
         fun fromValueWithRegistry(
             value: PortableValue,
             limits: PgceLimits,
@@ -548,7 +548,7 @@ class GraphQueryResultMessage private constructor(
     /** Complete graph that gives every canonical ID meaning. */
     fun graph(): PortableGraphMessage = graph
 
-    /** Encodes `core.graph-query-result@1` (graph_query.rs:189-213). */
+    /** Encodes `core.graph-query-result@1` (graph_query.rs). */
     fun toValue(): PortableValue =
         PvObject(
             listOf(
@@ -568,7 +568,7 @@ class GraphQueryResultMessage private constructor(
 }
 
 /** Validates every match against the graph structure
- * (graph_query.rs:272-329). */
+ * (graph_query.rs). */
 private fun validateMatches(
     message: PortableGraphMessage,
     matches: List<GraphQueryMatchMessage>,
@@ -614,7 +614,7 @@ private fun validateMatches(
     }
 }
 
-/** Parses one graph query role spelling (graph_query.rs:426-433). */
+/** Parses one graph query role spelling (graph_query.rs). */
 internal fun parseGraphRole(value: String): String =
     when (value) {
         Roles.GRAPH_NODE, Roles.GRAPH_SEQUENCE_ELEMENT, Roles.GRAPH_MAPPING_ENTRY -> value
@@ -622,11 +622,11 @@ internal fun parseGraphRole(value: String): String =
     }
 
 // ---------------------------------------------------------------------------
-// core.graph-provenance-map@1 (graph_projection.rs:119-212).
+// core.graph-provenance-map@1 (graph_projection.rs).
 // ---------------------------------------------------------------------------
 
 /** One projected PortableGraph location expressed with canonical node IDs
- * (graph_projection.rs:16-43). */
+ * (graph_projection.rs). */
 sealed class GraphProjectedLocationMessage {
     /** Ordered root occurrence. */
     data class Root(val ordinal: ULong) : GraphProjectedLocationMessage()
@@ -646,7 +646,7 @@ sealed class GraphProjectedLocationMessage {
     data class MappingValue(val parent: ULong, val ordinal: ULong) :
         GraphProjectedLocationMessage()
 
-    /** Encodes one location record (graph_projection.rs:411-437). */
+    /** Encodes one location record (graph_projection.rs). */
     fun toValue(): PortableValue = when (this) {
         is Root -> PvObject(
             listOf(
@@ -684,7 +684,7 @@ sealed class GraphProjectedLocationMessage {
     }
 
     companion object {
-        /** Strictly decodes one location record (graph_projection.rs:439-
+        /** Strictly decodes one location record (graph_projection.rs
          * 480). */
         fun fromValue(value: PortableValue, path: String): GraphProjectedLocationMessage {
             val entries = (value as? PvObject)?.entries()
@@ -719,7 +719,7 @@ sealed class GraphProjectedLocationMessage {
 }
 
 /** Exact YAML-source relation to a projected graph fact
- * (graph_projection.rs:46-52). */
+ * (graph_projection.rs). */
 enum class GraphProvenanceRelationMessage {
     /** Direct native representation origin. */
     Direct,
@@ -745,7 +745,7 @@ enum class GraphProvenanceRelationMessage {
 }
 
 /** Transferable graph origin with caller-assigned identities
- * (graph_projection.rs:54-108). */
+ * (graph_projection.rs). */
 class GraphSourceOriginMessage private constructor(
     /** Stable source identity. */
     val sourceId: String,
@@ -759,7 +759,7 @@ class GraphSourceOriginMessage private constructor(
     val relation: GraphProvenanceRelationMessage,
 ) {
     companion object {
-        /** Validates one externalized graph origin (graph_projection.rs:70-
+        /** Validates one externalized graph origin (graph_projection.rs
          * 98). */
         fun new(
             sourceId: String,
@@ -777,7 +777,7 @@ class GraphSourceOriginMessage private constructor(
         }
 
         /** Explicitly refuses an unbound process-local node handle
-         * (graph_projection.rs:100-108). */
+         * (graph_projection.rs). */
         fun fromProcessLocal(): GraphSourceOriginMessage =
             throw protocolError(
                 ProtocolErrorKind.PROCESS_LOCAL_HANDLE,
@@ -785,7 +785,7 @@ class GraphSourceOriginMessage private constructor(
                 "NodeRef requires a stable caller locator",
             )
 
-        /** Strictly decodes one origin record (graph_projection.rs:504-
+        /** Strictly decodes one origin record (graph_projection.rs
          * 530). */
         fun fromValue(value: PortableValue, path: String): GraphSourceOriginMessage {
             val fields = exactFields(
@@ -806,7 +806,7 @@ class GraphSourceOriginMessage private constructor(
         }
     }
 
-    /** Encodes one origin record (graph_projection.rs:482-502). */
+    /** Encodes one origin record (graph_projection.rs). */
     fun toValue(): PortableValue =
         PvObject(
             listOf(
@@ -820,7 +820,7 @@ class GraphSourceOriginMessage private constructor(
 }
 
 /** One graph location and all ordered source origins
- * (graph_projection.rs:110-117). */
+ * (graph_projection.rs). */
 data class GraphProvenanceEntryMessage(
     /** Projected graph location. */
     val projected: GraphProjectedLocationMessage,
@@ -828,14 +828,14 @@ data class GraphProvenanceEntryMessage(
     val origins: List<GraphSourceOriginMessage>,
 )
 
-/** Sorted unique `core.graph-provenance-map@1` (graph_projection.rs:119-
+/** Sorted unique `core.graph-provenance-map@1` (graph_projection.rs
  * 212). */
 class GraphProvenanceMapMessage private constructor(
     private val entries: List<GraphProvenanceEntryMessage>,
 ) {
     companion object {
         /** Validates canonical location order, uniqueness, and non-empty
-         * origins (graph_projection.rs:126-139). */
+         * origins (graph_projection.rs). */
         fun new(entries: List<GraphProvenanceEntryMessage>): GraphProvenanceMapMessage {
             if (entries.any { it.origins.isEmpty() } ||
                 entries.zipWithNext().any { (left, right) ->
@@ -850,8 +850,8 @@ class GraphProvenanceMapMessage private constructor(
             return GraphProvenanceMapMessage(entries)
         }
 
-        /** Strictly decodes one graph provenance map (graph_projection.rs:
-         * 184-211). */
+        /** Strictly decodes one graph provenance map (graph_projection.rs
+ *). */
         fun fromValue(value: PortableValue): GraphProvenanceMapMessage {
             val fields = schemaFields(value, "core.graph-provenance-map@1", listOf("schema", "entries"), "$")
             val entries = sequenceOf(fields[1], "$.entries").mapIndexed { index, entry ->
@@ -872,7 +872,7 @@ class GraphProvenanceMapMessage private constructor(
     fun entries(): List<GraphProvenanceEntryMessage> = entries
 
     /** Validates every projected location against one exact graph message
-     * (graph_projection.rs:147-159). */
+     * (graph_projection.rs). */
     fun validateAgainst(graph: PortableGraphMessage) {
         val layout = graph.wireLayout()
         for ((index, entry) in entries.withIndex()) {
@@ -880,7 +880,7 @@ class GraphProvenanceMapMessage private constructor(
         }
     }
 
-    /** Encodes `core.graph-provenance-map@1` (graph_projection.rs:161-182). */
+    /** Encodes `core.graph-provenance-map@1` (graph_projection.rs). */
     fun toValue(): PortableValue =
         PvObject(
             listOf(
@@ -907,7 +907,7 @@ class GraphProvenanceMapMessage private constructor(
 
 /** Deterministic total order key of one projected location: variant rank
  * first, then the payload fields in declared order (the Rust derived Ord
- * orders the variants first, graph_projection.rs:15-43). */
+ * orders the variants first, graph_projection.rs). */
 private fun locationOrdinal(location: GraphProjectedLocationMessage): List<ULong> =
     when (location) {
         is GraphProjectedLocationMessage.Root -> listOf(0uL, location.ordinal)
@@ -931,7 +931,7 @@ private fun compareLocations(left: List<ULong>, right: List<ULong>): Int {
 }
 
 /** Validates one projected location against the graph structure
- * (graph_projection.rs:351-398). */
+ * (graph_projection.rs). */
 private fun validateLocation(
     graph: PortableGraphMessage,
     canonical: List<NodeId>,
@@ -966,7 +966,7 @@ private fun validateLocation(
     }
 }
 
-/** Validates one mapping edge location (graph_projection.rs:382-394). */
+/** Validates one mapping edge location (graph_projection.rs). */
 private fun validateMappingLocation(
     graph: PortableGraphMessage,
     canonical: List<NodeId>,
@@ -985,10 +985,10 @@ private fun validateMappingLocation(
 }
 
 // ---------------------------------------------------------------------------
-// core.graph-projection-result@1 (graph_projection.rs:214-349).
+// core.graph-projection-result@1 (graph_projection.rs).
 // ---------------------------------------------------------------------------
 
-/** Atomic exact `core.graph-projection-result@1` (graph_projection.rs:214-
+/** Atomic exact `core.graph-projection-result@1` (graph_projection.rs
  * 349). */
 class GraphProjectionResultMessage private constructor(
     /** Explicit terminal state. */
@@ -1001,7 +1001,7 @@ class GraphProjectionResultMessage private constructor(
 ) {
     companion object {
         /** Validates atomic success, produced count, and complete graph
-         * provenance (graph_projection.rs:224-255). */
+         * provenance (graph_projection.rs). */
         fun new(
             completion: Completion,
             graph: PortableGraphMessage?,
@@ -1024,7 +1024,7 @@ class GraphProjectionResultMessage private constructor(
         }
 
         /** Strictly decodes with explicit graph limits and semantic-model
-         * registry (graph_projection.rs:320-348). */
+         * registry (graph_projection.rs). */
         fun fromValueWithRegistry(
             value: PortableValue,
             limits: PgceLimits,
@@ -1064,7 +1064,7 @@ class GraphProjectionResultMessage private constructor(
     /** Complete graph only on success. */
     fun graph(): PortableGraphMessage? = graph
 
-    /** Encodes `core.graph-projection-result@1` (graph_projection.rs:281-
+    /** Encodes `core.graph-projection-result@1` (graph_projection.rs
      * 305). */
     fun toValue(): PortableValue =
         PvObject(

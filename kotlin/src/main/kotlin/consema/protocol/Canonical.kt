@@ -5,7 +5,7 @@
 // Rust transport (https://github.com/consema/consema-rs/blob/main/consema-protocol/src/value_transport.rs), pinned
 // by the shared conformance vectors (protocol-v1.json). The numberToken /
 // unicodeEscape rules are transcribed from the Rust parser
-// (value_transport.rs:26-75).
+// (value_transport.rs).
 //
 // The decoder is a strict JSON parser (no comments, no trailing commas,
 // duplicate members rejected, canonical string/number forms only, followed
@@ -17,7 +17,7 @@
 // exact kind spellings of the language-neutral registry (Null, Boolean,
 // Integer, Decimal, BinaryFloat32, BinaryFloat64, String, Bytes, Date,
 // Time, LocalDateTime, OffsetDateTime, Sequence, Object, EntryMapping;
-// value_transport.rs:175-348).
+// value_transport.rs).
 //
 // Kotlin-idiomatic design: the parse tree is a small sealed node hierarchy;
 // parse/encode state lives in classes; failures are [ProtocolException].
@@ -410,7 +410,7 @@ private class DecodeState(val limits: ProtocolLimits) {
 /**
  * Encodes a PortableValue as canonical `core.portable-value-json@1` bytes,
  * byte-identical to the Rust encoder
- * (https://github.com/consema/consema-rs/blob/main/consema-protocol/src/value_transport.rs:12-23).
+ * (https://github.com/consema/consema-rs/blob/main/consema-protocol/src/value_transport.rs).
  */
 fun encodeJson(value: PortableValue, limits: ProtocolLimits): ByteArray {
     val encoder = JsonEncoder(limits)
@@ -441,7 +441,7 @@ fun decodeJson(bytes: ByteArray, limits: ProtocolLimits): PortableValue {
 
 /** Re-encodes the parsed document's value and requires byte equality with
  * the input (the reference re-encode canonicality check,
- * value_transport.rs:66-73). Re-encoding works on the parse tree, which
+ * value_transport.rs). Re-encoding works on the parse tree, which
  * preserves field order and decoded text; any valid-but-non-canonical form
  * (whitespace, alternate escapes, reordered fields, non-minimal numbers)
  * therefore differs. */
@@ -526,7 +526,7 @@ private class JsonEncoder(private val limits: ProtocolLimits) {
     /** Writes one tagged value. The tagged form is a JSON object whose
      * first member is "type"; integers and decimals are normalized to their
      * canonical decimal spellings, strings re-escape from decoded text, and
-     * byte hex is lowercased (value_transport.rs:175-348). */
+     * byte hex is lowercased (value_transport.rs). */
     fun value(node: JsonNode, depth: Int, path: String) {
         node(depth, path)
         if (node.kind != JsonNodeKind.OBJECT || node.fields.isEmpty() || node.fields[0].key != "type") {
@@ -773,7 +773,7 @@ private fun valueToNode(value: PortableValue): JsonNode {
 
 /** Converts a tagged tree node into a core value, applying the protocol
  * limits and covering all fifteen kinds (the reference decode_value,
- * value_transport.rs:392-617). */
+ * value_transport.rs). */
 private fun nodeToValue(node: JsonNode, depth: Int, path: String, state: DecodeState): PortableValue {
     state.node(depth, path)
     if (node.kind != JsonNodeKind.OBJECT) {
@@ -1005,7 +1005,7 @@ private fun jsonBooleanOf(node: JsonNode, path: String): Boolean {
 }
 
 /** Parses a decimal string into a big integer with the protocol integer
- * limits (value_transport.rs:793-807). */
+ * limits (value_transport.rs). */
 private fun jsonParseInteger(node: JsonNode, path: String, limits: ProtocolLimits): BigInteger {
     if (node.kind != JsonNodeKind.STRING) {
         throw protocolError(ProtocolErrorKind.WRONG_TYPE, path, "expected JSON string")
@@ -1023,7 +1023,7 @@ private fun jsonParseInteger(node: JsonNode, path: String, limits: ProtocolLimit
 }
 
 /** Parses exactly eight hexadecimal digits (the reference parse_hex_u32,
- * value_transport.rs:823-828). */
+ * value_transport.rs). */
 private fun jsonParseHexUint32(node: JsonNode, path: String): Int {
     if (node.kind != JsonNodeKind.STRING) {
         throw protocolError(ProtocolErrorKind.WRONG_TYPE, path, "expected JSON string")
@@ -1040,7 +1040,7 @@ private fun jsonParseHexUint32(node: JsonNode, path: String): Int {
 }
 
 /** Parses exactly sixteen hexadecimal digits (the reference parse_hex_u64,
- * value_transport.rs:830-835). */
+ * value_transport.rs). */
 private fun jsonParseHexUint64(node: JsonNode, path: String): Long {
     if (node.kind != JsonNodeKind.STRING) {
         throw protocolError(ProtocolErrorKind.WRONG_TYPE, path, "expected JSON string")
@@ -1078,7 +1078,7 @@ private fun parseHexBytes(text: String, path: String): ByteArray {
 }
 
 /** Parses a decimal string into a UByte (the reference parse_u8,
- * value_transport.rs:809-814). */
+ * value_transport.rs). */
 private fun jsonParseU8(node: JsonNode, path: String, limits: ProtocolLimits): Int {
     val integer = jsonParseInteger(node, path, limits)
     if (integer.signum() < 0 || integer.bitLength() > 8) {
@@ -1088,7 +1088,7 @@ private fun jsonParseU8(node: JsonNode, path: String, limits: ProtocolLimits): I
 }
 
 /** Parses a decimal string into an Int (the reference parse_i32,
- * value_transport.rs:816-821). */
+ * value_transport.rs). */
 private fun jsonParseI32(node: JsonNode, path: String, limits: ProtocolLimits): Int {
     val integer = jsonParseInteger(node, path, limits)
     if (integer.bitLength() > 31) {
@@ -1099,7 +1099,7 @@ private fun jsonParseI32(node: JsonNode, path: String, limits: ProtocolLimits): 
 
 /**
  * Encodes a PortableValue as canonical PVCE/1 under protocol limits
- * (https://github.com/consema/consema-rs/blob/main/consema-protocol/src/value_transport.rs:78-89). PVCE/1 codec
+ * (https://github.com/consema/consema-rs/blob/main/consema-protocol/src/value_transport.rs). PVCE/1 codec
  * failures map to the protocol registry: resource limits surface as
  * RESOURCE_LIMIT, everything else as INVALID_PVCE.
  */
@@ -1122,7 +1122,7 @@ fun encodePvce(value: PortableValue, limits: ProtocolLimits): ByteArray {
 }
 
 /** Strictly decodes canonical PVCE/1 under protocol limits
- * (https://github.com/consema/consema-rs/blob/main/consema-protocol/src/value_transport.rs:92-112). Records outside
+ * (https://github.com/consema/consema-rs/blob/main/consema-protocol/src/value_transport.rs). Records outside
  * the closed fifteen-kind model (only the extended 0x7f record) fail as
  * INVALID_PVCE. */
 fun decodePvce(bytes: ByteArray, limits: ProtocolLimits): PortableValue {
@@ -1144,7 +1144,7 @@ fun decodePvce(bytes: ByteArray, limits: ProtocolLimits): PortableValue {
 }
 
 /** Converts a core codec failure into the protocol error kind (the
- * reference decode_pvce mapping, value_transport.rs:104-111). */
+ * reference decode_pvce mapping, value_transport.rs). */
 private fun mapPvceError(e: consema.core.PvceException): ProtocolException =
     if (e.kind == consema.core.PvceErrorKind.RESOURCE_LIMIT) {
         resource("$", e.message ?: e.code)

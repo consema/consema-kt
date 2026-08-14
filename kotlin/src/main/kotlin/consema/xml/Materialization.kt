@@ -1,7 +1,7 @@
 // Canonical `xml.safe-canonical-document@1` materialization (RFC 0012 §10).
 //
 // Data authority:
-//   - RFC 0012 §10 (https://github.com/consema/consema/blob/main/docs/rfcs/0012-xml-1.0-safe-profile-v1.md:350-373):
+//   - RFC 0012 §10 (https://github.com/consema/consema/blob/main/docs/rfcs/0012-xml-1.0-safe-profile-v1.md):
 //     the canonical style consumes one fully validated `xml.element-tree@1`
 //     value and creates a new `xml.1.0-safe@1` Document; it is not W3C
 //     Canonical XML; the style deterministically chooses declaration
@@ -17,19 +17,19 @@
 //   - conformance/vectors/xml-1-0-safe-v1.json cases xml.materialization.*
 //     pin the render bytes and the `"invalid-record"` failure spelling.
 //   - https://github.com/consema/consema-rs/blob/main/consema-xml/src/materialization.rs is the byte-arbitration
-//     authority: entry (materialization.rs:36-88), request validation
-//     (materialization.rs:90-107), reparse limits (materialization.rs:
-//     109-140), encoding (materialization.rs:142-172), record validation
-//     (materialization.rs:174-500), the prefix table (materialization.rs:
-//     502-526), the writer (materialization.rs:565-900), and the closure
-//     verification (materialization.rs:902-1100).
-//   - RFC 0004 §3/§7 (https://github.com/consema/consema/blob/main/docs/rfcs/0004-materialization-conversion-and-structural-edit-v1.md:57-84, 171-186) pins the common
+//     authority: entry (materialization.rs), request validation
+//     (materialization.rs), reparse limits (materialization.rs
+//), encoding (materialization.rs), record validation
+//     (materialization.rs), the prefix table (materialization.rs
+//), the writer (materialization.rs), and the closure
+//     verification (materialization.rs).
+//   - RFC 0004 §3/§7 (https://github.com/consema/consema/blob/main/docs/rfcs/0004-materialization-conversion-and-structural-edit-v1.md) pins the common
 //     MaterializationRequest and the completion algebra; the Kotlin common
 //     contracts live in consema.document (Materialization.kt).
 //
 // The failure spellings used by the vectors are the stable
 // `materialization_failure_code` mapping of the conformance runner
-// (https://github.com/consema/consema-rs/blob/main/consema-conformance/src/xml_v1.rs:855-871): `"invalid-record"`
+// (https://github.com/consema/consema-rs/blob/main/consema-conformance/src/xml_v1.rs): `"invalid-record"`
 // for InvalidRequest, plus unsupported-profile / unsupported-style /
 // unsupported-encoding / unsupported-newline / unrepresentable /
 // resource-limit / formation-failed.
@@ -38,7 +38,7 @@
 // the input record is an immutable validated mirror of `xml.element-tree@1`;
 // closure verification walks the input and the reparsed document in
 // lockstep and pairs every recorded input location with its exact output
-// origin (materialization.rs:902-1100).
+// origin (materialization.rs).
 
 package consema.xml
 
@@ -76,7 +76,7 @@ import java.nio.charset.StandardCharsets
 
 /**
  * Materializes one `xml.element-tree@1` record into a new canonical
- * `xml.1.0-safe@1` document (materialization.rs:36-88). A failure returns no
+ * `xml.1.0-safe@1` document (materialization.rs). A failure returns no
  * Document, no partial bytes, and no provenance that can be mistaken for a
  * result (RFC 0004 §3).
  */
@@ -151,7 +151,7 @@ private fun validateRequest(request: MaterializationRequest) {
 }
 
 /** Reparse limits derived from the materialization limits
- * (materialization.rs:109-140). */
+ * (materialization.rs). */
 private fun parseLimits(limits: MaterializationLimits): XmlParseLimits =
     XmlParseLimits(
         common = ParseLimits(
@@ -188,7 +188,7 @@ private fun saturatedMultiply(left: Int, right: Int): Int =
     if (left > Int.MAX_VALUE / right) Int.MAX_VALUE else left * right
 
 /** Encodes canonical UTF-8 text into the requested output encoding
- * (materialization.rs:142-172). */
+ * (materialization.rs). */
 private fun encodeText(
     text: ByteArray,
     encoding: SourceEncoding,
@@ -225,7 +225,7 @@ private fun encodeText(
 // ---------------------------------------------------------------------------
 
 /** Validated input record mirroring `xml.element-tree@1`
- * (materialization.rs:174-237). */
+ * (materialization.rs). */
 private class XmlRecord(
     val declaration: DeclarationRecord?,
     val entities: List<EntityRecord>,
@@ -289,7 +289,7 @@ private sealed class FragmentRecord {
     data class GeneralEntity(val name: String, val resolved: String) : FragmentRecord()
 }
 
-/** Strict record validation (materialization.rs:238-500). */
+/** Strict record validation (materialization.rs). */
 private object Record {
     fun validate(value: PortableValue, analyzed: MutableList<ValuePath>): XmlRecord {
         analyzed.add(ValuePath.root())
@@ -358,7 +358,7 @@ private object Record {
     }
 
     /** Fetches one object field of any kind (the Rust
-     * expect_object_field, materialization.rs:1239-1256). */
+     * expect_object_field, materialization.rs). */
     fun expectField(value: PortableValue, name: String, path: ValuePath): PortableValue {
         val objectValue = asObject(value, path)
         return objectValue.get(name)
@@ -380,7 +380,7 @@ private object Record {
     }
 
     /** Fetches an optional object field from the record root
-     * (materialization.rs:1258-1266). */
+     * (materialization.rs). */
     fun expectOptionalObjectField(
         value: PortableValue,
         name: String,
@@ -608,7 +608,7 @@ private object ElementRecord {
 // ---------------------------------------------------------------------------
 
 /** Deterministic generated-prefix assignment by first-encounter order
- * (materialization.rs:502-526). */
+ * (materialization.rs). */
 private class PrefixTable {
     private val entries = HashMap<String, String>()
     private var next = 0
@@ -629,8 +629,8 @@ private class PrefixTable {
 }
 
 /** One input location recorded during generation, paired by order with the
- * reparsed document during closure verification (materialization.rs:
- * 528-563). */
+ * reparsed document during closure verification (materialization.rs
+ *). */
 private sealed class InputItem {
     abstract val path: ValuePath
 
@@ -654,7 +654,7 @@ private sealed class InputItem {
         }
 }
 
-/** The deterministic canonical writer (materialization.rs:565-900). */
+/** The deterministic canonical writer (materialization.rs). */
 private class Writer(private val limits: MaterializationLimits) {
     val output = java.io.ByteArrayOutputStream()
     val items = ArrayList<InputItem>()
@@ -689,7 +689,7 @@ private class Writer(private val limits: MaterializationLimits) {
     }
 
     /** Spelling prefix for one expanded namespace, using the current scope
-     * (materialization.rs:596-621). `""` means unprefixed; null means the
+     * (materialization.rs). `""` means unprefixed; null means the
      * URI is not bound in scope and a declaration must be generated. */
     private fun spellingPrefix(uri: String?): String? =
         when {
@@ -966,7 +966,7 @@ private class Writer(private val limits: MaterializationLimits) {
     }
 
     /** Restores the in-scope bindings to the length recorded at element
-     * entry (the truncation of materialization.rs:840-845). */
+     * entry (the truncation of materialization.rs). */
     private fun restoreScope(scopeLen: Int) {
         while (scope.size > scopeLen) {
             scope.removeAt(scope.size - 1)
@@ -978,8 +978,8 @@ private class Writer(private val limits: MaterializationLimits) {
 // Closure verification
 // ---------------------------------------------------------------------------
 
-/** One matched output origin in the reparsed document (materialization.rs:
- * 902-907). */
+/** One matched output origin in the reparsed document (materialization.rs
+ *). */
 private class OutputItem(
     val node: NodeRef,
     val span: Span,
@@ -990,7 +990,7 @@ private class OutputItem(
  * Walks the input record and the reparsed document in lockstep, compares
  * the promised semantics, and pairs every recorded input location with its
  * exact output origin. Any mismatch fails the whole materialization
- * (materialization.rs:909-1100).
+ * (materialization.rs).
  */
 private fun verifyClosure(
     input: XmlRecord,
@@ -1084,7 +1084,7 @@ private fun verifyClosure(
 }
 
 /** One element closure walk over the reparsed document
- * (materialization.rs:1016-1210). */
+ * (materialization.rs). */
 private class ClosureContext(
     private val document: Document,
     private val outputs: MutableList<OutputItem>,
@@ -1250,7 +1250,7 @@ private class ClosureContext(
 }
 
 /** XML 1.0 line-end normalization for one fragment: CRLF and CR become LF
- * (materialization.rs:1212-1226). */
+ * (materialization.rs). */
 private fun pushNormalized(out: StringBuilder, text: String) {
     var index = 0
     while (index < text.length) {

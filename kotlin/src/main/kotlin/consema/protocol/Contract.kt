@@ -1,7 +1,7 @@
 // The frozen contract registry and the common protocol envelope.
 //
 // Data authority: https://github.com/consema/consema-rs/blob/main/consema-protocol/src/contract.rs — CONTRACTS_V1 at
-// contract.rs:71, V2 at :90, V3 at :111, V5 at :142, V6 at :178, V7 at :225
+// contract.rs, V2 at :90, V3 at :111, V5 at :142, V6 at :178, V7 at :225
 // (16/18/25/25/30/38/41 records; v4 reuses v3). The record lists below are
 // transcribed VERBATIM from the Rust source (cross-checked against
 // consema-go/go/protocol/contract.go:289-473). Every contract id/version/stability is
@@ -40,7 +40,7 @@ fun parseContractStability(name: String): ContractStability = when (name) {
  * A stable versioned protocol contract identifier. The version must be
  * non-zero and the id must be a dotted lowercase identifier of at most 255
  * bytes whose segments start with a lowercase letter
- * (https://github.com/consema/consema-rs/blob/main/consema-protocol/src/contract.rs:18-30, 559-578).
+ * (https://github.com/consema/consema-rs/blob/main/consema-protocol/src/contract.rs).
  */
 data class ContractId(val id: String, val version: Int) : Comparable<ContractId> {
     init {
@@ -61,7 +61,7 @@ data class ContractId(val id: String, val version: Int) : Comparable<ContractId>
 }
 
 /** Enforces the strict dotted identifier rule of the contract registry
- * (contract.rs:559-578): at most 255 bytes, at least two segments, each
+ * (contract.rs): at most 255 bytes, at least two segments, each
  * segment starting with a lowercase letter and continuing with lowercase
  * letters, digits, or dashes. */
 internal fun validateIdentifier(identifier: String, path: String) {
@@ -83,7 +83,7 @@ internal fun validateIdentifier(identifier: String, path: String) {
 
 /**
  * Enforces the profile/capability namespace rule (https://github.com/consema/consema-rs/blob/main/consema-protocol/
- * src/registry.rs:475-498): at most 255 bytes, and when [requireDot] is set
+ * src/registry.rs): at most 255 bytes, and when [requireDot] is set
  * at least two segments; every segment starts with a lowercase letter (or a
  * digit when not the first segment) and continues with lowercase letters,
  * digits, or dashes.
@@ -196,7 +196,7 @@ private fun stable(id: String): ContractDescriptor = contract(id, 1, ContractSta
 private fun transport(id: String): ContractDescriptor = contract(id, 1, ContractStability.Transport)
 
 // The frozen records, transcribed verbatim from
-// https://github.com/consema/consema-rs/blob/main/consema-protocol/src/contract.rs:71-273 (CONTRACTS_V1..V7).
+// https://github.com/consema/consema-rs/blob/main/consema-protocol/src/contract.rs (CONTRACTS_V1..V7).
 
 private val CONTRACTS_V1: List<ContractDescriptor> = listOf(
     stable("core.cancellation-request"),
@@ -398,7 +398,7 @@ internal fun contractsForVersion(version: ContractRegistryVersion): List<Contrac
 
 /**
  * One validated protocol payload in the common envelope
- * (https://github.com/consema/consema-rs/blob/main/consema-protocol/src/contract.rs:417-521).
+ * (https://github.com/consema/consema-rs/blob/main/consema-protocol/src/contract.rs).
  */
 class ProtocolMessage private constructor(
     val contract: ContractId,
@@ -459,7 +459,7 @@ class ProtocolMessage private constructor(
 }
 
 /** Requires the payload to be an Object whose first field is "schema"
- * carrying the exact contract schema (contract.rs:523-557). */
+ * carrying the exact contract schema (contract.rs). */
 internal fun validateContractPayloadSchema(payload: PortableValue, contract: ContractId) {
     val objectValue = payload as? PvObject
         ?: throw protocolError(ProtocolErrorKind.WRONG_TYPE, "$.payload", "payload must be an Object")

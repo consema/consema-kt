@@ -192,7 +192,7 @@ class EditTest {
 
     /** The operation registry: `hcl.native@1` publishes the frozen six
      * operations; `hcl.tfvars@1` publishes the four attribute operations
-     * only (operation_registry.rs:105-156). */
+     * only (operation_registry.rs). */
     @Test
     fun operationRegistry() {
         val nativeRegistry = consema.hcl.formatOperationRegistry(HclProfile.NATIVE_V1)

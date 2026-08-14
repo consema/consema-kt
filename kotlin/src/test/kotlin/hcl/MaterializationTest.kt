@@ -39,7 +39,7 @@ class MaterializationTest {
         complete(result).render().toString(Charsets.UTF_8)
 
     /** Vector case hcl.materialization.canonical-document (hcl-v1.json:
-     * 1153-1283): every scalar family, escapes, tuples/objects with the
+ *): every scalar family, escapes, tuples/objects with the
      * one-item-per-line layout, empty constructors, and blocks with quoted
      * labels render byte-exact. */
     @Test
@@ -195,7 +195,7 @@ class MaterializationTest {
     }
 
     /** Unsupported request fields fail with the frozen core codes (RFC 0014
-     * §9; materialization.rs:267-285). */
+     * §9; materialization.rs). */
     @Test
     fun unsupportedRequests() {
         val record = bodyRecord(emptyList())

@@ -2,16 +2,16 @@
 //
 // Data authority:
 //   - RFC 0004 §10 (https://github.com/consema/consema/blob/main/docs/rfcs/0004-materialization-conversion-and-
-//     structural-edit-v1.md:244-269): every structural operation has an
+//     structural-edit-v1.md): every structural operation has an
 //     immutable ID/version, target role, argument schema, and support
 //     classification.
-//   - RFC 0010 §13 (https://github.com/consema/consema/blob/main/docs/rfcs/0010-java-properties-profiles-v1.md:383-394):
+//   - RFC 0010 §13 (https://github.com/consema/consema/blob/main/docs/rfcs/0010-java-properties-profiles-v1.md):
 //     both Profiles publish the same five independently validated
 //     operations.
-//   - https://github.com/consema/consema-rs/blob/main/consema-properties/src/operation_registry.rs:16-48 is the exact
+//   - https://github.com/consema/consema-rs/blob/main/consema-properties/src/operation_registry.rs is the exact
 //     byte-arbitration source of the five descriptor records (ids, target
 //     roles, argument names/kinds, support classes); the frozen surface test
-//     (operation_registry.rs:67-95) pins the five Supported operations for
+//     (operation_registry.rs) pins the five Supported operations for
 //     both profiles in sorted id order.
 //   - conformance/vectors/java-properties-v1.json registry.frozen-five-
 //     operation-surface (lines 146-150) pins the exact operation list.
@@ -20,13 +20,13 @@
 // data classes per profile; argument kinds use the language-neutral
 // spellings of the Rust OperationArgumentKind (PortableValue, Placement,
 // ExactBytes) — the JSON family precedent (kotlin/src/main/kotlin/consema/json/
-// OperationRegistry.kt:19-22).
+// OperationRegistry.kt).
 
 package consema.properties
 
 import consema.document.FormatOperationId
 
-/** Argument kind of one operation descriptor (operation_registry.rs:22-25). */
+/** Argument kind of one operation descriptor (operation_registry.rs). */
 enum class PropertiesOperationArgumentKind {
     /** Complete portable value (PortableValue). */
     PortableValue,
@@ -38,13 +38,13 @@ enum class PropertiesOperationArgumentKind {
     ExactBytes,
 }
 
-/** Support classification of one operation (operation_registry.rs:26). */
+/** Support classification of one operation (operation_registry.rs). */
 enum class PropertiesOperationSupport {
     /** Structural operation supported by every Java Properties profile. */
     Supported,
 }
 
-/** One immutable operation descriptor (operation_registry.rs:16-48). */
+/** One immutable operation descriptor (operation_registry.rs). */
 data class PropertiesOperationDescriptor(
     /** Exact immutable operation ID/version. */
     val id: FormatOperationId,
@@ -58,8 +58,8 @@ data class PropertiesOperationDescriptor(
 
 /**
  * Returns the validated operation registry for one exact Java Properties
- * profile (operation_registry.rs:9-14). Both profiles publish the same
- * frozen five-record surface (operation_registry.rs:67-95;
+ * profile (operation_registry.rs). Both profiles publish the same
+ * frozen five-record surface (operation_registry.rs;
  * registry.frozen-five-operation-surface, java-properties-v1.json:146-150).
  */
 fun formatOperationRegistry(profile: PropertiesProfile): List<PropertiesOperationDescriptor> {

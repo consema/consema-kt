@@ -2,7 +2,7 @@
 // nested Object with fidelity, collision report, and provenance.
 //
 // Data authority:
-//   - RFC 0009 §10 (https://github.com/consema/consema/blob/main/docs/rfcs/0009-ini-family-profiles-v1.md:347-385): the
+//   - RFC 0009 §10 (https://github.com/consema/consema/blob/main/docs/rfcs/0009-ini-family-profiles-v1.md): the
 //     default exact projection ini.projection.best-exact-entry-mapping@1
 //     produces an outer EntryMapping in source section order with inner
 //     EntryMappings of original key String to value String, preserving
@@ -17,18 +17,18 @@
 //   - conformance/vectors/ini-v1.json (projection.*) pins the per-case
 //     fidelity, events, section/key order, and provenance relations;
 //     https://github.com/consema/consema-rs/blob/main/consema-ini/src/projection.rs is the byte-arbitration
-//     authority (request projection.rs:9-124, exact projection.rs:428-537,
-//     object projection.rs:546-785, selection projection.rs:787-821,
-//     comparison projection.rs:831-846, failures projection.rs:852-893).
+//     authority (request projection.rs, exact projection.rs,
+//     object projection.rs, selection projection.rs,
+//     comparison projection.rs, failures projection.rs).
 //   - Value paths come from the L0 core agent (consema.core.ValuePath /
 //     ValuePathSegment / AssociationLocation / AssociationRole mirroring
-//     https://github.com/consema/consema-rs/blob/main/consema-core/src/location.rs:1-89; the dependency is declared
-//     by kotlin/src/main/kotlin/consema/document/Materialization.kt:27-31).
+//     https://github.com/consema/consema-rs/blob/main/consema-core/src/location.rs; the dependency is declared
+//     by kotlin/src/main/kotlin/consema/document/Materialization.kt).
 //
 // Kotlin-idiomatic design: the completion algebra is a sealed class, so
 // exhaustive `when` over Complete/Failed can never meet an unknown outcome;
 // failures carry their frozen registered code via the failure-code mapping
-// (projection.rs:886-893).
+// (projection.rs).
 
 package consema.ini
 
@@ -48,7 +48,7 @@ import consema.protocol.Diagnostic
 import consema.protocol.DiagnosticCategory
 import consema.protocol.Severity
 
-/** Versioned INI projection target (projection.rs:9-16). */
+/** Versioned INI projection target (projection.rs). */
 enum class ProjectionTarget {
     /** Exact nested EntryMapping preserving every section and entry
      * occurrence. */
@@ -59,7 +59,7 @@ enum class ProjectionTarget {
     RequireObjectV1,
 }
 
-/** Name comparison used only by `RequireObjectV1` (projection.rs:18-25). */
+/** Name comparison used only by `RequireObjectV1` (projection.rs). */
 enum class NameComparison {
     /** Compare retained original decoded spelling exactly. */
     OriginalExact,
@@ -68,7 +68,7 @@ enum class NameComparison {
     ProfileEquivalent,
 }
 
-/** Explicit collision behavior for Object projection (projection.rs:27-36). */
+/** Explicit collision behavior for Object projection (projection.rs). */
 enum class CollisionPolicy {
     /** Reject every collision. */
     Reject,
@@ -80,7 +80,7 @@ enum class CollisionPolicy {
     Last,
 }
 
-/** Immutable explicit projection request (projection.rs:38-100). */
+/** Immutable explicit projection request (projection.rs). */
 class ProjectionRequest private constructor(
     /** Frozen target contract. */
     val target: ProjectionTarget,
@@ -93,7 +93,7 @@ class ProjectionRequest private constructor(
 ) {
     companion object {
         /** Exact default that preserves duplicate associations
-         * (projection.rs:48-57). */
+         * (projection.rs). */
         fun bestExactEntryMapping(): ProjectionRequest =
             ProjectionRequest(
                 ProjectionTarget.BestExactEntryMappingV1,
@@ -102,7 +102,7 @@ class ProjectionRequest private constructor(
                 ProjectionLimits.default,
             )
 
-        /** Explicit unique Object request (projection.rs:59-68). */
+        /** Explicit unique Object request (projection.rs). */
         fun requireObject(
             comparison: NameComparison,
             collisionPolicy: CollisionPolicy,
@@ -115,12 +115,12 @@ class ProjectionRequest private constructor(
             )
     }
 
-    /** Replaces immutable resource limits (projection.rs:70-75). */
+    /** Replaces immutable resource limits (projection.rs). */
     fun withLimits(limits: ProjectionLimits): ProjectionRequest =
         ProjectionRequest(target, comparison, collisionPolicy, limits)
 }
 
-/** INI projection limits (projection.rs:102-124). */
+/** INI projection limits (projection.rs). */
 data class ProjectionLimits(
     /** Maximum source section and entry associations inspected. */
     val maxSourceAssociations: Int,
@@ -132,7 +132,7 @@ data class ProjectionLimits(
     val maxProvenanceUnits: Int,
 ) {
     companion object {
-        /** The frozen defaults (projection.rs:115-123). */
+        /** The frozen defaults (projection.rs). */
         val default = ProjectionLimits(
             maxSourceAssociations = 2_000_000,
             maxValueNodes = 2_000_000,
@@ -142,7 +142,7 @@ data class ProjectionLimits(
     }
 }
 
-/** Projection fidelity classification (projection.rs:126-135). */
+/** Projection fidelity classification (projection.rs). */
 enum class Fidelity {
     /** Target directly represents every native association. */
     Exact,
@@ -155,7 +155,7 @@ enum class Fidelity {
     Lossy,
 }
 
-/** Projected value or association location (projection.rs:137-144). */
+/** Projected value or association location (projection.rs). */
 sealed class ProjectedLocation {
     /** Portable value location. */
     data class Value(val path: ValuePath) : ProjectedLocation()
@@ -164,7 +164,7 @@ sealed class ProjectedLocation {
     data class Association(val location: AssociationLocation) : ProjectedLocation()
 }
 
-/** Source-to-projection relation (projection.rs:146-159). */
+/** Source-to-projection relation (projection.rs). */
 enum class ProvenanceRelation {
     /** Direct native semantic origin. */
     Direct,
@@ -183,7 +183,7 @@ enum class ProvenanceRelation {
     Collapsed,
 }
 
-/** One exact source origin (projection.rs:161-172). */
+/** One exact source origin (projection.rs). */
 data class SourceOrigin(
     /** Source document snapshot. */
     val snapshot: SnapshotIdentity,
@@ -195,7 +195,7 @@ data class SourceOrigin(
     val relation: ProvenanceRelation,
 )
 
-/** One many-valued provenance entry (projection.rs:174-181). */
+/** One many-valued provenance entry (projection.rs). */
 data class ProvenanceEntry(
     /** Projected value or association. */
     val projected: ProjectedLocation,
@@ -203,7 +203,7 @@ data class ProvenanceEntry(
     val origins: List<SourceOrigin>,
 )
 
-/** Immutable many-valued provenance mapping (projection.rs:183-195). */
+/** Immutable many-valued provenance mapping (projection.rs). */
 class ProvenanceMap private constructor(private val entries: List<ProvenanceEntry>) {
     companion object {
         internal fun of(entries: List<ProvenanceEntry>): ProvenanceMap = ProvenanceMap(entries)
@@ -218,7 +218,7 @@ class ProvenanceMap private constructor(private val entries: List<ProvenanceEntr
     override fun hashCode(): Int = entries.hashCode()
 }
 
-/** Collision report category (projection.rs:197-204). */
+/** Collision report category (projection.rs). */
 enum class ProjectionEventKind {
     /** Section association was collapsed. */
     SectionCollisionCollapsed,
@@ -227,7 +227,7 @@ enum class ProjectionEventKind {
     EntryCollisionCollapsed,
 }
 
-/** One explicit Object collision event (projection.rs:206-223). */
+/** One explicit Object collision event (projection.rs). */
 data class ProjectionEvent(
     /** Stable event kind. */
     val kind: ProjectionEventKind,
@@ -245,7 +245,7 @@ data class ProjectionEvent(
     val impact: Fidelity,
 )
 
-/** Complete ordered projection report (projection.rs:225-237). */
+/** Complete ordered projection report (projection.rs). */
 class ProjectionReport private constructor(private val events: List<ProjectionEvent>) {
     companion object {
         internal val EMPTY = ProjectionReport(emptyList())
@@ -262,7 +262,7 @@ class ProjectionReport private constructor(private val events: List<ProjectionEv
     override fun hashCode(): Int = events.hashCode()
 }
 
-/** Complete successful projection (projection.rs:239-250). */
+/** Complete successful projection (projection.rs). */
 data class CompleteProjection(
     /** Complete immutable nested mapping. */
     val value: PortableValue,
@@ -274,7 +274,7 @@ data class CompleteProjection(
     val provenance: ProvenanceMap,
 )
 
-/** Failed projection attempt without a partial value (projection.rs:252-259). */
+/** Failed projection attempt without a partial value (projection.rs). */
 data class FailedProjectionAttempt(
     /** Stable ordered diagnostics. */
     val diagnostics: List<Diagnostic>,
@@ -283,7 +283,7 @@ data class FailedProjectionAttempt(
     val report: ProjectionReport,
 )
 
-/** Projection completion algebra (projection.rs:261-268). */
+/** Projection completion algebra (projection.rs). */
 sealed class ProjectionResult {
     /** Complete success. */
     data class Complete(val projection: CompleteProjection) : ProjectionResult()
@@ -292,7 +292,7 @@ sealed class ProjectionResult {
     data class Failed(val attempt: FailedProjectionAttempt) : ProjectionResult()
 }
 
-/** Stable INI projection failure (projection.rs:270-286). */
+/** Stable INI projection failure (projection.rs). */
 sealed class ProjectionFailure {
     /** Recovered documents cannot publish partial semantic values. */
     data object RecoveredDocument : ProjectionFailure()
@@ -313,11 +313,11 @@ sealed class ProjectionFailure {
 }
 
 /** The typed projection failure carrying the frozen registered code
- * (projection.rs:886-893). */
+ * (projection.rs). */
 class ProjectionFailureException(val failure: ProjectionFailure) :
     Exception("ini projection: ${projectionCode(failure)}")
 
-/** The frozen code mapping (projection.rs:886-893). */
+/** The frozen code mapping (projection.rs). */
 internal fun projectionCode(failure: ProjectionFailure): String =
     when (failure) {
         is ProjectionFailure.RecoveredDocument -> "ini.projection.incomplete-document@1"
@@ -328,7 +328,7 @@ internal fun projectionCode(failure: ProjectionFailure): String =
 
 /**
  * Projects this snapshot under one explicit target and collision contract
- * (projection.rs:288-314). A failure publishes no value, provenance map, or
+ * (projection.rs). A failure publishes no value, provenance map, or
  * partial event report (RFC 0009 §10).
  */
 fun IniDocument.project(request: ProjectionRequest): ProjectionResult {
@@ -352,7 +352,7 @@ fun IniDocument.project(request: ProjectionRequest): ProjectionResult {
 }
 
 /** Mutable projection context carrying provenance, report, and fidelity
- * (projection.rs:316-426). */
+ * (projection.rs). */
 private class ProjectionContext(
     val document: IniDocument,
     val request: ProjectionRequest,
@@ -448,7 +448,7 @@ private class ProjectionContext(
         }
 }
 
-/** The exact nested EntryMapping projection (projection.rs:428-537). */
+/** The exact nested EntryMapping projection (projection.rs). */
 private fun projectExact(
     document: IniDocument,
     request: ProjectionRequest,
@@ -529,14 +529,14 @@ private fun projectExact(
     )
 }
 
-/** One retained section with its entry selection facts (projection.rs:539-544). */
+/** One retained section with its entry selection facts (projection.rs). */
 private data class SelectedSection(
     val sourceIndex: Int,
     val allEntryIndices: List<Int>,
     val entryIndices: List<Int>,
 )
 
-/** The explicit unique-Object projection (projection.rs:546-785). */
+/** The explicit unique-Object projection (projection.rs). */
 private fun projectObject(
     document: IniDocument,
     request: ProjectionRequest,
@@ -721,7 +721,7 @@ private fun projectObject(
     )
 }
 
-/** Selects retained indices under one collision policy (projection.rs:787-821). */
+/** Selects retained indices under one collision policy (projection.rs). */
 private fun selectIndices(
     names: List<String>,
     policy: CollisionPolicy,
@@ -751,7 +751,7 @@ private fun selectIndices(
 }
 
 /** Entry indices grouped by their owning section occurrence
- * (projection.rs:823-829). */
+ * (projection.rs). */
 private fun groupEntries(document: IniDocument): Map<NodeRef, List<Int>> {
     val groups = HashMap<NodeRef, MutableList<Int>>()
     for ((index, entry) in document.entriesList.withIndex()) {
@@ -760,7 +760,7 @@ private fun groupEntries(document: IniDocument): Map<NodeRef, List<Int>> {
     return groups
 }
 
-/** The profile-specific comparison of one name (projection.rs:831-846). */
+/** The profile-specific comparison of one name (projection.rs). */
 private fun comparisonName(
     profile: IniProfile,
     value: String,
@@ -778,7 +778,7 @@ private fun comparisonName(
 }
 
 /** Builds a failed attempt with the ordered diagnostics and no partial
- * report (projection.rs:852-884). */
+ * report (projection.rs). */
 private fun failed(document: IniDocument, failure: ProjectionFailure): ProjectionResult {
     val arguments = LinkedHashMap<String, String>()
     arguments["reason"] = when (failure) {
@@ -795,7 +795,7 @@ private fun failed(document: IniDocument, failure: ProjectionFailure): Projectio
     val diagnostic = Diagnostic.of(
         projectionCode(failure),
         // `core.projection.resource-limit@1` is registered Resource; every
-        // other projection failure is Projection (ErrorRegistry.kt:181-183).
+        // other projection failure is Projection (kotlin/src/main/kotlin/consema/protocol/ErrorRegistry.kt).
         if (failure is ProjectionFailure.ResourceLimit) {
             DiagnosticCategory.Resource
         } else {

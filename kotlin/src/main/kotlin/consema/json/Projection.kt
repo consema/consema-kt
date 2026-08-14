@@ -3,11 +3,11 @@
 //
 // Data authority:
 //   - RFC 0004 §7-§8 (https://github.com/consema/consema/blob/main/docs/rfcs/0004-materialization-conversion-and-
-//     structural-edit-v1.md:171-218) pins the completion algebra
+//     structural-edit-v1.md) pins the completion algebra
 //     (Complete{value, fidelity, report, provenance} | Failed{diagnostics,
 //     report, partial_analysis}) and the provenance direction (portable
 //     locations to source origins).
-//   - RFC 0005 §8 (https://github.com/consema/consema/blob/main/docs/rfcs/0005-json-family-production-v1.md:174-193) pins
+//   - RFC 0005 §8 (https://github.com/consema/consema/blob/main/docs/rfcs/0005-json-family-production-v1.md) pins
 //     the JSON5 projection contract: json5.projection.best-exact-core@1 is the
 //     JSON5 default target and is profile-bound (applying the old target to
 //     JSON5 or the JSON5 target to another profile fails target-not-
@@ -15,18 +15,18 @@
 //     Infinity/NaN map to the exact frozen BinaryFloat64 bits.
 //   - conformance/vectors/json-family-v2.json (json5.projection.*) pins the
 //     per-case outcomes; https://github.com/consema/consema-rs/blob/main/consema-json/src/projection.rs is the
-//     byte-arbitration authority (targets projection.rs:13-24, request
-//     projection.rs:52-168, failure codes projection.rs:754-765, selection
-//     projection.rs:691-726).
+//     byte-arbitration authority (targets projection.rs, request
+//     projection.rs, failure codes projection.rs, selection
+//     projection.rs).
 //   - Value paths come from the L0 core agent (consema.core.ValuePath /
 //     ValuePathSegment / AssociationLocation / AssociationRole mirroring
-//     https://github.com/consema/consema-rs/blob/main/consema-core/src/location.rs:1-89; the dependency is declared by
-//     kotlin/src/main/kotlin/consema/document/Materialization.kt:27-31).
+//     https://github.com/consema/consema-rs/blob/main/consema-core/src/location.rs; the dependency is declared by
+//     kotlin/src/main/kotlin/consema/document/Materialization.kt).
 //
 // Kotlin-idiomatic design: the completion algebra is a sealed class, so
 // exhaustive `when` over Complete/Failed can never meet an unknown outcome;
 // failures carry their frozen registered code via the projection_code
-// mapping (projection.rs:754-765).
+// mapping (projection.rs).
 
 package consema.json
 
@@ -51,7 +51,7 @@ import consema.protocol.Diagnostic
 import consema.protocol.DiagnosticCategory
 import consema.protocol.Severity
 
-/** Versioned projection target contract (projection.rs:13-24). */
+/** Versioned projection target contract (projection.rs). */
 enum class ProjectionTarget {
     /** Every JSON object must become a unique-key PortableValue Object. */
     ProjectAsObjectV1,
@@ -67,7 +67,7 @@ enum class ProjectionTarget {
     Json5BestExactCoreV1,
 }
 
-/** Explicit duplicate member policy (projection.rs:26-35). */
+/** Explicit duplicate member policy (projection.rs). */
 enum class DuplicateKeyPolicy {
     /** Preserve nothing by guessing; fail when Object cannot represent
      * duplicates. */
@@ -80,7 +80,7 @@ enum class DuplicateKeyPolicy {
     LastWins,
 }
 
-/** Scope supported by v1 projection policy rules (projection.rs:37-44). */
+/** Scope supported by v1 projection policy rules (projection.rs). */
 sealed class ProjectionPolicyScope {
     /** All applicable native objects. */
     data object Global : ProjectionPolicyScope()
@@ -89,7 +89,7 @@ sealed class ProjectionPolicyScope {
     data class ExactNodeRef(val node: NodeRef) : ProjectionPolicyScope()
 }
 
-/** Projection resource limits (projection.rs:146-168). */
+/** Projection resource limits (projection.rs). */
 data class ProjectionLimits(
     /** Maximum produced PortableValue nodes. */
     val maxValueNodes: Int,
@@ -101,7 +101,7 @@ data class ProjectionLimits(
     val maxDepth: Int,
 ) {
     companion object {
-        /** The frozen defaults (projection.rs:159-168): 1,000,000 value
+        /** The frozen defaults (projection.rs): 1,000,000 value
          * nodes, 100,000 report entries, 2,000,000 provenance entries,
          * depth 256. */
         val default = ProjectionLimits(
@@ -113,7 +113,7 @@ data class ProjectionLimits(
     }
 }
 
-/** Projection fidelity classification (projection.rs:170-179). */
+/** Projection fidelity classification (projection.rs). */
 enum class Fidelity {
     /** Target directly and completely represents covered native semantics. */
     Exact,
@@ -125,7 +125,7 @@ enum class Fidelity {
     Lossy,
 }
 
-/** Projected value or association location (projection.rs:181-188). */
+/** Projected value or association location (projection.rs). */
 sealed class ProjectedLocation {
     /** Portable value location. */
     data class Value(val path: ValuePath) : ProjectedLocation()
@@ -134,7 +134,7 @@ sealed class ProjectedLocation {
     data class Association(val location: AssociationLocation) : ProjectedLocation()
 }
 
-/** Source-to-projection relation (projection.rs:190-203). */
+/** Source-to-projection relation (projection.rs). */
 enum class ProvenanceRelation {
     /** Direct native semantic origin. */
     Direct,
@@ -152,7 +152,7 @@ enum class ProvenanceRelation {
     Generated,
 }
 
-/** One exact source origin (projection.rs:205-216). */
+/** One exact source origin (projection.rs). */
 data class SourceOrigin(
     /** Source document snapshot. */
     val snapshot: SnapshotIdentity,
@@ -164,7 +164,7 @@ data class SourceOrigin(
     val relation: ProvenanceRelation,
 )
 
-/** One many-valued provenance mapping entry (projection.rs:218-225). */
+/** One many-valued provenance mapping entry (projection.rs). */
 data class ProvenanceEntry(
     /** Projected value or association. */
     val projected: ProjectedLocation,
@@ -173,7 +173,7 @@ data class ProvenanceEntry(
 )
 
 /** Immutable multi-map from projected locations to source origins
- * (projection.rs:227-239). */
+ * (projection.rs). */
 class ProvenanceMap private constructor(private val entries: List<ProvenanceEntry>) {
     companion object {
         internal fun of(entries: List<ProvenanceEntry>): ProvenanceMap = ProvenanceMap(entries)
@@ -188,7 +188,7 @@ class ProvenanceMap private constructor(private val entries: List<ProvenanceEntr
     override fun hashCode(): Int = entries.hashCode()
 }
 
-/** Machine-readable projection event category (projection.rs:241-256). */
+/** Machine-readable projection event category (projection.rs). */
 enum class ProjectionEventKind {
     /** Object was reversibly represented as EntryMapping. */
     StructureReencoded,
@@ -209,7 +209,7 @@ enum class ProjectionEventKind {
     FieldDropped,
 }
 
-/** One structured projection report event (projection.rs:258-277). */
+/** One structured projection report event (projection.rs). */
 data class ProjectionEvent(
     /** Stable event kind. */
     val kind: ProjectionEventKind,
@@ -229,7 +229,7 @@ data class ProjectionEvent(
     val loss: Fidelity,
 )
 
-/** Complete ordered projection report (projection.rs:279-291). */
+/** Complete ordered projection report (projection.rs). */
 class ProjectionReport private constructor(private val events: List<ProjectionEvent>) {
     companion object {
         internal val EMPTY = ProjectionReport(emptyList())
@@ -247,7 +247,7 @@ class ProjectionReport private constructor(private val events: List<ProjectionEv
 }
 
 /** Complete successful projection; its value is never partial
- * (projection.rs:293-304). */
+ * (projection.rs). */
 data class CompleteProjection(
     /** Complete immutable value. */
     val value: PortableValue,
@@ -259,7 +259,7 @@ data class CompleteProjection(
     val provenance: ProvenanceMap,
 )
 
-/** Failed attempt without a partial PortableValue (projection.rs:306-315). */
+/** Failed attempt without a partial PortableValue (projection.rs). */
 data class FailedProjectionAttempt(
     /** Ordered operation diagnostics. */
     val diagnostics: List<Diagnostic>,
@@ -269,7 +269,7 @@ data class FailedProjectionAttempt(
     val partialAnalysis: List<String>,
 )
 
-/** Projection completion algebra (projection.rs:317-324). */
+/** Projection completion algebra (projection.rs). */
 sealed class ProjectionResult {
     /** Complete success. */
     data class Complete(val projection: CompleteProjection) : ProjectionResult()
@@ -278,7 +278,7 @@ sealed class ProjectionResult {
     data class Failed(val attempt: FailedProjectionAttempt) : ProjectionResult()
 }
 
-/** Stable projection failure category (projection.rs:326-355). */
+/** Stable projection failure category (projection.rs). */
 sealed class ProjectionFailure {
     /** Recovered documents cannot publish partial semantic values. */
     data object RecoveredDocument : ProjectionFailure()
@@ -310,8 +310,8 @@ sealed class ProjectionFailure {
 }
 
 /**
- * Immutable versioned projection request (projection.rs:52-72). The builder
- * (projection.rs:74-144) starts with `ExactOrReject` behavior and rejects
+ * Immutable versioned projection request (projection.rs). The builder
+ * (projection.rs) starts with `ExactOrReject` behavior and rejects
  * conflicting equal-precedence rules with [ProjectionFailure.ConflictingPolicyRules].
  */
 class ProjectionRequest private constructor(
@@ -333,27 +333,27 @@ class ProjectionRequest private constructor(
             )
         }
 
-        /** Replaces the global duplicate policy (projection.rs:96-108). */
+        /** Replaces the global duplicate policy (projection.rs). */
         fun globalDuplicatePolicy(policy: DuplicateKeyPolicy): Builder {
             duplicateRules.removeAll { it.scope == ProjectionPolicyScope.Global }
             duplicateRules.add(DuplicateRule(ProjectionPolicyScope.Global, policy))
             return this
         }
 
-        /** Adds an exact-node override (projection.rs:108-121). */
+        /** Adds an exact-node override (projection.rs). */
         fun exactNodeDuplicatePolicy(node: NodeRef, policy: DuplicateKeyPolicy): Builder {
             duplicateRules.add(DuplicateRule(ProjectionPolicyScope.ExactNodeRef(node), policy))
             return this
         }
 
-        /** Sets immutable resource limits (projection.rs:122-127). */
+        /** Sets immutable resource limits (projection.rs). */
         fun limits(limits: ProjectionLimits): Builder {
             this.limits = limits
             return this
         }
 
         /** Validates rule precedence and completes the request
-         * (projection.rs:128-143). */
+         * (projection.rs). */
         fun build(): ProjectionRequest {
             for (index in duplicateRules.indices) {
                 for (right in duplicateRules.drop(index + 1)) {
@@ -370,23 +370,23 @@ class ProjectionRequest private constructor(
 
     companion object {
         /** Starts a builder with the conservative exact-or-reject default
-         * (projection.rs:82-94). */
+         * (projection.rs). */
         fun builder(target: ProjectionTarget): Builder = Builder(target)
     }
 }
 
-/** One scope/policy rule (projection.rs:46-50). */
+/** One scope/policy rule (projection.rs). */
 internal data class DuplicateRule(
     val scope: ProjectionPolicyScope,
     val policy: DuplicateKeyPolicy,
 )
 
 /** The typed projection failure carrying the frozen registered code
- * (projection.rs:754-765). */
+ * (projection.rs). */
 class ProjectionFailureException(val failure: ProjectionFailure) :
     Exception("projection: ${projectionCode(failure)}")
 
-/** The frozen code mapping (projection.rs:754-765). */
+/** The frozen code mapping (projection.rs). */
 internal fun projectionCode(failure: ProjectionFailure): String =
     when (failure) {
         is ProjectionFailure.RecoveredDocument -> "json.projection.incomplete-document@1"
@@ -414,7 +414,7 @@ internal fun projectionFailureName(failure: ProjectionFailure): String =
     }
 
 /** Applies an immutable request; a failure never contains a partial value
- * (projection.rs:357-430). */
+ * (projection.rs). */
 fun Document.project(request: ProjectionRequest): ProjectionResult {
     if (formationStatus != FormationStatus.Complete) {
         return failed(
@@ -697,7 +697,7 @@ private class ProjectionContext(
     }
 }
 
-/** Selects retained members under one duplicate policy (projection.rs:691-726). */
+/** Selects retained members under one duplicate policy (projection.rs). */
 private fun selectMembers(
     members: List<JsonObjectMember>,
     names: List<String>,
@@ -728,7 +728,7 @@ private fun selectMembers(
 }
 
 /** Builds a failed attempt with the ordered diagnostics and analysis
- * (projection.rs:728-752). */
+ * (projection.rs). */
 private fun failed(
     failure: ProjectionFailure,
     report: ProjectionReport,

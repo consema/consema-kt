@@ -3,22 +3,22 @@
 // outcomes.
 //
 // Data authority:
-//   - RFC 0013 §2.1, §3, §4 (https://github.com/consema/consema/blob/main/docs/rfcs/0013-plist-family-profiles-v1.md:
-//     57-76, 90-124, 125-275): the admitted document-entity encodings
+//   - RFC 0013 §2.1, §3, §4 (https://github.com/consema/consema/blob/main/docs/rfcs/0013-plist-family-profiles-v1.md
+//): the admitted document-entity encodings
 //     (UTF-8 optional BOM; UTF-16LE/BE required BOM), the three-way
 //     formation outcome, the DOCTYPE identifier contract, the root contract
 //     (`<plist version="1.0">` exactly, one value element), the value
 //     element vocabulary, the dictionary/key rules, the integer/real/date/
 //     data/string grammars, and the trailing-content rule.
-//   - RFC 0013 §8.2 (https://github.com/consema/consema/blob/main/docs/rfcs/0013-plist-family-profiles-v1.md:560-582): the lossless syntax-kind
+//   - RFC 0013 §8.2 (https://github.com/consema/consema/blob/main/docs/rfcs/0013-plist-family-profiles-v1.md): the lossless syntax-kind
 //     set and the root-tag partition rule.
 //   - conformance/vectors/plist-v1.json (plist.xml-formation.* and
 //     plist.query.* XML cases) pins the recover/complete outcomes and the
 //     diagnostic codes case by case.
 //   - https://github.com/consema/consema-rs/blob/main/consema-plist/src/parser_xml.rs is the byte-arbitration
-//     authority (element/attribute rules parser_xml.rs:1060-1353, value
-//     building parser_xml.rs:1479-1800, text/reference resolution
-//     parser_xml.rs:1791-2060, gap assembly parser_xml.rs:2226-2303);
+//     authority (element/attribute rules parser_xml.rs, value
+//     building parser_xml.rs, text/reference resolution
+//     parser_xml.rs, gap assembly parser_xml.rs);
 //     consema-go/go/plist is a cross-reference only.
 //
 // Kotlin-idiomatic design (NOT a translation): a single self-contained
@@ -45,7 +45,7 @@ import java.util.ArrayDeque
 
 /**
  * Explicit source-encoding selection for plist formation (RFC 0013 §2;
- * https://github.com/consema/consema-rs/blob/main/consema-plist/src/lib.rs:94-110). For the XML profile the selection
+ * https://github.com/consema/consema-rs/blob/main/consema-plist/src/lib.rs). For the XML profile the selection
  * follows the RFC 0012 source contract: no-BOM source defaults to UTF-8, and
  * an explicit caller choice is evidence, not permission to contradict a BOM
  * or a declaration. The binary profile has no text encoding; only
@@ -63,7 +63,7 @@ sealed class PlistEncodingSelection {
 
 /**
  * Forms one `plist.xml@1` or `plist.binary@1` document from raw bytes
- * (RFC 0013 §1, §3; lib.rs:207-221). The profile selects the representation;
+ * (RFC 0013 §1, §3; lib.rs). The profile selects the representation;
  * neither the `bplist00` magic number nor a `.plist` extension selects a
  * profile. Fatal failures (limits, source-construction conflicts, encoding
  * conflicts) throw [PlistFormationException]; syntax and value-grammar
@@ -80,7 +80,7 @@ fun parse(
         PlistProfile.BinaryV1 -> parseBinaryEntry(bytes, selection, limits)
     }
 
-/** XML profile formation entry (lib.rs:262-300). */
+/** XML profile formation entry (lib.rs). */
 internal fun parseXml(
     bytes: ByteArray,
     selection: PlistEncodingSelection,
@@ -318,7 +318,7 @@ internal class XmlParser(
 
     /** One text run: scalar content accumulates (with reference resolution),
      * container/outside text is trivia or a recovery diagnostic
-     * (parser_xml.rs:1791-1844). */
+     * (parser_xml.rs). */
     private fun scanText() {
         val start = pos
         skipUntil('<')
@@ -364,7 +364,7 @@ internal class XmlParser(
     // Markup handlers
     // ------------------------------------------------------------------
 
-    /** `<!-- ... -->` trivia pieces (parser_xml.rs:970-997). */
+    /** `<!-- ... -->` trivia pieces (parser_xml.rs). */
     private fun comment() {
         val openStart = pos
         val closeAt = text.indexOf("-->", pos + 4)
@@ -381,7 +381,7 @@ internal class XmlParser(
         pushPiece(closeAt, closeAt + 3, PlistSyntaxKind.CommentClose, StructuralPieceKind.Trivia)
     }
 
-    /** `<![CDATA[ ... ]]>` (parser_xml.rs:1846-1906). */
+    /** `<![CDATA[ ... ]]>` (parser_xml.rs). */
     private fun cdata() {
         val openStart = pos
         val closeAt = text.indexOf("]]>", pos + 9)
@@ -415,7 +415,7 @@ internal class XmlParser(
         }
     }
 
-    /** `<?xml ... ?>` declaration (parser_xml.rs:787-892). */
+    /** `<?xml ... ?>` declaration (parser_xml.rs). */
     private fun declaration() {
         val openStart = pos
         val closeAt = text.indexOf("?>", pos + 5)
@@ -500,7 +500,7 @@ internal class XmlParser(
         pushPiece(closeAt, closeAt + 2, PlistSyntaxKind.DeclarationClose, StructuralPieceKind.Token)
     }
 
-    /** `<?target ... ?>` processing instruction (parser_xml.rs:924-968). */
+    /** `<?target ... ?>` processing instruction (parser_xml.rs). */
     private fun processingInstruction() {
         val openStart = pos
         val closeAt = text.indexOf("?>", pos + 2)
@@ -537,7 +537,7 @@ internal class XmlParser(
     }
 
     /** `<!DOCTYPE ...>` with the frozen Apple identifier contract
-     * (parser_xml.rs:999-1058; RFC 0013 §4.1). */
+     * (parser_xml.rs; RFC 0013 §4.1). */
     private fun doctype() {
         val openStart = pos
         val closeAt = findDoctypeEnd(openStart)
@@ -587,7 +587,7 @@ internal class XmlParser(
     }
 
     /** Validates the DOCTYPE body against the frozen Apple identifier
-     * (RFC 0013 §4.1; parser_xml.rs:1043-1058). */
+     * (RFC 0013 §4.1; parser_xml.rs). */
     private fun validateDoctype(body: String) {
         var cursor = 0
         cursor = skipWs(body, cursor)
@@ -633,7 +633,7 @@ internal class XmlParser(
         }
     }
 
-    /** `</name>` close tag (parser_xml.rs:1451-1477). */
+    /** `</name>` close tag (parser_xml.rs). */
     private fun closeTag() {
         val openStart = pos
         val end = findTagEnd(openStart + 2)
@@ -659,7 +659,7 @@ internal class XmlParser(
         closeFrame(end + 1)
     }
 
-    /** `<name ...>` or `<name .../>` open tag (parser_xml.rs:1060-1257). */
+    /** `<name ...>` or `<name .../>` open tag (parser_xml.rs). */
     private fun openTag() {
         val openStart = pos
         pos += 1
@@ -695,7 +695,7 @@ internal class XmlParser(
             return
         }
 
-        // Placement checks (parser_xml.rs:1144-1218).
+        // Placement checks (parser_xml.rs).
         var valueAllowed = !isUnknown
         var scalarViolation = false
         if (!isUnknown) {
@@ -777,7 +777,7 @@ internal class XmlParser(
             return
         }
 
-        // Attributes (parser_xml.rs:1259-1341).
+        // Attributes (parser_xml.rs).
         var tagSelfClosing = false
         while (pos < text.length && text[pos] != '>') {
             val wsStart = pos
@@ -868,7 +868,7 @@ internal class XmlParser(
         val tagEnd = pos
         if (selfClosing) {
             // The `/>` is one piece of the close kind; the open kind has no
-            // separate `>` piece (parser_xml.rs:1422-1430).
+            // separate `>` piece (parser_xml.rs).
             pushPiece(tagEnd - 2, tagEnd, frame.kind!!.closeKind(), StructuralPieceKind.Token)
         } else {
             pushPiece(tagEnd - 1, tagEnd, frame.kind!!.openKind(), StructuralPieceKind.Token)
@@ -1019,10 +1019,10 @@ internal class XmlParser(
     }
 
     /** Builds the native value of one closing element and adds its entity
-     * (parser_xml.rs:1602-1779). Returns the entity index, or null when the
+     * (parser_xml.rs). Returns the entity index, or null when the
      * value is unproven. The entity span is the full element, open tag
      * through close tag (the edit layer replaces whole elements; the span
-     * convention matches the Rust edit layout, edit.rs:840-978). */
+     * convention matches the Rust edit layout, edit.rs). */
     private fun buildValue(frame: Frame, end: Int): Int? {
         val endRaw = rawAt(end)
         val startRaw = frame.openStartRaw
@@ -1138,8 +1138,8 @@ internal class XmlParser(
     // ------------------------------------------------------------------
 
     /** Splits one decoded run into Text/CharacterReference/EntityReference
-     * pieces and returns the resolved normalized content (parser_xml.rs:
-     * 1919-1995). */
+     * pieces and returns the resolved normalized content (parser_xml.rs
+ *). */
     private fun resolveFragments(start: Int, end: Int, emitPieces: Boolean): String =
         resolveFragmentSegment(text.substring(start, end), start, emitPieces)
 
@@ -1204,7 +1204,7 @@ internal class XmlParser(
     }
 
     /** Resolves one `&...;` reference body; null is a recovered failure that
-     * contributes nothing (parser_xml.rs:1997-2059). */
+     * contributes nothing (parser_xml.rs). */
     private fun resolveReference(body: String): Char? {
         if (body.startsWith('#')) {
             val digits = body.substring(1)
@@ -1247,11 +1247,11 @@ internal class XmlParser(
     }
 
     // ------------------------------------------------------------------
-    // Value grammars (RFC 0013 §4.5-§4.8; parser_xml.rs:2453-2781)
+    // Value grammars (RFC 0013 §4.5-§4.8; parser_xml.rs)
     // ------------------------------------------------------------------
 
     /** Integer grammar: `S*(-|+)?S*[0-9]+` or `S*(-|+)?S*0[xX][0-9a-fA-F]+`,
-     * signed 64-bit range (parser_xml.rs:2453-2517). */
+     * signed 64-bit range (parser_xml.rs). */
     internal fun parseInteger(content: String): Long? {
         var index = 0
         var negative = false
@@ -1302,7 +1302,7 @@ internal class XmlParser(
     }
 
     /** Real grammar: optional sign, digits, optional fraction, optional
-     * exponent, plus the special spellings (parser_xml.rs:2521-2572). */
+     * exponent, plus the special spellings (parser_xml.rs). */
     internal fun parseReal(content: String): Double? {
         val lower = content.lowercase()
         when (lower) {
@@ -1352,7 +1352,7 @@ internal class XmlParser(
 
     /** Date grammar: `[-]YYYY-MM-DDTHH:MM:SSZ` with calendar validation;
      * the value is exact double seconds since the plist epoch (RFC 0013
-     * §4.7; parser_xml.rs:2574-2680). */
+     * §4.7; parser_xml.rs). */
     internal fun parseDate(content: String): Double? {
         val match = DATE_PATTERN.matchEntire(content) ?: return null
         val negative = content.startsWith('-')
@@ -1455,8 +1455,8 @@ internal class XmlParser(
     // ------------------------------------------------------------------
 
     private fun finish(): Document {
-        // Unclosed elements and unclosed unknown subtrees (parser_xml.rs:
-        // 2149-2183).
+        // Unclosed elements and unclosed unknown subtrees (parser_xml.rs
+ //).
         while (stack.isNotEmpty()) {
             val frame = stack.poll()
             if (frame.kind != null) {
@@ -1492,7 +1492,7 @@ internal class XmlParser(
         val status = if (recovered) FormationStatus.Recovered else FormationStatus.Complete
         val sourceLen = source.len
 
-        // Piece gap assembly and ordering (parser_xml.rs:2226-2303).
+        // Piece gap assembly and ordering (parser_xml.rs).
         val sorted = pieces.sortedBy { it.first.start }
         val finalPairs = ArrayList<Pair<SpanPair, PlistSyntaxKind>>(sorted.size + 8)
         var next = 0
@@ -1629,7 +1629,7 @@ internal class XmlParser(
         }
     }
 
-    /** Error region plus well-formedness recovery (parser_xml.rs:2118-2147). */
+    /** Error region plus well-formedness recovery (parser_xml.rs). */
     private fun recoverErrorRegion(start: Int, end: Int) {
         if (unknownDepth == 0) {
             pushPiece(start, end, PlistSyntaxKind.ErrorRegion, StructuralPieceKind.ErrorRegion)
@@ -1752,7 +1752,7 @@ internal class XmlParser(
     }
 
     /** XML attribute normalization: references resolve and whitespace runs
-     * collapse to one space (parser_xml.rs:1343-1353). */
+     * collapse to one space (parser_xml.rs). */
     private fun normalizeAttributeValue(value: String): String {
         val resolved = resolveFragmentSegment(value, 0, emitPieces = false)
         return resolved.trim().replace(Regex("\\s+"), " ")
@@ -1777,7 +1777,7 @@ internal class XmlParser(
     private fun isWsChar(ch: Char): Boolean =
         ch == ' ' || ch == '\t' || ch == '\r' || ch == '\n'
 
-    /** XML-whitespace-only trim (the grammar's `S` set, parser_xml.rs:2407). */
+    /** XML-whitespace-only trim (the grammar's `S` set, parser_xml.rs). */
     private fun trimXmlWhitespace(value: String): String {
         var start = 0
         var end = value.length

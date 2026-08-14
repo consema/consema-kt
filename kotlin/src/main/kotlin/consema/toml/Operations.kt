@@ -1,13 +1,13 @@
 // The frozen TOML format operation registry.
 //
 // Data authority:
-//   - https://github.com/consema/consema-rs/blob/main/consema-toml/src/operation_registry.rs:16-74 (descriptors) and
+//   - https://github.com/consema/consema-rs/blob/main/consema-toml/src/operation_registry.rs (descriptors) and
 //     :94-119 (the pinned registry facts: exactly seven operations, five
 //     Supported structural operations in sorted id order, two
 //     ExistingTypedCapability scalar replacements) pin every id, target
 //     role, argument, and support classification; RFC 0004 §10
-//     (https://github.com/consema/consema/blob/main/docs/rfcs/0004-materialization-conversion-and-structural-edit-v1.md:
-//     244-269) freezes the five structural IDs in the language-neutral
+//     (https://github.com/consema/consema/blob/main/docs/rfcs/0004-materialization-conversion-and-structural-edit-v1.md
+//) freezes the five structural IDs in the language-neutral
 //     contract.
 //   - conformance/vectors/operations-v1.json operations.v1.operation-
 //     registry (lines 18-22) pins toml_operation_count = 7 and
@@ -15,13 +15,13 @@
 //
 // Kotlin-idiomatic design: the full FormatOperationRegistry type is not
 // shipped in Kotlin (recorded gap, six-repo audit G090;
-// document/EditPlan.kt:22-23); this surface exposes the frozen descriptors
+// kotlin/src/main/kotlin/consema/document/EditPlan.kt); this surface exposes the frozen descriptors
 // as immutable data the facade's per-profile operation registries consume.
 
 package consema.toml
 
 /** The argument vocabulary of one operation descriptor (the Rust
- * OperationArgumentKind, operation_registry.rs:22-25). */
+ * OperationArgumentKind, operation_registry.rs). */
 enum class TomlOperationArgumentKind {
     String,
     PortableValue,
@@ -42,7 +42,7 @@ enum class TomlOperationSupport {
 }
 
 /** One frozen format operation descriptor
- * (operation_registry.rs:76-88). */
+ * (operation_registry.rs). */
 data class TomlOperationDescriptor(
     /** Immutable namespaced operation ID (version 1). */
     val id: consema.document.FormatOperationId,
@@ -58,8 +58,8 @@ data class TomlOperationDescriptor(
 }
 
 /** Returns the validated operation registry for one exact TOML profile
- * (operation_registry.rs:9-14). The seven descriptors are transcribed
- * verbatim from operation_registry.rs:16-74. */
+ * (operation_registry.rs). The seven descriptors are transcribed
+ * verbatim from operation_registry.rs. */
 fun formatOperationRegistry(profile: TomlProfile): List<TomlOperationDescriptor> {
     check(profile == TomlProfile.TOML_1_0_V1) { "built-in TOML operation descriptors are valid" }
     fun descriptor(

@@ -1,14 +1,14 @@
 // INI-specific parse and recovery resource limits.
 //
 // Data authority:
-//   - RFC 0009 §13 (https://github.com/consema/consema/blob/main/docs/rfcs/0009-ini-family-profiles-v1.md:475-489):
+//   - RFC 0009 §13 (https://github.com/consema/consema/blob/main/docs/rfcs/0009-ini-family-profiles-v1.md):
 //     IniParseLimits bounds raw/decoded bytes, scalar/boundary counts,
 //     physical/logical lines and their byte/scalar maxima, continuation
 //     physical-line count, sections/entries/duplicate-group members, syntax
 //     pieces, diagnostics, and recovery regions; limit failure never returns
 //     a truncated Complete Document.
-//   - https://github.com/consema/consema-rs/blob/main/consema-ini/src/lib.rs:67-119 pins the fields and the frozen
-//     defaults; https://github.com/consema/consema-rs/blob/main/consema-document/src/lib.rs:614-639 pins the common
+//   - https://github.com/consema/consema-rs/blob/main/consema-ini/src/lib.rs pins the fields and the frozen
+//     defaults; https://github.com/consema/consema-rs/blob/main/consema-document/src/lib.rs pins the common
 //     ParseLimits defaults (64 MiB source, depth 256, 2M tokens, 1M nodes,
 //     10k diagnostics). consema-go/go/ini/limits.go is a cross-reference only.
 
@@ -17,7 +17,7 @@ package consema.ini
 import consema.document.ParseLimits
 
 /**
- * INI-specific parse and recovery limits (lib.rs:67-98). Exceeding one is a
+ * INI-specific parse and recovery limits (lib.rs). Exceeding one is a
  * fatal formation failure carrying the frozen limit code
  * (RFC 0016 §5.1: ParseLimits and per-family limits mirror the Rust
  * defaults; exceeding a limit is a ResourceLimit error).
@@ -53,7 +53,7 @@ data class IniParseLimits(
     val maxRecoveryRegions: Int,
 ) {
     companion object {
-        /** The frozen defaults (lib.rs:100-119). */
+        /** The frozen defaults (lib.rs). */
         val default = IniParseLimits(
             common = ParseLimits.default,
             maxDecodedUtf8Bytes = 128 shl 20,

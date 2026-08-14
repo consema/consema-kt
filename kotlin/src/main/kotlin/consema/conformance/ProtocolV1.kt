@@ -173,7 +173,7 @@ private fun ensure(condition: Boolean) {
     if (!condition) fail("expected behavior did not match")
 }
 
-/** protocol.diagnostic.require-source-binding (protocol_v1.rs:511-527). */
+/** protocol.diagnostic.require-source-binding (protocol_v1.rs). */
 private fun requireSourceBinding() {
     val failure = try {
         DiagnosticSourceBinding.requireTransferableSource()
@@ -184,7 +184,7 @@ private fun requireSourceBinding() {
     ensure(failure != null && failure.kind == ProtocolErrorKind.PROCESS_LOCAL_HANDLE)
 }
 
-/** protocol.query.reject-native-handle (protocol_v1.rs:612-618). */
+/** protocol.query.reject-native-handle (protocol_v1.rs). */
 private fun rejectNativeHandle() {
     val failure = try {
         NativeMatchLocator.fromProcessLocal()
@@ -340,7 +340,7 @@ private fun messageEquals(a: ProtocolMessage, b: ProtocolMessage): Boolean =
     a.contract == b.contract && equal(a.payload, b.payload)
 
 /** Validates completion facts against the v1 registry and encodes
- * `core.completion@1` (execution.rs:50-153). */
+ * `core.completion@1` (execution.rs). */
 private fun completionValue(
     status: String,
     processed: Int,

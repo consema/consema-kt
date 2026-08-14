@@ -1,9 +1,9 @@
 // The `consema.conformance@1` suite runner (conformance/vectors/v1.json).
 //
-// Data authority: https://github.com/consema/consema-rs/blob/main/consema-conformance/src/lib.rs:217-1049 (the
+// Data authority: https://github.com/consema/consema-rs/blob/main/consema-conformance/src/lib.rs (the
 // per-case dispatch is transcribed from the Rust handlers); the vector file
 // itself drives every input and expectation (conformance/README.md rules
-// 3-4). consema-go/go/conformance/v1.go is a cross-reference only.
+//). consema-go/go/conformance/v1.go is a cross-reference only.
 
 package consema.conformance
 

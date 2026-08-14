@@ -3,7 +3,7 @@
 // provenance.
 //
 // Data authority:
-//   - RFC 0013 §9 (https://github.com/consema/consema/blob/main/docs/rfcs/0013-plist-family-profiles-v1.md:598-633): the
+//   - RFC 0013 §9 (https://github.com/consema/consema/blob/main/docs/rfcs/0013-plist-family-profiles-v1.md): the
 //     default exact target `plist.projection.value-tree@1` produces the
 //     versioned `plist.value-tree@1` PortableValue record (one root value,
 //     ordered dictionary associations, ordered array elements, typed
@@ -17,19 +17,19 @@
 //     report event per discarded association while keeping retained and
 //     discarded provenance.
 //   - RFC 0004 §7-§8 (https://github.com/consema/consema/blob/main/docs/rfcs/0004-materialization-conversion-and-
-//     structural-edit-v1.md:171-218): the completion algebra and the
+//     structural-edit-v1.md): the completion algebra and the
 //     provenance direction (portable locations to source origins).
 //   - conformance/vectors/plist-v1.json (plist.projection.*) pins the
 //     per-case outcomes; https://github.com/consema/consema-rs/blob/main/consema-plist/src/projection.rs is the
-//     byte-arbitration authority (targets projection.rs:55-90, request
-//     projection.rs:86-162, value-tree encoding projection.rs:572-667,
-//     require-object projection.rs:671-830, failure codes projection.rs:
-//     355-403).
+//     byte-arbitration authority (targets projection.rs, request
+//     projection.rs, value-tree encoding projection.rs,
+//     require-object projection.rs, failure codes projection.rs
+//).
 //
 // Kotlin-idiomatic design: the completion algebra is a sealed class, so
 // exhaustive `when` over Complete/Failed can never meet an unknown outcome;
 // failures carry their frozen plist-family code via the code mapping
-// (projection.rs:393-401).
+// (projection.rs).
 
 package consema.plist
 
@@ -54,10 +54,10 @@ import consema.document.Span
 import java.math.BigInteger
 
 /** The fixed plist epoch spelling of the date record member (RFC 0013 §9;
- * materialization.rs:147). */
+ * materialization.rs). */
 internal const val PLIST_EPOCH_SPELLING = "2001-01-01T00:00:00Z"
 
-/** Versioned projection target contract (projection.rs:55-63). */
+/** Versioned projection target contract (projection.rs). */
 enum class ProjectionTarget {
     /** The versioned `plist.value-tree@1` record (RFC 0013 §9). */
     ValueTreeV1,
@@ -67,7 +67,7 @@ enum class ProjectionTarget {
     RequireObjectV1,
 }
 
-/** Explicit UID projection policy (projection.rs:65-73; RFC 0013 §9). */
+/** Explicit UID projection policy (projection.rs; RFC 0013 §9). */
 enum class UidPolicy {
     /** Fail on every UID leaf (default). */
     Exclude,
@@ -76,7 +76,7 @@ enum class UidPolicy {
     Include,
 }
 
-/** Explicit duplicate-key collision policy (projection.rs:75-83; RFC 0013
+/** Explicit duplicate-key collision policy (projection.rs; RFC 0013
  * §9). */
 enum class CollisionPolicy {
     /** Fail atomically on the first duplicate key. */
@@ -89,7 +89,7 @@ enum class CollisionPolicy {
     Last,
 }
 
-/** Plist projection resource limits (projection.rs:159-184). */
+/** Plist projection resource limits (projection.rs). */
 data class ProjectionLimits(
     /** Maximum inspected native value nodes. */
     val maxSourceNodes: Int,
@@ -101,7 +101,7 @@ data class ProjectionLimits(
     val maxProvenanceUnits: Int,
 ) {
     companion object {
-        /** The frozen defaults (projection.rs:175-183): 2,000,000 source
+        /** The frozen defaults (projection.rs): 2,000,000 source
          * nodes, 2,000,000 value nodes, 100,000 report entries, 4,000,000
          * provenance units. */
         val default = ProjectionLimits(
@@ -113,7 +113,7 @@ data class ProjectionLimits(
     }
 }
 
-/** Projection fidelity classification (projection.rs:186-195). */
+/** Projection fidelity classification (projection.rs). */
 enum class Fidelity {
     /** Target directly represents every native association. */
     Exact,
@@ -126,7 +126,7 @@ enum class Fidelity {
     Lossy,
 }
 
-/** Projected value or association location (projection.rs:199-204). */
+/** Projected value or association location (projection.rs). */
 sealed class ProjectedLocation {
     /** Portable value location. */
     data class Value(val path: ValuePath) : ProjectedLocation()
@@ -135,7 +135,7 @@ sealed class ProjectedLocation {
     data class Association(val location: AssociationLocation) : ProjectedLocation()
 }
 
-/** Source-to-projection relation (projection.rs:206-217). */
+/** Source-to-projection relation (projection.rs). */
 enum class ProvenanceRelation {
     /** Direct native semantic origin. */
     Direct,
@@ -150,7 +150,7 @@ enum class ProvenanceRelation {
     ReferenceDerived,
 }
 
-/** One exact source origin (projection.rs:219-230). */
+/** One exact source origin (projection.rs). */
 data class SourceOrigin(
     /** Source document snapshot. */
     val snapshot: SnapshotIdentity,
@@ -162,7 +162,7 @@ data class SourceOrigin(
     val relation: ProvenanceRelation,
 )
 
-/** One many-valued provenance mapping entry (projection.rs:232-239). */
+/** One many-valued provenance mapping entry (projection.rs). */
 data class ProvenanceEntry(
     /** Projected value or association. */
     val projected: ProjectedLocation,
@@ -170,7 +170,7 @@ data class ProvenanceEntry(
     val origins: List<SourceOrigin>,
 )
 
-/** Immutable many-valued provenance mapping (projection.rs:241-270). */
+/** Immutable many-valued provenance mapping (projection.rs). */
 class ProvenanceMap private constructor(private val entries: List<ProvenanceEntry>) {
     companion object {
         internal fun of(entries: List<ProvenanceEntry>): ProvenanceMap = ProvenanceMap(entries)
@@ -185,14 +185,14 @@ class ProvenanceMap private constructor(private val entries: List<ProvenanceEntr
     override fun hashCode(): Int = entries.hashCode()
 }
 
-/** Projection report category (projection.rs:272-278). */
+/** Projection report category (projection.rs). */
 enum class ProjectionEventKind {
     /** One duplicate-key association discarded under a First or Last
      * collision policy. */
     AssociationDiscarded,
 }
 
-/** One explicit transformation event (projection.rs:280-291). */
+/** One explicit transformation event (projection.rs). */
 data class ProjectionEvent(
     /** Stable event kind. */
     val kind: ProjectionEventKind,
@@ -202,7 +202,7 @@ data class ProjectionEvent(
     val impact: Fidelity,
 )
 
-/** Complete ordered projection report (projection.rs:293-301). */
+/** Complete ordered projection report (projection.rs). */
 class ProjectionReport private constructor(private val events: List<ProjectionEvent>) {
     companion object {
         internal fun new(events: List<ProjectionEvent>): ProjectionReport = ProjectionReport(events)
@@ -217,7 +217,7 @@ class ProjectionReport private constructor(private val events: List<ProjectionEv
     override fun hashCode(): Int = events.hashCode()
 }
 
-/** Explicit projection request (projection.rs:86-162; RFC 0013 §9). */
+/** Explicit projection request (projection.rs; RFC 0013 §9). */
 class ProjectionRequest private constructor(
     /** Exact target contract. */
     val target: ProjectionTarget,
@@ -229,31 +229,30 @@ class ProjectionRequest private constructor(
     val limits: ProjectionLimits,
 ) {
     companion object {
-        /** The default exact target with UIDs excluded (projection.rs:96-
+        /** The default exact target with UIDs excluded (projection.rs
          * 105). */
         fun valueTree(): ProjectionRequest =
             ProjectionRequest(ProjectionTarget.ValueTreeV1, UidPolicy.Exclude,
                 CollisionPolicy.Reject, ProjectionLimits.default)
 
-        /** The value-tree target with an explicit UID policy (projection.rs:
-         * 107-117). */
+        /** The value-tree target with an explicit UID policy (projection.rs
+ *). */
         fun valueTreeWithUid(policy: UidPolicy): ProjectionRequest =
             ProjectionRequest(ProjectionTarget.ValueTreeV1, policy,
                 CollisionPolicy.Reject, ProjectionLimits.default)
 
-        /** The require-object target with one collision policy (projection
-         * .rs:119-128). */
+        /** The require-object target with one collision policy (projection.rs). */
         fun requireObject(collision: CollisionPolicy): ProjectionRequest =
             ProjectionRequest(ProjectionTarget.RequireObjectV1, UidPolicy.Exclude,
                 collision, ProjectionLimits.default)
     }
 
-    /** Replaces immutable projection limits (projection.rs:130-134). */
+    /** Replaces immutable projection limits (projection.rs). */
     fun withLimits(limits: ProjectionLimits): ProjectionRequest =
         ProjectionRequest(target, uidPolicy, collision, limits)
 }
 
-/** Complete successful projection (projection.rs:324-335). */
+/** Complete successful projection (projection.rs). */
 data class CompleteProjection(
     /** The projected PortableValue record. */
     val value: PortableValue,
@@ -265,7 +264,7 @@ data class CompleteProjection(
     val provenance: ProvenanceMap,
 )
 
-/** Failed projection attempt (projection.rs:337-344). */
+/** Failed projection attempt (projection.rs). */
 data class FailedProjectionAttempt(
     /** Stable failure. */
     val failure: ProjectionFailure,
@@ -275,7 +274,7 @@ data class FailedProjectionAttempt(
     val analyzedInputPaths: List<ValuePath>,
 )
 
-/** Closed projection completion algebra (projection.rs:346-353). */
+/** Closed projection completion algebra (projection.rs). */
 sealed class ProjectionResult {
     /** Complete success with every required artifact. */
     data class Complete(val projection: CompleteProjection) : ProjectionResult()
@@ -284,8 +283,8 @@ sealed class ProjectionResult {
     data class Failed(val attempt: FailedProjectionAttempt) : ProjectionResult()
 }
 
-/** Stable projection failure (projection.rs:355-375). The [code] is the
- * frozen `plist.projection.*@1` mapping (projection.rs:393-401). */
+/** Stable projection failure (projection.rs). The [code] is the
+ * frozen `plist.projection.*@1` mapping (projection.rs). */
 sealed class ProjectionFailure(val code: String) : Exception(code) {
     /** Recovered documents, or documents without a provable native value,
      * cannot publish partial semantic values. */
@@ -310,7 +309,7 @@ sealed class ProjectionFailure(val code: String) : Exception(code) {
 
 /**
  * Projects one complete plist document under one explicit target and policy
- * contract (RFC 0013 §9; projection.rs:412-444). The projection is atomic:
+ * contract (RFC 0013 §9; projection.rs). The projection is atomic:
  * a recovered source, an unpaired-surrogate string, an unrepresentable
  * leaf, or a resource limit returns no partial value, provenance, or report
  * (hard gate 3).
@@ -403,7 +402,7 @@ private class ProjectionContext(
     private fun keyNodeRef(index: Int): NodeRef = document.nodeRef(index.toLong(), consema.document.NodeRole.PlistKey)
 
     /** One key node of the root dictionary (the ObjectKey provenance origin;
-     * projection.rs:798-802 uses a container-level key node). */
+     * projection.rs uses a container-level key node). */
     private fun firstKeyNodeRef(dict: NativeValue.Dict): NodeRef {
         val first = dict.entries.firstOrNull()
         return if (first != null) {

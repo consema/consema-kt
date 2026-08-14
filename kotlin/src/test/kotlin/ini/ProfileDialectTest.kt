@@ -1,8 +1,8 @@
 // Profile dialect coverage: the behaviors that distinguish the three
 // profiles beyond the golden transcriptions.
 //
-// Authority: RFC 0009 §5-§7 (https://github.com/consema/consema/blob/main/docs/rfcs/0009-ini-family-profiles-v1.md:148-
-// 252) and the Rust crate tests (consema-ini/src/lib.rs:713-944). The L5
+// Authority: RFC 0009 §5-§7 (https://github.com/consema/consema/blob/main/docs/rfcs/0009-ini-family-profiles-v1.md
+// 252) and the Rust crate tests (consema-ini/src/lib.rs). The L5
 // conformance runner executes the shared vectors directly; these unit tests
 // pin the profile-dialect behaviors in the committed CI.
 
@@ -32,7 +32,7 @@ class ProfileDialectTest {
     }
 
     /** RFC 0009 §5: portable section headers at EOF without a line break
-     * are malformed (parser.rs:353-357), and the portable document requires
+     * are malformed (parser.rs), and the portable document requires
      * at least one section. */
     @Test
     fun portableSectionRequiresSectionAndLineBreak() {

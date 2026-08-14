@@ -3,7 +3,7 @@
 // SourcePatch derivation.
 //
 // Data authority:
-//   - RFC 0010 §13 (https://github.com/consema/consema/blob/main/docs/rfcs/0010-java-properties-profiles-v1.md:383-413):
+//   - RFC 0010 §13 (https://github.com/consema/consema/blob/main/docs/rfcs/0010-java-properties-profiles-v1.md):
 //     the five operations replace-semantic-value, replace-literal-value,
 //     insert-property, remove-property, rename-property; semantic
 //     replacement accepts a JavaString (exact unpaired code units through
@@ -20,18 +20,18 @@
 //     anchor, invalid literal, unrepresentable encoding, resource failure,
 //     and reparse/closure failure before a patch exists.
 //   - RFC 0004 §13-§16 (https://github.com/consema/consema/blob/main/docs/rfcs/0004-materialization-conversion-and-
-//     structural-edit-v1.md:300-384): the transaction/conflict algebra, the
+//     structural-edit-v1.md): the transaction/conflict algebra, the
 //     dry-run plan, the untouched-byte proof, and the derived SourcePatch;
 //     ChangeSet remains the document-level change fact (RFC 0004 §16).
 //   - conformance/vectors/java-properties-v1.json pins the golden outputs
 //     and conflict codes (edit.all-five-operations, lines 105-109;
 //     edit.dry-run-patch-proof-conflict-atomicity, lines 110-114).
 //   - https://github.com/consema/consema-rs/blob/main/consema-properties/src/edit.rs is the byte-arbitration
-//     authority (commit edit.rs:270-442, dry-run edit.rs:444-459, ownership
-//     edit.rs:461-605, canonical escaping edit.rs:925-1036, expected-state
-//     verification edit.rs:794-833, mappings edit.rs:894-923).
+//     authority (commit edit.rs, dry-run edit.rs, ownership
+//     edit.rs, canonical escaping edit.rs, expected-state
+//     verification edit.rs, mappings edit.rs).
 //   - The shared ChangeSet shapes live in the Rust consema-document layer
-//     (https://github.com/consema/consema-rs/blob/main/consema-document/src/lib.rs:800-899: SourceEdit, NodeMapping,
+//     (https://github.com/consema/consema-rs/blob/main/consema-document/src/lib.rs: SourceEdit, NodeMapping,
 //     NodeMappingStatus, ChangeSet); the Kotlin document layer does not own
 //     ChangeSet — this package ships the same immutable records locally
 //     (constructed at commit, EditCommit.changeSet), and a later promotion
@@ -39,7 +39,7 @@
 //
 // Kotlin-idiomatic design: failures are a sealed hierarchy whose [name] is
 // the exact vector spelling and whose registered code follows the Rust
-// diagnostic_code mapping (edit.rs:237-252); commit/dry-run throw the typed
+// diagnostic_code mapping (edit.rs); commit/dry-run throw the typed
 // [EditFailureException] so callers match exhaustively on the failure class.
 
 package consema.properties
@@ -70,7 +70,7 @@ import consema.protocol.Diagnostic
 import consema.protocol.DiagnosticCategory
 import consema.protocol.Severity
 
-/** One typed Java Properties structural edit operation (edit.rs:16-56). */
+/** One typed Java Properties structural edit operation (edit.rs). */
 sealed class EditOperation {
     /** Replaces one property's semantic Java UTF-16 value. */
     data class ReplaceSemanticValue(
@@ -125,7 +125,7 @@ sealed class EditOperation {
 }
 
 /** Immutable edit transaction; every operation resolves against one base
- * snapshot (edit.rs:70-89). */
+ * snapshot (edit.rs). */
 class EditTransaction internal constructor(
     /** Base snapshot identity. */
     val baseSnapshot: SnapshotIdentity,
@@ -133,30 +133,30 @@ class EditTransaction internal constructor(
     val operations: List<EditOperation>,
 )
 
-/** Builder for one immutable Properties edit transaction (edit.rs:91-163). */
+/** Builder for one immutable Properties edit transaction (edit.rs). */
 class EditTransactionBuilder internal constructor(private val base: SnapshotIdentity) {
     private val operations = ArrayList<EditOperation>()
 
     companion object {
         /** Binds a new transaction to one immutable Properties document
-         * (edit.rs:98-106). */
+         * (edit.rs). */
         fun new(document: Document): EditTransactionBuilder =
             EditTransactionBuilder(document.snapshotIdentity)
     }
 
-    /** Adds one semantic Java-string value replacement (edit.rs:107-114). */
+    /** Adds one semantic Java-string value replacement (edit.rs). */
     fun semanticValue(target: NodeRef, value: JavaString): EditTransactionBuilder {
         operations.add(EditOperation.ReplaceSemanticValue(target, value))
         return this
     }
 
-    /** Adds one exact raw value-literal replacement (edit.rs:116-123). */
+    /** Adds one exact raw value-literal replacement (edit.rs). */
     fun literalValue(target: NodeRef, literal: ByteArray): EditTransactionBuilder {
         operations.add(EditOperation.ReplaceLiteralValue(target, literal))
         return this
     }
 
-    /** Adds one canonical property insertion (edit.rs:125-139). */
+    /** Adds one canonical property insertion (edit.rs). */
     fun insertProperty(
         document: NodeRef,
         key: JavaString,
@@ -167,24 +167,24 @@ class EditTransactionBuilder internal constructor(private val base: SnapshotIden
         return this
     }
 
-    /** Adds one exact property removal (edit.rs:141-147). */
+    /** Adds one exact property removal (edit.rs). */
     fun removeProperty(target: NodeRef): EditTransactionBuilder {
         operations.add(EditOperation.RemoveProperty(target))
         return this
     }
 
-    /** Adds one semantic Java-string property rename (edit.rs:149-157). */
+    /** Adds one semantic Java-string property rename (edit.rs). */
     fun renameProperty(target: NodeRef, key: JavaString): EditTransactionBuilder {
         operations.add(EditOperation.RenameProperty(target, key))
         return this
     }
 
     /** Completes the request; validation remains atomic at dry-run or
-     * commit (edit.rs:159-162). */
+     * commit (edit.rs). */
     fun build(): EditTransaction = EditTransaction(base, operations.toList())
 }
 
-/** Atomic edit success (edit.rs:165-176). */
+/** Atomic edit success (edit.rs). */
 class EditCommit(
     /** New immutable document. */
     val document: Document,
@@ -196,9 +196,9 @@ class EditCommit(
     val untouchedProof: UntouchedByteProof,
 )
 
-/** Stable edit validation or commit failure (edit.rs:178-214). The [name]
+/** Stable edit validation or commit failure (edit.rs). The [name]
  * is the exact vector spelling; the registered code follows the Rust
- * diagnostic_code mapping ([editFailureCode], edit.rs:237-252). */
+ * diagnostic_code mapping ([editFailureCode], edit.rs). */
 sealed class EditFailure(open val name: String) {
     /** Edits are forbidden on a recovered document. */
     data object RecoveredDocument : EditFailure("RecoveredDocument")
@@ -245,7 +245,7 @@ sealed class EditFailure(open val name: String) {
 class EditFailureException(val failure: EditFailure) :
     Exception("edit: ${failure.name}")
 
-/** The frozen registered code of one edit failure (edit.rs:237-252). */
+/** The frozen registered code of one edit failure (edit.rs). */
 internal fun editFailureCode(failure: EditFailure): String =
     when (failure) {
         EditFailure.RecoveredDocument -> "core.edit.incomplete-target@1"
@@ -265,10 +265,10 @@ internal fun editFailureCode(failure: EditFailure): String =
     }
 
 // ---------------------------------------------------------------------------
-// Change set records (consema-document lib.rs:800-899)
+// Change set records (consema-document lib.rs)
 // ---------------------------------------------------------------------------
 
-/** One ordered non-overlapping source replacement (lib.rs:800-809). */
+/** One ordered non-overlapping source replacement (lib.rs). */
 data class SourceEdit(
     /** Replaced old range. */
     val oldSpan: Span,
@@ -278,7 +278,7 @@ data class SourceEdit(
     val replacement: ByteArray,
 )
 
-/** Explicit node mapping status across immutable snapshots (lib.rs:811-826). */
+/** Explicit node mapping status across immutable snapshots (lib.rs). */
 enum class NodeMappingStatus {
     /** Exact structural entity survived. */
     Preserved,
@@ -299,7 +299,7 @@ enum class NodeMappingStatus {
     Unmapped,
 }
 
-/** One explicit old-to-new node mapping fact (lib.rs:828-839). */
+/** One explicit old-to-new node mapping fact (lib.rs). */
 data class NodeMapping(
     /** Old handle. */
     val old: NodeRef,
@@ -312,7 +312,7 @@ data class NodeMapping(
 )
 
 /** Complete immutable description of one atomic document transition
- * (RFC 0004 §13, §16; lib.rs:841-899). */
+ * (RFC 0004 §13, §16; lib.rs). */
 class ChangeSet internal constructor(
     /** Base snapshot. */
     val oldSnapshot: SnapshotIdentity,
@@ -330,13 +330,13 @@ class ChangeSet internal constructor(
 // Commit
 // ---------------------------------------------------------------------------
 
-/** One prepared byte edit (edit.rs:265-268). */
+/** One prepared byte edit (edit.rs). */
 private data class PreparedEdit(
     val oldSpan: Span,
     val replacement: ByteArray,
 )
 
-/** The expected post-commit property state (edit.rs:255-263). */
+/** The expected post-commit property state (edit.rs). */
 private data class ExpectedProperty(
     val old: NodeRef?,
     val key: JavaString,
@@ -347,7 +347,7 @@ private data class ExpectedProperty(
 )
 
 /**
- * Atomically commits every declared Properties operation (edit.rs:270-442).
+ * Atomically commits every declared Properties operation (edit.rs).
  * On failure the document remains unchanged.
  */
 fun Document.commit(transaction: EditTransaction): EditCommit {
@@ -502,7 +502,7 @@ fun Document.commit(transaction: EditTransaction): EditCommit {
 
 /**
  * Fully validates and plans an edit without publishing a new Document
- * (edit.rs:444-459; RFC 0004 §14). Dry-run and commit produce the same
+ * (edit.rs; RFC 0004 §14). Dry-run and commit produce the same
  * replacement set and target digest (RFC 0004 §20).
  */
 fun Document.dryRun(
@@ -523,7 +523,7 @@ fun Document.dryRun(
     }
 }
 
-/** Content-free operation summaries (edit.rs:1091-1138). */
+/** Content-free operation summaries (edit.rs). */
 private fun operationSummaries(transaction: EditTransaction): List<EditOperationSummary> =
     try {
         transaction.operations.map { operation ->
@@ -584,7 +584,7 @@ private fun Document.validateDocumentTarget(target: NodeRef) {
 }
 
 /** An insertion anchor removed by the same transaction is a conflict
- * (edit.rs:487-505). */
+ * (edit.rs). */
 private fun validateRemovedAnchors(transaction: EditTransaction) {
     val removed = transaction.operations
         .filterIsInstance<EditOperation.RemoveProperty>()
@@ -605,7 +605,7 @@ private fun validateRemovedAnchors(transaction: EditTransaction) {
 }
 
 /** The (property-boundary, raw byte) insertion point of one placement
- * (edit.rs:507-541). */
+ * (edit.rs). */
 private fun Document.insertionLocation(placement: AssociationPlacement): Pair<Int, Int> {
     val count = propertyEntities.size
     return when (placement) {
@@ -626,7 +626,7 @@ private fun Document.insertionLocation(placement: AssociationPlacement): Pair<In
 }
 
 /** A property owns its natural lines including the final terminator but not
- * adjacent comments (RFC 0010 §13; edit.rs:543-560). */
+ * adjacent comments (RFC 0010 §13; edit.rs). */
 private fun Document.recordOwnership(property: PropertyEntity): Span {
     val logical = logicalLineEntity(property.logicalLineIndex)
     val firstIndex = logical.naturalLineIndices.firstOrNull()
@@ -662,7 +662,7 @@ private fun Document.span(startByte: Int, endByte: Int): Span =
 // ---------------------------------------------------------------------------
 
 /** Direct value preservation: one natural line, no value escapes, no
- * leading whitespace or backslash/CR/LF content (edit.rs:578-599). */
+ * leading whitespace or backslash/CR/LF content (edit.rs). */
 private fun Document.preserveDirectValue(property: PropertyEntity, value: JavaString): ByteArray? {
     val logical = logicalLineEntity(property.logicalLineIndex)
     if (logical.naturalLineIndices.size != 1 ||
@@ -691,7 +691,7 @@ private fun Document.preserveDirectValue(property: PropertyEntity, value: JavaSt
     }
 }
 
-/** The canonical replacement fragment of one Java string (edit.rs:601-614). */
+/** The canonical replacement fragment of one Java string (edit.rs). */
 private fun Document.canonicalFragment(value: JavaString, isKey: Boolean): ByteArray {
     val text = canonicalJavaString(value, profile, isKey, parseLimits.common.maxSourceBytes)
     return try {
@@ -707,7 +707,7 @@ private fun Document.canonicalFragment(value: JavaString, isKey: Boolean): ByteA
 }
 
 /** One canonical `key=value<newline>` record with the document's newline
- * convention (edit.rs:616-663). */
+ * convention (edit.rs). */
 private fun Document.canonicalRecord(position: Int, key: JavaString, value: JavaString): ByteArray {
     val newline = newlineConvention()
     val text = StringBuilder()
@@ -739,7 +739,7 @@ private fun Document.canonicalRecord(position: Int, key: JavaString, value: Java
 }
 
 /** The first line terminator of the decoded source; `\n` when none exists
- * (edit.rs:665-683). */
+ * (edit.rs). */
 private fun Document.newlineConvention(): String {
     val decoded = text.text
     for (index in decoded.indices) {
@@ -758,7 +758,7 @@ private fun Document.newlineConvention(): String {
 }
 
 /** Literal validation: bounded bytes, decodable, and exactly one raw value
- * element without line ownership (RFC 0010 §13; edit.rs:694-720). */
+ * element without line ownership (RFC 0010 §13; edit.rs). */
 private fun Document.validateLiteral(literal: ByteArray) {
     if (literal.size > parseLimits.common.maxSourceBytes) {
         throw EditFailureException(EditFailure.ResourceLimit("replacement-bytes"))
@@ -823,7 +823,7 @@ internal fun Document.sourceOutputEncoding(): OutputEncoding =
         is PropertiesEncoding.WindowsCodePage -> OutputEncoding.CodePage(encoding.number)
     }
 
-/** The authorized canonical-fallback warning (edit.rs:722-730). */
+/** The authorized canonical-fallback warning (edit.rs). */
 private fun Document.canonicalFallbackDiagnostic(span: Span): Diagnostic =
     sourceDiagnostic(
         authority,
@@ -853,7 +853,7 @@ private fun validateNonOverlapping(prepared: List<PreparedEdit>) {
     }
 }
 
-/** The closure failure class of one expected state (edit.rs:392-397). */
+/** The closure failure class of one expected state (edit.rs). */
 private fun closureFailureOf(expected: List<ExpectedProperty>): EditFailure =
     if (expected.any { it.literal }) {
         EditFailure.InvalidLiteral
@@ -873,7 +873,7 @@ private fun assembleExpected(
     return output
 }
 
-/** Exact semantic verification of the reparse (edit.rs:810-833). */
+/** Exact semantic verification of the reparse (edit.rs). */
 private fun verifyExpected(document: Document, expected: List<ExpectedProperty>) {
     if (document.propertyEntities.size != expected.size) {
         throw EditFailureException(closureFailureOf(expected))
@@ -887,7 +887,7 @@ private fun verifyExpected(document: Document, expected: List<ExpectedProperty>)
     }
 }
 
-/** Renders the exact target bytes (edit.rs:732-760). */
+/** Renders the exact target bytes (edit.rs). */
 private fun Document.applyPrepared(prepared: List<PreparedEdit>): ByteArray {
     var targetLen = source.len
     for (edit in prepared) {
@@ -911,7 +911,7 @@ private fun Document.applyPrepared(prepared: List<PreparedEdit>): ByteArray {
     return output
 }
 
-/** Old/new span pairs of the prepared edits (edit.rs:835-870). */
+/** Old/new span pairs of the prepared edits (edit.rs). */
 private fun buildSourceEdits(newDocument: Document, prepared: List<PreparedEdit>): List<SourceEdit> {
     val sourceEdits = ArrayList<SourceEdit>(prepared.size)
     var delta = 0
@@ -930,7 +930,7 @@ private fun buildSourceEdits(newDocument: Document, prepared: List<PreparedEdit>
 }
 
 /** Literal replacements must own exactly the value interval of the new
- * document (edit.rs:872-892). */
+ * document (edit.rs). */
 private fun verifyLiteralOwnership(
     document: Document,
     expected: List<ExpectedProperty>,
@@ -949,7 +949,7 @@ private fun verifyLiteralOwnership(
     }
 }
 
-/** Explicit old-to-new property mappings (edit.rs:894-923). */
+/** Explicit old-to-new property mappings (edit.rs). */
 private fun buildNodeMappings(
     document: Document,
     expected: List<ExpectedProperty>,
@@ -982,7 +982,7 @@ private fun buildNodeMappings(
     }
 
 // ---------------------------------------------------------------------------
-// Canonical Java string escaping (edit.rs:925-1036)
+// Canonical Java string escaping (edit.rs)
 // ---------------------------------------------------------------------------
 
 private fun canonicalJavaString(
@@ -1069,7 +1069,7 @@ private fun pushBounded(output: StringBuilder, text: String, limit: Int) {
 // ---------------------------------------------------------------------------
 
 /** Patch metadata: operation.{index} -> frozen operation id@version
- * (edit.rs:1077-1089). */
+ * (edit.rs). */
 private fun operationMetadata(transaction: EditTransaction): Map<String, String> {
     val metadata = LinkedHashMap<String, String>()
     for ((index, operation) in transaction.operations.withIndex()) {
@@ -1078,7 +1078,7 @@ private fun operationMetadata(transaction: EditTransaction): Map<String, String>
     return metadata
 }
 
-/** The frozen operation id@version (edit.rs:1140-1148). */
+/** The frozen operation id@version (edit.rs). */
 internal fun operationId(operation: EditOperation): FormatOperationId =
     FormatOperationId(
         when (operation) {
@@ -1099,7 +1099,7 @@ private fun placementName(placement: AssociationPlacement): String =
         is AssociationPlacement.After -> "after"
     }
 
-/** The patch limits of one commit (edit.rs:1062-1075). */
+/** The patch limits of one commit (edit.rs). */
 private fun sourcePatchLimits(
     limits: PropertiesParseLimits,
     operationCount: Int,

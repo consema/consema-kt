@@ -9,7 +9,7 @@
 //   - RFC 0001 §3: the frozen formation order (max_source_bytes, UTF-8
 //     validation, TOML syntax, token/node/depth limits) and the frozen
 //     failure codes (core.parse.resource-limit@1, toml.parse.syntax@1).
-//   - https://github.com/consema/consema-rs/blob/main/consema-toml/src/lib.rs:34-39 (TomlProfile), :114-119
+//   - https://github.com/consema/consema-rs/blob/main/consema-toml/src/lib.rs (TomlProfile), :114-119
 //     (TomlProfile::id), :121-128 (parse), :130-259 (Document shape and
 //     accessors), :272-349 (TomlItemKind, TomlDate/TomlTime/TomlOffset/
 //     TomlDateTime), :351-575 (TomlItem/TomlEntry/TomlArrayElement
@@ -39,19 +39,19 @@ import consema.protocol.Diagnostic
 import consema.protocol.ErrorCodeRegistry
 import consema.protocol.ErrorRegistryVersion
 
-/** Frozen TOML language profile (lib.rs:34-39). */
+/** Frozen TOML language profile (lib.rs). */
 enum class TomlProfile {
     /** TOML 1.0.0 without implementation extensions. */
     TOML_1_0_V1,
     ;
 
-    /** Immutable profile identifier (lib.rs:111-119). */
+    /** Immutable profile identifier (lib.rs). */
     fun id(): ProfileId = ProfileId("toml.1.0", 1)
 }
 
 /**
  * Parses one complete immutable TOML 1.0 document snapshot
- * (lib.rs:121-128). The frozen formation order (RFC 0001 §3) is:
+ * (lib.rs). The frozen formation order (RFC 0001 §3) is:
  * max_source_bytes, UTF-8 validation, TOML 1.0 syntax/semantics, then
  * token/node/depth limits. Any failure throws [TomlFormationException]
  * carrying the ordered diagnostics; no partial Document exists.
@@ -72,9 +72,9 @@ fun parse(
         SourceSnapshot.fromUtf8(source)
     } catch (e: consema.document.SourceException) {
         // fromUtf8 maps every invalid sequence to INVALID_UTF8 carrying the
-        // valid prefix (Source.kt:187-205); the Rust parser converts the
+        // valid prefix (Source.kt); the Rust parser converts the
         // same failure through FatalFormationFailure::invalid_utf8
-        // (lib.rs:656-672).
+        // (lib.rs).
         throw TomlFormationException(listOf(invalidUtf8Diagnostic(e.validUpTo ?: 0)))
     }
     val text = snapshot.decodedText() ?: error("TOML parser constructs a UTF-8 source")
@@ -111,7 +111,7 @@ fun parse(
     )
 }
 
-/** Stable TOML native handle failure (lib.rs:262-270). */
+/** Stable TOML native handle failure (lib.rs). */
 enum class TomlAccessError {
     /** Handle belongs to another immutable snapshot. */
     WRONG_SNAPSHOT,
@@ -128,7 +128,7 @@ enum class TomlAccessError {
 class TomlAccessException(val kind: TomlAccessError) :
     Exception("toml: ${kind.name}")
 
-/** Native TOML item category (lib.rs:272-305). */
+/** Native TOML item category (lib.rs). */
 enum class TomlItemKind {
     /** Decoded TOML string. */
     String,
@@ -176,7 +176,7 @@ enum class TomlItemKind {
     ArrayOfTables,
 }
 
-/** Parsed TOML date fields (lib.rs:307-316). */
+/** Parsed TOML date fields (lib.rs). */
 data class TomlDate(
     /** Four-digit year. */
     val year: Int,
@@ -186,7 +186,7 @@ data class TomlDate(
     val day: Int,
 )
 
-/** Parsed TOML time fields (lib.rs:318-329). */
+/** Parsed TOML time fields (lib.rs). */
 data class TomlTime(
     /** Hour in `0..=23`. */
     val hour: Int,
@@ -198,7 +198,7 @@ data class TomlTime(
     val nanosecond: Long,
 )
 
-/** Parsed TOML UTC offset (lib.rs:331-338). */
+/** Parsed TOML UTC offset (lib.rs). */
 sealed class TomlOffset {
     /** Literal UTC `Z`. */
     data object Z : TomlOffset()
@@ -207,7 +207,7 @@ sealed class TomlOffset {
     data class CustomMinutes(val minutes: Int) : TomlOffset()
 }
 
-/** Complete native TOML date/time datum (lib.rs:340-349). */
+/** Complete native TOML date/time datum (lib.rs). */
 data class TomlDateTime(
     /** Optional date component. */
     val date: TomlDate?,
@@ -218,8 +218,8 @@ data class TomlDateTime(
 )
 
 /**
- * Opaque immutable TOML document snapshot (lib.rs:130-142). TOML forms
- * only Complete documents (RFC 0001 §1; lib.rs:175-179), so
+ * Opaque immutable TOML document snapshot (lib.rs). TOML forms
+ * only Complete documents (RFC 0001 §1; lib.rs), so
  * [formationStatus] is always [FormationStatus.Complete] and the ordered
  * [diagnostics] are always empty.
  */
@@ -235,45 +235,45 @@ class TomlDocument internal constructor(
     internal val parseLimits: ParseLimits,
 ) {
     /** Snapshot identity to which every native handle and span belongs
-     * (lib.rs:146-149). */
+     * (lib.rs). */
     val snapshotIdentity: SnapshotIdentity
         get() = authority.identity
 
-    /** Exact immutable UTF-8 source (lib.rs:151-155). */
+    /** Exact immutable UTF-8 source (lib.rs). */
     fun source(): SourceSnapshot = source
 
     /** Default rendering is byte-for-byte identical to the source
-     * (lib.rs:158-161). */
+     * (lib.rs). */
     fun render(): ByteArray = source.bytes()
 
-    /** TOML format family contract (lib.rs:164-167). */
+    /** TOML format family contract (lib.rs). */
     fun formatFamily(): FormatFamilyId = FormatFamilyId("toml", 1)
 
-    /** Exact language profile (lib.rs:170-173). */
+    /** Exact language profile (lib.rs). */
     fun profile(): ProfileId = profile.id()
 
-    /** TOML 0.2 forms only complete valid documents (lib.rs:176-179). */
+    /** TOML 0.2 forms only complete valid documents (lib.rs). */
     fun formationStatus(): FormationStatus = FormationStatus.Complete
 
-    /** Deterministically ordered non-fatal diagnostics (lib.rs:182-185);
+    /** Deterministically ordered non-fatal diagnostics (lib.rs);
      * always empty for TOML Complete documents. */
     fun diagnostics(): List<Diagnostic> = diagnostics
 
-    /** Exhaustive token/trivia byte coverage (lib.rs:188-191). */
+    /** Exhaustive token/trivia byte coverage (lib.rs). */
     fun losslessStructuralIndex(): LosslessStructuralIndex = structuralIndex
 
     /** Format-specific kind for every structural piece, in the same source
-     * order (lib.rs:194-197). */
+     * order (lib.rs). */
     fun losslessSyntaxKinds(): List<TomlSyntaxKind> = syntaxKinds
 
     /** Resource contract used to form this snapshot and any edit successor
-     * (lib.rs:200-203). */
+     * (lib.rs). */
     fun parseLimits(): ParseLimits = parseLimits
 
-    /** Root native item, which is always `RootTable` (lib.rs:206-211). */
+    /** Root native item, which is always `RootTable` (lib.rs). */
     fun root(): TomlItem = TomlItem(this, rootIndex)
 
-    /** Resolves a snapshot-bound TOML item handle (lib.rs:214-224). Throws
+    /** Resolves a snapshot-bound TOML item handle (lib.rs). Throws
      * [TomlAccessException] for a foreign snapshot, a non-item role, or an
      * unknown index. */
     fun item(node: NodeRef): TomlItem {
@@ -318,43 +318,43 @@ class TomlDocument internal constructor(
 }
 
 /** Borrowed native TOML item bound to one document snapshot
- * (lib.rs:351-459). */
+ * (lib.rs). */
 class TomlItem internal constructor(
     internal val document: TomlDocument,
     internal val index: Int,
 ) {
-    /** Exact item identity (lib.rs:360-363). */
+    /** Exact item identity (lib.rs). */
     val nodeRef: NodeRef
         get() = document.nodeRef(index, NodeRole.TomlItem)
 
-    /** Exact or contract-authorized logical source span (lib.rs:365-368). */
+    /** Exact or contract-authorized logical source span (lib.rs). */
     val span: Span
         get() = document.entity(index).span
 
-    /** Native item category (lib.rs:371-375). */
+    /** Native item category (lib.rs). */
     val kind: TomlItemKind
         get() = document.itemEntity(index).kind.publicKind()
 
-    /** Decoded string when this item is a string (lib.rs:377-384). */
+    /** Decoded string when this item is a string (lib.rs). */
     fun asString(): String? = (document.itemEntity(index).kind as? InternalItemKind.String)?.value
 
-    /** Signed integer when this item is an integer (lib.rs:386-393). */
+    /** Signed integer when this item is an integer (lib.rs). */
     fun asInteger(): Long? = (document.itemEntity(index).kind as? InternalItemKind.Integer)?.value
 
-    /** Exact IEEE-754 datum when this item is a float (lib.rs:395-402). */
+    /** Exact IEEE-754 datum when this item is a float (lib.rs). */
     fun asFloat(): Long? = (document.itemEntity(index).kind as? InternalItemKind.Float)?.bits
 
-    /** Boolean when this item is a boolean (lib.rs:404-411). */
+    /** Boolean when this item is a boolean (lib.rs). */
     fun asBoolean(): Boolean? =
         (document.itemEntity(index).kind as? InternalItemKind.Boolean)?.value
 
     /** Native temporal datum when this item is any TOML date/time category
-     * (lib.rs:413-420). */
+     * (lib.rs). */
     fun asDateTime(): TomlDateTime? =
         (document.itemEntity(index).kind as? InternalItemKind.DateTime)?.value
 
     /** Direct ordered entries for any table category or inline table
-     * (lib.rs:422-439). */
+     * (lib.rs). */
     fun tableEntries(): List<TomlEntry>? {
         val kind = document.itemEntity(index).kind
         val entries = when (kind) {
@@ -366,7 +366,7 @@ class TomlItem internal constructor(
     }
 
     /** Direct ordered elements for arrays and arrays-of-tables
-     * (lib.rs:441-458). */
+     * (lib.rs). */
     fun arrayElements(): List<TomlArrayElement>? {
         val kind = document.itemEntity(index).kind
         val elements = when (kind) {
@@ -380,7 +380,7 @@ class TomlItem internal constructor(
     override fun toString(): String = "TomlItem(kind=$kind, index=$index)"
 }
 
-/** Borrowed direct table entry association (lib.rs:461-524). */
+/** Borrowed direct table entry association (lib.rs). */
 class TomlEntry internal constructor(
     internal val document: TomlDocument,
     internal val index: Int,
@@ -389,23 +389,23 @@ class TomlEntry internal constructor(
         (document.entity(index).kind as? EntityKind.Entry)?.entry
             ?: error("typed TOML entry handle")
 
-    /** Zero-based direct entry ordinal (lib.rs:476-480). */
+    /** Zero-based direct entry ordinal (lib.rs). */
     val ordinal: Int
         get() = entity().ordinal
 
-    /** Association identity (lib.rs:482-486). */
+    /** Association identity (lib.rs). */
     val nodeRef: NodeRef
         get() = document.nodeRef(index, NodeRole.TomlEntry)
 
-    /** Direct key segment identity (lib.rs:488-492). */
+    /** Direct key segment identity (lib.rs). */
     val keyNodeRef: NodeRef
         get() = document.nodeRef(entity().key, NodeRole.TomlKey)
 
-    /** Associated item identity (lib.rs:494-499). */
+    /** Associated item identity (lib.rs). */
     val itemNodeRef: NodeRef
         get() = document.nodeRef(entity().item, NodeRole.TomlItem)
 
-    /** Association source span (lib.rs:501-505). */
+    /** Association source span (lib.rs). */
     val span: Span
         get() = document.entity(index).span
 
@@ -415,18 +415,18 @@ class TomlEntry internal constructor(
     internal val keySpan: Span
         get() = document.entity(entity().key).span
 
-    /** Decoded direct key segment without normalization (lib.rs:507-514). */
+    /** Decoded direct key segment without normalization (lib.rs). */
     fun name(): String {
         val key = document.entity(entity().key).kind as? EntityKind.Key
             ?: error("typed TOML key handle")
         return key.key.name
     }
 
-    /** Associated native item (lib.rs:516-523). */
+    /** Associated native item (lib.rs). */
     fun item(): TomlItem = TomlItem(document, entity().item)
 }
 
-/** Borrowed array or array-of-tables element association (lib.rs:526-575). */
+/** Borrowed array or array-of-tables element association (lib.rs). */
 class TomlArrayElement internal constructor(
     internal val document: TomlDocument,
     internal val index: Int,
@@ -435,27 +435,27 @@ class TomlArrayElement internal constructor(
         (document.entity(index).kind as? EntityKind.Element)?.element
             ?: error("typed TOML element handle")
 
-    /** Zero-based direct element ordinal (lib.rs:541-546). */
+    /** Zero-based direct element ordinal (lib.rs). */
     val ordinal: Int
         get() = entity().ordinal
 
-    /** Association identity (lib.rs:548-552). */
+    /** Association identity (lib.rs). */
     val nodeRef: NodeRef
         get() = document.nodeRef(index, NodeRole.TomlArrayElement)
 
-    /** Associated item identity (lib.rs:554-558). */
+    /** Associated item identity (lib.rs). */
     val itemNodeRef: NodeRef
         get() = document.nodeRef(entity().item, NodeRole.TomlItem)
 
-    /** Association source span (lib.rs:560-564). */
+    /** Association source span (lib.rs). */
     val span: Span
         get() = document.entity(index).span
 
-    /** Associated native item (lib.rs:566-574). */
+    /** Associated native item (lib.rs). */
     fun item(): TomlItem = TomlItem(document, entity().item)
 }
 
-/** Maps one internal item kind to its public category (lib.rs:612-637). */
+/** Maps one internal item kind to its public category (lib.rs). */
 internal fun InternalItemKind.publicKind(): TomlItemKind = when (this) {
     is InternalItemKind.String -> TomlItemKind.String
     is InternalItemKind.Integer -> TomlItemKind.Integer

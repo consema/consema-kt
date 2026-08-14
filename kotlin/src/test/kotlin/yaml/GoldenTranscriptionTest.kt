@@ -3,7 +3,7 @@
 // Each test transcribes one vector case (input.source / expected.*) VERBATIM
 // from conformance/vectors/yaml-v1.json and asserts the language-neutral
 // facts the Rust/Go differential runners assert
-// (https://github.com/consema/consema-rs/blob/main/consema-conformance/src/yaml_v1.rs:167-186 for scalar profiles,
+// (https://github.com/consema/consema-rs/blob/main/consema-conformance/src/yaml_v1.rs for scalar profiles,
 // :385-405 for syntax facts, :407-460 for materialization, :470-530 for
 // edits). The case id is cited on every test.
 //

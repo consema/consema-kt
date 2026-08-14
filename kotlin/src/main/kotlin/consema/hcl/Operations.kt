@@ -1,23 +1,23 @@
 // The frozen HCL format operation registry (RFC 0014 §10, RFC 0004 §10).
 //
 // Data authority:
-//   - https://github.com/consema/consema-rs/blob/main/consema-hcl/src/operation_registry.rs:16-99 pins every id,
+//   - https://github.com/consema/consema-rs/blob/main/consema-hcl/src/operation_registry.rs pins every id,
 //     target role, argument, and support classification: `hcl.native@1`
 //     publishes all six structural operations
-//     (operation_registry.rs:105-127: hcl.edit.insert-attribute@1,
+//     (operation_registry.rs: hcl.edit.insert-attribute@1,
 //     hcl.edit.insert-block@1, hcl.edit.remove-attribute@1,
 //     hcl.edit.remove-block@1, hcl.edit.rename-attribute@1,
 //     hcl.edit.set-attribute-value@1); `hcl.tfvars@1` publishes the four
-//     attribute operations only (operation_registry.rs:129-156), because
+//     attribute operations only (operation_registry.rs), because
 //     the tfvars restriction admits no block (RFC 0014 §5, §10).
-//   - RFC 0014 §10 (https://github.com/consema/consema/blob/main/docs/rfcs/0014-hcl-family-profiles-v1.md:630-671)
+//   - RFC 0014 §10 (https://github.com/consema/consema/blob/main/docs/rfcs/0014-hcl-family-profiles-v1.md)
 //     freezes the six operation semantics; RFC 0004 §10 (:244-269) freezes
 //     the registry discipline.
 //   - consema-go/go/hcl is a cross-reference only.
 //
 // Kotlin-idiomatic design: the full FormatOperationRegistry type is not
 // shipped in Kotlin (recorded gap, six-repo audit G090;
-// document/EditPlan.kt:22-23); this surface exposes the frozen descriptors
+// kotlin/src/main/kotlin/consema/document/EditPlan.kt); this surface exposes the frozen descriptors
 // as immutable data the facade's per-profile operation registries consume,
 // mirroring the toml/json family registries.
 
@@ -26,7 +26,7 @@ package consema.hcl
 import consema.document.FormatOperationId
 
 /** The argument vocabulary of one operation descriptor (the Rust
- * OperationArgumentKind, operation_registry.rs:22-25). */
+ * OperationArgumentKind, operation_registry.rs). */
 enum class HclOperationArgumentKind {
     String,
     PortableValue,
@@ -34,13 +34,13 @@ enum class HclOperationArgumentKind {
 }
 
 /** The support classification of one operation (the Rust
- * OperationSupport, operation_registry.rs:26). */
+ * OperationSupport, operation_registry.rs). */
 enum class HclOperationSupport {
     /** The operation is part of the published structural surface. */
     Supported,
 }
 
-/** One frozen format operation descriptor (operation_registry.rs:88-98). */
+/** One frozen format operation descriptor (operation_registry.rs). */
 data class HclOperationDescriptor(
     /** Immutable namespaced operation ID (version 1). */
     val id: FormatOperationId,
@@ -56,8 +56,8 @@ data class HclOperationDescriptor(
 }
 
 /** Returns the validated operation registry for one exact HCL profile
- * (operation_registry.rs:16-23). The registry orders the descriptors by
- * their frozen ids (the pinned surface of operation_registry.rs:105-127:
+ * (operation_registry.rs). The registry orders the descriptors by
+ * their frozen ids (the pinned surface of operation_registry.rs
  * insert-attribute, insert-block, remove-attribute, remove-block,
  * rename-attribute, set-attribute-value). */
 fun formatOperationRegistry(profile: HclProfile): List<HclOperationDescriptor> =
@@ -75,8 +75,8 @@ private fun descriptor(
     support = HclOperationSupport.Supported,
 )
 
-/** The attribute-only surface of `hcl.tfvars@1` (operation_registry.rs:
- * 49-80). */
+/** The attribute-only surface of `hcl.tfvars@1` (operation_registry.rs
+ *). */
 private fun tfvarsDescriptors(): List<HclOperationDescriptor> =
     listOf(
         descriptor(
@@ -106,7 +106,7 @@ private fun tfvarsDescriptors(): List<HclOperationDescriptor> =
     )
 
 /** The full six-operation surface of `hcl.native@1`
- * (operation_registry.rs:26-46). */
+ * (operation_registry.rs). */
 private fun nativeDescriptors(): List<HclOperationDescriptor> =
     tfvarsDescriptors() + listOf(
         descriptor(

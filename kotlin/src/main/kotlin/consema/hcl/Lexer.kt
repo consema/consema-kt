@@ -3,18 +3,18 @@
 // §2, §7.2).
 //
 // Data authority:
-//   - https://github.com/consema/consema-rs/blob/main/consema-hcl/src/lexer.rs pins the token kind set (lexer.rs:146-
-//     245), the token-to-piece kind mapping (lexer.rs:251-301), the
-//     structural classification (lexer.rs:305-313), the main scan (lexer.rs:
-//     680-888: operators, `::` as invalid-character, `_` as identifier@1,
+//   - https://github.com/consema/consema-rs/blob/main/consema-hcl/src/lexer.rs pins the token kind set (lexer.rs
+//     245), the token-to-piece kind mapping (lexer.rs), the
+//     structural classification (lexer.rs), the main scan (lexer.rs
+// : operators, `::` as invalid-character, `_` as identifier@1,
 //     BOM as byte-order-mark@1, lone CR as lone-cr@1), the number grammar
-//     (lexer.rs:1619-1684), the quoted-template scan (lexer.rs:1129-1256:
+//     (lexer.rs), the quoted-template scan (lexer.rs
 //     escapes, `$${`/`%%{` literals, unterminated-string@1 recovery to the
-//     newline), the heredoc scan (lexer.rs:1257-1375: TrimSpace closing-line
+//     newline), the heredoc scan (lexer.rs: TrimSpace closing-line
 //     match, per-line content runs, heredoc-bytes/heredoc-lines limits), the
-//     interpolation/directive absorption (lexer.rs:889-968), and the
-//     template frames (lexer.rs:1378-1530).
-//   - RFC 0014 §2 (https://github.com/consema/consema/blob/main/docs/rfcs/0014-hcl-family-profiles-v1.md:56-93) freezes
+//     interpolation/directive absorption (lexer.rs), and the
+//     template frames (lexer.rs).
+//   - RFC 0014 §2 (https://github.com/consema/consema/blob/main/docs/rfcs/0014-hcl-family-profiles-v1.md) freezes
 //     the UTF-8-only source contract: newline is exactly LF or CRLF, a lone
 //     CR is Recovered, a leading BOM is Recovered.
 //   - RFC 0014 §4.1 (:147-186) freezes the identifier (UAX #31 with `-`
@@ -40,7 +40,7 @@ import consema.protocol.Severity
 
 /**
  * Closed token kind set of the self-owned HCL tokenizer (RFC 0014 §2, §4.1;
- * lexer.rs:146-245). The set is richer than the 30-piece [HclSyntaxKind]
+ * lexer.rs). The set is richer than the 30-piece [HclSyntaxKind]
  * closure: operator spellings, the exact trivia runs, and the zero-length
  * `Eof` terminal are token facts.
  */
@@ -96,7 +96,7 @@ internal enum class HclTokenKind {
 
     /** The closed lossless syntax kind of this token; null for the
      * zero-length `Eof` terminal, which has no piece (RFC 0014 §7.2;
-     * lexer.rs:251-301). */
+     * lexer.rs). */
     fun syntaxKind(): HclSyntaxKind? = when (this) {
         Whitespace -> HclSyntaxKind.Whitespace
         LineBreak -> HclSyntaxKind.LineBreak
@@ -134,8 +134,8 @@ internal enum class HclTokenKind {
         Eof -> null
     }
 
-    /** The structural classification of this token's piece (lexer.rs:
-     * 305-313). */
+    /** The structural classification of this token's piece (lexer.rs
+ *). */
     fun structuralKind(): StructuralPieceKind = when (this) {
         Whitespace, LineBreak, LineComment, InlineComment ->
             StructuralPieceKind.Trivia
@@ -158,7 +158,7 @@ internal data class HclToken(
  * 30-kind piece index (RFC 0014 §2, §7.2). `syntax` is present for a
  * whole-source lex and absent for a region lex (an interpolation interior),
  * whose tokens still carry exact spans but do not form a source-covering
- * index (lexer.rs:316-333).
+ * index (lexer.rs).
  */
 internal class LexedSource(
     val sourceLen: Int,
@@ -173,7 +173,7 @@ internal class LexedSource(
 
 /**
  * Runs one whole-source lex over the complete decoded text
- * (lexer.rs:324-332, 680-888). Any limit failure throws
+ * (lexer.rs). Any limit failure throws
  * [HclFormationException]; the lossless coverage invariant is validated by
  * [LosslessStructuralIndex.new].
  */
@@ -213,7 +213,7 @@ internal fun lexSource(
 /**
  * Runs one region lex over `[start, end)` of the source — an interpolation
  * or directive interior — producing tokens without pieces (the Rust
- * `lex_region`; lexer.rs:889-1127). Region failures never emit pieces, but
+ * `lex_region`; lexer.rs). Region failures never emit pieces, but
  * diagnostics and error regions are recorded for the parser to merge; the
  * region spans bind to the same [authority] as the enclosing document.
  */
@@ -239,7 +239,7 @@ internal fun lexRegion(
     )
 }
 
-/** One open template frame (lexer.rs:1378-1530). */
+/** One open template frame (lexer.rs). */
 private sealed class Frame {
     /** An open quoted template; buffered tokens are flushed at the close. */
     data class Quoted(
@@ -266,7 +266,7 @@ private sealed class Frame {
 }
 
 /**
- * The single-pass state machine (RFC 0014 §2, §4.1; lexer.rs:680-1530).
+ * The single-pass state machine (RFC 0014 §2, §4.1; lexer.rs).
  * Byte offsets are the frozen half-open raw-byte spans; under the UTF-8-only
  * source contract the decoded offsets equal raw offsets.
  */
@@ -304,7 +304,7 @@ private class Lexer(
         tokens.add(HclToken(HclTokenKind.Eof, pos, pos))
     }
 
-    // -- the main scan (lexer.rs:680-888) ---------------------------------
+    // -- the main scan (lexer.rs) ---------------------------------
 
     private fun scanNormal() {
         val byte = bytes[pos]
@@ -521,7 +521,7 @@ private class Lexer(
         }
     }
 
-    /** UAX #31 identifier with hyphen continuation (lexer.rs:1586-1615). */
+    /** UAX #31 identifier with hyphen continuation (lexer.rs). */
     private fun scanIdentifier() {
         val runStart = pos
         while (pos < end) {
@@ -538,7 +538,7 @@ private class Lexer(
     }
 
     /** Scans one number-shaped run and validates the §4.1 decimal grammar
-     * (lexer.rs:1619-1684). */
+     * (lexer.rs). */
     private fun scanNumber() {
         val runStart = pos
         while (pos < end && bytes[pos] in '0'.code.toByte()..'9'.code.toByte()) {
@@ -567,7 +567,7 @@ private class Lexer(
             }
         }
         // A continuation that cannot start a fresh token makes the whole run
-        // one invalid number (lexer.rs:1646-1679).
+        // one invalid number (lexer.rs).
         var extend = pos
         while (extend < end) {
             val scalar = scalarAt(extend)
@@ -589,7 +589,7 @@ private class Lexer(
         }
     }
 
-    // -- quoted templates (lexer.rs:1129-1256, 1378-1391) -----------------
+    // -- quoted templates (lexer.rs) -----------------
 
     private fun openQuoted() {
         val open = pos
@@ -601,7 +601,7 @@ private class Lexer(
 
     private fun scanQuoted(frame: Frame.Quoted) {
         // Literal runs (escapes and `$${`/`%%{` text included) are emitted
-        // as one StringContent token when the run ends (lexer.rs:1129-1256).
+        // as one StringContent token when the run ends (lexer.rs).
         val runStart = pos
         while (pos < end) {
             when (val byte = bytes[pos]) {
@@ -658,7 +658,7 @@ private class Lexer(
     }
 
     /** Ends the current literal run as one content token when non-empty
-     * (lexer.rs:1813-1824). */
+     * (lexer.rs). */
     private fun endRun(runStart: Int, kind: HclTokenKind) {
         if (pos > runStart) {
             emitKind(kind, runStart, pos)
@@ -666,7 +666,7 @@ private class Lexer(
     }
 
     /** Handles one backslash escape of a quoted template (RFC 0014 §4.4;
-     * lexer.rs:1190-1256). The escape is validated here; the decoded text
+     * lexer.rs). The escape is validated here; the decoded text
      * is produced by the parser's literal decoder. */
     private fun scanStringEscape() {
         when (val next = byteAt(1)) {
@@ -744,7 +744,7 @@ private class Lexer(
 
     /** Terminates an unterminated quoted template: the buffered content is
      * discarded and the content becomes one error region to `end`, with
-     * `hcl.parse.unterminated-string@1` (RFC 0014 §3; lexer.rs:1738-1777). */
+     * `hcl.parse.unterminated-string@1` (RFC 0014 §3; lexer.rs). */
     private fun terminateString(endBoundary: Int) {
         val frame = stack.last() as Frame.Quoted
         checkLimit(HCL_LIMIT_STRING_LEN, "string-len", endBoundary - frame.open, limits.maxStringLen)
@@ -754,7 +754,7 @@ private class Lexer(
         pos = endBoundary
     }
 
-    // -- heredocs (lexer.rs:1257-1375, 1393-1488) -------------------------
+    // -- heredocs (lexer.rs) -------------------------
 
     private fun openHeredoc() {
         val runStart = pos
@@ -846,7 +846,7 @@ private class Lexer(
     /** Scans one heredoc content line: the whole line (including the CR of
      * a line-ending CRLF) is one `HeredocContent` piece; `${`/`%{`
      * sequences stay inside the piece and are re-scanned by the parser
-     * (RFC 0014 §4.5; lexer.rs:1294-1375). */
+     * (RFC 0014 §4.5; lexer.rs). */
     private fun scanHeredocLine(frame: Frame.Heredoc, lineEnd: Int) {
         val runStart = pos
         while (pos < lineEnd) {
@@ -879,7 +879,7 @@ private class Lexer(
     /** Terminates an unterminated heredoc: the buffered content is discarded
      * and the content becomes one error region to end of file (bounded by
      * the heredoc size limits), with `hcl.parse.unterminated-heredoc@1`
-     * (RFC 0014 §3, §4.5; lexer.rs:1783-1811). */
+     * (RFC 0014 §3, §4.5; lexer.rs). */
     private fun terminateHeredoc(endBoundary: Int) {
         val frame = stack.last() as Frame.Heredoc
         stack.removeAt(stack.size - 1)
@@ -894,7 +894,7 @@ private class Lexer(
         checkLimit(HCL_LIMIT_TEMPLATE_LEN, "template-len", bytes, limits.maxTemplateLen)
     }
 
-    // -- interpolation/directive absorption (lexer.rs:889-968, 1489-1530) --
+    // -- interpolation/directive absorption (lexer.rs) --
 
     private fun openInterpolation(directive: Boolean) {
         val openStart = pos
@@ -1176,7 +1176,7 @@ private class Lexer(
     // -- emission and limits ----------------------------------------------
 
     /** Emits one token, buffering it when an open quoted/heredoc template
-     * owns the current position (lexer.rs:1897-1921). The buffering keys on
+     * owns the current position (lexer.rs). The buffering keys on
      * the bottom frame: tokens emitted inside an absorbed interpolation or
      * directive interior (including the content/close tokens) stay buffered
      * until their enclosing template closes, so the stream stays in source
@@ -1197,13 +1197,13 @@ private class Lexer(
             stack.filterIsInstance<Frame.Heredoc>().sumOf { it.buffer.size }
 
     /** Emits one token; tokens are always recorded — the piece index is
-     * derived from the token stream afterwards (lexer.rs:1923-1930). */
+     * derived from the token stream afterwards (lexer.rs). */
     private fun emitKind(kind: HclTokenKind, tokenStart: Int, tokenEnd: Int) {
         emit(HclToken(kind, tokenStart, tokenEnd))
     }
 
     /** Emits one error-region token and records its recovery fact
-     * (lexer.rs:1936-1971). Region lexes (interpolation/directive
+     * (lexer.rs). Region lexes (interpolation/directive
      * interiors) record the regions and diagnostics for the parser to merge
      * but skip the ErrorRegion token, which the parser treats as a fresh
      * failure. */
@@ -1237,7 +1237,7 @@ private class Lexer(
     }
 
     /** Records one recovery diagnostic without a piece (absorbed interiors
-     * and zero-length regions; lexer.rs:1975-1996). */
+     * and zero-length regions; lexer.rs). */
     private fun recover(
         code: String,
         regionStart: Int,
@@ -1325,10 +1325,10 @@ private class Lexer(
 }
 
 /** UAX #31 identifier start: `ID_Start` with underscore excluded (RFC 0014
- * §4.1; lexer.rs:2098-2101). */
+ * §4.1; lexer.rs). */
 private fun isIdentifierStart(scalar: Int): Boolean =
     scalar != '_'.code && Character.isUnicodeIdentifierStart(scalar)
 
 /** UAX #31 identifier continuation: `ID_Continue` (underscore included);
- * the hyphen continues identifiers (RFC 0014 §4.1; lexer.rs:2103-2106). */
+ * the hyphen continues identifiers (RFC 0014 §4.1; lexer.rs). */
 private fun isIdentifierContinue(scalar: Int): Boolean = Character.isUnicodeIdentifierPart(scalar)

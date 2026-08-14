@@ -1,7 +1,7 @@
 // Safe internal DTD/entity boundary (RFC 0012 §3).
 //
 // Data authority:
-//   - RFC 0012 §3 (https://github.com/consema/consema/blob/main/docs/rfcs/0012-xml-1.0-safe-profile-v1.md:83-130): no
+//   - RFC 0012 §3 (https://github.com/consema/consema/blob/main/docs/rfcs/0012-xml-1.0-safe-profile-v1.md): no
 //     DOCTYPE or an internal-only DOCTYPE with a bounded subset; the five
 //     predefined entities are always available with their XML meanings;
 //     internal general entity names are unique; a declaration cannot
@@ -9,17 +9,17 @@
 //     allocation by declaration count, reference count, reference depth,
 //     replacement bytes/scalars, total expanded bytes/scalars, and the
 //     amplification ratio; limits apply across the whole document.
-//   - https://github.com/consema/consema-rs/blob/main/consema-xml/src/entity.rs:9-40 (PredefinedEntity and the frozen
-//     PREDEFINED_ENTITIES table), entity.rs:42-49 (predefined_value),
-//     entity.rs:51-59 (is_xml_char), entity.rs:61-89 (ReplacementError and
-//     validate_replacement_text), entity.rs:91-123 (ExpansionBreach and
-//     EntityExpansionLimits), entity.rs:125-208 (EntityExpansionState
+//   - https://github.com/consema/consema-rs/blob/main/consema-xml/src/entity.rs (PredefinedEntity and the frozen
+//     PREDEFINED_ENTITIES table), entity.rs (predefined_value),
+//     entity.rs (is_xml_char), entity.rs (ReplacementError and
+//     validate_replacement_text), entity.rs (ExpansionBreach and
+//     EntityExpansionLimits), entity.rs (EntityExpansionState
 //     accounting).
 //   - consema-go/go/xml/entity.go is a cross-reference only.
 
 package consema.xml
 
-/** One predefined XML entity (entity.rs:9-16). */
+/** One predefined XML entity (entity.rs). */
 data class PredefinedEntity(
     /** Entity name without the `&` and `;`. */
     val name: String,
@@ -28,7 +28,7 @@ data class PredefinedEntity(
 )
 
 /** The five predefined entities, always available with their XML meanings
- * (entity.rs:18-40). */
+ * (entity.rs). */
 val PREDEFINED_ENTITIES: List<PredefinedEntity> = listOf(
     PredefinedEntity("lt", "<"),
     PredefinedEntity("gt", ">"),
@@ -38,11 +38,11 @@ val PREDEFINED_ENTITIES: List<PredefinedEntity> = listOf(
 )
 
 /** Returns the replacement value of a predefined entity by exact name
- * (entity.rs:42-49). */
+ * (entity.rs). */
 fun predefinedValue(name: String): String? =
     PREDEFINED_ENTITIES.firstOrNull { it.name == name }?.value
 
-/** Returns whether `c` is a legal XML 1.0 character (entity.rs:51-59). */
+/** Returns whether `c` is a legal XML 1.0 character (entity.rs). */
 fun isXmlChar(c: Char): Boolean =
     when (val value = c.code) {
         0x09, 0x0A, 0x0D -> true
@@ -52,7 +52,7 @@ fun isXmlChar(c: Char): Boolean =
         else -> false
     }
 
-/** Replacement-text validation failure (entity.rs:61-72). */
+/** Replacement-text validation failure (entity.rs). */
 sealed class ReplacementError {
     /** The replacement text contains `<`, which would create entity-generated
      * markup. */
@@ -63,7 +63,7 @@ sealed class ReplacementError {
 }
 
 /**
- * Validates one internal general entity value (entity.rs:74-89). An admitted
+ * Validates one internal general entity value (entity.rs). An admitted
  * value may contain character data, character references, predefined entity
  * references, or references to another admitted internal general entity, but
  * never `<`.
@@ -80,7 +80,7 @@ fun validateReplacementText(text: String): ReplacementError? {
     return null
 }
 
-/** Entity expansion breach category (entity.rs:91-106). */
+/** Entity expansion breach category (entity.rs). */
 enum class ExpansionBreach {
     /** Too many entity declarations. */
     DeclarationLimit,
@@ -100,7 +100,7 @@ enum class ExpansionBreach {
     /** Expanded/declared byte amplification exceeds the ratio. */
     Amplification;
 
-    /** The frozen recovery code of this breach (parser.rs:1751-1757). */
+    /** The frozen recovery code of this breach (parser.rs). */
     fun code(): String =
         if (this == Amplification) {
             "xml.entity.amplification@1"
@@ -109,7 +109,7 @@ enum class ExpansionBreach {
         }
 }
 
-/** Entity expansion limits derived from [XmlParseLimits] (entity.rs:108-123). */
+/** Entity expansion limits derived from [XmlParseLimits] (entity.rs). */
 data class EntityExpansionLimits(
     /** Maximum entity declarations. */
     val maxDeclarations: Int,
@@ -126,7 +126,7 @@ data class EntityExpansionLimits(
 )
 
 /**
- * Document-wide entity expansion accounting (entity.rs:125-145). Counters
+ * Document-wide entity expansion accounting (entity.rs). Counters
  * apply across the whole document, not independently per reference, so an
  * attack cannot split its budget across references.
  */
@@ -148,7 +148,7 @@ class EntityExpansionState(
 ) {
     /**
      * Records one collected declaration with its replacement text size
-     * (entity.rs:147-168). Returns the breach, or null when admitted.
+     * (entity.rs). Returns the breach, or null when admitted.
      */
     fun recordDeclaration(
         replacementBytes: Int,
@@ -166,7 +166,7 @@ class EntityExpansionState(
 
     /**
      * Enters one reference expansion and accounts its resolved size
-     * (entity.rs:169-197). Returns the breach, or null when admitted.
+     * (entity.rs). Returns the breach, or null when admitted.
      */
     fun enterReference(
         expandedBytesCount: Int,
@@ -195,7 +195,7 @@ class EntityExpansionState(
         return null
     }
 
-    /** Leaves one completed reference expansion (entity.rs:199-202). */
+    /** Leaves one completed reference expansion (entity.rs). */
     fun leaveReference() {
         expansionDepth = (expansionDepth - 1).coerceAtLeast(0)
     }

@@ -3,8 +3,8 @@
 //
 // Data authority: https://github.com/consema/consema-rs/blob/main/consema-conformance/src/yaml_v1.rs (the per-case
 // dispatch and every fact are transcribed from the Rust handlers; the
-// capability mapping at yaml_v1.rs:117-134 and the case table at
-// yaml_v1.rs:138-165); the vector file itself drives every input and
+// capability mapping at yaml_v1.rs and the case table at
+// yaml_v1.rs); the vector file itself drives every input and
 // expectation (conformance/README.md rules 3-4). consema-go/go/conformance/yaml_v1.go
 // is a cross-reference only.
 
@@ -153,7 +153,7 @@ private fun runYamlV1Case(case: CaseData) {
     }
 }
 
-/** profile.yaml12-scalars and profile.yaml11-scalars (yaml_v1.rs:167-186). */
+/** profile.yaml12-scalars and profile.yaml11-scalars (yaml_v1.rs). */
 private fun scalarProfile(case: CaseData) {
     val document = parseYaml(case)
     val root = document.document(0) ?: fail("document 0 missing")
@@ -172,7 +172,7 @@ private fun scalarProfile(case: CaseData) {
     )
 }
 
-/** source.utf16le-bom (yaml_v1.rs:188-199). */
+/** source.utf16le-bom (yaml_v1.rs). */
 private fun sourceEncoding(case: CaseData) {
     val raw = decodeHex(inputString(case, "source_hex") ?: fail("missing input.source_hex"))
         ?: fail("invalid hex")
@@ -189,7 +189,7 @@ private fun sourceEncoding(case: CaseData) {
     )
 }
 
-/** stream.empty and stream.multi-document (yaml_v1.rs:201-210). */
+/** stream.empty and stream.multi-document (yaml_v1.rs). */
 private fun streamFacts(case: CaseData) {
     val document = parseYaml(case)
     val source = inputString(case, "source") ?: fail("missing input.source")
@@ -201,7 +201,7 @@ private fun streamFacts(case: CaseData) {
     )
 }
 
-/** syntax.styles-and-trivia (yaml_v1.rs:212-235). */
+/** syntax.styles-and-trivia (yaml_v1.rs). */
 private fun syntaxFacts(case: CaseData) {
     val document = parseYaml(case)
     val kinds = document.losslessSyntaxKinds().map { it.asStr() }
@@ -214,7 +214,7 @@ private fun syntaxFacts(case: CaseData) {
     )
 }
 
-/** native.arbitrary-duplicate-mapping (yaml_v1.rs:237-261). */
+/** native.arbitrary-duplicate-mapping (yaml_v1.rs). */
 private fun mappingFacts(case: CaseData) {
     val document = parseYaml(case)
     val root = document.document(0) ?: fail("document 0 missing")
@@ -233,7 +233,7 @@ private fun mappingFacts(case: CaseData) {
     )
 }
 
-/** formation.undefined-alias (yaml_v1.rs:263-275). */
+/** formation.undefined-alias (yaml_v1.rs). */
 private fun formationRejection(case: CaseData) {
     val source = inputString(case, "source") ?: fail("missing input.source")
     val error = try {
@@ -245,7 +245,7 @@ private fun formationRejection(case: CaseData) {
     ensure(error.code == expectedString(case, "code"))
 }
 
-/** graph.shared-cycle (yaml_v1.rs:277-291). */
+/** graph.shared-cycle (yaml_v1.rs). */
 private fun graphFacts(case: CaseData) {
     val document = parseYaml(case)
     val graph = try {
@@ -265,7 +265,7 @@ private fun graphFacts(case: CaseData) {
     )
 }
 
-/** query.mapping-entries and query.alias-target (yaml_v1.rs:293-314). */
+/** query.mapping-entries and query.alias-target (yaml_v1.rs). */
 private fun nativeQuery(case: CaseData) {
     val document = parseYaml(case)
     val executable = queryFromPipeline(case, Domains.yamlNativeV1())
@@ -278,7 +278,7 @@ private fun nativeQuery(case: CaseData) {
     ensure(roles == expectedStrings(case, "roles"))
 }
 
-/** query.syntax-comments (yaml_v1.rs:316-344). */
+/** query.syntax-comments (yaml_v1.rs). */
 private fun syntaxQuery(case: CaseData) {
     val document = parseYaml(case)
     val kind = inputString(case, "kind") ?: fail("missing input.kind")
@@ -302,7 +302,7 @@ private fun syntaxQuery(case: CaseData) {
     ensure(ordinals == expectedLongs(case, "ordinals"))
 }
 
-/** query.resource-limit (yaml_v1.rs:346-363). */
+/** query.resource-limit (yaml_v1.rs). */
 private fun queryLimit(case: CaseData) {
     val document = parseYaml(case)
     val executable = queryFromPipeline(case, Domains.yamlNativeV1())
@@ -321,7 +321,7 @@ private fun queryLimit(case: CaseData) {
     ensure(error.kind.code == expectedString(case, "code"))
 }
 
-/** projection.sharing-policy (yaml_v1.rs:365-388). */
+/** projection.sharing-policy (yaml_v1.rs). */
 private fun projectionSharing(case: CaseData) {
     val document = parseYaml(case)
     val default = document.projectValue(ValueProjectionRequest.bestExactV1())
@@ -344,7 +344,7 @@ private fun projectionSharing(case: CaseData) {
     )
 }
 
-/** projection.cycle (yaml_v1.rs:390-402). */
+/** projection.cycle (yaml_v1.rs). */
 private fun projectionFailure(case: CaseData) {
     val document = parseYaml(case)
     val result = document.projectValue(
@@ -357,7 +357,7 @@ private fun projectionFailure(case: CaseData) {
     ensure(valueProjectionCode(failure) == expectedString(case, "code"))
 }
 
-/** projection.tag-policy (yaml_v1.rs:404-423). */
+/** projection.tag-policy (yaml_v1.rs). */
 private fun projectionTag(case: CaseData) {
     val document = parseYaml(case)
     val rejected = document.projectValue(ValueProjectionRequest.bestExactV1())
@@ -380,7 +380,7 @@ private fun projectionTag(case: CaseData) {
     )
 }
 
-/** projection.mapping-policy (yaml_v1.rs:425-446). */
+/** projection.mapping-policy (yaml_v1.rs). */
 private fun projectionMapping(case: CaseData) {
     val document = parseYaml(case)
     val rejected = document.projectValue(
@@ -404,7 +404,7 @@ private fun projectionMapping(case: CaseData) {
     )
 }
 
-/** projection.graph-provenance (yaml_v1.rs:448-480). */
+/** projection.graph-provenance (yaml_v1.rs). */
 private fun graphProvenance(case: CaseData) {
     val document = parseYaml(case)
     val projection = try {
@@ -426,7 +426,7 @@ private fun graphProvenance(case: CaseData) {
     )
 }
 
-/** materialization.graph-cycle-flow (yaml_v1.rs:482-498). */
+/** materialization.graph-cycle-flow (yaml_v1.rs). */
 private fun graphMaterialization(case: CaseData) {
     val document = parseYaml(case)
     val graph = try {
@@ -454,7 +454,7 @@ private fun graphMaterialization(case: CaseData) {
     )
 }
 
-/** materialization.value-flow (yaml_v1.rs:500-529). */
+/** materialization.value-flow (yaml_v1.rs). */
 private fun valueMaterialization(case: CaseData) {
     val document = parseYaml(case)
     val projected = document.projectValue(ValueProjectionRequest.bestExactV1())
@@ -482,7 +482,7 @@ private fun valueMaterialization(case: CaseData) {
     )
 }
 
-/** edit.scalar-atomic (yaml_v1.rs:531-561). */
+/** edit.scalar-atomic (yaml_v1.rs). */
 private fun editScalar(case: CaseData) {
     val document = parseYaml(case)
     val entry = inputInt(case, "entry")
@@ -518,7 +518,7 @@ private fun editScalar(case: CaseData) {
     )
 }
 
-/** edit.anchor-rename (yaml_v1.rs:563-581). */
+/** edit.anchor-rename (yaml_v1.rs). */
 private fun editAnchor(case: CaseData) {
     val document = parseYaml(case)
     val entry = inputInt(case, "entry")
@@ -541,7 +541,7 @@ private fun editAnchor(case: CaseData) {
     )
 }
 
-/** edit.structural-insert (yaml_v1.rs:583-620). */
+/** edit.structural-insert (yaml_v1.rs). */
 private fun editStructural(case: CaseData) {
     val document = parseYaml(case)
     val root = document.document(0)?.root() ?: fail("document missing")
@@ -575,7 +575,7 @@ private fun editStructural(case: CaseData) {
     )
 }
 
-/** edit.anchor-dependency (yaml_v1.rs:622-637). */
+/** edit.anchor-dependency (yaml_v1.rs). */
 private fun editAnchorDependency(case: CaseData) {
     val document = parseYaml(case)
     val target = document.document(0)?.root()?.mappingEntry(0)?.value()?.sequenceItem(0)
@@ -595,7 +595,7 @@ private fun editAnchorDependency(case: CaseData) {
     )
 }
 
-/** resource.parse-source-bytes (yaml_v1.rs:639-654). */
+/** resource.parse-source-bytes (yaml_v1.rs). */
 private fun parseLimit(case: CaseData) {
     val source = inputString(case, "source") ?: fail("missing input.source")
     val limits = ParseLimits(
@@ -614,7 +614,7 @@ private fun parseLimit(case: CaseData) {
     ensure(error.code == expectedString(case, "code"))
 }
 
-/** resource.parse-nesting-depth (yaml_v1.rs:639-654). */
+/** resource.parse-nesting-depth (yaml_v1.rs). */
 private fun parseDepthLimit(case: CaseData) {
     val source = inputString(case, "source") ?: fail("missing input.source")
     val limits = ParseLimits(
@@ -634,7 +634,7 @@ private fun parseDepthLimit(case: CaseData) {
 }
 
 /**
- * projection.alias-amplification (yaml_v1.rs:656-670): the alias-
+ * projection.alias-amplification (yaml_v1.rs): the alias-
  * amplification budget (`max_alias_amplification_ratio`, RFC 0007 §9) is
  * checked before any node is visited, so a zero budget is a hard denial of
  * the value projection.
@@ -653,7 +653,7 @@ private fun projectionAmplificationLimit(case: CaseData) {
     ensure(valueProjectionCode(failure) == expectedString(case, "code"))
 }
 
-/** resource.graph-provenance (yaml_v1.rs:656-670). */
+/** resource.graph-provenance (yaml_v1.rs). */
 private fun graphProvenanceLimit(case: CaseData) {
     val document = parseYaml(case)
     val request = GraphProjectionRequest.bestExactV1().withLimits(
@@ -671,7 +671,7 @@ private fun graphProvenanceLimit(case: CaseData) {
     ensure(graphProjectionCode(error.failure) == expectedString(case, "code"))
 }
 
-/** regression.plain-property-characters (yaml_v1.rs:672-687). */
+/** regression.plain-property-characters (yaml_v1.rs). */
 private fun plainPropertyRegression(case: CaseData) {
     val document = parseYaml(case)
     val scalar = document.document(0)?.root()?.scalar() ?: fail("root must be Scalar")
@@ -700,7 +700,7 @@ private fun yamlProfile(case: CaseData): YamlProfile =
     }
 
 /** Builds one executable query from the input.pipeline descriptor sequence
- * (yaml_v1.rs:706-728). */
+ * (yaml_v1.rs). */
 private fun queryFromPipeline(case: CaseData, domain: QueryDomain): ExecutableQuery {
     val descriptors = inputSequence(case, "pipeline") ?: fail("missing input.pipeline")
     var expression = QueryExpression(ExpressionKind.Input)
@@ -723,7 +723,7 @@ private fun queryCapabilities(): CapabilitySet {
     return set
 }
 
-/** The frozen canonical-flow materialization request (yaml_v1.rs:736-742). */
+/** The frozen canonical-flow materialization request (yaml_v1.rs). */
 private fun materializationRequest(style: String): MaterializationRequest =
     MaterializationRequest.new(
         ProfileId("yaml.1.2-core", 1),

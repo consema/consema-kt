@@ -90,7 +90,7 @@ class DialectAndEncodingTest {
         assertEquals(cp1252.toList(), cpDocument.render().toList())
     }
 
-    /** RFC 0010 §3.2 and the profile-encoding validation (parser.rs:38-91):
+    /** RFC 0010 §3.2 and the profile-encoding validation (parser.rs):
      * the Latin-1 profile rejects Reader selections and vice versa with the
      * frozen java-properties.source.profile-encoding@1 code. */
     @Test
@@ -123,7 +123,7 @@ class DialectAndEncodingTest {
 
     /** RFC 0010 §5: the JDK line-reader end-of-source rule retains a final
      * unmatched backslash as a ContinuationMarker and emits no code unit
-     * (parser.rs:390-411). */
+     * (parser.rs). */
     @Test
     fun terminalOddBackslashMatchesJdkLineReaderEofRule() {
         val source = "key=value\\".toByteArray(Charsets.UTF_8)

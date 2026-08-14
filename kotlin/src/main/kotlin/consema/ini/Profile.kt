@@ -1,23 +1,23 @@
 // The frozen INI-family language profiles and their closed vocabularies.
 //
 // Data authority (language-neutral sources first):
-//   - RFC 0009 §1 (https://github.com/consema/consema/blob/main/docs/rfcs/0009-ini-family-profiles-v1.md:16-36): Consema
+//   - RFC 0009 §1 (https://github.com/consema/consema/blob/main/docs/rfcs/0009-ini-family-profiles-v1.md): Consema
 //     publishes exactly three independent profiles `ini.portable@1`,
 //     `ini.windows@1`, `ini.python-configparser@1`; the caller selects one
 //     profile before formation; there is no auto-detection.
-//   - RFC 0009 §8 (https://github.com/consema/consema/blob/main/docs/rfcs/0009-ini-family-profiles-v1.md:254-283): the lossless Document
+//   - RFC 0009 §8 (https://github.com/consema/consema/blob/main/docs/rfcs/0009-ini-family-profiles-v1.md): the lossless Document
 //     retains value states Missing | Empty | Present, quote facts, and
 //     duplicate/case-collision groups; the snapshot-bound handles are named
 //     IniDocument / IniPhysicalLine / IniLogicalLine / IniSection /
 //     IniDefaultSection / IniEntry / IniErrorLine.
 //   - conformance/vectors/ini-v1.json pins the profile spellings and the
 //     syntax-kind names the vectors assert (case.formation.*, query.*).
-//   - https://github.com/consema/consema-rs/blob/main/consema-ini/src/lib.rs:35-56 (IniProfile and its ProfileId),
-//     lib.rs:121-195 (IniSyntaxKind and the exact as_str names), lib.rs:197-
-//     228 (IniValueState, IniQuoteStyle, IniLogicalLineKind), lib.rs:58-65
-//     (IniEncodingSelection). https://github.com/consema/consema-rs/blob/main/consema-ini/src/parser.rs:37-59 pins the
+//   - https://github.com/consema/consema-rs/blob/main/consema-ini/src/lib.rs (IniProfile and its ProfileId),
+//     lib.rs (IniSyntaxKind and the exact as_str names), lib.rs
+//     228 (IniValueState, IniQuoteStyle, IniLogicalLineKind), lib.rs
+//     (IniEncodingSelection). https://github.com/consema/consema-rs/blob/main/consema-ini/src/parser.rs pins the
 //     encoding-request construction.
-//   - RFC 0009 §3.2 (https://github.com/consema/consema/blob/main/docs/rfcs/0009-ini-family-profiles-v1.md:83-104) pins the mandatory v1
+//   - RFC 0009 §3.2 (https://github.com/consema/consema/blob/main/docs/rfcs/0009-ini-family-profiles-v1.md) pins the mandatory v1
 //     Windows code-page set: 874, 932, 936, 949, 950, 1250 through 1258, and
 //     65001; no-BOM bytes never imply the machine's active code page.
 //   - consema-go/go/ini/profile.go and consema-go/go/ini/parser.go are cross-references only.
@@ -32,7 +32,7 @@ package consema.ini
 
 import consema.document.ProfileId
 
-/** Frozen INI formation profile (lib.rs:35-44). */
+/** Frozen INI formation profile (lib.rs). */
 enum class IniProfile {
     /** Conservative ASCII exchange subset (RFC 0009 §5). */
     PortableV1,
@@ -45,7 +45,7 @@ enum class IniProfile {
     PythonConfigParserV1,
     ;
 
-    /** Stable profile identifier (lib.rs:46-56). */
+    /** Stable profile identifier (lib.rs). */
     fun id(): ProfileId =
         when (this) {
             PortableV1 -> ProfileId("ini.portable", 1)
@@ -55,9 +55,9 @@ enum class IniProfile {
 }
 
 /**
- * Closed INI lossless syntax-piece classification (lib.rs:121-152). The enum
+ * Closed INI lossless syntax-piece classification (lib.rs). The enum
  * order is the Rust declaration order; the query/protocol vocabulary is
- * [asStr] (lib.rs:154-174), which is byte-identical to the vector spellings.
+ * [asStr] (lib.rs), which is byte-identical to the vector spellings.
  */
 enum class IniSyntaxKind {
     /** Unicode byte-order mark. */
@@ -103,7 +103,7 @@ enum class IniSyntaxKind {
     ErrorRegion,
     ;
 
-    /** Stable query and protocol name (lib.rs:154-174). */
+    /** Stable query and protocol name (lib.rs). */
     fun asStr(): String =
         when (this) {
             Bom -> "Bom"
@@ -123,13 +123,13 @@ enum class IniSyntaxKind {
         }
 
     companion object {
-        /** Resolves one exact stable kind name (lib.rs:176-194). */
+        /** Resolves one exact stable kind name (lib.rs). */
         fun fromName(name: String): IniSyntaxKind? =
             entries.firstOrNull { it.asStr() == name }
     }
 }
 
-/** Native value-presence fact (lib.rs:197-206). */
+/** Native value-presence fact (lib.rs). */
 enum class IniValueState {
     /** No delimiter/value was present; only recovered error records use
      * this in v1. */
@@ -142,7 +142,7 @@ enum class IniValueState {
     Present,
 }
 
-/** Profile-recognized outer quote style (lib.rs:208-217). */
+/** Profile-recognized outer quote style (lib.rs). */
 enum class IniQuoteStyle {
     /** No semantic outer quotes. */
     None,
@@ -154,7 +154,7 @@ enum class IniQuoteStyle {
     Double,
 }
 
-/** Kind of one logical INI record (lib.rs:219-228). */
+/** Kind of one logical INI record (lib.rs). */
 enum class IniLogicalLineKind {
     /** Section header record. */
     Section,
@@ -168,7 +168,7 @@ enum class IniLogicalLineKind {
 
 /**
  * Explicit source-encoding selection; no host locale is consulted
- * (lib.rs:58-65). [ProfileDefault] applies only the selected profile's
+ * (lib.rs). [ProfileDefault] applies only the selected profile's
  * frozen default and BOM rules; [Explicit] selects one exact encoding.
  */
 sealed class IniEncodingSelection {
@@ -181,11 +181,11 @@ sealed class IniEncodingSelection {
 
 /**
  * Closed INI source-encoding set: the source-v1 encodings plus the
- * mandatory Windows code-page set (RFC 0009 §3.2; parser.rs:37-59).
+ * mandatory Windows code-page set (RFC 0009 §3.2; parser.rs).
  *
  * The consema.document v1 `SourceEncoding` cannot express Windows code
  * pages (the source-v2 extension belongs to the L2 properties milestone,
- * kotlin/src/main/kotlin/consema/document/Encoding.kt:18-25), so the INI family owns its
+ * kotlin/src/main/kotlin/consema/document/Encoding.kt), so the INI family owns its
  * encoding vocabulary here and decodes code pages itself
  * (kotlin/src/main/kotlin/consema/ini/Source.kt).
  */

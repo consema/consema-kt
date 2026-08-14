@@ -3,7 +3,7 @@
 // Each test transcribes one vector case (input.source / expected.*) VERBATIM
 // from conformance/vectors/hcl-v1.json and asserts the language-neutral
 // facts the Rust/Go differential runners assert
-// (https://github.com/consema/consema-rs/blob/main/consema-conformance/src/hcl_v1.rs:412-422: status exact, the
+// (https://github.com/consema/consema-rs/blob/main/consema-conformance/src/hcl_v1.rs: status exact, the
 // expected diagnostic code present; the render is byte-exact). The case id
 // is cited on every test.
 //
@@ -149,7 +149,7 @@ class FormationGoldenTest {
     }
 
     /** Vector case hcl.native-formation.expression-matrix (hcl-v1.json:
-     * 45-56): every expression family forms Complete with the byte-exact
+ *): every expression family forms Complete with the byte-exact
      * render. */
     @Test
     fun expressionMatrix() {

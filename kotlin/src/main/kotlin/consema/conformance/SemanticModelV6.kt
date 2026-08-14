@@ -8,7 +8,7 @@
 // core.source-encoding@1 record, the protocol envelope, and the canonical
 // JSON/PVCE transports are the Kotlin consema.protocol package; the exact
 // Java UTF-16 code-unit semantics are the consema.properties JavaString
-// API (RFC 0010 §4; the classification scan is lib.rs:814-830).
+// API (RFC 0010 §4; the classification scan is lib.rs).
 // consema-go/go/protocol is a cross-reference only.
 //
 // The registry, source-encoding, java-utf16, and envelope cases whose
@@ -132,7 +132,7 @@ private fun runSemanticModelV6Case(runner: Runner, case: CaseData) {
 }
 
 // ---------------------------------------------------------------------------
-// Registry facts (semantic_model_v6.rs:186-269).
+// Registry facts (semantic_model_v6.rs).
 // ---------------------------------------------------------------------------
 
 private fun registryV6Manifest(case: CaseData) {
@@ -230,7 +230,7 @@ private fun registryErrorCodes(case: CaseData) {
 }
 
 // ---------------------------------------------------------------------------
-// Source-encoding facts (semantic_model_v6.rs:271-307).
+// Source-encoding facts (semantic_model_v6.rs).
 // ---------------------------------------------------------------------------
 
 private fun sourceCodePages(case: CaseData) {
@@ -273,10 +273,10 @@ private fun sourceRejectCodePage(case: CaseData) {
 }
 
 // ---------------------------------------------------------------------------
-// Source-v2 snapshot and patch cases (semantic_model_v6.rs:309-425).
+// Source-v2 snapshot and patch cases (semantic_model_v6.rs).
 // ---------------------------------------------------------------------------
 
-/** source.bom-policy-distinct (semantic_model_v6.rs:309-338): the same
+/** source.bom-policy-distinct (semantic_model_v6.rs): the same
  * Latin1 bytes with the DetectUnicode and TreatAsContent BOM policies stay
  * distinct through the v2 wire form. */
 private fun sourceBomPolicy(case: CaseData) {
@@ -309,7 +309,7 @@ private fun sourceBomPolicy(case: CaseData) {
     )
 }
 
-/** source.snapshot-v2-code-page-boundaries (semantic_model_v6.rs:340-364):
+/** source.snapshot-v2-code-page-boundaries (semantic_model_v6.rs):
  * the CP932 snapshot decodes with exact raw byte boundaries. */
 private fun sourceBoundaries(case: CaseData) {
     val page = (caseInput(case, "code_page") as? PvInteger)?.value?.toInt()
@@ -346,7 +346,7 @@ private fun sourceBoundaries(case: CaseData) {
     )
 }
 
-/** source.snapshot-v2-reject-digest (semantic_model_v6.rs:366-386): a
+/** source.snapshot-v2-reject-digest (semantic_model_v6.rs): a
  * claimed digest that the raw bytes do not produce is rejected. */
 private fun sourceDigest(case: CaseData) {
     val page = (caseInput(case, "code_page") as? PvInteger)?.value?.toInt()
@@ -367,7 +367,7 @@ private fun sourceDigest(case: CaseData) {
     ensure(failure != null && failure.kind.code == expectedCode && failure.path == "$.digest")
 }
 
-/** source.patch-v2-atomic-apply (semantic_model_v6.rs:388-425). */
+/** source.patch-v2-atomic-apply (semantic_model_v6.rs). */
 private fun sourcePatch(case: CaseData) {
     val page = (caseInput(case, "code_page") as? PvInteger)?.value?.toInt()
         ?: fail("missing input.code_page")
@@ -409,7 +409,7 @@ private fun sourcePatch(case: CaseData) {
 }
 
 /** Builds one v2 snapshot under the explicit code page with the
- * TreatAsContent BOM policy (semantic_model_v6.rs:932-940). */
+ * TreatAsContent BOM policy (semantic_model_v6.rs). */
 private fun codePageSnapshotV2(page: Int, bytes: ByteArray): SourceSnapshotV2 {
     val encoding = windowsCodePageFromNumber(page) ?: fail("unsupported code page $page")
     return transport {
@@ -422,7 +422,7 @@ private fun codePageSnapshotV2(page: Int, bytes: ByteArray): SourceSnapshotV2 {
 }
 
 // ---------------------------------------------------------------------------
-// Materialization request/result v2 cases (semantic_model_v6.rs:427-492).
+// Materialization request/result v2 cases (semantic_model_v6.rs).
 // ---------------------------------------------------------------------------
 
 private fun materializationRequest(case: CaseData) {
@@ -539,7 +539,7 @@ private fun replaceField(value: PvObject, name: String, replacement: PortableVal
         },
     )
 
-/** protocol.exact-version-dispatch (semantic_model_v6.rs:702-724): the v1
+/** protocol.exact-version-dispatch (semantic_model_v6.rs): the v1
  * request decoder observes the v2-shaped encoding member. */
 private fun protocolExactVersionDispatch(case: CaseData) {
     val request = MaterializationRequestFacts(
@@ -573,7 +573,7 @@ private fun protocolExactVersionDispatch(case: CaseData) {
 }
 
 // ---------------------------------------------------------------------------
-// Line-format query result cases (semantic_model_v6.rs:554-675).
+// Line-format query result cases (semantic_model_v6.rs).
 // ---------------------------------------------------------------------------
 
 private fun iniRoles(case: CaseData) {
@@ -689,14 +689,14 @@ private fun dualRoundtrip(contractId: String, version: Int, payload: PortableVal
 }
 
 // ---------------------------------------------------------------------------
-// Java UTF-16 string cases (semantic_model_v6.rs:494-552). The
+// Java UTF-16 string cases (semantic_model_v6.rs). The
 // core.java-utf16-string@1 wire checks are implemented here
 // (javaUtf16WireCheck; the contract is registered in the protocol
 // ContractRegistry, and the protocol package dispatches it at envelope
 // level only — no separate record decoder there). The exact code-unit
 // classification and the UTF16BE/1 bytes are the real
 // consema.properties JavaString API, and the strict wire checks below
-// mirror the Rust JavaUtf16String::from_value (java_utf16.rs:92-168) one
+// mirror the Rust JavaUtf16String::from_value (java_utf16.rs) one
 // assertion at a time.
 // ---------------------------------------------------------------------------
 
@@ -764,7 +764,7 @@ private const val CODE_RESOURCE_LIMIT = "core.protocol.resource-limit@1"
 /** Strictly checks one core.java-utf16-string@1 value against the fixed
  * schema, the canonical uppercase unit spellings, the UTF16BE/1 byte
  * identity, the exact surrogate-pairing status, and the canonical
- * re-encoding (java_utf16.rs:92-168). */
+ * re-encoding (java_utf16.rs). */
 private fun javaUtf16WireCheck(value: PortableValue, limits: ProtocolLimits): JavaUtf16Check {
     val entries = (value as? PvObject)?.entries()
         ?: return JavaUtf16Check.Invalid(CODE_WRONG_TYPE, "$")
@@ -822,7 +822,7 @@ private fun javaUtf16WireCheck(value: PortableValue, limits: ProtocolLimits): Ja
 }
 
 /** Parses one code unit only in the canonical uppercase four-hex-digit
- * spelling (java_utf16.rs:181-190). */
+ * spelling (java_utf16.rs). */
 private fun parseJavaUtf16Unit(text: String): Int? {
     if (text.length != 4) {
         return null
@@ -835,8 +835,8 @@ private fun parseJavaUtf16Unit(text: String): Int? {
     return text.toIntOrNull(16)
 }
 
-/** Encodes the canonical core.java-utf16-string@1 value (java_utf16.rs:
- * 74-89): uppercase code-unit hex, BOM-free big-endian bytes, and the
+/** Encodes the canonical core.java-utf16-string@1 value (java_utf16.rs
+ *): uppercase code-unit hex, BOM-free big-endian bytes, and the
  * exact surrogate-pairing status. */
 private fun javaUtf16WireValue(units: List<Int>, bytes: ByteArray, status: String): PortableValue =
     PvObject(
@@ -850,7 +850,7 @@ private fun javaUtf16WireValue(units: List<Int>, bytes: ByteArray, status: Strin
     )
 
 /** The canonical BOM-free big-endian UTF-16 bytes of one unit sequence
- * (java_utf16.rs:36-45). */
+ * (java_utf16.rs). */
 private fun javaUtf16Bytes(units: List<Int>): ByteArray {
     val bytes = ByteArray(units.size * 2)
     for ((index, unit) in units.withIndex()) {
@@ -861,7 +861,7 @@ private fun javaUtf16Bytes(units: List<Int>): ByteArray {
 }
 
 /** The exact surrogate-pairing status of one unit sequence, computed by
- * the real JavaString classification (lib.rs:814-830). */
+ * the real JavaString classification (lib.rs). */
 private fun javaUtf16Status(units: List<Int>): JavaStringStatus =
     JavaString.fromCodeUnits(units.map { it.toChar() }.toCharArray()).status
 
@@ -872,7 +872,7 @@ private fun javaUtf16StatusName(status: JavaStringStatus): String =
     }
 
 // ---------------------------------------------------------------------------
-// Protocol envelope cases (semantic_model_v6.rs:677-812).
+// Protocol envelope cases (semantic_model_v6.rs).
 // ---------------------------------------------------------------------------
 
 private fun protocolOldRejection(case: CaseData) {
@@ -979,7 +979,7 @@ private fun protocolSchemaLimits(case: CaseData) {
 }
 
 /** The eight v6 contract payloads that no v1-v5 registry may recognize
- * (semantic_model_v6.rs:814-901). */
+ * (semantic_model_v6.rs). */
 private fun newPayloads(): List<Pair<ContractId, PortableValue>> {
     val encoding = SourceEncoding("WindowsCodePage", 1252).toValue()
     val java = javaUtf16WireValue(listOf(0xd800), javaUtf16Bytes(listOf(0xd800)), "UnpairedSurrogate")
@@ -1000,7 +1000,7 @@ private fun newPayloads(): List<Pair<ContractId, PortableValue>> {
 // Shared helpers.
 // ---------------------------------------------------------------------------
 
-/** The fixed `core.completion@1` value (execution.rs:141-153). */
+/** The fixed `core.completion@1` value (execution.rs). */
 private fun completionValue(status: String, processed: Long, produced: Long, failureCode: String?): PortableValue =
     PvObject(
         listOf(

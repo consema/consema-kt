@@ -2,9 +2,9 @@
 //
 // Data authority: RFC 0015 (https://github.com/consema/consema/blob/main/docs/rfcs/0015-cli-machine-protocol-and-batch-
 // apply-v1.md) and https://github.com/consema/consema-rs/blob/main/consema-protocol/src/cli.rs (the command set at
-// cli.rs:92-115, the envelope at cli.rs:149-364, the batch-plan manifest at
-// cli.rs:366-641, the batch-result manifest at cli.rs:643-822, the SemVer
-// shape at cli.rs:870-929). Every decoder re-validates the cross constraints
+// cli.rs, the envelope at cli.rs, the batch-plan manifest at
+// cli.rs, the batch-result manifest at cli.rs, the SemVer
+// shape at cli.rs). Every decoder re-validates the cross constraints
 // (closed command and exit-class sets, payload-schema/command consistency,
 // redaction consistency, digest equality, per-status presence rules)
 // instead of trusting the schema discriminator. consema-go/go/protocol/cli.go is a
@@ -45,7 +45,7 @@ fun parseCliCommand(name: String): CliCommand? =
     CliCommand.entries.firstOrNull { it.wireName == name }
 
 /** The payload schemas the command may carry (RFC 0015 §6.1 table;
- * cli.rs:92-115). */
+ * cli.rs). */
 fun CliCommand.payloadSchemas(): List<String> = when (this) {
     CliCommand.Inspect -> listOf("cli.inspect@1")
     CliCommand.Capabilities -> listOf("cli.capabilities@1")
@@ -66,7 +66,7 @@ fun CliCommand.payloadSchemas(): List<String> = when (this) {
     CliCommand.Explain -> listOf("cli.explain@1")
 }
 
-/** Carries the envelope redaction facts (RFC 0015 §11.3; cli.rs:117-147). */
+/** Carries the envelope redaction facts (RFC 0015 §11.3; cli.rs). */
 data class Redaction(
     /** Whether any value was replaced by the `$REDACTED$` placeholder. */
     val redacted: Boolean,
@@ -86,7 +86,7 @@ data class Redaction(
 
 /**
  * The stable SHA-256 identity of exact raw source bytes
- * (consema-document/src/source.rs:16-50). The document milestone owns the
+ * (consema-document/src/source.rs). The document milestone owns the
  * full source model; this is the wire-form digest used by the CLI records.
  */
 class ContentDigest private constructor(val bytes: ByteArray) {
@@ -114,12 +114,12 @@ class ContentDigest private constructor(val bytes: ByteArray) {
 }
 
 /** A stable format-operation contract identity
- * (consema-document operation_registry.rs:10-29). */
+ * (consema-document operation_registry.rs). */
 data class FormatOperationId(val id: String, val version: Int)
 
 /**
  * One safe, content-free summary of a declared edit operation
- * (consema-document edit_plan.rs:35-75). Summary values must not contain
+ * (consema-document edit_plan.rs). Summary values must not contain
  * raw edited values.
  */
 data class EditOperationSummary(
@@ -154,7 +154,7 @@ data class EditOperationSummary(
             return true
         }
 
-        /** Strictly decodes one operation summary record (cli.rs:1259-1286). */
+        /** Strictly decodes one operation summary record (cli.rs). */
         fun fromValue(value: PortableValue, path: String): EditOperationSummary {
             val fields = exactFields(value, listOf("operation", "summary"), path)
             val reference = exactFields(fields[0], listOf("id", "version"), "$path.operation")
@@ -178,7 +178,7 @@ data class EditOperationSummary(
 }
 
 /** One file-level status in a core.batch-plan@1 manifest (RFC 0015 §8.2;
- * cli.rs:366-374). */
+ * cli.rs). */
 enum class BatchPlanFileStatus(val wireName: String) {
     /** The file planned successfully; profile, source_digest, operations,
      * and source_patch are present. */
@@ -190,10 +190,10 @@ enum class BatchPlanFileStatus(val wireName: String) {
 }
 
 /**
- * One file entry of a core.batch-plan@1 manifest (cli.rs:376-541).
+ * One file entry of a core.batch-plan@1 manifest (cli.rs).
  * Construction validates the per-status presence rules and the
  * `source_digest == source_patch.base_digest` cross constraint
- * (cli.rs:389-492).
+ * (cli.rs).
  */
 class BatchPlanFileEntry private constructor(
     val path: String,
@@ -261,7 +261,7 @@ class BatchPlanFileEntry private constructor(
             diagnostics?.forEachIndexed { index, diagnostic ->
                 // The registry binding check mirrors the Rust
                 // DiagnosticMessage::from_value_with_registry re-validation
-                // (cli.rs:470-481).
+                // (cli.rs).
                 try {
                     validateDiagnosticCode(diagnostic.code, diagnostic.category, registry)
                 } catch (e: ProtocolException) {
@@ -281,7 +281,7 @@ class BatchPlanFileEntry private constructor(
 }
 
 /**
- * The full core.batch-plan@1 manifest (RFC 0015 §8; cli.rs:543-641).
+ * The full core.batch-plan@1 manifest (RFC 0015 §8; cli.rs).
  */
 class BatchPlanMessage private constructor(
     val productVersion: String,
@@ -301,7 +301,7 @@ class BatchPlanMessage private constructor(
         }
 
         /** Strictly decodes core.batch-plan@1 under the semantic-model v7
-         * error registry (cli.rs:610-640). */
+         * error registry (cli.rs). */
         fun fromValue(value: PortableValue): BatchPlanMessage =
             fromValueWithRegistry(value, ErrorCodeRegistry.forVersion(ErrorRegistryVersion.V7))
 
@@ -355,7 +355,7 @@ class BatchPlanMessage private constructor(
 }
 
 /** One file-level status in a core.batch-result@1 manifest (RFC 0015 §9.2;
- * cli.rs:643-655). */
+ * cli.rs). */
 enum class BatchResultFileStatus(val wireName: String) {
     /** The file was rewritten and its target digest was verified. */
     Completed("completed"),
@@ -371,9 +371,9 @@ enum class BatchResultFileStatus(val wireName: String) {
 }
 
 /**
- * One result entry of a core.batch-result@1 manifest (cli.rs:656-743).
+ * One result entry of a core.batch-result@1 manifest (cli.rs).
  * Construction validates the per-status presence rules and the closed
- * status set (cli.rs:666-712).
+ * status set (cli.rs).
  */
 class BatchResultFileEntry private constructor(
     val path: String,
@@ -422,7 +422,7 @@ class BatchResultFileEntry private constructor(
             return BatchResultFileEntry(path, status, failureCode, targetDigest, redacted)
         }
 
-        /** Strictly decodes one result entry (cli.rs:1166-1210). */
+        /** Strictly decodes one result entry (cli.rs). */
         fun fromValue(value: PortableValue, path: String): BatchResultFileEntry {
             val fields = exactFields(
                 value,
@@ -440,7 +440,7 @@ class BatchResultFileEntry private constructor(
         }
     }
 
-    /** Encodes one result entry (cli.rs:1137-1164). */
+    /** Encodes one result entry (cli.rs). */
     fun toValue(): PortableValue = PvObject(
         listOf(
             consema.core.Entry("path", PvString(path)),
@@ -456,7 +456,7 @@ class BatchResultFileEntry private constructor(
 }
 
 /**
- * The full core.batch-result@1 manifest (RFC 0015 §9; cli.rs:745-822).
+ * The full core.batch-result@1 manifest (RFC 0015 §9; cli.rs).
  */
 class BatchResultMessage private constructor(
     val productVersion: String,
@@ -471,7 +471,7 @@ class BatchResultMessage private constructor(
             return BatchResultMessage(productVersion, files)
         }
 
-        /** Strictly decodes core.batch-result@1 (cli.rs:801-821). */
+        /** Strictly decodes core.batch-result@1 (cli.rs). */
         fun fromValue(value: PortableValue): BatchResultMessage {
             val fields = schemaFields(
                 value,
@@ -504,10 +504,10 @@ class BatchResultMessage private constructor(
 }
 
 /**
- * The full core.cli-output@1 machine envelope (RFC 0015 §4; cli.rs:149-364).
+ * The full core.cli-output@1 machine envelope (RFC 0015 §4; cli.rs).
  * Construction validates command/exit-class closure, product-version shape,
  * payload schema consistency, diagnostic registry binding, and redaction
- * facts (cli.rs:160-220).
+ * facts (cli.rs).
  */
 class CliOutputMessage private constructor(
     val command: CliCommand,
@@ -560,7 +560,7 @@ class CliOutputMessage private constructor(
         }
 
         /** Strictly decodes core.cli-output@1 under the semantic-model v7
-         * error registry (cli.rs:288-343). */
+         * error registry (cli.rs). */
         fun fromValue(value: PortableValue): CliOutputMessage =
             fromValueWithRegistry(value, ErrorCodeRegistry.forVersion(ErrorRegistryVersion.V7))
 
@@ -622,7 +622,7 @@ class CliOutputMessage private constructor(
 }
 
 /** Requires the payload to be an Object whose first field is "schema"
- * carrying one of the command's published schemas (cli.rs:824-868). */
+ * carrying one of the command's published schemas (cli.rs). */
 private fun validatePayloadSchema(payload: PortableValue, command: CliCommand) {
     val objectValue = payload as? PvObject
         ?: throw protocolError(ProtocolErrorKind.WRONG_TYPE, "$.payload", "payload must be an Object")
@@ -645,7 +645,7 @@ private fun validatePayloadSchema(payload: PortableValue, command: CliCommand) {
 
 /**
  * Validates the SemVer 2.0 core shape of a product version (RFC 0015 §3.3,
- * 2026-08-10 revision; cli.rs:870-929): MAJOR.MINOR.PATCH with an optional
+ * 2026-08-10 revision; cli.rs): MAJOR.MINOR.PATCH with an optional
  * dot-separated -prerelease suffix; numeric segments and numeric prerelease
  * identifiers carry no leading zeros; build metadata ('+' suffix) is
  * rejected.
@@ -723,7 +723,7 @@ private fun prereleaseIdentifier(identifier: String): Boolean {
 }
 
 /** Re-verifies the entry-level cross constraints of a manifest
- * (cli.rs:887-938). */
+ * (cli.rs). */
 private fun revalidatePlanEntry(
     entry: BatchPlanFileEntry,
     index: Int,
@@ -757,7 +757,7 @@ private fun revalidatePlanEntry(
     return entry
 }
 
-/** Encodes one plan entry as a PortableValue tree (cli.rs:940-1020).
+/** Encodes one plan entry as a PortableValue tree (cli.rs).
  * Source-patch replacement records travel as Bytes leaves with full
  * fidelity. */
 private fun planEntryValue(entry: BatchPlanFileEntry, index: Int): PortableValue {
@@ -788,7 +788,7 @@ private fun planEntryValue(entry: BatchPlanFileEntry, index: Int): PortableValue
     )
 }
 
-/** Strictly decodes one plan entry at the value level (cli.rs:1022-1135). */
+/** Strictly decodes one plan entry at the value level (cli.rs). */
 private fun parsePlanEntry(
     value: PortableValue,
     index: Int,
@@ -848,7 +848,7 @@ private fun parsePlanEntry(
     )
 }
 
-/** Encodes one digest record (cli.rs:1222-1227). */
+/** Encodes one digest record (cli.rs). */
 internal fun digestValue(digest: ContentDigest): PortableValue = PvObject(
     listOf(
         consema.core.Entry("algorithm", PvString(digest.algorithm())),
@@ -856,7 +856,7 @@ internal fun digestValue(digest: ContentDigest): PortableValue = PvObject(
     ),
 )
 
-/** Strictly decodes one sha256 digest record (cli.rs:1229-1248). */
+/** Strictly decodes one sha256 digest record (cli.rs). */
 internal fun parseDigest(value: PortableValue, path: String): ContentDigest {
     val fields = exactFields(value, listOf("algorithm", "hex"), path)
     val algorithm = stringOf(fields[0], "$path.algorithm")

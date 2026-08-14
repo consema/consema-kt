@@ -3,7 +3,7 @@
 // derived SourcePatch.
 //
 // Data authority: RFC 0007 §12 (https://github.com/consema/consema/blob/main/docs/rfcs/0007-yaml-family-profiles-and-
-// safety-v1.md:355-399) pins the operation registry, the anchor-safe rules
+// safety-v1.md) pins the operation registry, the anchor-safe rules
 // (renaming updates dependent aliases in one transaction; removing an
 // anchored definition while aliases remain is rejected; removing an alias
 // does not remove its target; inserting an alias requires an earlier visible
@@ -146,7 +146,7 @@ class EditTest {
     @Test
     fun sameContainerStructuralConflict() {
         // Two removals of different items in the same container (the Rust
-        // edit.rs structural-container-conflict case, edit.rs:3209-3218):
+        // edit.rs structural-container-conflict case, edit.rs):
         // the targets differ, so the same-container check fires.
         val source = "seq: [one, two]\n"
         val document = parse(source.toByteArray(Charsets.UTF_8), YamlProfile.Yaml12CoreV1)

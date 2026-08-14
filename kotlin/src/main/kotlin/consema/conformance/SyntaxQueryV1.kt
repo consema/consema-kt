@@ -3,10 +3,10 @@
 //
 // Data authority: https://github.com/consema/consema-rs/blob/main/consema-conformance/src/syntax_query_v1.rs (the
 // per-case dispatch by prefix and the per-case handlers are transcribed from
-// the Rust runner: the definition builder at syntax_query_v1.rs:186-269, the
-// match comparison at syntax_query_v1.rs:271-312, the failure-code comparison
-// at syntax_query_v1.rs:314-316, and the ordered-cursor terminal semantics at
-// syntax_query_v1.rs:318-366); the vector file itself drives every input and
+// the Rust runner: the definition builder at syntax_query_v1.rs, the
+// match comparison at syntax_query_v1.rs, the failure-code comparison
+// at syntax_query_v1.rs, and the ordered-cursor terminal semantics at
+// syntax_query_v1.rs); the vector file itself drives every input and
 // expectation (conformance/README.md rules 3-4). consema-go/go/conformance/
 // syntax_query_v1.go is a cross-reference only.
 
@@ -69,8 +69,8 @@ private fun runSyntaxQueryV1Case(case: CaseData) {
     }
 }
 
-/** syntax.json.*: one lossless JSON syntax query (syntax_query_v1.rs:
- * 106-145). */
+/** syntax.json.*: one lossless JSON syntax query (syntax_query_v1.rs
+ *). */
 private fun runJsonSyntaxCase(case: CaseData) {
     val profile = when (inputString(case, "profile") ?: fail("missing input.profile")) {
         "json.strict@1" -> JsonProfile.StrictV1
@@ -114,8 +114,8 @@ private fun runJsonSyntaxCase(case: CaseData) {
     compareMatches(case, actual, "Completed")
 }
 
-/** syntax.toml.*: one lossless TOML syntax query (syntax_query_v1.rs:
- * 147-184). */
+/** syntax.toml.*: one lossless TOML syntax query (syntax_query_v1.rs
+ *). */
 private fun runTomlSyntaxCase(case: CaseData) {
     val profile = inputString(case, "profile") ?: fail("missing input.profile")
     if (profile != "toml.1.0@1") {
@@ -171,7 +171,7 @@ private data class ActualMatch(
 )
 
 /** Builds and validates the query definition from the vector facts
- * (syntax_query_v1.rs:186-269). Throws [QueryFailureException] on an
+ * (syntax_query_v1.rs). Throws [QueryFailureException] on an
  * invalid definition and [CaseFailureException] on a malformed vector. */
 private fun syntaxDefinition(case: CaseData, format: String): ExecutableQuery {
     val domain = when (format) {
@@ -219,7 +219,7 @@ private fun syntaxDefinition(case: CaseData, format: String): ExecutableQuery {
 }
 
 /** Compares the actual match facts and the terminal against the expected
- * facts (syntax_query_v1.rs:271-312). */
+ * facts (syntax_query_v1.rs). */
 private fun compareMatches(case: CaseData, actual: List<ActualMatch>, terminalName: String) {
     val expectedMatches = expectedSequence(case, "matches") ?: fail("missing expected.matches")
     ensure(actual.size == expectedMatches.size)
@@ -245,13 +245,13 @@ private fun compareMatches(case: CaseData, actual: List<ActualMatch>, terminalNa
 }
 
 /** Compares one query failure code against the expected code
- * (syntax_query_v1.rs:314-316). */
+ * (syntax_query_v1.rs). */
 private fun expectFailure(case: CaseData, error: QueryFailureException) {
     ensure(error.kind.code == expectedString(case, "code") ?: fail("missing expected.code"))
 }
 
 /** syntax.cursor.*: the ordered-cursor terminal semantics (Completed,
- * Cancelled, Failed) over the vector values (syntax_query_v1.rs:318-366;
+ * Cancelled, Failed) over the vector values (syntax_query_v1.rs;
  * PortableQuery.kt). */
 private fun runCursorCase(case: CaseData) {
     val valueItems = inputSequence(case, "values") ?: fail("missing input.values")

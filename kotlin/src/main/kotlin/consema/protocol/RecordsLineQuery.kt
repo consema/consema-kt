@@ -25,7 +25,7 @@ import java.math.BigInteger
 private const val MAX_SOURCE_ID_BYTES = 1024
 private const val MAX_NODE_LOCATOR_BYTES = 4096
 
-/** The INI roles accepted by the INI query records (line_query.rs:628-643). */
+/** The INI roles accepted by the INI query records (line_query.rs). */
 internal fun isIniRole(role: String): Boolean =
     role == Roles.INI_DOCUMENT ||
         role == Roles.INI_PHYSICAL_LINE ||
@@ -40,7 +40,7 @@ internal fun isIniNativeRole(role: String): Boolean =
     role != Roles.INI_SYNTAX_PIECE && isIniRole(role)
 
 /** The Java Properties roles accepted by the Properties query records
- * (line_query.rs:645-660). */
+ * (line_query.rs). */
 internal fun isPropertiesRole(role: String): Boolean =
     role == Roles.PROPERTIES_DOCUMENT ||
         role == Roles.PROPERTIES_NATURAL_LINE ||
@@ -54,7 +54,7 @@ internal fun isPropertiesRole(role: String): Boolean =
 internal fun isPropertiesNativeRole(role: String): Boolean =
     role != Roles.PROPERTIES_SYNTAX_PIECE && isPropertiesRole(role)
 
-/** Whether the INI domain accepts the role (line_query.rs:612-618). */
+/** Whether the INI domain accepts the role (line_query.rs). */
 internal fun iniDomainAcceptsRole(domain: QueryDomain, role: String): Boolean =
     when (domain.id to domain.version) {
         "ini.native-semantic-query" to 1 -> isIniNativeRole(role)
@@ -62,7 +62,7 @@ internal fun iniDomainAcceptsRole(domain: QueryDomain, role: String): Boolean =
         else -> false
     }
 
-/** Whether the Properties domain accepts the role (line_query.rs:620-626). */
+/** Whether the Properties domain accepts the role (line_query.rs). */
 internal fun propertiesDomainAcceptsRole(domain: QueryDomain, role: String): Boolean =
     when (domain.id to domain.version) {
         "java-properties.native-semantic-query" to 1 -> isPropertiesNativeRole(role)
@@ -70,7 +70,7 @@ internal fun propertiesDomainAcceptsRole(domain: QueryDomain, role: String): Boo
         else -> false
     }
 
-/** The shared external line locator facts (line_query.rs:365-399). */
+/** The shared external line locator facts (line_query.rs). */
 internal class ExternalLineLocator private constructor(
     val sourceId: String,
     val nodeLocator: String,
@@ -100,11 +100,11 @@ private fun validIdentifier(value: String, maximum: Int): Boolean =
     value.isNotEmpty() && value.length <= maximum
 
 /** One INI match after caller externalization of its process-local handle
- * (line_query.rs:17-59). */
+ * (line_query.rs). */
 class IniMatchLocator internal constructor(internal val locator: ExternalLineLocator) {
     companion object {
         /** Validates stable identities, an exact INI role, and its result
-         * ordinal (line_query.rs:22-30). */
+         * ordinal (line_query.rs). */
         fun new(
             sourceId: String,
             nodeLocator: String,
@@ -114,7 +114,7 @@ class IniMatchLocator internal constructor(internal val locator: ExternalLineLoc
             IniMatchLocator(ExternalLineLocator.new(sourceId, nodeLocator, role, ordinal, ::isIniRole))
 
         /** Explicitly refuses a raw process-local INI node handle
-         * (line_query.rs:31-37). */
+         * (line_query.rs). */
         fun fromProcessLocal(): IniMatchLocator =
             throw protocolError(
                 ProtocolErrorKind.PROCESS_LOCAL_HANDLE,
@@ -141,7 +141,7 @@ class IniMatchLocator internal constructor(internal val locator: ExternalLineLoc
 }
 
 /** Complete or explicitly non-complete `core.ini-query-result@1`
- * (line_query.rs:61-178). */
+ * (line_query.rs). */
 class IniQueryResultMessage private constructor(
     /** Exact INI query domain. */
     val domain: QueryDomain,
@@ -156,7 +156,7 @@ class IniQueryResultMessage private constructor(
 ) {
     companion object {
         /** Validates the exact INI domain/role matrix, ordering, and
-         * produced count (line_query.rs:71-94). */
+         * produced count (line_query.rs). */
         fun new(
             domain: QueryDomain,
             role: String,
@@ -169,7 +169,7 @@ class IniQueryResultMessage private constructor(
         }
 
         /** Strictly decodes with explicit registry and pre-allocation limits
-         * (line_query.rs:156-177). */
+         * (line_query.rs). */
         fun fromValueWithRegistryAndLimits(
             value: PortableValue,
             registry: ErrorCodeRegistry,
@@ -201,7 +201,7 @@ class IniQueryResultMessage private constructor(
             )
     }
 
-    /** Encodes `core.ini-query-result@1` (line_query.rs:126-137). */
+    /** Encodes `core.ini-query-result@1` (line_query.rs). */
     fun toValue(): PortableValue =
         encodeLineResult(
             "core.ini-query-result@1",
@@ -214,11 +214,11 @@ class IniQueryResultMessage private constructor(
 }
 
 /** One Java Properties match after externalization of its process-local
- * handle (line_query.rs:180-224). */
+ * handle (line_query.rs). */
 class JavaPropertiesMatchLocator internal constructor(internal val locator: ExternalLineLocator) {
     companion object {
         /** Validates stable identities, an exact Properties role, and its
-         * result ordinal (line_query.rs:186-194). */
+         * result ordinal (line_query.rs). */
         fun new(
             sourceId: String,
             nodeLocator: String,
@@ -230,7 +230,7 @@ class JavaPropertiesMatchLocator internal constructor(internal val locator: Exte
             )
 
         /** Explicitly refuses a raw process-local Properties node handle
-         * (line_query.rs:195-201). */
+         * (line_query.rs). */
         fun fromProcessLocal(): JavaPropertiesMatchLocator =
             throw protocolError(
                 ProtocolErrorKind.PROCESS_LOCAL_HANDLE,
@@ -257,7 +257,7 @@ class JavaPropertiesMatchLocator internal constructor(internal val locator: Exte
 }
 
 /** Complete or explicitly non-complete `core.java-properties-query-result@1`
- * (line_query.rs:226-347). */
+ * (line_query.rs). */
 class JavaPropertiesQueryResultMessage private constructor(
     /** Exact Java Properties query domain. */
     val domain: QueryDomain,
@@ -272,7 +272,7 @@ class JavaPropertiesQueryResultMessage private constructor(
 ) {
     companion object {
         /** Validates the exact Properties domain/role matrix, ordering, and
-         * produced count (line_query.rs:236-259). */
+         * produced count (line_query.rs). */
         fun new(
             domain: QueryDomain,
             role: String,
@@ -291,7 +291,7 @@ class JavaPropertiesQueryResultMessage private constructor(
         }
 
         /** Strictly decodes with explicit registry and pre-allocation limits
-         * (line_query.rs:321-346). */
+         * (line_query.rs). */
         fun fromValueWithRegistryAndLimits(
             value: PortableValue,
             registry: ErrorCodeRegistry,
@@ -323,7 +323,7 @@ class JavaPropertiesQueryResultMessage private constructor(
             )
     }
 
-    /** Encodes `core.java-properties-query-result@1` (line_query.rs:291-302). */
+    /** Encodes `core.java-properties-query-result@1` (line_query.rs). */
     fun toValue(): PortableValue =
         encodeLineResult(
             "core.java-properties-query-result@1",
@@ -335,7 +335,7 @@ class JavaPropertiesQueryResultMessage private constructor(
         )
 }
 
-/** Validates the line-format result invariants (line_query.rs:409-436). */
+/** Validates the line-format result invariants (line_query.rs). */
 private fun validateLineResult(
     domain: QueryDomain,
     role: String,
@@ -354,7 +354,7 @@ private fun validateLineResult(
     }
 }
 
-/** Encodes one line-format result record (line_query.rs:438-474). */
+/** Encodes one line-format result record (line_query.rs). */
 private fun encodeLineResult(
     schema: String,
     domain: QueryDomain,
@@ -395,7 +395,7 @@ private fun encodeLineResult(
         ),
     )
 
-/** Strictly decodes one line-format result record (line_query.rs:476-566). */
+/** Strictly decodes one line-format result record (line_query.rs). */
 private fun decodeLineResult(
     value: PortableValue,
     expectedSchema: String,
@@ -489,7 +489,7 @@ private fun checkContainerLimit(path: String, count: Int, limits: ProtocolLimits
     }
 }
 
-/** Parses one INI query role spelling (line_query.rs:684-696). */
+/** Parses one INI query role spelling (line_query.rs). */
 internal fun parseIniRole(value: String): String =
     when (value) {
         Roles.INI_DOCUMENT, Roles.INI_PHYSICAL_LINE, Roles.INI_LOGICAL_LINE,
@@ -499,7 +499,7 @@ internal fun parseIniRole(value: String): String =
         else -> throw invalid("$.role", "unknown INI query match role")
     }
 
-/** Parses one Java Properties query role spelling (line_query.rs:698-713). */
+/** Parses one Java Properties query role spelling (line_query.rs). */
 internal fun parsePropertiesRole(value: String): String =
     when (value) {
         Roles.PROPERTIES_DOCUMENT, Roles.PROPERTIES_NATURAL_LINE,

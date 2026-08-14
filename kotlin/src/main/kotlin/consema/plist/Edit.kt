@@ -3,7 +3,7 @@
 // SourcePatch derivation.
 //
 // Data authority:
-//   - RFC 0013 §11 (https://github.com/consema/consema/blob/main/docs/rfcs/0013-plist-family-profiles-v1.md:683-715):
+//   - RFC 0013 §11 (https://github.com/consema/consema/blob/main/docs/rfcs/0013-plist-family-profiles-v1.md):
 //     the six snapshot-bound operations; XML edits replace text or elements
 //     only within operation-owned spans, keep every untouched byte, reparse
 //     the target, and verify the promised plist semantics; binary edits are
@@ -19,21 +19,21 @@
 //     failure; success returns the new Document, ChangeSet, UntouchedByte-
 //     Proof, and a replayable SourcePatch.
 //   - RFC 0004 §13-§16 (https://github.com/consema/consema/blob/main/docs/rfcs/0004-materialization-conversion-and-
-//     structural-edit-v1.md:313-384): the transaction, precondition, and
+//     structural-edit-v1.md): the transaction, precondition, and
 //     conflict algebra; the dry-run plan; the untouched-byte proof; the
 //     derived SourcePatch.
 //   - conformance/vectors/plist-v1.json (plist.edit.*) pins the outcomes;
 //     https://github.com/consema/consema-rs/blob/main/consema-plist/src/edit.rs is the byte-arbitration authority
-//     (operation shapes edit.rs:83-251, failures edit.rs:389-455).
+//     (operation shapes edit.rs, failures edit.rs).
 //   - Kotlin document owns SourcePatch (create/apply,
-//     kotlin/src/main/kotlin/consema/document/Patch.kt:147-296) and UntouchedByteProof
-//     (kotlin/src/main/kotlin/consema/document/UntouchedProof.kt:83-138); ChangeSet is not
+//     kotlin/src/main/kotlin/consema/document/Patch.kt) and UntouchedByteProof
+//     (kotlin/src/main/kotlin/consema/document/UntouchedProof.kt); ChangeSet is not
 //     shipped in the Kotlin plist family (recorded gap, six-repo audit
-//     G090; the json-family precedent, kotlin/src/main/kotlin/consema/json/Edit.kt:27-28), so
+//     G090; the json-family precedent, kotlin/src/main/kotlin/consema/json/Edit.kt), so
 //     the commit carries the ordered diagnostics instead.
 //
 // Kotlin-idiomatic design: failures are a sealed hierarchy whose [code] is
-// the frozen registered mapping (edit.rs:442-453); commit/dry-run throw the
+// the frozen registered mapping (edit.rs); commit/dry-run throw the
 // typed [EditFailureException] so callers match exhaustively on the failure
 // class.
 
@@ -59,7 +59,7 @@ import consema.document.Span
 import consema.document.UntouchedByteProof
 import kotlin.math.absoluteValue
 
-/** One root-relative path step (edit.rs:83-94; RFC 0013 §11). */
+/** One root-relative path step (edit.rs; RFC 0013 §11). */
 sealed class EditPathStep {
     /** One dictionary association with the given key; [occurrence] selects
      * the N-th physical association among duplicate keys. */
@@ -69,7 +69,7 @@ sealed class EditPathStep {
     data class ArrayIndex(val index: Int) : EditPathStep()
 }
 
-/** A root-relative path to one value or container (edit.rs:96-130). The
+/** A root-relative path to one value or container (edit.rs). The
  * empty path denotes the root value. */
 class EditPath private constructor(private val steps: List<EditPathStep>) {
     companion object {
@@ -94,7 +94,7 @@ class EditPath private constructor(private val steps: List<EditPathStep>) {
     override fun toString(): String = "EditPath($steps)"
 }
 
-/** Dictionary entry insertion placement (edit.rs:132-143). */
+/** Dictionary entry insertion placement (edit.rs). */
 sealed class DictPlacement {
     /** Append before the closing `</dict>` (or wrap a self-closing
      * `<dict/>`). */
@@ -109,7 +109,7 @@ sealed class DictPlacement {
     data class After(val index: Int) : DictPlacement()
 }
 
-/** One typed native plist value supplied to an edit (edit.rs:145-185; RFC
+/** One typed native plist value supplied to an edit (edit.rs; RFC
  * 0013 §11). Values are typed native facts, never raw markup or raw bytes.
  * UID values, Float32 width facts, unpaired-surrogate strings, fractional-
  * second dates, dates outside the XML calendar's year range, non-XML
@@ -197,7 +197,7 @@ sealed class EditValue {
     }
 }
 
-/** One snapshot-bound plist structural operation (edit.rs:187-251; RFC 0013
+/** One snapshot-bound plist structural operation (edit.rs; RFC 0013
  * §11). The path, key, occurrence, index, and placement of every operation
  * refer to the document state as of the operation's own application:
  * operations of one transaction apply sequentially, so a later removal by
@@ -266,7 +266,7 @@ sealed class EditOperation {
     ) : EditOperation()
 }
 
-/** Immutable snapshot-bound transaction (edit.rs:253-258). */
+/** Immutable snapshot-bound transaction (edit.rs). */
 class EditTransaction internal constructor(
     /** Base snapshot identity. */
     val baseSnapshot: SnapshotIdentity,
@@ -274,7 +274,7 @@ class EditTransaction internal constructor(
     val operations: List<EditOperation>,
 )
 
-/** Builder that is not a committed edit (edit.rs:276-370). */
+/** Builder that is not a committed edit (edit.rs). */
 class EditTransactionBuilder internal constructor(private val base: SnapshotIdentity) {
     private val operations = ArrayList<EditOperation>()
 
@@ -284,13 +284,13 @@ class EditTransactionBuilder internal constructor(private val base: SnapshotIden
             EditTransactionBuilder(document.snapshotIdentity)
     }
 
-    /** Adds one value replacement (edit.rs:292-297). */
+    /** Adds one value replacement (edit.rs). */
     fun setValue(path: EditPath, value: EditValue): EditTransactionBuilder {
         operations.add(EditOperation.SetValue(path, value))
         return this
     }
 
-    /** Adds one dictionary entry insertion (edit.rs:299-314). */
+    /** Adds one dictionary entry insertion (edit.rs). */
     fun insertDictEntry(
         path: EditPath,
         key: PlistKey,
@@ -301,13 +301,13 @@ class EditTransactionBuilder internal constructor(private val base: SnapshotIden
         return this
     }
 
-    /** Adds one dictionary entry removal (edit.rs:316-329). */
+    /** Adds one dictionary entry removal (edit.rs). */
     fun removeDictEntry(path: EditPath, key: PlistKey, occurrence: Int = 0): EditTransactionBuilder {
         operations.add(EditOperation.RemoveDictEntry(path, key, occurrence))
         return this
     }
 
-    /** Adds one dictionary key rename (edit.rs:331-346). */
+    /** Adds one dictionary key rename (edit.rs). */
     fun renameDictKey(
         path: EditPath,
         from: PlistKey,
@@ -318,26 +318,26 @@ class EditTransactionBuilder internal constructor(private val base: SnapshotIden
         return this
     }
 
-    /** Adds one array element insertion (edit.rs:348-358). */
+    /** Adds one array element insertion (edit.rs). */
     fun insertArrayElement(path: EditPath, index: Int, value: EditValue): EditTransactionBuilder {
         operations.add(EditOperation.InsertArrayElement(path, index, value))
         return this
     }
 
-    /** Adds one array element removal (edit.rs:360-366). */
+    /** Adds one array element removal (edit.rs). */
     fun removeArrayElement(path: EditPath, index: Int): EditTransactionBuilder {
         operations.add(EditOperation.RemoveArrayElement(path, index))
         return this
     }
 
     /** Completes the immutable request; target validation happens atomically
-     * at commit (edit.rs:368-370). */
+     * at commit (edit.rs). */
     fun build(): EditTransaction = EditTransaction(base, operations.toList())
 }
 
-/** Atomic edit success (edit.rs:378-387). ChangeSet is not shipped in the
+/** Atomic edit success (edit.rs). ChangeSet is not shipped in the
  * Kotlin plist family (recorded gap, six-repo audit G090; the json-family
- * precedent, kotlin/src/main/kotlin/consema/json/Edit.kt:27-28); the commit carries the
+ * precedent, kotlin/src/main/kotlin/consema/json/Edit.kt); the commit carries the
  * ordered edit diagnostics instead. */
 class EditCommit(
     /** New immutable document. */
@@ -350,8 +350,8 @@ class EditCommit(
     val diagnostics: List<PlistDiagnostic>,
 )
 
-/** Stable edit validation or commit failure (edit.rs:389-420). The [code]
- * is the frozen registered mapping (edit.rs:442-453). */
+/** Stable edit validation or commit failure (edit.rs). The [code]
+ * is the frozen registered mapping (edit.rs). */
 sealed class EditFailure(val code: String) {
     /** Edits are forbidden on a recovered document or without a provable
      * native graph. */
@@ -396,7 +396,7 @@ class EditFailureException(val failure: EditFailure) :
 
 /**
  * Atomically commits structural operations. On failure the document remains
- * unchanged (edit.rs:457-462; RFC 0013 §11).
+ * unchanged (edit.rs; RFC 0013 §11).
  */
 fun Document.commit(transaction: EditTransaction): EditCommit {
     if (formationStatus != FormationStatus.Complete || nativeRoot == null) {
@@ -414,7 +414,7 @@ fun Document.commit(transaction: EditTransaction): EditCommit {
 
 /**
  * Fully validates and plans a transaction without returning a new Document
- * (RFC 0004 §14; edit.rs:464-468). Dry-run and commit produce the same
+ * (RFC 0004 §14; edit.rs). Dry-run and commit produce the same
  * replacement set and target digest.
  */
 fun Document.dryRun(
@@ -517,7 +517,7 @@ private fun Document.buildCommit(
 }
 
 /** One prepared byte edit in base-source coordinates; [operationIndex] is
- * the declaring operation's ordinal, used by the fold rule (edit.rs:403-
+ * the declaring operation's ordinal, used by the fold rule (edit.rs
  * 408: the sequential model folds operations whose spans lie inside earlier
  * replacements and merges overlapping base spans at commit). */
 private data class PreparedEdit(
@@ -588,7 +588,7 @@ private class XmlWorkingModel(private val document: Document) {
 
     /** Invalidates one container whose value was replaced: its slots no
      * longer exist in the sequential document state, so later operations
-     * resolving through it fail WrongRole (edit.rs:749-768). */
+     * resolving through it fail WrongRole (edit.rs). */
     fun invalidateContainer(index: Int) {
         containers.remove(index)
     }
@@ -622,17 +622,17 @@ private fun Document.commitXml(transaction: EditTransaction): EditCommit {
         prepared.addAll(prepareXmlOperation(operation, working, prepared, operationIndex))
     }
     // Overlap resolution on the base spans, mirroring the Rust sequential
-    // model (edit.rs:668-728 record_edit, edit.rs:1947-1979 run merge):
+    // model (edit.rs record_edit, edit.rs run merge):
     //   - a zero-width insertion exactly at a replaced span's boundary is
-    //     its own record and never folds (edit.rs:687-690);
+    //     its own record and never folds (edit.rs);
     //   - two zero-width insertions mapping to the same base position
-    //     conflict (edit.rs:710-719 ConflictingEdits);
+    //     conflict (edit.rs ConflictingEdits);
     //   - a later operation whose span contains an earlier operation's span
     //     folds the earlier one: the later replacement covers the earlier
     //     bytes, so the folded edit is dropped from the render set (the
-    //     same result as the Rust commit-time run merge, edit.rs:1966-1979);
+    //     same result as the Rust commit-time run merge, edit.rs);
     //   - a partial overlap where the later span starts inside the earlier
-    //     span without containing it is OverlappingOwnership (edit.rs:648-
+    //     span without containing it is OverlappingOwnership (edit.rs
     //     659 map_in); the working model invalidates replaced containers so
     //     a later operation can never target replaced content, which keeps
     //     this the defensive branch.
@@ -643,7 +643,7 @@ private fun Document.commitXml(transaction: EditTransaction): EditCommit {
         val right = sorted[index]
         // Disjoint spans are independent; the boundary test must not hide a
         // same-position pair (two zero-width insertions at one base position
-        // conflict, edit.rs:710-719).
+        // conflict, edit.rs).
         if (left.oldStart != right.oldStart && left.oldEnd <= right.oldStart) {
             continue
         }
@@ -652,12 +652,12 @@ private fun Document.commitXml(transaction: EditTransaction): EditCommit {
         if (left.oldStart == right.oldStart) {
             if (leftZero && rightZero) {
                 // Two zero-width insertions at one base position
-                // (edit.rs:710-719).
+                // (edit.rs).
                 throw EditFailureException(EditFailure.ConflictingEdits)
             }
             if (leftZero || rightZero) {
                 // A boundary insertion at a replaced span's start is its
-                // own record (edit.rs:687-690); both edits render.
+                // own record (edit.rs); both edits render.
                 continue
             }
         }
@@ -825,7 +825,7 @@ private fun Document.prepareXmlSetValue(
             // A replaced container loses its working slots: a later
             // operation resolving through it fails WrongRole exactly like
             // the Rust sequential model, where the target reparses to a
-            // scalar after the replacement (edit.rs:749-768 resolve_path).
+            // scalar after the replacement (edit.rs resolve_path).
             working.invalidateContainer(target.index)
             listOf(PreparedEdit(span.startByte, span.endByte, fragment, operationIndex))
         }
@@ -833,7 +833,7 @@ private fun Document.prepareXmlSetValue(
             // Replace the value element inside the insertion fragment: the
             // dict-entry fragment is `<key>K</key><VALUE>`, the array
             // fragment is `<VALUE>`. The rewrite merges into the insertion
-            // edit in place (the Rust fold, edit.rs:691-706), so no separate
+            // edit in place (the Rust fold, edit.rs), so no separate
             // edit is recorded.
             val editIndex = working.virtualEditIndex(target.slot)
                 ?: throw EditFailureException(EditFailure.TargetNotFound)
@@ -1249,7 +1249,7 @@ private fun xmlEscapeText(text: String): String {
 }
 
 /** Expressibility gate of one typed value under the XML representation
- * (RFC 0013 §7; edit.rs:145-152). */
+ * (RFC 0013 §7; edit.rs). */
 private fun checkXmlValue(value: EditValue) {
     when (value) {
         is EditValue.Uid -> throw EditFailureException(EditFailure.UidInXml)
@@ -1439,7 +1439,7 @@ private class BinaryWorkingModel(private val document: Document) {
         out.add(refSize.toByte())
         writeBeBinary(out, numObjects.toLong(), 8)
         // The top object keeps its base index; the trailer must name the
-        // actual root (edit.rs:1561 writes document.root().index()).
+        // actual root (edit.rs writes document.root().index()).
         writeBeBinary(out, document.rootIndex.toLong(), 8)
         writeBeBinary(out, offsetTableOffset.toLong(), 8)
         return out.toByteArray()
@@ -1532,7 +1532,7 @@ private fun Document.applyBinaryOperation(operation: EditOperation, working: Bin
             working.rewrite[container] = newRefs
             // Later operations of the transaction resolve against the
             // evolving reference lists (the Rust model reparses after every
-            // operation, edit.rs:551-563), so the working refs must follow
+            // operation, edit.rs), so the working refs must follow
             // the rewrite immediately.
             working.containerRefs[container] = newRefs
         }
@@ -1570,7 +1570,7 @@ private fun Document.applyBinaryOperation(operation: EditOperation, working: Bin
             working.rewrite[container] = newRefs
             // Later operations of the transaction resolve against the
             // evolving reference lists (the Rust model reparses after every
-            // operation, edit.rs:551-563), so the working refs must follow
+            // operation, edit.rs), so the working refs must follow
             // the rewrite immediately.
             working.containerRefs[container] = newRefs
         }
@@ -1596,7 +1596,7 @@ private fun Document.applyBinaryOperation(operation: EditOperation, working: Bin
             }
             // A rename binds a fresh key object and rebinds this
             // dictionary's reference; other dictionaries sharing the old
-            // key object keep its exact bytes (edit.rs:1700-1721,
+            // key object keep its exact bytes (edit.rs,
             // RFC 0013 §11).
             val newKeyIndex = working.appendKeyObject(operation.to)
             val newRefs = ArrayList<Int>(refs)
@@ -1604,7 +1604,7 @@ private fun Document.applyBinaryOperation(operation: EditOperation, working: Bin
             working.rewrite[container] = newRefs
             // Later operations of the transaction resolve against the
             // evolving reference lists (the Rust model reparses after every
-            // operation, edit.rs:551-563), so the working refs must follow
+            // operation, edit.rs), so the working refs must follow
             // the rewrite immediately.
             working.containerRefs[container] = newRefs
         }
@@ -1627,7 +1627,7 @@ private fun Document.applyBinaryOperation(operation: EditOperation, working: Bin
             working.rewrite[container] = newRefs
             // Later operations of the transaction resolve against the
             // evolving reference lists (the Rust model reparses after every
-            // operation, edit.rs:551-563), so the working refs must follow
+            // operation, edit.rs), so the working refs must follow
             // the rewrite immediately.
             working.containerRefs[container] = newRefs
         }
@@ -1647,7 +1647,7 @@ private fun Document.applyBinaryOperation(operation: EditOperation, working: Bin
             working.rewrite[container] = newRefs
             // Later operations of the transaction resolve against the
             // evolving reference lists (the Rust model reparses after every
-            // operation, edit.rs:551-563), so the working refs must follow
+            // operation, edit.rs), so the working refs must follow
             // the rewrite immediately.
             working.containerRefs[container] = newRefs
         }

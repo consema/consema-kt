@@ -1,6 +1,6 @@
 // Golden transcriptions of the toml operation registry facts.
 //
-// Data authority: https://github.com/consema/consema-rs/blob/main/consema-toml/src/operation_registry.rs:94-119 (the
+// Data authority: https://github.com/consema/consema-rs/blob/main/consema-toml/src/operation_registry.rs (the
 // pinned registry facts: seven operations, five Supported structural
 // operations in sorted id order) and conformance/vectors/operations-v1.json
 // operations.v1.operation-registry (lines 18-22: toml_operation_count = 7,
@@ -17,7 +17,7 @@ import kotlin.test.assertTrue
 
 class TomlOperationsTest {
 
-    /** operation_registry.rs:98-118: the registry publishes exactly seven
+    /** operation_registry.rs: the registry publishes exactly seven
      * operations and five Supported structural operations in sorted id
      * order. */
     @Test
@@ -49,7 +49,7 @@ class TomlOperationsTest {
         assertEquals(7, registry.size)
     }
 
-    /** operation_registry.rs:16-74: every descriptor carries its frozen
+    /** operation_registry.rs: every descriptor carries its frozen
      * target role and argument schema. */
     @Test
     fun descriptorsCarryFrozenRolesAndArguments() {

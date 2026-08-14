@@ -3,26 +3,26 @@
 // exact decoded-boundary mapping.
 //
 // Data authority (language-neutral sources first):
-//   - RFC 0003 §3-§6 (https://github.com/consema/consema/blob/main/docs/rfcs/0003-source-syntax-query-and-patch-v1.md:45-
+//   - RFC 0003 §3-§6 (https://github.com/consema/consema/blob/main/docs/rfcs/0003-source-syntax-query-and-patch-v1.md
 //     148): content digest over exact raw bytes; the closed v1 encoding set;
 //     the decoded boundary tuple (raw_byte, decoded_utf8_byte,
 //     unicode_scalar_offset, utf16_code_unit_offset); only scalar boundaries
 //     are addressable; BOM bytes remain part of the raw source and digest
 //     and are retained as leading U+FEFF in the decoded view.
-//   - RFC 0009 §3 (https://github.com/consema/consema/blob/main/docs/rfcs/0009-ini-family-profiles-v1.md:68-116):
+//   - RFC 0009 §3 (https://github.com/consema/consema/blob/main/docs/rfcs/0009-ini-family-profiles-v1.md):
 //     portable accepts UTF-8 without BOM over the ASCII horizontal tab /
 //     printable subset; windows accepts UTF-16LE with an initial BOM or an
 //     explicitly selected Windows code page (BomPolicy::TreatAsContent,
 //     invalid byte sequences rejected, the chosen code page and BOM facts
 //     observable); python accepts any complete text source when the caller
 //     or a BOM selected the encoding unambiguously.
-//   - https://github.com/consema/consema-rs/blob/main/consema-ini/src/parser.rs:37-104 pins encoding_request and
+//   - https://github.com/consema/consema-rs/blob/main/consema-ini/src/parser.rs pins encoding_request and
 //     validate_profile_encoding (the ini.profile.encoding@1 failure);
-//     https://github.com/consema/consema-rs/blob/main/consema-document/src/source.rs:1016-1067 pins the checkpointed
+//     https://github.com/consema/consema-rs/blob/main/consema-document/src/source.rs pins the checkpointed
 //     boundary index and the per-scalar RawBoundaryStep array used for
-//     variable-width code pages (source.rs:966-1014).
+//     variable-width code pages (source.rs).
 //   - The JDK charset tables approximate the encoding_rs tables the Rust
-//     decoder pins (https://github.com/consema/consema-rs/blob/main/consema-ini/src/materialization.rs:831-850):
+//     decoder pins (https://github.com/consema/consema-rs/blob/main/consema-ini/src/materialization.rs):
 //     874/1250-1258 -> windows-874/windows-125x, 932 -> windows-31j,
 //     936 -> GBK, 949 -> EUC-KR, 950 -> Big5, 65001 -> UTF-8. DBCS edge
 //     mappings need differential verification (盲写纪律: no gates claimed).
@@ -55,14 +55,14 @@ import java.nio.charset.Charset
 import java.nio.charset.CharsetDecoder
 import java.nio.charset.CodingErrorAction
 
-/** Checkpoint stride of the decoded boundary index (source.rs:13). */
+/** Checkpoint stride of the decoded boundary index (source.rs). */
 private const val CHECKPOINT_STRIDE = 256
 
 /**
  * Stable INI source-construction failure (the source-error surface of
- * FatalFormationFailure, source.rs:669-725). The [kind] reuses the document
+ * FatalFormationFailure, source.rs). The [kind] reuses the document
  * package's closed kind set so the code mapping stays byte-identical
- * (kotlin/src/main/kotlin/consema/document/Source.kt:44-67).
+ * (kotlin/src/main/kotlin/consema/document/Source.kt).
  */
 class IniSourceException(
     val kind: SourceErrorKind,
@@ -86,7 +86,7 @@ class IniSourceException(
 }
 
 /** Complete, auditable result of the INI encoding resolution (RFC 0009 §3;
- * parser.rs:37-94). The v1 spellings the vectors assert are
+ * parser.rs). The v1 spellings the vectors assert are
  * [IniEncodingFacts.selected].asStr() ("Utf16Le", "WindowsCodePage(1252)")
  * and [bomPolicy].name ("TreatAsContent"). */
 data class IniEncodingFacts(
@@ -102,11 +102,11 @@ data class IniEncodingFacts(
     val selected: IniSourceEncoding,
 )
 
-/** Caller inputs to the INI encoding resolution (parser.rs:37-59). The
+/** Caller inputs to the INI encoding resolution (parser.rs). The
  * selected encoding is the first present value in caller_override -> bom ->
  * profile_default order (RFC 0003 §4.2). */
 internal class IniEncodingRequest(
-    /** Profile fallback (always Utf8; parser.rs:48). */
+    /** Profile fallback (always Utf8; parser.rs). */
     val profileDefault: IniSourceEncoding,
     /** BOM interpretation policy; TreatAsContent for code pages. */
     val bomPolicy: BomPolicy,
@@ -114,16 +114,16 @@ internal class IniEncodingRequest(
     val callerOverride: IniSourceEncoding?,
 ) {
     companion object {
-        /** Starts with the frozen profile default (parser.rs:48). */
+        /** Starts with the frozen profile default (parser.rs). */
         fun new(): IniEncodingRequest =
             IniEncodingRequest(IniSourceEncoding.Utf8, BomPolicy.DetectUnicode, null)
 
-        /** Adds an explicit caller override (parser.rs:49-51). */
+        /** Adds an explicit caller override (parser.rs). */
         fun withCallerOverride(override: IniSourceEncoding): IniEncodingRequest =
             IniEncodingRequest(IniSourceEncoding.Utf8, BomPolicy.DetectUnicode, override)
 
         /** Selects whether marker-shaped leading bytes are BOM evidence or
-         * content (parser.rs:52-54). */
+         * content (parser.rs). */
         fun withBomPolicy(policy: BomPolicy): IniEncodingRequest =
             IniEncodingRequest(IniSourceEncoding.Utf8, policy, null)
     }
@@ -146,13 +146,13 @@ class IniSource private constructor(
     private val index: BoundaryIndex,
     /** The document-contract snapshot when the selected encoding is in the
      * v1 set (source-v1 encodings); null for Windows code pages, which the
-     * document v2 extension will add (kotlin/src/main/kotlin/consema/document/Encoding.kt:18-25). */
+     * document v2 extension will add (kotlin/src/main/kotlin/consema/document/Encoding.kt). */
     internal val v1Snapshot: SourceSnapshot?,
 ) {
     companion object {
         /**
          * Constructs an INI source from raw bytes under one explicit
-         * resolution and limits (parser.rs:21-35). Throws [IniSourceException]
+         * resolution and limits (parser.rs). Throws [IniSourceException]
          * on a limit, encoding-conflict, unsupported-BOM, or invalid-sequence
          * failure; no partial source is returned.
          */
@@ -263,7 +263,7 @@ class IniSource private constructor(
     /** Encoded UTF-8 representation of the decoded text (RFC 0003 §5). */
     fun decodedUtf8Bytes(): ByteArray = decodedUtf8
 
-    /** Last checkpoint satisfying the predicate (source.rs:1082-1088). */
+    /** Last checkpoint satisfying the predicate (source.rs). */
     private fun lastCheckpoint(predicate: (DecodedPosition) -> Boolean): DecodedPosition {
         val checkpoints = index.checkpoints
         var low = 0
@@ -280,7 +280,7 @@ class IniSource private constructor(
     }
 
     /** Scans scalars from one checkpoint to an exact raw byte boundary
-     * (source.rs:1090-1116). */
+     * (source.rs). */
     private fun scanToRaw(start: DecodedPosition, requested: Int): DecodedPosition {
         if (start.rawByte == requested) {
             return start
@@ -305,7 +305,7 @@ class IniSource private constructor(
     }
 
     /** Scans scalars from one checkpoint to an exact decoded boundary
-     * (source.rs:1118-1150). */
+     * (source.rs). */
     private fun scanToDecoded(start: DecodedPosition, requested: DecodedOffset): Int {
         val target = requested.requestValue
         if (requested.component(start) == target) {
@@ -332,7 +332,7 @@ class IniSource private constructor(
     }
 
     /** Per-scalar raw width for the current scalar (the Rust
-     * RawBoundaryStep array, source.rs:966-1014; empty for fixed-width
+     * RawBoundaryStep array, source.rs; empty for fixed-width
      * encodings). */
     private fun widthsAt(scalarIndex: Int): Int {
         val widths = index.widths
@@ -358,7 +358,7 @@ class IniSource private constructor(
 
 /** Immutable decoded boundary index: checkpoints every 256 scalars plus the
  * terminal position, and the per-scalar raw widths of variable-width code
- * pages (source.rs:1016-1067). */
+ * pages (source.rs). */
 private class BoundaryIndex(
     val checkpoints: List<DecodedPosition>,
     val terminal: DecodedPosition,
@@ -367,14 +367,14 @@ private class BoundaryIndex(
 )
 
 /**
- * Applies the frozen resolution rule (parser.rs:37-59; RFC 0003 §4.2):
+ * Applies the frozen resolution rule (parser.rs; RFC 0003 §4.2):
  * caller_override -> bom -> profile_default; any two present disagreeing
  * facts produce EncodingConflict; BOM detection runs only under
  * DetectUnicode when the profile default or an explicit fact asks for text.
  */
 private fun resolveEncoding(bytes: ByteArray, request: IniEncodingRequest): IniEncodingFacts {
-    // The INI profile default is always UTF-8 text (parser.rs:48) and the
-    // encoding vocabulary has no Binary member (the parser.rs:45-47 Binary
+    // The INI profile default is always UTF-8 text (parser.rs) and the
+    // encoding vocabulary has no Binary member (the parser.rs Binary
     // rejection is structural), so BOM detection runs under DetectUnicode.
     val bom = if (request.bomPolicy == BomPolicy.DetectUnicode) detectBom(bytes) else null
     val bomEncoding = bom?.let { bomEncodingOf(it) }
@@ -528,7 +528,7 @@ private fun decodeLatin1(bytes: ByteArray, limits: SourceLimits): String {
  * (RFC 0009 §3.2: "Invalid byte sequences are rejected rather than
  * replaced"). Returns the decoded text and the per-scalar raw widths; the
  * widths are tracked incrementally because DBCS pages (932, 936, 949, 950)
- * consume one or two input bytes per scalar (source.rs:966-1014).
+ * consume one or two input bytes per scalar (source.rs).
  */
 private fun decodeCodePage(
     bytes: ByteArray,
@@ -642,7 +642,7 @@ private fun decodeCodePage(
 }
 
 /** The JDK charset approximating one published Windows code page
- * (materialization.rs:831-850). */
+ * (materialization.rs). */
 private fun codePageCharset(number: Int): Charset =
     when (number) {
         874 -> Charset.forName("x-windows-874")
@@ -655,7 +655,7 @@ private fun codePageCharset(number: Int): Charset =
         else -> throw IllegalStateException("IniWindowsCodePage rejects unpublished values")
     }
 
-/** Builds the checkpointed decoded boundary index (source.rs:1016-1067). */
+/** Builds the checkpointed decoded boundary index (source.rs). */
 private fun buildIndex(
     text: String,
     encoding: IniSourceEncoding,
@@ -696,7 +696,7 @@ private fun buildIndex(
 }
 
 /** Raw byte advance of one scalar under the selected encoding
- * (source.rs:1152-1181; widths carry the variable code-page steps). */
+ * (source.rs; widths carry the variable code-page steps). */
 private fun rawStepWidth(encoding: IniSourceEncoding, variableWidth: Int, scalar: Int): Int =
     when (encoding) {
         IniSourceEncoding.Utf8 -> utf8Length(scalar)
@@ -830,7 +830,7 @@ internal fun checkedAdd(left: Int, right: Int): Int =
  * encodings so the edit layer can derive SourcePatch and UntouchedByteProof
  * through the shared contract (kotlin/src/main/kotlin/consema/document/Patch.kt); returns null
  * for Windows code pages (document source-v2 gap,
- * kotlin/src/main/kotlin/consema/document/Encoding.kt:18-25).
+ * kotlin/src/main/kotlin/consema/document/Encoding.kt).
  */
 private fun documentSnapshot(bytes: ByteArray, facts: IniEncodingFacts): SourceSnapshot? {
     val override = facts.callerOverride

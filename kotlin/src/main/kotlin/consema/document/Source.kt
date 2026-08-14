@@ -11,58 +11,58 @@
 //   - conformance/vectors/source-v1.json (cases source.digest.*,
 //     source.encoding.*, source.location.*, source.resource.*, lines 4-172)
 //     pins the byte-exact behaviors and rejection codes.
-//   - https://github.com/consema/consema-rs/blob/main/consema-document/src/source.rs:476-666 (SourceSnapshot),
-//     source.rs:669-725 (SourceError, UnsupportedBomKind), and the decode
-//     rules source.rs:727-1220; https://github.com/consema/consema-rs/blob/main/consema-conformance/src/source_v1.rs:
-//     410-421 maps SourceError variants to the registered codes.
+//   - https://github.com/consema/consema-rs/blob/main/consema-document/src/source.rs (SourceSnapshot),
+//     source.rs (SourceError, UnsupportedBomKind), and the decode
+//     rules source.rs; https://github.com/consema/consema-rs/blob/main/consema-conformance/src/source_v1.rs
+// maps SourceError variants to the registered codes.
 //   - consema-go/go/document/source.go is a cross-reference only.
 //
-// The registered error codes (https://github.com/consema/consema-rs/blob/main/consema-protocol/src/error_registry.rs:
-// 207, 366-410; transcribed into kotlin/src/main/kotlin/consema/protocol/ErrorRegistry.kt:206,
-// 236-242):
+// The registered error codes (https://github.com/consema/consema-rs/blob/main/consema-protocol/src/error_registry.rs
+// 207, 366-410; transcribed into kotlin/src/main/kotlin/consema/protocol/ErrorRegistry.kt,
+//):
 //   core.source.invalid-sequence@1  (InvalidUtf8 and InvalidSequence)
 //   core.source.encoding-conflict@1
 //   core.source.unsupported-bom@1
 //   core.source.resource-limit@1    (ResourceLimit and OffsetOverflow)
 // The mapping is the conformance runner's source_error_code
-// (source_v1.rs:410-421).
+// (source_v1.rs).
 //
 // Kotlin-idiomatic design: construction failures are typed exceptions
 // carrying the frozen `code` (the established consema.core/consema.protocol
 // style), never checked results; the decoded text is validated exactly once
-// at construction and retained (the Rust DecodedStorage, source.rs:465-474).
+// at construction and retained (the Rust DecodedStorage, source.rs).
 
 package consema.document
 
 import java.nio.charset.StandardCharsets
 
-/** Checkpoint stride of the decoded boundary index (source.rs:13). */
+/** Checkpoint stride of the decoded boundary index (source.rs). */
 private const val CHECKPOINT_STRIDE = 256
 
 /** Stable source construction failure kinds and their frozen registered
- * codes (source_v1.rs:410-421; error_registry.rs:207, 366-410). */
+ * codes (source_v1.rs; error_registry.rs). */
 enum class SourceErrorKind(val code: String) {
-    /** Compatibility failure of SourceSnapshot.fromUtf8 (source.rs:670-675);
-     * maps to the registered invalid-sequence code (source_v1.rs:412-413). */
+    /** Compatibility failure of SourceSnapshot.fromUtf8 (source.rs);
+     * maps to the registered invalid-sequence code (source_v1.rs). */
     INVALID_UTF8("core.source.invalid-sequence@1"),
 
     /** Raw bytes are not a valid sequence in the selected encoding
-     * (source.rs:676-682). */
+     * (source.rs). */
     INVALID_SEQUENCE("core.source.invalid-sequence@1"),
 
     /** BOM, declaration, and caller inputs made contradictory assertions
-     * (source.rs:683-691; RFC 0003 §4.2). */
+     * (source.rs; RFC 0003 §4.2). */
     ENCODING_CONFLICT("core.source.encoding-conflict@1"),
 
     /** A UTF-32 byte-order mark is recognized but unsupported by v1
-     * (source.rs:692-696; RFC 0003 §4.2). */
+     * (source.rs; RFC 0003 §4.2). */
     UNSUPPORTED_BOM("core.source.unsupported-bom@1"),
 
-    /** A configured construction bound was exceeded (source.rs:697-705). */
+    /** A configured construction bound was exceeded (source.rs). */
     RESOURCE_LIMIT("core.source.resource-limit@1"),
 
     /** Coordinate arithmetic exceeded the host representation
-     * (source.rs:706-707). */
+     * (source.rs). */
     OFFSET_OVERFLOW("core.source.resource-limit@1"),
 }
 
@@ -103,7 +103,7 @@ class SourceException(
 
 /**
  * Immutable ownership of exact raw bytes plus explicitly derived text facts
- * (RFC 0003 §3-§6; source.rs:476-666).
+ * (RFC 0003 §3-§6; source.rs).
  *
  * The decoder recomputes the digest, reruns encoding resolution and
  * decoding, and requires exact equality with all encoded facts; a peer
@@ -124,7 +124,7 @@ class SourceSnapshot private constructor(
     companion object {
         /**
          * Constructs a source from raw bytes using explicit resolution
-         * inputs and limits (source.rs:488-550). Throws [SourceException]
+         * inputs and limits (source.rs). Throws [SourceException]
          * on limit, encoding-conflict, unsupported-BOM, or
          * invalid-sequence failure; no partial snapshot is returned.
          */
@@ -181,7 +181,7 @@ class SourceSnapshot private constructor(
 
         /**
          * Compatibility constructor for exact UTF-8 sources
-         * (source.rs:552-568). An invalid sequence is reported as the
+         * (source.rs). An invalid sequence is reported as the
          * INVALID_UTF8 kind carrying the valid prefix length.
          */
         fun fromUtf8(bytes: ByteArray): SourceSnapshot {
@@ -205,7 +205,7 @@ class SourceSnapshot private constructor(
         }
 
         /** Constructs an opaque binary source without decoding or BOM
-         * interpretation (source.rs:570-576). */
+         * interpretation (source.rs). */
         fun fromBinary(
             bytes: ByteArray,
             limits: SourceLimits = SourceLimits.default,
@@ -221,7 +221,7 @@ class SourceSnapshot private constructor(
     /**
      * Decoded text, or null for an opaque binary source. The text is fully
      * validated exactly once at construction; each call returns the stored
-     * view in O(1) without re-validating the raw bytes (source.rs:596-608).
+     * view in O(1) without re-validating the raw bytes (source.rs).
      * The original BOM bytes remain part of the raw source and digest; in
      * the decoded view a recognized text BOM is retained as leading U+FEFF
      * (RFC 0003 §4.3).
@@ -238,12 +238,12 @@ class SourceSnapshot private constructor(
 
     /**
      * Resolves one raw byte offset only when it is a decoded scalar boundary
-     * (RFC 0003 §5; source.rs:622-641). Throws [LocationException]:
+     * (RFC 0003 §5; source.rs). Throws [LocationException]:
      * OutOfBounds, NoDecodedText, or NotDecodedBoundary.
      */
     fun decodedPosition(rawByte: Int): DecodedPosition {
         // Negative offsets are impossible in the Rust usize surface
-        // (source.rs:624-626); Kotlin Ints require the explicit guard.
+        // (source.rs); Kotlin Ints require the explicit guard.
         if (rawByte < 0 || rawByte > raw.size) {
             throw LocationException(LocationErrorKind.OutOfBounds)
         }
@@ -255,7 +255,7 @@ class SourceSnapshot private constructor(
 
     /**
      * Resolves one decoded offset only when it denotes a scalar boundary
-     * (RFC 0003 §5; source.rs:643-665). Throws [LocationException]:
+     * (RFC 0003 §5; source.rs). Throws [LocationException]:
      * OutOfBounds, NoDecodedText, or DecodedOffsetNotBoundary.
      */
     fun rawByteAt(offset: DecodedOffset): Int {
@@ -263,7 +263,7 @@ class SourceSnapshot private constructor(
         val index = decodedIndex ?: throw LocationException(LocationErrorKind.NoDecodedText)
         val requested = offset.requestValue
         // Negative offsets are impossible in the Rust usize surface
-        // (source.rs:651-653); Kotlin Ints require the explicit guard.
+        // (source.rs); Kotlin Ints require the explicit guard.
         if (requested < 0 || requested > offset.component(index.terminal)) {
             throw LocationException(LocationErrorKind.OutOfBounds)
         }
@@ -289,13 +289,13 @@ class SourceSnapshot private constructor(
 }
 
 /** Immutable decoded boundary index: checkpoints every 256 scalars plus the
- * terminal position (source.rs:435-474, 1016-1067). */
+ * terminal position (source.rs). */
 private class DecodedIndex(
     val checkpoints: List<DecodedPosition>,
     val terminal: DecodedPosition,
 )
 
-/** Decodes UTF-16 (LE or BE) with strict surrogate validation (source.rs:806-869). */
+/** Decodes UTF-16 (LE or BE) with strict surrogate validation (source.rs). */
 private fun decodeUtf16(bytes: ByteArray, littleEndian: Boolean, limits: SourceLimits): String {
     if (bytes.size % 2 != 0) {
         throw SourceException(
@@ -310,7 +310,7 @@ private fun decodeUtf16(bytes: ByteArray, littleEndian: Boolean, limits: SourceL
     var offset = 0
     var scalars = 0
     // Accumulated UTF-8 byte length of the decoded output (the Rust
-    // String::len, source.rs:859-864).
+    // String::len, source.rs).
     var decodedBytes = 0
     while (offset < bytes.size) {
         val first = readU16(bytes, offset, littleEndian)
@@ -359,11 +359,11 @@ private fun decodeUtf16(bytes: ByteArray, littleEndian: Boolean, limits: SourceL
     return output.toString()
 }
 
-/** Decodes ISO-8859-1 bytes to scalars U+0000..U+00FF (source.rs:880-894). */
+/** Decodes ISO-8859-1 bytes to scalars U+0000..U+00FF (source.rs). */
 private fun decodeLatin1(bytes: ByteArray, limits: SourceLimits): String {
     checkLimit("decoded-scalars", bytes.size, limits.maxDecodedScalars)
     val output = StringBuilder()
-    // Accumulated UTF-8 byte length of the decoded output (source.rs:885-890).
+    // Accumulated UTF-8 byte length of the decoded output (source.rs).
     var decodedBytes = 0
     for (byte in bytes) {
         val scalar = byte.toInt() and 0xff
@@ -374,7 +374,7 @@ private fun decodeLatin1(bytes: ByteArray, limits: SourceLimits): String {
     return output.toString()
 }
 
-/** Builds the checkpointed decoded boundary index (source.rs:1016-1067). */
+/** Builds the checkpointed decoded boundary index (source.rs). */
 private fun buildIndex(
     utf8: ByteArray,
     encoding: SourceEncoding,
@@ -402,7 +402,7 @@ private fun buildIndex(
 }
 
 /** Raw byte advance of one scalar under the selected encoding
- * (source.rs:1159-1181; v1 encodings are all exact-boundary). */
+ * (source.rs; v1 encodings are all exact-boundary). */
 private fun rawStepWidth(encoding: SourceEncoding, scalar: Int): Int =
     when (encoding) {
         SourceEncoding.Utf8 -> utf8Length(scalar)
@@ -420,7 +420,7 @@ private fun advance(position: DecodedPosition, scalar: Int, rawWidth: Int): Deco
     )
 
 /** Scans scalars from one checkpoint to an exact raw byte boundary
- * (source.rs:1090-1116). */
+ * (source.rs). */
 private fun scanToRaw(
     utf8: ByteArray,
     encoding: SourceEncoding,
@@ -447,7 +447,7 @@ private fun scanToRaw(
 }
 
 /** Scans scalars from one checkpoint to an exact decoded boundary
- * (source.rs:1118-1150). */
+ * (source.rs). */
 private fun scanToDecoded(
     utf8: ByteArray,
     encoding: SourceEncoding,
@@ -475,7 +475,7 @@ private fun scanToDecoded(
     throw LocationException(LocationErrorKind.OutOfBounds)
 }
 
-/** Last checkpoint satisfying the predicate (source.rs:1082-1088). */
+/** Last checkpoint satisfying the predicate (source.rs). */
 private fun lastCheckpoint(
     checkpoints: List<DecodedPosition>,
     predicate: (DecodedPosition) -> Boolean,
@@ -495,7 +495,7 @@ private fun lastCheckpoint(
 
 /** Strict UTF-8 validation; returns the first invalid byte offset, or the
  * full length when valid (the Rust from_utf8 error.valid_up_to,
- * source.rs:501-505). */
+ * source.rs). */
 private fun utf8ValidUpTo(bytes: ByteArray): Int {
     var i = 0
     while (i < bytes.size) {

@@ -2,10 +2,10 @@
 // families (Kotlin).
 //
 // Data authority (language-neutral sources first):
-//   - https://github.com/consema/consema-rs/blob/main/consema/src/lib.rs:512-820 (Document, DocumentInner,
+//   - https://github.com/consema/consema-rs/blob/main/consema/src/lib.rs (Document, DocumentInner,
 //     FormatMismatch, and the typed adapters as_json/as_toml/as_yaml/as_ini/
 //     as_properties/as_xml/as_plist/as_hcl) — the common opaque facade
-//     contract; the Rust tests at the same file, lib.rs:822-1068, pin the
+//     contract; the Rust tests at the same file, lib.rs, pin the
 //     adapter failure vocabulary.
 //   - RFC 0015 §6.2 (the facade surface the CLI derives every format fact
 //     from; https://github.com/consema/consema-rs/blob/main/consema/src/bin/consema/registry.rs as the CLI
@@ -41,7 +41,7 @@ private val FACADE_REGISTRY: ErrorCodeRegistry =
 
 /** Caller-stable source identity of one snapshot for diagnostic
  * externalization (the process-local snapshot identity; the same convention
- * the families use, Errors.kt:65-80). */
+ * the families use, Errors.kt). */
 private fun Document.sourceId(): String = snapshotIdentity().asU64.toString()
 
 private fun xmlToProtocol(item: consema.xml.XmlDiagnostic): Diagnostic =
@@ -58,7 +58,7 @@ private fun xmlToProtocol(item: consema.xml.XmlDiagnostic): Diagnostic =
         registry = FACADE_REGISTRY,
     )
 
-/** One immutable snapshot over the supported format documents (lib.rs:512-531).
+/** One immutable snapshot over the supported format documents (lib.rs).
  * The concrete family is private; format access happens only through the
  * typed adapters. All returned facts are immutable snapshot facts. */
 sealed class Document {

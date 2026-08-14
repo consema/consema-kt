@@ -69,7 +69,7 @@ fun equal(a: Graph?, b: Graph?): Boolean {
 }
 
 /** Compares two nodes under their canonical ID mappings (the Rust
- * canonical_node_eq, https://github.com/consema/consema-rs/blob/main/consema-graph/src/lib.rs:634-661). */
+ * canonical_node_eq, https://github.com/consema/consema-rs/blob/main/consema-graph/src/lib.rs). */
 private fun canonicalNodeEqual(
     left: NodeData,
     leftIds: IntArray,

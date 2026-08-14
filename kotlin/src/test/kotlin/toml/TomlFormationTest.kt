@@ -2,7 +2,7 @@
 //
 // Data authority: conformance/vectors/toml-v1.json (cases cited by id in
 // each test) and RFC 0001 §2-§3; the Rust crate tests
-// (consema-toml/src/lib.rs:670-843) pin the additional snapshot/role and
+// (consema-toml/src/lib.rs) pin the additional snapshot/role and
 // syntax-kind facts. The L5 conformance runner executes the shared vectors
 // directly; these unit tests pin the golden transcriptions in the
 // committed CI.
@@ -173,7 +173,7 @@ class TomlFormationTest {
         assertTrue(document.render().contentEquals(PYPROJECT_TOML))
     }
 
-    /** RFC 0001 §3 + lib.rs:757-782: syntax failures never form documents,
+    /** RFC 0001 §3 + lib.rs: syntax failures never form documents,
      * and the frozen limit names are "source_bytes" / "nesting_depth". */
     @Test
     fun syntaxAndResourceFailuresNeverFormDocuments() {
@@ -193,7 +193,7 @@ class TomlFormationTest {
         assertEquals("source_bytes", limited.diagnostics[0].arguments["name"])
     }
 
-    /** lib.rs:738-754: dotted keys retain each logical segment with its own
+    /** lib.rs: dotted keys retain each logical segment with its own
      * identity. */
     @Test
     fun dottedKeysRetainEachLogicalSegment() {
@@ -212,7 +212,7 @@ class TomlFormationTest {
         assertEquals(1L, gamma.item().asInteger())
     }
 
-    /** lib.rs:784-807: item handles are snapshot- and role-bound. */
+    /** lib.rs: item handles are snapshot- and role-bound. */
     @Test
     fun itemHandlesAreSnapshotAndRoleBound() {
         val first = parse("x = 1".toByteArray(), TomlProfile.TOML_1_0_V1, ParseLimits.default)
@@ -228,7 +228,7 @@ class TomlFormationTest {
         assertEquals(TomlAccessError.WRONG_ROLE, wrongRole.kind)
     }
 
-    /** lib.rs:809-843: the lossless syntax kinds distinguish newlines and
+    /** lib.rs: the lossless syntax kinds distinguish newlines and
      * punctuation in source order. */
     @Test
     fun losslessSyntaxKindsDistinguishNewlinesAndPunctuation() {
@@ -287,7 +287,7 @@ class TomlFormationTest {
         assertTrue(document.render().isEmpty())
     }
 
-    /** lib.rs:215-258 surface: unknown indices are refused. */
+    /** lib.rs surface: unknown indices are refused. */
     @Test
     fun unknownNodeIndexIsRefused() {
         val document = parse("x = 1".toByteArray(), TomlProfile.TOML_1_0_V1, ParseLimits.default)
@@ -301,7 +301,7 @@ class TomlFormationTest {
     }
 
     /** RFC 0001 §3: invalid UTF-8 is a fatal formation failure carrying
-     * core.source.invalid-utf8@1 (lib.rs:656-672). */
+     * core.source.invalid-utf8@1 (lib.rs). */
     @Test
     fun invalidUtf8FailsFormation() {
         val failure = assertFailsWith<TomlFormationException> {

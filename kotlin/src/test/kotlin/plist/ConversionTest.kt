@@ -3,11 +3,11 @@
 // fixed points, and the plist.conversion.* vector facts.
 //
 // Data authority:
-//   - RFC 0013 §7 (https://github.com/consema/consema/blob/main/docs/rfcs/0013-plist-family-profiles-v1.md:512-538):
+//   - RFC 0013 §7 (https://github.com/consema/consema/blob/main/docs/rfcs/0013-plist-family-profiles-v1.md):
 //     conversion is exact when every native fact is expressible in the
 //     target representation and fails atomically otherwise.
-//   - https://github.com/consema/consema-rs/blob/main/consema-plist/src/document.rs:494-551 (XML -> binary writer)
-//     and document.rs:559-593 (binary -> XML writer) pin the canonical
+//   - https://github.com/consema/consema-rs/blob/main/consema-plist/src/document.rs (XML -> binary writer)
+//     and document.rs (binary -> XML writer) pin the canonical
 //     outputs; consema-go/go/plist is a cross-reference only.
 //   - conformance/vectors/plist-v1.json cases plist.conversion.* pin the
 //     native-model facts; the minimal-document vector hex
@@ -60,7 +60,7 @@ class ConversionTest {
     }
 
     /** The minimal binary document converts to the canonical XML render,
-     * byte-exact (document.rs:559-593: header, doctype, root scalar at
+     * byte-exact (document.rs: header, doctype, root scalar at
      * depth 0, closing plist tag). */
     @Test
     fun binaryToXmlMinimalByteExact() {
@@ -141,7 +141,7 @@ class ConversionTest {
     }
 
     /** Vector case plist.conversion.duplicate-keys-preserved (plist-v1.json:
-     * 1624-1643): duplicate keys keep their physical association order
+ *): duplicate keys keep their physical association order
      * across the conversion. */
     @Test
     fun duplicateKeysPreservedAcrossConversion() {

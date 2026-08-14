@@ -4,7 +4,7 @@
 // Data authority: https://github.com/consema/consema-rs/blob/main/consema-conformance/src/properties_v1.rs (the
 // per-case dispatch is transcribed from the Rust handlers); the vector file
 // itself drives every input and expectation (conformance/README.md rules
-// 3-4). consema-go/go/conformance is a cross-reference only.
+//). consema-go/go/conformance is a cross-reference only.
 
 package consema.conformance
 
@@ -287,7 +287,7 @@ private fun formationLatin1(case: CaseData) {
 }
 
 /**
- * formation.malformed-escape-in-key (parser.rs:626-666): a malformed
+ * formation.malformed-escape-in-key (parser.rs): a malformed
  * `\uXXXX` escape in the KEY position recovers the logical line without a
  * partial property and the error line carries the family parse code.
  */
@@ -303,7 +303,7 @@ private fun malformedEscapeInKey(case: CaseData) {
 
 /**
  * formation.invalid-encoding-sequence / formation.bom-conflict
- * (parser.rs:17-36): bytes that cannot be decoded under the explicit Reader
+ * (parser.rs): bytes that cannot be decoded under the explicit Reader
  * encoding (`core.source.invalid-sequence@1`) or a BOM that contradicts it
  * (`core.source.encoding-conflict@1`) fail the whole parse fatally before
  * any document forms.
@@ -737,7 +737,7 @@ private fun editAllOperations(case: CaseData) {
 }
 
 /** Commits one transaction and collects the render and source-edit count
- * (properties_v1.rs:1048-1061). */
+ * (properties_v1.rs). */
 private fun collectEdit(
     document: consema.properties.Document,
     transaction: consema.properties.EditTransaction,
@@ -938,7 +938,7 @@ private fun parseReaderText(source: String): consema.properties.Document =
         fail("Properties formation failed: ${e.code}")
     }
 
-/** Exhaustive non-overlapping piece coverage (properties_v1.rs:1264-1279). */
+/** Exhaustive non-overlapping piece coverage (properties_v1.rs). */
 private fun exactCoverage(document: consema.properties.Document): Boolean {
     val pieces = document.losslessStructuralIndex().pieces()
     if (document.source().len == 0) {
@@ -951,7 +951,7 @@ private fun exactCoverage(document: consema.properties.Document): Boolean {
 }
 
 /** The Rust Debug spelling of the encoding-facts BOM fact
- * (properties_v1.rs:351, 374). */
+ * (properties_v1.rs). */
 private fun bomSpelling(document: consema.properties.Document): String {
     val bom = document.source().encodingFacts.bom ?: return "None"
     return "Some(${bom.name})"

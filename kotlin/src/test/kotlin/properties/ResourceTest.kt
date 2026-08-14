@@ -6,7 +6,7 @@
 // matrix, java-properties-v1.json:115-140). The source-construction limits
 // (max_source_bytes, max_decoded_utf8_bytes, max_decoded_scalars) fail
 // through FatalFormationFailure::source_error with core.source.resource-
-// limit@1 (source_v1.rs:410-421); every parse-level limit fails with
+// limit@1 (source_v1.rs); every parse-level limit fails with
 // core.parse.resource-limit@1. These tests pin the intent and run at the
 // L2 verification gate.
 

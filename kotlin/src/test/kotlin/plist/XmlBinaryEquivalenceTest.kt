@@ -4,7 +4,7 @@
 // shared object identity.
 //
 // Data authority:
-//   - RFC 0013 §7 (https://github.com/consema/consema/blob/main/docs/rfcs/0013-plist-family-profiles-v1.md:512-538): the
+//   - RFC 0013 §7 (https://github.com/consema/consema/blob/main/docs/rfcs/0013-plist-family-profiles-v1.md): the
 //     XML and binary profiles are distinct formats with one value model;
 //     conversion is exact when every native fact is expressible and fails
 //     atomically otherwise; "XML/binary exact round trip" means native-model
@@ -87,7 +87,7 @@ class XmlBinaryEquivalenceTest {
     }
 
     /** Vector case plist.conversion.xml-to-binary-round-trip (plist-v1.json:
-     * 1566-1590): conversion reports the representation change and the
+ *): conversion reports the representation change and the
      * round trip preserves the exact dict keys. */
     @Test
     fun xmlToBinaryConversionRoundTrip() {
@@ -113,7 +113,7 @@ class XmlBinaryEquivalenceTest {
     }
 
     /** Vector case plist.conversion.binary-to-xml-round-trip (plist-v1.json:
-     * 1592-1610): the dict keys survive the binary -> XML conversion. */
+ *): the dict keys survive the binary -> XML conversion. */
     @Test
     fun binaryToXmlConversionRoundTrip() {
         val hex = "62706c6973743030517810020908a20203233ff80000000000005161516251635164d40607080900010405080a0c0d0e111a1c1e20220000000000000101000000000000000b000000000000000a000000000000002b"
@@ -134,7 +134,7 @@ class XmlBinaryEquivalenceTest {
     }
 
     /** Vector case plist.conversion.uid-inexpressible-to-xml (plist-v1.json:
-     * 1612-1622): a UID document fails binary -> XML conversion atomically
+ *): a UID document fails binary -> XML conversion atomically
      * with plist.conversion.inexpressible@1. */
     @Test
     fun uidConversionToXmlFailsAtomically() {
@@ -151,7 +151,7 @@ class XmlBinaryEquivalenceTest {
     }
 
     /** Vector case plist.binary-formation.shared-reference (plist-v1.json:
-     * 685-702): one source object referenced by several containers is one
+ *): one source object referenced by several containers is one
      * native node with multiple owners (RFC 0013 §6). */
     @Test
     fun binarySharedIdentityPreserved() {
@@ -197,7 +197,7 @@ class XmlBinaryEquivalenceTest {
     }
 
     /** Vector case plist.materialization.fractional-date-policy (plist-v1.json:
-     * 1314-1355): a fractional-second date fails without the explicit
+ *): a fractional-second date fails without the explicit
      * TruncateWithReport policy and truncates with it. */
     @Test
     fun fractionalDatePolicy() {
@@ -232,7 +232,7 @@ class XmlBinaryEquivalenceTest {
             ?: error("fractional date must fail without policy")
         // The shared exception carries the core code; the family mapping
         // restores the frozen plist code the vectors assert
-        // (materialization.rs:81-88; plist_v1.rs:1946-1957).
+        // (materialization.rs; plist_v1.rs).
         assertEquals(
             "plist.materialization.fractional-date@1",
             consema.plist.materializationFailureCode(failed.attempt.failure),

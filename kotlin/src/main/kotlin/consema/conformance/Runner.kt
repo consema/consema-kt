@@ -4,10 +4,10 @@
 //   - conformance/README.md (rules 3-4: the runner is only an executor; the
 //     vectors are the authority; every suite must validate its case count so
 //     the runner never silently skips unknown items).
-//   - https://github.com/consema/consema-rs/blob/main/consema-conformance/src/lib.rs:86-106 (ConformanceReport shape)
+//   - https://github.com/consema/consema-rs/blob/main/consema-conformance/src/lib.rs (ConformanceReport shape)
 //     and the per-suite Rust runners (the dispatch authority); the Rust
 //     runner parses vector files with its own strict JSON parser and
-//     projects them to PortableValue (the same file, lib.rs:131-150), which
+//     projects them to PortableValue (the same file, lib.rs), which
 //     the Kotlin runner mirrors with consema.json.
 //   - https://github.com/consema/consema/blob/main/docs/five-language-ci-design.md §2 (the five-runner contract: vector
 //     files read by explicit repository-relative path, no embedded copies;
@@ -342,7 +342,7 @@ class Runner(
 
     /** Reads one vector file, parses it as strict JSON with the family
      * parser, and projects it to the PortableValue model (the Rust runner
-     * does the same, lib.rs:131-150). Returns null when the file is missing
+     * does the same, lib.rs). Returns null when the file is missing
      * or malformed. */
     fun loadSuite(definition: SuiteDefinition): SuiteData? {
         val file = File(File(vectorsDir, definition.file).path)
@@ -419,7 +419,7 @@ class Runner(
 /** Parses one vector file as strict JSON into the core value model. The
  * vector files are plain strict JSON documents; the family parser plus the
  * exact best-core projection is the runner's own decoder (mirroring the
- * Rust runner, lib.rs:131-150). Returns null for a malformed file. */
+ * Rust runner, lib.rs). Returns null for a malformed file. */
 fun parseVectorJson(bytes: ByteArray): PortableValue? {
     val document = try {
         consema.json.parse(bytes, JsonProfile.StrictV1, ParseLimits.default)
@@ -549,7 +549,7 @@ fun toHex(bytes: ByteArray): String {
 
 /** Compact value constructor from vector descriptors: `"Null"`, booleans,
  * `{"integer": "..."}`, `{"decimal": "..."}`, `{"string": "..."}`,
- * `{"sequence": [...]}`, and `{"object": {...}}` (lib.rs:989-1049). */
+ * `{"sequence": [...]}`, and `{"object": {...}}` (lib.rs). */
 fun valueFromInput(input: PortableValue?): PortableValue? {
     if (input == null) return null
     if ((input as? PvString)?.value == "Null") return consema.core.PvNull

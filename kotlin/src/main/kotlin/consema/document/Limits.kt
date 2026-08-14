@@ -1,17 +1,17 @@
 // Parse and materialization resource limits.
 //
 // Data authority:
-//   - https://github.com/consema/consema-rs/blob/main/consema-document/src/lib.rs:614-639 (ParseLimits fields and the
+//   - https://github.com/consema/consema-rs/blob/main/consema-document/src/lib.rs (ParseLimits fields and the
 //     frozen defaults: 64 MiB source, depth 256, 2M tokens, 1M nodes, 10k
-//     diagnostics). RFC 0016 §5.1 (https://github.com/consema/consema/blob/main/docs/rfcs/0016-go-api-mapping-v1.md:176):
+//     diagnostics). RFC 0016 §5.1 (https://github.com/consema/consema/blob/main/docs/rfcs/0016-go-api-mapping-v1.md):
 //     "Parse limits: ParseLimits (and per-family limits) mirror the Rust
 //     defaults; exceeding a limit is a ResourceLimit error carrying the
 //     frozen limit code".
-//   - https://github.com/consema/consema-rs/blob/main/consema-document/src/materialization.rs:80-105
+//   - https://github.com/consema/consema-rs/blob/main/consema-document/src/materialization.rs
 //     (MaterializationLimits fields and the frozen defaults: 1M input nodes,
 //     64 MiB output bytes, depth 256, 100k report entries, 2M provenance
 //     entries). RFC 0004 §3 (https://github.com/consema/consema/blob/main/docs/rfcs/0004-materialization-conversion-and-
-//     structural-edit-v1.md:73-84) freezes the closed v1 limit fields.
+//     structural-edit-v1.md) freezes the closed v1 limit fields.
 //   - consema-go/go/document/limits.go:4-58 is a cross-reference only (identical
 //     numbers).
 //
@@ -25,7 +25,7 @@ package consema.document
 
 /**
  * Parse resource limits; exceeding one is a fatal formation failure
- * (lib.rs:614-627). Exceeding a limit is a ResourceLimit error carrying the
+ * (lib.rs). Exceeding a limit is a ResourceLimit error carrying the
  * frozen limit code (RFC 0016 §5.1).
  */
 data class ParseLimits(
@@ -41,7 +41,7 @@ data class ParseLimits(
     val maxDiagnostics: Int,
 ) {
     companion object {
-        /** The frozen defaults (lib.rs:629-639): 64 MiB source bytes,
+        /** The frozen defaults (lib.rs): 64 MiB source bytes,
          * depth 256, 2,000,000 tokens, 1,000,000 nodes, 10,000
          * diagnostics. */
         val default = ParseLimits(
@@ -56,7 +56,7 @@ data class ParseLimits(
 
 /**
  * Resource limits for one complete materialization (RFC 0004 §3;
- * materialization.rs:80-93). All limits apply before or during allocation;
+ * materialization.rs). All limits apply before or during allocation;
  * a failure returns no Document, no partial bytes, and no provenance that
  * can be mistaken for a result (RFC 0004 §3).
  */
@@ -73,7 +73,7 @@ data class MaterializationLimits(
     val maxProvenanceEntries: Int,
 ) {
     companion object {
-        /** The frozen defaults (materialization.rs:95-105): 1,000,000 input
+        /** The frozen defaults (materialization.rs): 1,000,000 input
          * nodes, 64 MiB output bytes, depth 256, 100,000 report entries,
          * 2,000,000 provenance entries. */
         val default = MaterializationLimits(

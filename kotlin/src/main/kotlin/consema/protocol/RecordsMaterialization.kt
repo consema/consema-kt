@@ -1,15 +1,15 @@
 // The materialization request and result protocol records (v1 and v2).
 //
 // Data authority (language-neutral sources first):
-//   - https://github.com/consema/consema-rs/blob/main/consema-protocol/src/materialization.rs:15-179 (the request
+//   - https://github.com/consema/consema-rs/blob/main/consema-protocol/src/materialization.rs (the request
 //     records: the fixed request schema with the profile reference, style
 //     reference, encoding record, newline/mapping/representability
 //     spellings, and the limits record; v1 encodes the encoding as a String
 //     and rejects Windows code pages).
-//   - materialization.rs:190-279 (MaterializationReportMessage), 327-535
+//   - materialization.rs (MaterializationReportMessage), 327-535
 //     (MaterializationProvenanceMapMessage), 537-600 (the failure message),
-//     832-999 (MaterializationResultMessageV2 with the source-v2 outcome).
-//   - https://github.com/consema/consema-rs/blob/main/consema-protocol/src/query.rs:441-540 (the ValuePath and
+// (MaterializationResultMessageV2 with the source-v2 outcome).
+//   - https://github.com/consema/consema-rs/blob/main/consema-protocol/src/query.rs (the ValuePath and
 //     AssociationLocation wire forms).
 //   - conformance/vectors/semantic-model-v6.json pins the round-trips and
 //     the exact-version dispatch rejection.
@@ -34,7 +34,7 @@ import consema.document.MaterializationStyleId
 import consema.document.ProfileId
 
 // ---------------------------------------------------------------------------
-// core.materialization-request@1 / @2 (materialization.rs:15-108).
+// core.materialization-request@1 / @2 (materialization.rs).
 // ---------------------------------------------------------------------------
 
 /** The protocol-level materialization request facts: the profile and style
@@ -119,7 +119,7 @@ data class MaterializationRequestFacts internal constructor(
     }
 }
 
-/** Transferable `core.materialization-request@1` (materialization.rs:15-67):
+/** Transferable `core.materialization-request@1` (materialization.rs):
  * the fixed-field request schema with a String encoding that cannot carry a
  * Windows code page. */
 class MaterializationRequestMessage private constructor(
@@ -159,7 +159,7 @@ class MaterializationRequestMessage private constructor(
         materializationRequestValue("core.materialization-request@1", request, PvString(request.encoding.kind))
 }
 
-/** Transferable `core.materialization-request@2` (materialization.rs:69-
+/** Transferable `core.materialization-request@2` (materialization.rs
  * 108): the exact v2 schema whose encoding member is the full
  * core.source-encoding@1 record. */
 class MaterializationRequestMessageV2 private constructor(
@@ -225,7 +225,7 @@ private fun decodeRequestFields(
     )
 }
 
-/** Encodes the shared request schema (materialization.rs:110-137). */
+/** Encodes the shared request schema (materialization.rs). */
 private fun materializationRequestValue(
     schema: String,
     request: MaterializationRequestFacts,
@@ -268,7 +268,7 @@ internal fun parseReference(value: PortableValue, path: String): Pair<String, In
     val id = stringOf(fields[0], "$path.id")
     val version = unsigned32(fields[1], "$path.version")
     // The Rust parse_reference builds a ContractId, whose constructor rejects
-    // a zero version (contract.rs:22-25); the wire codec must reject the same
+    // a zero version (contract.rs); the wire codec must reject the same
     // record instead of accepting it.
     if (version == 0) {
         throw invalid("$path.version", "version must be non-zero")
@@ -309,11 +309,11 @@ internal fun parseLimits(value: PortableValue, path: String): MaterializationLim
 }
 
 // ---------------------------------------------------------------------------
-// core.materialization-report@1 (materialization.rs:190-279).
+// core.materialization-report@1 (materialization.rs).
 // ---------------------------------------------------------------------------
 
-/** Ordered `core.materialization-report@1` diagnostics (materialization.rs:
- * 190-279). */
+/** Ordered `core.materialization-report@1` diagnostics (materialization.rs
+ *). */
 class MaterializationReportMessage private constructor(
     /** Ordered materialization events. */
     val events: List<Diagnostic>,
@@ -356,7 +356,7 @@ class MaterializationReportMessage private constructor(
 }
 
 // ---------------------------------------------------------------------------
-// core.materialization-provenance-map@1 (materialization.rs:281-535).
+// core.materialization-provenance-map@1 (materialization.rs).
 // ---------------------------------------------------------------------------
 
 /** Relationship from portable input to target syntax. */
@@ -382,7 +382,7 @@ enum class MaterializationRelationMessage(val wireName: String) {
 }
 
 /** Portable input location in materialization provenance
- * (materialization.rs:281-289). */
+ * (materialization.rs). */
 sealed class MaterializationInputLocationMessage {
     /** Portable value path. */
     data class Value(val path: ValuePath) : MaterializationInputLocationMessage()
@@ -390,7 +390,7 @@ sealed class MaterializationInputLocationMessage {
     /** Portable association location. */
     data class Association(val location: AssociationLocation) : MaterializationInputLocationMessage()
 
-    /** Encodes the input location record (materialization.rs:1487-1498). */
+    /** Encodes the input location record (materialization.rs). */
     fun toValue(): PortableValue =
         PvObject(
             listOf(
@@ -420,7 +420,7 @@ sealed class MaterializationInputLocationMessage {
 }
 
 /** One transferable target origin with caller-stable identities
- * (materialization.rs:301-314). */
+ * (materialization.rs). */
 data class MaterializedOriginMessage(
     /** Caller-stable target source identity. */
     val targetSourceId: String,
@@ -435,7 +435,7 @@ data class MaterializedOriginMessage(
 )
 
 /** One portable input location and all exact target origins
- * (materialization.rs:316-323). */
+ * (materialization.rs). */
 data class MaterializationProvenanceEntryMessage(
     /** Portable input location. */
     val input: MaterializationInputLocationMessage,
@@ -444,7 +444,7 @@ data class MaterializationProvenanceEntryMessage(
 )
 
 /** Transferable `core.materialization-provenance-map@1`
- * (materialization.rs:325-535). */
+ * (materialization.rs). */
 class MaterializationProvenanceMapMessage private constructor(
     /** Ordered complete provenance entries. */
     val entries: List<MaterializationProvenanceEntryMessage>,
@@ -455,7 +455,7 @@ class MaterializationProvenanceMapMessage private constructor(
             MaterializationProvenanceMapMessage(emptyList())
 
         /** Validates stable identities, non-empty outputs, range order, and
-         * locator uniqueness (materialization.rs:332-373). */
+         * locator uniqueness (materialization.rs). */
         fun new(entries: List<MaterializationProvenanceEntryMessage>): MaterializationProvenanceMapMessage {
             var sourceId: String? = null
             val locatorRanges = HashMap<String, Pair<ULong, ULong>>()
@@ -486,7 +486,7 @@ class MaterializationProvenanceMapMessage private constructor(
         }
 
         /** Strictly decodes external identities and complete ordered
-         * mappings (materialization.rs:506-534). */
+         * mappings (materialization.rs). */
         fun fromValue(value: PortableValue): MaterializationProvenanceMapMessage {
             val fields = schemaFields(
                 value,
@@ -509,7 +509,7 @@ class MaterializationProvenanceMapMessage private constructor(
         }
     }
 
-    /** Encodes the fixed provenance schema (materialization.rs:468-504). */
+    /** Encodes the fixed provenance schema (materialization.rs). */
     fun toValue(): PortableValue =
         PvObject(
             listOf(
@@ -582,7 +582,7 @@ private fun parseOutput(value: PortableValue, path: String): MaterializedOriginM
     )
 }
 
-/** Encodes one ValuePath (query.rs:441-464). */
+/** Encodes one ValuePath (query.rs). */
 internal fun pathValue(path: ValuePath): PortableValue =
     PvObject(
         listOf(
@@ -622,7 +622,7 @@ internal fun pathValue(path: ValuePath): PortableValue =
         ),
     )
 
-/** Strictly decodes one ValuePath (query.rs:466-512). */
+/** Strictly decodes one ValuePath (query.rs). */
 internal fun parsePath(value: PortableValue, path: String): ValuePath {
     val fields = exactFields(value, listOf("segments"), path)
     var result = ValuePath.root()
@@ -659,7 +659,7 @@ internal fun parsePath(value: PortableValue, path: String): ValuePath {
     return result
 }
 
-/** Encodes one AssociationLocation (query.rs:514-523). */
+/** Encodes one AssociationLocation (query.rs). */
 private fun associationValue(location: AssociationLocation): PortableValue =
     PvObject(
         listOf(
@@ -678,7 +678,7 @@ private fun associationValue(location: AssociationLocation): PortableValue =
         ),
     )
 
-/** Strictly decodes one AssociationLocation (query.rs:525-540). */
+/** Strictly decodes one AssociationLocation (query.rs). */
 private fun parseAssociation(value: PortableValue, path: String): AssociationLocation {
     val fields = exactFields(value, listOf("container", "ordinal", "role"), path)
     val role = when (stringOf(fields[2], "$path.role")) {
@@ -695,11 +695,11 @@ private fun parseAssociation(value: PortableValue, path: String): AssociationLoc
 }
 
 // ---------------------------------------------------------------------------
-// core.materialization-result@2 (materialization.rs:832-999).
+// core.materialization-result@2 (materialization.rs).
 // ---------------------------------------------------------------------------
 
 /** Stable transferable materialization failure, without partial target
- * bytes (materialization.rs:537-600). */
+ * bytes (materialization.rs). */
 sealed class MaterializationFailureMessage {
     /** Request fields contradict the target contract. */
     data class InvalidRequest(val detail: String) : MaterializationFailureMessage()
@@ -741,7 +741,7 @@ sealed class MaterializationFailureMessage {
 }
 
 /** Closed transferable materialization completion algebra
- * (materialization.rs:602-627). */
+ * (materialization.rs). */
 sealed class MaterializationOutcomeMessageV2 {
     /** Complete target snapshot and every required audit fact. */
     data class Complete(
@@ -768,7 +768,7 @@ sealed class MaterializationOutcomeMessageV2 {
     ) : MaterializationOutcomeMessageV2()
 }
 
-/** Transferable `core.materialization-result@2` (materialization.rs:832-
+/** Transferable `core.materialization-result@2` (materialization.rs
  * 999). */
 class MaterializationResultMessageV2 private constructor(
     /** Exact target Profile. */
@@ -810,8 +810,8 @@ class MaterializationResultMessageV2 private constructor(
                 MaterializationOutcomeMessageV2.Failed(failure, report, analyzedInputPaths),
             )
 
-        /** Validates the outcome invariants (materialization.rs:878-904,
-         * 1001-1040). */
+        /** Validates the outcome invariants (materialization.rs,
+ *). */
         fun new(
             targetProfile: ProfileId,
             outcome: MaterializationOutcomeMessageV2,
@@ -850,7 +850,7 @@ class MaterializationResultMessageV2 private constructor(
         }
 
         /** Strictly decodes reports under one explicit semantic-model
-         * registry (materialization.rs:931-998). */
+         * registry (materialization.rs). */
         fun fromValueWithRegistry(
             value: PortableValue,
             registry: ErrorCodeRegistry,
@@ -907,7 +907,7 @@ class MaterializationResultMessageV2 private constructor(
     }
 
     /** Encodes the fixed, explicitly tagged result-v2 schema
-     * (materialization.rs:918-929). */
+     * (materialization.rs). */
     fun toValue(): PortableValue =
         PvObject(
             listOf(

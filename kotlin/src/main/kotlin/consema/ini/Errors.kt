@@ -2,22 +2,22 @@
 // diagnostic factory.
 //
 // Data authority:
-//   - https://github.com/consema/consema-rs/blob/main/consema-document/src/lib.rs:643-790 pins FatalFormationFailure
+//   - https://github.com/consema/consema-rs/blob/main/consema-document/src/lib.rs pins FatalFormationFailure
 //     and its code mapping: resource limits use "core.parse.resource-limit@1"
-//     (lib.rs:771-776), source construction failures map through
-//     FatalFormationFailure::source_error (lib.rs:676-707) to
+//     (lib.rs), source construction failures map through
+//     FatalFormationFailure::source_error (lib.rs) to
 //     core.source.invalid-utf8@1 / invalid-sequence@1 / encoding-conflict@1 /
 //     unsupported-bom@1 / resource-limit@1; the INI profile-encoding failure
-//     is the frozen "ini.profile.encoding@1" (parser.rs:96-104).
-//   - https://github.com/consema/consema-rs/blob/main/consema-ini/src/parser.rs:1158-1195 pins the diagnostic sink:
+//     is the frozen "ini.profile.encoding@1" (parser.rs).
+//   - https://github.com/consema/consema-rs/blob/main/consema-ini/src/parser.rs pins the diagnostic sink:
 //     occurrence ordinals, Error severity for recovery, Warning otherwise,
 //     and the "diagnostics" limit that fails the whole parse fatally
-//     (parser.rs:1166-1170); parser.rs:205 sorts diagnostics
-//     deterministically (consema-core/src/diagnostic.rs:106-123).
-//   - RFC 0016 §6 (https://github.com/consema/consema/blob/main/docs/rfcs/0016-go-api-mapping-v1.md:194-200): SDK errors
+//     (parser.rs); parser.rs sorts diagnostics
+//     deterministically (consema-core/src/diagnostic.rs).
+//   - RFC 0016 §6 (https://github.com/consema/consema/blob/main/docs/rfcs/0016-go-api-mapping-v1.md): SDK errors
 //     carry the stable registered code; error text is human presentation only.
 //   - The registered ini-family codes are transcribed in
-//     kotlin/src/main/kotlin/consema/protocol/ErrorRegistry.kt:331-350 (v7 registry).
+//     kotlin/src/main/kotlin/consema/protocol/ErrorRegistry.kt (v7 registry).
 //
 // Kotlin-idiomatic design: fatal formation failure is a typed exception
 // carrying the frozen registered code (the established consema.core /
@@ -38,12 +38,12 @@ import consema.protocol.SourceLocation
 
 /** Registry bound to every diagnostic this package constructs: the
  * semantic-model v7 registry (187 codes), the ordered superset containing
- * all ini-family codes (ErrorRegistry.kt:331-350). */
+ * all ini-family codes (kotlin/src/main/kotlin/consema/protocol/ErrorRegistry.kt). */
 internal val INI_DIAGNOSTIC_REGISTRY: ErrorCodeRegistry =
     ErrorCodeRegistry.forVersion(ErrorRegistryVersion.V7)
 
 /**
- * The fatal formation failure (lib.rs:643-663). Exceeding a parse limit is a
+ * The fatal formation failure (lib.rs). Exceeding a parse limit is a
  * ResourceLimit failure carrying the frozen limit code; a fatal failure
  * returns no Document and no partial snapshot (RFC 0009 §4).
  */
@@ -61,7 +61,7 @@ class IniFormationException(
     override val cause: Exception? = null,
 ) : Exception(message, cause)
 
-/** Resource-limit fatal failure (lib.rs:771-790; error_registry.rs:38-43). */
+/** Resource-limit fatal failure (lib.rs; error_registry.rs). */
 internal fun resourceLimit(name: String, observed: Int, limit: Int): IniFormationException =
     IniFormationException(
         "core.parse.resource-limit@1",
@@ -87,7 +87,7 @@ enum class IniAccessErrorKind {
     UnknownNode,
 }
 
-/** The typed INI access failure (lib.rs:605-660). */
+/** The typed INI access failure (lib.rs). */
 class IniAccessException(val kind: IniAccessErrorKind) :
     Exception("ini access: ${kind.name}")
 
@@ -95,7 +95,7 @@ class IniAccessException(val kind: IniAccessErrorKind) :
  * Builds one snapshot-bound diagnostic in the `core.diagnostic@1` shape.
  * The primary source location uses the process-local snapshot identity as
  * the caller-stable source ID, mirroring the JSON family factory
- * (kotlin/src/main/kotlin/consema/json/Errors.kt:102-130).
+ * (kotlin/src/main/kotlin/consema/json/Errors.kt).
  */
 internal fun sourceDiagnostic(
     authority: DocumentAuthority,
@@ -129,9 +129,9 @@ internal fun sourceDiagnostic(
 
 /**
  * Ordered diagnostic collection with an explicit hard bound
- * (parser.rs:1158-1195). Unlike the JSON family sink, exceeding
+ * (parser.rs). Unlike the JSON family sink, exceeding
  * `max_diagnostics` is FATAL: the INI parser checks the limit before every
- * push (parser.rs:1166-1170) and never emits a truncation marker
+ * push (parser.rs) and never emits a truncation marker
  * (conformance/vectors/ini-v1.json resource.formation-limit-matrix
  * max_diagnostics case expects a fatal outcome).
  */
@@ -139,7 +139,7 @@ internal class DiagnosticSink(private val max: Int) {
     private val diagnostics = ArrayList<Diagnostic>()
     private var occurrenceCounter = 0uL
 
-    /** The occurrence ordinal the next push will assign (parser.rs:1190-1192). */
+    /** The occurrence ordinal the next push will assign (parser.rs). */
     fun nextOccurrence(): ULong = occurrenceCounter
 
     fun push(diagnostic: Diagnostic) {
@@ -155,7 +155,7 @@ internal class DiagnosticSink(private val max: Int) {
 }
 
 /**
- * Deterministic diagnostic order (consema-core/src/diagnostic.rs:106-123):
+ * Deterministic diagnostic order (consema-core/src/diagnostic.rs):
  * primary start (missing primary sorts last), category, code, occurrence.
  */
 internal val deterministicDiagnosticOrder: Comparator<Diagnostic> =

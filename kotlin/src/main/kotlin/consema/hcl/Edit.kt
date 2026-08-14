@@ -2,7 +2,7 @@
 // §10, RFC 0004 §13-§16).
 //
 // Data authority:
-//   - RFC 0014 §10 (https://github.com/consema/consema/blob/main/docs/rfcs/0014-hcl-family-profiles-v1.md:630-671):
+//   - RFC 0014 §10 (https://github.com/consema/consema/blob/main/docs/rfcs/0014-hcl-family-profiles-v1.md):
 //     both profiles publish the same snapshot-bound operations
 //     (set-attribute-value, insert-attribute, remove-attribute,
 //     rename-attribute, insert-block, remove-block); the tfvars profile
@@ -19,20 +19,20 @@
 //     `hcl.tfvars@1` block insertion, unrepresentable values, limit
 //     failure, and reparse failure; success returns the new Document,
 //     ChangeSet, `UntouchedByteProof`, and a replayable `SourcePatch`.
-//   - https://github.com/consema/consema-rs/blob/main/consema-hcl/src/edit.rs pins the operation shapes (edit.rs:93-
+//   - https://github.com/consema/consema-rs/blob/main/consema-hcl/src/edit.rs pins the operation shapes (edit.rs
 //     264: BodyPathStep, BodyPath, NodeRef, BodyPlacement, EditValue,
-//     EditKey), the failure codes (edit.rs:599-612: core.edit.wrong-
+//     EditKey), the failure codes (edit.rs: core.edit.wrong-
 //     snapshot@1, core.edit.wrong-role@1, core.edit.incomplete-target@1,
 //     hcl.edit.duplicate-attribute@1, hcl.edit.block-in-tfvars@1,
 //     core.edit.conflicting-edits@1, hcl.edit.unrepresentable@1,
 //     core.edit.resource-limit@1, core.edit.formation-failed@1), the
-//     resolution and line-region helpers (edit.rs:940-1239), and the
-//     commit/dry-run surface (edit.rs:614-637).
+//     resolution and line-region helpers (edit.rs), and the
+//     commit/dry-run surface (edit.rs).
 //   - RFC 0004 §13-§16 (:270-386): the transaction/conflict algebra, the
 //     dry-run EditPlan, the untouched-byte proof, and SourcePatch
 //     derivation.
 //   - The six operation ids are pinned in Operations.kt
-//     (operation_registry.rs:105-127).
+//     (operation_registry.rs).
 //   - consema-go/go/hcl is a cross-reference only.
 //
 // Kotlin-idiomatic design: the edit surface mirrors the toml family
@@ -63,7 +63,7 @@ import consema.protocol.ErrorCodeRegistry
 import consema.protocol.ErrorRegistryVersion
 import java.math.BigInteger
 
-/** One root-relative body path step (RFC 0014 §4.2, §10; edit.rs:99-138):
+/** One root-relative body path step (RFC 0014 §4.2, §10; edit.rs):
  * one block occurrence selected by exact type, exact label sequence, and
  * 0-based source position among the blocks with the same type and labels. */
 data class BodyPathStep(
@@ -72,7 +72,7 @@ data class BodyPathStep(
     val occurrence: Int,
 )
 
-/** A root-relative path to one body (RFC 0014 §10; edit.rs:140-174). The
+/** A root-relative path to one body (RFC 0014 §10; edit.rs). The
  * empty path denotes the root body. */
 data class BodyPath(private val steps: List<BodyPathStep>) {
     companion object {
@@ -87,7 +87,7 @@ data class BodyPath(private val steps: List<BodyPathStep>) {
     fun child(step: BodyPathStep): BodyPath = BodyPath(steps + step)
 }
 
-/** One exact body item address (RFC 0014 §10; edit.rs:176-212). An
+/** One exact body item address (RFC 0014 §10; edit.rs). An
  * attribute is addressed by owning body and name — unique per body in a
  * Complete document (RFC 0014 §3). */
 sealed class HclNodeRef {
@@ -113,7 +113,7 @@ sealed class HclNodeRef {
 }
 
 /** Attribute insertion placement inside one body (RFC 0014 §10;
- * edit.rs:214-226). */
+ * edit.rs). */
 sealed class BodyPlacement {
     /** Insert before the body's first item (or at the body content start of
      * an empty body). */
@@ -129,7 +129,7 @@ sealed class BodyPlacement {
 }
 
 /** One object-constructor literal key of an edit value (RFC 0014 §4.6,
- * §8.1; edit.rs:310-325). An identifier key spelled `for` is refused,
+ * §8.1; edit.rs). An identifier key spelled `for` is refused,
  * because the for-expression interpretation has priority. */
 sealed class EditKey {
     /** Bare identifier key. */
@@ -143,7 +143,7 @@ sealed class EditKey {
 }
 
 /** One typed literal-complete HCL value supplied to an edit (RFC 0014 §10;
- * edit.rs:228-308). Values are typed native facts, never raw markup and
+ * edit.rs). Values are typed native facts, never raw markup and
  * never unevaluated expression text. The `Expression` variant exists so
  * that derived-expression insertion is refused explicitly with
  * `hcl.edit.unrepresentable@1`; no commit ever renders it. */
@@ -173,7 +173,7 @@ sealed class EditValue {
      * `hcl.edit.unrepresentable@1`. */
     data class Expression(val kind: kotlin.String, val text: kotlin.String) : EditValue()
 
-    /** Stable value-kind spelling for summaries (edit.rs:266-281). */
+    /** Stable value-kind spelling for summaries (edit.rs). */
     fun kindName(): kotlin.String = when (this) {
         is Integer -> "integer"
         is Real -> "real"
@@ -186,7 +186,7 @@ sealed class EditValue {
     }
 }
 
-/** One snapshot-bound HCL structural operation (RFC 0014 §10; edit.rs:327-
+/** One snapshot-bound HCL structural operation (RFC 0014 §10; edit.rs
  * 397). Every body path, name, and occurrence refers to the document state
  * as of the operation's own application. */
 sealed class HclEditOperation {
@@ -259,7 +259,7 @@ sealed class HclEditOperation {
     ) : HclEditOperation()
 }
 
-/** Immutable snapshot-bound transaction (edit.rs:399-418). */
+/** Immutable snapshot-bound transaction (edit.rs). */
 class HclEditTransaction internal constructor(
     /** Base snapshot identity. */
     val baseSnapshot: SnapshotIdentity,
@@ -269,7 +269,7 @@ class HclEditTransaction internal constructor(
     fun operations(): List<HclEditOperation> = operations
 }
 
-/** Builder that is not a committed edit (edit.rs:420-527). */
+/** Builder that is not a committed edit (edit.rs). */
 class HclEditTransactionBuilder internal constructor(
     private val base: SnapshotIdentity,
     private val operations: MutableList<HclEditOperation> = ArrayList(),
@@ -337,9 +337,9 @@ class HclEditTransactionBuilder internal constructor(
     fun build(): HclEditTransaction = HclEditTransaction(base, operations.toList())
 }
 
-/** The closed edit failure vocabulary (edit.rs:536-578). The kind names are
+/** The closed edit failure vocabulary (edit.rs). The kind names are
  * the language-neutral comparison facts; [code] is the frozen registered
- * code (edit.rs:599-612). */
+ * code (edit.rs). */
 sealed class HclEditFailureKind {
     /** Transaction or target belongs to another snapshot. */
     data object WrongSnapshot : HclEditFailureKind()
@@ -374,7 +374,7 @@ sealed class HclEditFailureKind {
     data object NewDocumentFormationFailed : HclEditFailureKind()
     ;
 
-    /** The frozen registered code (edit.rs:599-612). */
+    /** The frozen registered code (edit.rs). */
     val code: String
         get() = when (this) {
             WrongSnapshot -> "core.edit.wrong-snapshot@1"
@@ -402,7 +402,7 @@ class HclEditException(val kind: HclEditFailureKind) :
         get() = kind.code
 }
 
-/** Atomic edit success (edit.rs:229-240). ChangeSet is not shipped in the
+/** Atomic edit success (edit.rs). ChangeSet is not shipped in the
  * Kotlin HCL family (recorded gap, six-repo audit G090); the commit
  * exposes the equivalent facts as family records. */
 class HclEditCommit(
@@ -443,12 +443,12 @@ enum class HclNodeMappingStatus {
 }
 
 /**
- * Atomically commits structural operations (edit.rs:641-681). Operations
+ * Atomically commits structural operations (edit.rs). Operations
  * apply sequentially against the evolving document state; every splice is
  * recorded against the base snapshot with the fold semantics of
- * edit.rs:693-812, and commit merges the recorded base spans into maximal
+ * edit.rs, and commit merges the recorded base spans into maximal
  * non-overlapping runs whose replacements are the exact committed bytes
- * (edit.rs:1785-1854), so the ChangeSet, the SourcePatch, and the
+ * (edit.rs), so the ChangeSet, the SourcePatch, and the
  * UntouchedByteProof are always self-consistent. A failure never changes
  * this snapshot (RFC 0004 §13).
  */
@@ -470,7 +470,7 @@ fun HclDocument.commit(transaction: HclEditTransaction): HclEditCommit {
         val splices = prepareOperation(current, operation)
         for (splice in splices) {
             // The target length bound is checked before the splice is
-            // recorded (hard gate 4; edit.rs:814-838).
+            // recorded (hard gate 4; edit.rs).
             val delta = splice.replacement.size - splice.preLen
             val targetLen = try {
                 Math.addExact(bytes.size, delta)
@@ -496,8 +496,8 @@ fun HclDocument.commit(transaction: HclEditTransaction): HclEditCommit {
     verifyPromisedSemantics(transaction, current)
 
     // Merge the recorded base spans into maximal non-overlapping runs
-    // (edit.rs:1801-1828); each run's replacement is the exact target bytes
-    // at its new span (edit.rs:1829-1854).
+    // (edit.rs); each run's replacement is the exact target bytes
+    // at its new span (edit.rs).
     val spans = edits.mapIndexed { index, edit ->
         Triple(
             unmapIn(edits, index, edit.preStart),
@@ -558,14 +558,14 @@ fun HclDocument.commit(transaction: HclEditTransaction): HclEditCommit {
 }
 
 /** One applied raw-byte splice, recorded for base-coordinate translation
- * (edit.rs:693-707). */
+ * (edit.rs). */
 private class AppliedEdit(
     var preStart: Int,
     val preLen: Int,
     var replacement: ByteArray,
 )
 
-/** Applies one splice to the current bytes (edit.rs:838-860). */
+/** Applies one splice to the current bytes (edit.rs). */
 private fun applySplice(bytes: ByteArray, splice: PreparedSplice): ByteArray {
     val out = ByteArray(bytes.size - splice.preLen + splice.replacement.size)
     System.arraycopy(bytes, 0, out, 0, splice.preStart)
@@ -581,7 +581,7 @@ private fun applySplice(bytes: ByteArray, splice: PreparedSplice): ByteArray {
 }
 
 /** Maps one position from one pre-state to the final state through the
- * applied edits in application order (edit.rs:731-744). */
+ * applied edits in application order (edit.rs). */
 private fun mapIn(edits: List<AppliedEdit>, fromIndex: Int, pos: Int): Int {
     var p = pos
     for (index in fromIndex until edits.size) {
@@ -599,7 +599,7 @@ private fun mapIn(edits: List<AppliedEdit>, fromIndex: Int, pos: Int): Int {
 
 /** Maps one position from the final state back to the base snapshot through
  * the applied edits in reverse application order; a position inside an
- * earlier replacement is an ownership overlap (edit.rs:709-729). */
+ * earlier replacement is an ownership overlap (edit.rs). */
 private fun unmapIn(edits: List<AppliedEdit>, upTo: Int, pos: Int): Int {
     var p = pos
     for (index in (0 until upTo).reversed()) {
@@ -618,7 +618,7 @@ private fun unmapIn(edits: List<AppliedEdit>, upTo: Int, pos: Int): Int {
 
 /** Records one splice and rejects two insertions that map to the same base
  * position; an operation whose span lies inside a replacement an earlier
- * operation wrote folds into that replacement (edit.rs:746-812). */
+ * operation wrote folds into that replacement (edit.rs). */
 private fun recordEdit(
     edits: MutableList<AppliedEdit>,
     preStart: Int,
@@ -673,7 +673,7 @@ private fun recordEdit(
 
 /**
  * Fully validates and plans an edit without returning a new Document
- * (edit.rs:621-637; RFC 0004 §14). Dry-run and commit produce the same
+ * (edit.rs; RFC 0004 §14). Dry-run and commit produce the same
  * replacement set and target digest.
  */
 fun HclDocument.dryRun(
@@ -710,7 +710,7 @@ private class PreparedSplice(
 )
 
 /** Validates cross-operation dependencies before any preparation (RFC 0014
- * §10; edit.rs:1064-1100). */
+ * §10; edit.rs). */
 private fun validateDependencies(transaction: HclEditTransaction) {
     val destructive = HashSet<HclNodeRef>()
     val anchors = ArrayList<HclNodeRef>()
@@ -761,8 +761,8 @@ private fun validateDependencies(transaction: HclEditTransaction) {
     }
 }
 
-/** Prepares one operation against the current document state (edit.rs:
- * 1334-1352); the splice is recorded in the current pre-state coordinates. */
+/** Prepares one operation against the current document state (edit.rs
+ *); the splice is recorded in the current pre-state coordinates. */
 private fun prepareOperation(document: HclDocument, operation: HclEditOperation): List<PreparedSplice> =
     when (operation) {
         is HclEditOperation.SetAttributeValue ->
@@ -779,7 +779,7 @@ private fun prepareOperation(document: HclDocument, operation: HclEditOperation)
             listOf(prepareRemoveBlock(document, operation.body, operation.blockType, operation.labels, operation.occurrence))
     }
 
-/** Resolves one body by path (edit.rs:940-960). */
+/** Resolves one body by path (edit.rs). */
 private fun HclDocument.resolveBody(path: BodyPath): HclBodyHandle {
     var body = rootBody()
     for (step in path.segments()) {
@@ -796,12 +796,12 @@ private fun HclDocument.resolveBody(path: BodyPath): HclBodyHandle {
 }
 
 /** One attribute occurrence by exact name; attributes are unique per body
- * in a Complete document (RFC 0014 §3; edit.rs:962-969). */
+ * in a Complete document (RFC 0014 §3; edit.rs). */
 private fun findAttribute(body: HclBodyHandle, name: String): HclAttributeHandle? =
     body.attributes().firstOrNull { it.name() == name }
 
 /** One block occurrence by exact type, label sequence, and occurrence
- * (edit.rs:971-996). */
+ * (edit.rs). */
 private fun findBlock(
     body: HclBodyHandle,
     blockType: String,
@@ -820,7 +820,7 @@ private fun findBlock(
     return null
 }
 
-/** Resolves one exact item address (edit.rs:1025-1052). */
+/** Resolves one exact item address (edit.rs). */
 private fun HclDocument.resolveItem(node: HclNodeRef): Span {
     return when (node) {
         is HclNodeRef.Attribute -> {
@@ -838,7 +838,7 @@ private fun HclDocument.resolveItem(node: HclNodeRef): Span {
 
 /** The end of the line that terminates an item ending at `from`: the end of
  * the first LineBreak piece at or after `from`, or `from` itself when the
- * item is end-of-file-terminated (edit.rs:1071-1098). */
+ * item is end-of-file-terminated (edit.rs). */
 private fun HclDocument.itemLineEnd(from: Int): Int {
     var pos = from
     while (pos < source.len) {
@@ -855,7 +855,7 @@ private fun HclDocument.itemLineEnd(from: Int): Int {
 }
 
 /** The start of the line that begins at `itemStart`: the beginning of the
- * whitespace run that indents the item (edit.rs:1100-1112). */
+ * whitespace run that indents the item (edit.rs). */
 private fun HclDocument.itemLineStart(itemStart: Int): Int {
     var pos = itemStart
     while (pos > 0) {
@@ -869,7 +869,7 @@ private fun HclDocument.itemLineStart(itemStart: Int): Int {
 }
 
 /** The leading whitespace run of the line that starts an item, used as the
- * indentation of inserted markup (edit.rs:1114-1138). */
+ * indentation of inserted markup (edit.rs). */
 private fun HclDocument.itemIndent(itemStart: Int): String {
     var pos = itemStart
     var indent = ""
@@ -911,7 +911,7 @@ private fun HclDocument.pieceEndingAt(offset: Int): Pair<Int, HclSyntaxKind>? {
     return null
 }
 
-/** The insertion point facts of an empty target body (edit.rs:1173-1190). */
+/** The insertion point facts of an empty target body (edit.rs). */
 private fun HclDocument.emptyBodyPoint(path: BodyPath): Pair<Int, String> =
     if (path.segments().isEmpty()) {
         source.len to ""
@@ -935,7 +935,7 @@ private fun HclDocument.emptyBodyPoint(path: BodyPath): Pair<Int, String> =
 
 /** Computes the insertion point, markup indentation, and whether the markup
  * needs a separating leading newline (the anchor item is end-of-file
- * terminated) for one insertion placement (edit.rs:1192-1239). */
+ * terminated) for one insertion placement (edit.rs). */
 private fun HclDocument.insertionPoint(
     body: HclBodyHandle,
     path: BodyPath,
@@ -970,7 +970,7 @@ private fun HclDocument.insertionPoint(
             )
             // A separating leading newline is needed only when the anchor
             // item is end-of-file terminated without a terminating newline
-            // (edit.rs:1192-1239).
+            // (edit.rs).
             Triple(lineEnd, indent, lineEnd == end)
         }
         is BodyPlacement.After -> {
@@ -983,7 +983,7 @@ private fun HclDocument.insertionPoint(
 }
 
 /** The canonical rendering of one typed literal-complete value (RFC 0014
- * §9-§10; edit.rs:1340-1490). */
+ * §9-§10; edit.rs). */
 private fun editValueText(value: EditValue): String = when (value) {
     is EditValue.Integer -> value.value.toString()
     is EditValue.Real -> {
@@ -1031,7 +1031,7 @@ private fun editValueText(value: EditValue): String = when (value) {
         throw HclEditException(HclEditFailureKind.UnrepresentableValue("expression"))
 }
 
-/** The canonical spelling of one edit object key (edit.rs:1492-1560). */
+/** The canonical spelling of one edit object key (edit.rs). */
 private fun editKeyText(key: EditKey): String = when (key) {
     is EditKey.Identifier -> {
         if (key.name == "for") {
@@ -1299,7 +1299,7 @@ private fun operationMetadata(transaction: HclEditTransaction): Map<String, Stri
     }.toMap()
 
 /** The frozen `id@1` spelling of one operation (Operations.kt;
- * edit.rs:2037-2042). */
+ * edit.rs). */
 private fun operationId(operation: HclEditOperation): String = when (operation) {
     is HclEditOperation.SetAttributeValue -> "hcl.edit.set-attribute-value@1"
     is HclEditOperation.InsertAttribute -> "hcl.edit.insert-attribute@1"

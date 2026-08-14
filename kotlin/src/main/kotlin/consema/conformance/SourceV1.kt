@@ -3,9 +3,9 @@
 //
 // Data authority: https://github.com/consema/consema-rs/blob/main/consema-conformance/src/source_v1.rs (the per-case
 // dispatch is transcribed from the Rust handlers; the frozen failure-code
-// mappings come from source_error_code at source_v1.rs:410-421, the
-// location-error spellings from location_error_name at source_v1.rs:423-436,
-// and the patch-mode table from patch_case at source_v1.rs:245-317); the
+// mappings come from source_error_code at source_v1.rs, the
+// location-error spellings from location_error_name at source_v1.rs,
+// and the patch-mode table from patch_case at source_v1.rs); the
 // vector file itself drives every input and expectation (conformance/README.md
 // rules 3-4). consema-go/go/conformance/source_v1.go is a cross-reference only.
 
@@ -74,7 +74,7 @@ private fun runSourceV1Case(case: CaseData) {
     }
 }
 
-/** source.digest.*: SHA-256 over the exact raw bytes (source_v1.rs:105-109). */
+/** source.digest.*: SHA-256 over the exact raw bytes (source_v1.rs). */
 private fun digestCase(case: CaseData) {
     val raw = rawHex(case, "raw_hex")
     val expected = expectedString(case, "digest") ?: fail("missing expected.digest")
@@ -82,7 +82,7 @@ private fun digestCase(case: CaseData) {
 }
 
 /** source.identity.*: equal digests and distinct snapshot identities for
- * two parses of the same bytes (source_v1.rs:111-131). */
+ * two parses of the same bytes (source_v1.rs). */
 private fun identityCase(case: CaseData) {
     val raw = rawHex(case, "raw_hex")
     val first = parseJsonSnapshot(raw)
@@ -97,7 +97,7 @@ private fun identityCase(case: CaseData) {
 }
 
 /** source.encoding.*: explicit encoding resolution, byte retention, and the
- * frozen rejection codes (source_v1.rs:133-165). */
+ * frozen rejection codes (source_v1.rs). */
 private fun encodingCase(case: CaseData) {
     val raw = rawHex(case, "raw_hex")
     val snapshot = try {
@@ -129,7 +129,7 @@ private fun encodingCase(case: CaseData) {
 }
 
 /** source.location.*: decoded boundary mapping and the frozen
- * location-error spellings (source_v1.rs:167-208). */
+ * location-error spellings (source_v1.rs). */
 private fun locationCase(case: CaseData) {
     val snapshot = try {
         SourceSnapshot.fromRaw(rawHex(case, "raw_hex"), encodingRequest(case), SourceLimits.default)
@@ -196,7 +196,7 @@ private fun locationCase(case: CaseData) {
 }
 
 /** source.binary.*: exhaustive ordered region coverage with the frozen
- * location-error spellings (source_v1.rs:210-243). */
+ * location-error spellings (source_v1.rs). */
 private fun binaryCase(case: CaseData) {
     val sourceLen = longField(case.input, "source_len")?.toInt() ?: fail("missing input.source_len")
     val authority = DocumentAuthority.fresh()
@@ -235,7 +235,7 @@ private fun binaryCase(case: CaseData) {
 }
 
 /** source.patch.*: verifiable raw-byte patches with the frozen patch-mode
- * table and rejection codes (source_v1.rs:245-317). */
+ * table and rejection codes (source_v1.rs). */
 private fun patchCase(case: CaseData) {
     val mode = inputString(case, "mode") ?: fail("missing input.mode")
     val base = sourceFromCase(case, "base_hex")
@@ -303,7 +303,7 @@ private fun patchCase(case: CaseData) {
 }
 
 /** source.resource.*: construction and patch bounds with the frozen
- * resource-limit code (source_v1.rs:319-337). */
+ * resource-limit code (source_v1.rs). */
 private fun resourceCase(case: CaseData) {
     if (case.id == "source.resource.patch-count-limit") {
         patchCase(case)

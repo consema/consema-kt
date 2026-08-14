@@ -1,7 +1,7 @@
 // Verifiable raw-byte patches between immutable source snapshots.
 //
 // Data authority (language-neutral sources first):
-//   - RFC 0003 §10 (https://github.com/consema/consema/blob/main/docs/rfcs/0003-source-syntax-query-and-patch-v1.md:250-292)
+//   - RFC 0003 §10 (https://github.com/consema/consema/blob/main/docs/rfcs/0003-source-syntax-query-and-patch-v1.md)
 //     freezes the core.source-patch@1 facts: base_digest, target_digest,
 //     encoding facts, ordered replacements, metadata; each replacement has
 //     old_start/old_end/original/replacement/redact flags; old ranges are
@@ -11,11 +11,11 @@
 //     computed target digest must match; any mismatch fails atomically.
 //   - conformance/vectors/source-v1.json cases source.patch.* (lines 120-172)
 //     pin the success bytes and the rejection codes.
-//   - https://github.com/consema/consema-rs/blob/main/consema-document/src/source_patch.rs:1-566 pins the shapes and
-//     the error-code mapping (source_patch.rs:434-458).
+//   - https://github.com/consema/consema-rs/blob/main/consema-document/src/source_patch.rs pins the shapes and
+//     the error-code mapping (source_patch.rs).
 //   - consema-go/go/document/source_patch.go is a cross-reference only.
 //
-// The registered codes (error_registry.rs:381-405; ErrorRegistry.kt:238-242):
+// The registered codes (error_registry.rs; kotlin/src/main/kotlin/consema/protocol/ErrorRegistry.kt):
 //   core.source.patch-base-mismatch@1
 //   core.source.patch-original-mismatch@1
 //   core.source.patch-target-mismatch@1
@@ -25,10 +25,10 @@
 //   core.source.invalid-sequence@1       (wrapped)
 //   core.protocol.invalid-value@1        (InvalidReplacement, ReplacementOrder,
 //                                        DuplicateInsertion, ChangeSetMismatch;
-//                                        error_registry.rs:87)
+//                                        error_registry.rs)
 //
 // SourcePatch derivation from document-level change facts (SourcePatch::
-// derive, source_patch.rs:143-205) consumes ChangeSet, which is not shipped
+// derive, source_patch.rs) consumes ChangeSet, which is not shipped
 // in Kotlin (recorded gap, six-repo audit G090; the consema.properties
 // package carries the ChangeSet-shaped facts instead).
 
@@ -38,7 +38,7 @@ import java.util.Collections
 
 /**
  * Resource bounds for constructing or applying one source patch
- * (source_patch.rs:8-27).
+ * (source_patch.rs).
  */
 data class SourcePatchLimits(
     /** Limits for the resulting source snapshot. */
@@ -49,7 +49,7 @@ data class SourcePatchLimits(
     val maxPatchBytes: Int,
 ) {
     companion object {
-        /** The frozen defaults (source_patch.rs:19-27): default source
+        /** The frozen defaults (source_patch.rs): default source
          * limits, 100,000 replacements, 128 MiB patch bytes. */
         val default = SourcePatchLimits(
             source = SourceLimits.default,
@@ -61,7 +61,7 @@ data class SourcePatchLimits(
 
 /**
  * One raw-byte precondition and replacement in a source patch (RFC 0003
- * §10; source_patch.rs:29-131). [original] must appear byte-for-byte at the
+ * §10; source_patch.rs). [original] must appear byte-for-byte at the
  * old range of the base source; after application the target bytes are
  * exactly [replacement]. Redaction flags control review/log presentation,
  * not the bytes required for application (RFC 0003 §10).
@@ -79,7 +79,7 @@ class SourceReplacement private constructor(
     val redactReplacement: Boolean,
 ) {
     companion object {
-        /** Creates one half-open raw-byte replacement (source_patch.rs:42-57). */
+        /** Creates one half-open raw-byte replacement (source_patch.rs). */
         fun new(
             oldStart: Int,
             oldEnd: Int,
@@ -89,12 +89,12 @@ class SourceReplacement private constructor(
     }
 
     /** Controls whether the original bytes are hidden in review/debug
-     * presentation (source_patch.rs:60-64). */
+     * presentation (source_patch.rs). */
     fun withOriginalRedacted(redacted: Boolean): SourceReplacement =
         SourceReplacement(oldStart, oldEnd, original, replacement, redacted, redactReplacement)
 
     /** Controls whether replacement bytes are hidden in review/debug
-     * presentation (source_patch.rs:66-71). */
+     * presentation (source_patch.rs). */
     fun withReplacementRedacted(redacted: Boolean): SourceReplacement =
         SourceReplacement(oldStart, oldEnd, original, replacement, redactOriginal, redacted)
 
@@ -139,7 +139,7 @@ class SourceReplacement private constructor(
 
 /**
  * Immutable, transferable facts needed to verify one raw source transition
- * (RFC 0003 §10; source_patch.rs:133-365).
+ * (RFC 0003 §10; source_patch.rs).
  *
  * SourcePatch is not ChangeSet, semantic diff, merge, fuzzy patch,
  * file-system write, or permission to alter a stale snapshot (RFC 0003 §10).
@@ -157,7 +157,7 @@ class SourcePatch private constructor(
     companion object {
         /**
          * Creates a patch from externally supplied facts after structural
-         * and resource validation (source_patch.rs:207-224).
+         * and resource validation (source_patch.rs).
          */
         fun new(
             baseDigest: ContentDigest,
@@ -173,7 +173,7 @@ class SourcePatch private constructor(
 
         /**
          * Builds a self-consistent patch against one immutable base snapshot
-         * (source_patch.rs:226-251): the target bytes are computed by
+         * (source_patch.rs): the target bytes are computed by
          * applying the replacements, re-resolved under the base encoding
          * facts, and the resulting encoding facts must equal the base facts.
          */
@@ -212,7 +212,7 @@ class SourcePatch private constructor(
 
     /**
      * Applies all facts atomically and returns a new immutable snapshot only
-     * on complete success (source_patch.rs:253-280; RFC 0003 §10): base
+     * on complete success (source_patch.rs; RFC 0003 §10): base
      * digest, encoding facts, every original-byte precondition, and the
      * computed target digest must match; any mismatch fails atomically and
      * returns no new SourceSnapshot.
@@ -262,7 +262,7 @@ class SourcePatch private constructor(
 
     /**
      * Marks every replacement payload for redacted review/debug
-     * presentation (source_patch.rs:312-336). Exact bytes remain present
+     * presentation (source_patch.rs). Exact bytes remain present
      * for digest and original-byte precondition checks.
      */
     fun withAllReplacementsRedacted(
@@ -277,7 +277,7 @@ class SourcePatch private constructor(
 
     /**
      * Marks one exact replacement payload for redacted review/debug
-     * presentation (source_patch.rs:338-364).
+     * presentation (source_patch.rs).
      */
     fun withReplacementRedacted(
         index: Int,
@@ -296,12 +296,12 @@ class SourcePatch private constructor(
 }
 
 /** Review-redaction selection failure; patch bytes and application facts are
- * unchanged (source_patch.rs:367-377). */
+ * unchanged (source_patch.rs). */
 class SourcePatchRedactionException(val index: Int) :
     Exception("patch: unknown replacement index $index for redaction")
 
 /** Stable source patch construction or application failure kinds with their
- * frozen registered codes (source_patch.rs:387-459). */
+ * frozen registered codes (source_patch.rs). */
 enum class SourcePatchErrorKind(val code: String) {
     /** Replacement start followed its end or its original byte count
      * disagreed with its range. */
@@ -331,21 +331,21 @@ enum class SourcePatchErrorKind(val code: String) {
     ENCODING_MISMATCH("core.source.encoding-conflict@1"),
 
     /** Resulting bytes failed source construction with an encoding conflict
-     * (Source(SourceError::EncodingConflict), source_patch.rs:442-444). */
+     * (Source(SourceError::EncodingConflict), source_patch.rs). */
     SOURCE_ENCODING_CONFLICT("core.source.encoding-conflict@1"),
 
     /** A patch count, byte, output, or allocation bound was exceeded, or the
      * resulting source exceeded a bound
      * (ResourceLimit / Source(ResourceLimit | OffsetOverflow),
-     * source_patch.rs:445-448). */
+     * source_patch.rs). */
     SOURCE_RESOURCE_LIMIT("core.source.resource-limit@1"),
 
     /** Resulting bytes begin with an unsupported byte-order mark
-     * (Source(SourceError::UnsupportedBom), source_patch.rs:449). */
+     * (Source(SourceError::UnsupportedBom), source_patch.rs). */
     SOURCE_UNSUPPORTED_BOM("core.source.unsupported-bom@1"),
 
     /** Resulting bytes are invalid for the selected encoding
-     * (Source(InvalidUtf8 | InvalidSequence), source_patch.rs:450-452). */
+     * (Source(InvalidUtf8 | InvalidSequence), source_patch.rs). */
     SOURCE_INVALID_SEQUENCE("core.source.invalid-sequence@1"),
     ;
 }
@@ -372,7 +372,7 @@ class SourcePatchException(
 
     companion object {
         /** Wraps a source-construction failure with the frozen code mapping
-         * of source_patch.rs:442-451. */
+         * of source_patch.rs. */
         internal fun wrapSource(error: SourceException): SourcePatchException =
             when (error.kind) {
                 SourceErrorKind.INVALID_UTF8, SourceErrorKind.INVALID_SEQUENCE ->
@@ -392,7 +392,7 @@ class SourcePatchException(
 
 /**
  * Validates the structural and resource facts of one replacement list
- * (source_patch.rs:469-512): half-open ordered non-overlapping ranges,
+ * (source_patch.rs): half-open ordered non-overlapping ranges,
  * original byte count equal to the range width, no duplicate zero-width
  * insertion point, and the patch-byte sum within [limits].
  */
@@ -405,7 +405,7 @@ private fun validateReplacements(
     var previous: SourceReplacement? = null
     for ((index, replacement) in replacements.withIndex()) {
         // Negative offsets are impossible in the Rust usize surface; Kotlin
-        // Ints require the explicit guard (source_patch.rs:480-485).
+        // Ints require the explicit guard (source_patch.rs).
         if (replacement.oldStart < 0 || replacement.oldEnd < 0 ||
             replacement.oldStart > replacement.oldEnd ||
             replacement.originalBytes().size != replacement.oldEnd - replacement.oldStart
@@ -460,7 +460,7 @@ private fun checkPatchLimit(name: String, observed: Int, limit: Int) {
 
 /**
  * Applies replacements to one base byte buffer with every original-byte
- * precondition and the target size limits checked (source_patch.rs:514-554).
+ * precondition and the target size limits checked (source_patch.rs).
  */
 private fun applyReplacements(
     base: ByteArray,
@@ -510,7 +510,7 @@ private fun checkSourceLimit(name: String, observed: Int, limit: Int) {
 }
 
 /** Deterministically ordered audit metadata (the Rust BTreeMap semantics,
- * source_patch.rs:140). */
+ * source_patch.rs). */
 private fun sortedMetadata(metadata: Map<String, String>): Map<String, String> =
     Collections.unmodifiableMap(metadata.toSortedMap())
 

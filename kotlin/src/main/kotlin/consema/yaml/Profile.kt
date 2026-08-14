@@ -2,7 +2,7 @@
 // classification.
 //
 // Data authority (language-neutral sources first):
-//   - RFC 0007 §1 (https://github.com/consema/consema/blob/main/docs/rfcs/0007-yaml-family-profiles-and-safety-v1.md:16-32):
+//   - RFC 0007 §1 (https://github.com/consema/consema/blob/main/docs/rfcs/0007-yaml-family-profiles-and-safety-v1.md):
 //     the two profiles yaml.1.2-core@1 (YAML 1.2.2 presentation grammar +
 //     Core schema) and yaml.1.1-compat@1 (YAML 1.2-compatible presentation +
 //     frozen 1.1 scalar resolution); they share source/lossless structure/
@@ -12,9 +12,9 @@
 //   - conformance/vectors/yaml-v1.json pins the profile spellings (line 3)
 //     and the syntax kinds the vectors assert (syntax.styles-and-trivia,
 //     yaml-v1.json:31-34).
-//   - https://github.com/consema/consema-rs/blob/main/consema-yaml/src/lib.rs:54-116 pins YamlProfile and the exact
-//     YamlSyntaxKind spellings (as_str lib.rs:167-198, from_name lib.rs:
-//     200-231); lib.rs:241-257 pins the profile ids and accepted %YAML
+//   - https://github.com/consema/consema-rs/blob/main/consema-yaml/src/lib.rs pins YamlProfile and the exact
+//     YamlSyntaxKind spellings (as_str lib.rs, from_name lib.rs
+//); lib.rs pins the profile ids and accepted %YAML
 //     versions. consema-go/go/yaml/profile.go is a cross-reference only.
 //
 // Kotlin-idiomatic design (NOT a translation): the profile is a closed enum;
@@ -26,7 +26,7 @@ package consema.yaml
 
 import consema.document.ProfileId
 
-/** Frozen YAML language profile (lib.rs:54-61). */
+/** Frozen YAML language profile (lib.rs). */
 enum class YamlProfile {
     /** YAML 1.2.2 presentation grammar with the Core schema. */
     Yaml12CoreV1,
@@ -36,14 +36,14 @@ enum class YamlProfile {
     Yaml11CompatV1,
     ;
 
-    /** Immutable profile identifier (lib.rs:244-249). */
+    /** Immutable profile identifier (lib.rs). */
     fun id(): ProfileId =
         when (this) {
             Yaml12CoreV1 -> ProfileId("yaml.1.2-core", 1)
             Yaml11CompatV1 -> ProfileId("yaml.1.1-compat", 1)
         }
 
-    /** The exact `%YAML` version accepted by this profile (lib.rs:251-257). */
+    /** The exact `%YAML` version accepted by this profile (lib.rs). */
     internal fun acceptedVersion(): String =
         when (this) {
             Yaml12CoreV1 -> "1.2"
@@ -52,9 +52,9 @@ enum class YamlProfile {
 }
 
 /**
- * Closed YAML lossless presentation-piece classification (lib.rs:63-116).
+ * Closed YAML lossless presentation-piece classification (lib.rs).
  * The enum order is the Rust declaration order; the query/protocol
- * vocabulary is [asStr] (lib.rs:167-198), which is byte-identical to the
+ * vocabulary is [asStr] (lib.rs), which is byte-identical to the
  * vector spellings.
  */
 enum class YamlSyntaxKind {
@@ -134,7 +134,7 @@ enum class YamlSyntaxKind {
     ErrorRegion,
     ;
 
-    /** Stable query and protocol name (lib.rs:170-198). */
+    /** Stable query and protocol name (lib.rs). */
     fun asStr(): String =
         when (this) {
             Bom -> "Bom"
@@ -164,18 +164,18 @@ enum class YamlSyntaxKind {
             ErrorRegion -> "ErrorRegion"
         }
 
-    /** Whether this kind is classified as structural trivia (lib.rs:233-239). */
+    /** Whether this kind is classified as structural trivia (lib.rs). */
     internal fun isTrivia(): Boolean =
         this == Bom || this == Whitespace || this == Newline || this == Comment
 
     companion object {
-        /** Resolves one exact stable kind name (lib.rs:202-231). */
+        /** Resolves one exact stable kind name (lib.rs). */
         fun fromName(name: String): YamlSyntaxKind? =
             entries.firstOrNull { it.asStr() == name }
     }
 }
 
-/** YAML native representation node kind (lib.rs:118-127). */
+/** YAML native representation node kind (lib.rs). */
 enum class YamlNodeKind {
     /** Tagged scalar. */
     Scalar,
@@ -187,7 +187,7 @@ enum class YamlNodeKind {
     Mapping,
 }
 
-/** Exact scalar presentation style (lib.rs:129-142). */
+/** Exact scalar presentation style (lib.rs). */
 enum class YamlScalarStyle {
     /** Plain style. */
     Plain,
@@ -205,7 +205,7 @@ enum class YamlScalarStyle {
     Folded,
 }
 
-/** Resolved native scalar semantic category (lib.rs:144-165). */
+/** Resolved native scalar semantic category (lib.rs). */
 enum class YamlScalarKind {
     /** Null. */
     Null,

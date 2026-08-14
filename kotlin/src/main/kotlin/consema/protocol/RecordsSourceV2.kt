@@ -3,11 +3,11 @@
 // (Windows code pages included).
 //
 // Data authority (language-neutral sources first):
-//   - https://github.com/consema/consema-rs/blob/main/consema-protocol/src/source.rs:99-146 (SourceSnapshotMessageV2:
+//   - https://github.com/consema/consema-rs/blob/main/consema-protocol/src/source.rs (SourceSnapshotMessageV2:
 //     the fixed v2 wire schema, the encoding facts v2 record, and the strict
 //     from_value re-verification of digest, encoding facts, and decoded
 //     status).
-//   - source.rs:196-239 (SourcePatchMessageV2), source.rs:598-631 (the v2
+//   - source.rs (SourcePatchMessageV2), source.rs (the v2
 //     encoding facts), and https://github.com/consema/consema-rs/blob/main/consema-document/src/source.rs (the
 //     resolution priority and the Windows code-page registry).
 //   - conformance/vectors/semantic-model-v6.json pins the code-page
@@ -30,7 +30,7 @@ import java.nio.charset.Charset
 import java.nio.charset.StandardCharsets
 
 /** The source-v2 construction failure kinds mapped to the frozen protocol
- * failure vocabulary (source.rs:821-831). */
+ * failure vocabulary (source.rs). */
 private enum class V2SourceError {
     INVALID_SEQUENCE,
     ENCODING_CONFLICT,
@@ -59,7 +59,7 @@ class SourceSnapshotV2 private constructor(
     companion object {
         /**
          * Builds a v2 snapshot from raw bytes under the source-v2 resolution
-         * request (source.rs:488-550 as mirrored for the v2 facts).
+         * request (source.rs as mirrored for the v2 facts).
          */
         fun fromRaw(
             bytes: ByteArray,
@@ -112,7 +112,7 @@ class SourceSnapshotV2 private constructor(
         get() = raw.size
 
     /** Resolves one raw byte offset only when it is a decoded scalar
-     * boundary (source.rs:622-641). */
+     * boundary (source.rs). */
     fun decodedPosition(rawByte: Int): DecodedPosition {
         if (rawByte < 0 || rawByte > raw.size) {
             throw SourceLocationException(SourceLocationErrorKind.OUT_OF_BOUNDS)
@@ -187,7 +187,7 @@ class V2EncodingRequest internal constructor(
         V2EncodingRequest(profileDefault, bomPolicy, declaration, callerOverride)
 }
 
-/** The v2 encoding resolution (source.rs:740-782 mirrored for the v2 facts
+/** The v2 encoding resolution (source.rs mirrored for the v2 facts
  * with Windows code pages). */
 internal fun resolveV2Encoding(bytes: ByteArray, request: V2EncodingRequest): EncodingFacts {
     val isText: (SourceEncoding?) -> Boolean = { it != null && it.kind != "Binary" }
@@ -232,7 +232,7 @@ private fun resolveV2Assertions(
     )
 }
 
-/** Detects a Unicode BOM from raw bytes (source.rs:784-804). */
+/** Detects a Unicode BOM from raw bytes (source.rs). */
 private fun detectV2Bom(bytes: ByteArray): String? {
     if (bytes.size >= 4 && bytes[0] == 0xff.toByte() && bytes[1] == 0xfe.toByte() &&
         bytes[2] == 0x00.toByte() && bytes[3] == 0x00.toByte()
@@ -381,8 +381,8 @@ internal fun codePageCharset(page: Int): Charset? = try {
     null
 }
 
-/** Builds the checkpointed decoded boundary index (document source.rs:
- * 1016-1067 mirrored for the v2 encodings). */
+/** Builds the checkpointed decoded boundary index (document source.rs
+ * mirrored for the v2 encodings). */
 private fun buildV2Index(
     utf8: ByteArray,
     encoding: SourceEncoding,
@@ -619,7 +619,7 @@ private fun checkedAddV2(left: Int, right: Int): Int =
     }
 
 /** Maps a v2 source construction failure to the protocol failure vocabulary
- * (source.rs:821-831). */
+ * (source.rs). */
 private fun mapV2SourceError(e: V2SourceException): ProtocolException =
     when (e.error) {
         V2SourceError.INVALID_SEQUENCE -> invalid("$.raw_bytes", e.message ?: "invalid sequence")
@@ -629,10 +629,10 @@ private fun mapV2SourceError(e: V2SourceException): ProtocolException =
     }
 
 // ---------------------------------------------------------------------------
-// core.source-snapshot@2 (source.rs:99-146, 241-321).
+// core.source-snapshot@2 (source.rs).
 // ---------------------------------------------------------------------------
 
-/** Verified `core.source-snapshot@2` message (source.rs:99-146). */
+/** Verified `core.source-snapshot@2` message (source.rs). */
 class SourceSnapshotMessageV2 private constructor(
     private val snapshot: SourceSnapshotV2,
 ) {
@@ -642,7 +642,7 @@ class SourceSnapshotMessageV2 private constructor(
             SourceSnapshotMessageV2(snapshot)
 
         /** Strictly decodes and re-verifies every source-v2 fact
-         * (source.rs:135-145). */
+         * (source.rs). */
         fun fromValue(value: PortableValue, limits: SourceLimits): SourceSnapshotMessageV2 {
             val fields = schemaFields(
                 value,
@@ -680,8 +680,8 @@ class SourceSnapshotMessageV2 private constructor(
     /** Verified immutable source snapshot. */
     fun snapshot(): SourceSnapshotV2 = snapshot
 
-    /** Encodes the exact source-snapshot v2 schema (source.rs:127-133,
-     * 241-260). */
+    /** Encodes the exact source-snapshot v2 schema (source.rs,
+ *). */
     fun toValue(): PortableValue =
         PvObject(
             listOf(
@@ -698,7 +698,7 @@ class SourceSnapshotMessageV2 private constructor(
 }
 
 /** The resolution request derived from the claimed encoding facts
- * (source.rs:791-802). */
+ * (source.rs). */
 private fun v2RequestOf(facts: EncodingFacts): V2EncodingRequest {
     val profileDefault = facts.profileDefault
         ?: throw invalid("$.encoding.profile_default", "profile default is required")
@@ -706,7 +706,7 @@ private fun v2RequestOf(facts: EncodingFacts): V2EncodingRequest {
 }
 
 // ---------------------------------------------------------------------------
-// core.source-patch@2 (source.rs:196-239, 323-371).
+// core.source-patch@2 (source.rs).
 // ---------------------------------------------------------------------------
 
 /** One raw-byte precondition and replacement of a source-patch v2. */
@@ -742,7 +742,7 @@ class SourcePatchV2 private constructor(
 ) {
     companion object {
         /** Builds a self-consistent patch against one immutable v2 base
-         * snapshot (source_patch.rs:226-251 mirrored). */
+         * snapshot (source_patch.rs mirrored). */
         fun create(
             base: SourceSnapshotV2,
             replacements: List<SourceReplacementV2>,
@@ -784,7 +784,7 @@ class SourcePatchV2 private constructor(
     }
 
     /** Applies the patch to one base snapshot and returns the verified
-     * target snapshot (source_patch.rs:213-299 mirrored). */
+     * target snapshot (source_patch.rs mirrored). */
     fun apply(base: SourceSnapshotV2, limits: SourcePatchLimits): SourceSnapshotV2 {
         if (base.digest != baseDigest) {
             throw SourcePatchV2Exception("core.source.patch-base-mismatch@1")
@@ -860,7 +860,7 @@ private fun applyReplacements(
 private fun sortedMetadata(metadata: Map<String, String>): Map<String, String> =
     metadata.toSortedMap()
 
-/** Transferable `core.source-patch@2` verification facts (source.rs:196-
+/** Transferable `core.source-patch@2` verification facts (source.rs
  * 239). */
 class SourcePatchMessageV2 private constructor(
     private val patch: SourcePatchV2,
@@ -870,7 +870,7 @@ class SourcePatchMessageV2 private constructor(
         fun fromPatch(patch: SourcePatchV2): SourcePatchMessageV2 = SourcePatchMessageV2(patch)
 
         /** Strictly decodes structural source-patch v2 facts
-         * (source.rs:231-238). */
+         * (source.rs). */
         fun fromValue(value: PortableValue, limits: SourcePatchLimits): SourcePatchMessageV2 {
             val fields = schemaFields(
                 value,
@@ -926,8 +926,8 @@ class SourcePatchMessageV2 private constructor(
     /** Validated source patch. */
     fun patch(): SourcePatchV2 = patch
 
-    /** Encodes the exact source-patch v2 schema (source.rs:222-229,
-     * 323-355). */
+    /** Encodes the exact source-patch v2 schema (source.rs,
+ *). */
     fun toValue(): PortableValue {
         val replacementValues = patch.replacements.map { replacement ->
             PvObject(

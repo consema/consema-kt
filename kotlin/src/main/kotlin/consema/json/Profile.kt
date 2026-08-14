@@ -2,15 +2,15 @@
 // classification.
 //
 // Data authority (language-neutral sources first):
-//   - RFC 0005 §1-§2 (https://github.com/consema/consema/blob/main/docs/rfcs/0005-json-family-production-v1.md:16-49):
+//   - RFC 0005 §1-§2 (https://github.com/consema/consema/blob/main/docs/rfcs/0005-json-family-production-v1.md):
 //     the three profiles json.strict@1, jsonc.bounded@1, json5.standard@1;
 //     JSON5 accepts exactly the Standard JSON5 1.0.0 grammar plus Consema
 //     resource bounds.
 //   - conformance/vectors/json-family-v2.json pins the profile spellings and
 //     the syntax kinds the vectors assert (syntax_contains, kind-is).
-//   - https://github.com/consema/consema-rs/blob/main/consema-json/src/lib.rs:36-159 pins JsonProfile and
+//   - https://github.com/consema/consema-rs/blob/main/consema-json/src/lib.rs pins JsonProfile and
 //     JsonSyntaxKind (the exact kind names "Bom".."ErrorRegion" at
-//     lib.rs:89-108). consema-go/go/json/profile.go is a cross-reference only.
+//     lib.rs). consema-go/go/json/profile.go is a cross-reference only.
 //
 // Kotlin-idiomatic design (NOT a translation): the profile is a closed enum;
 // the syntax-kind names are the exact language-neutral spellings asserted by
@@ -20,7 +20,7 @@ package consema.json
 
 import consema.document.ProfileId
 
-/** Frozen JSON-family language profile (lib.rs:36-45). */
+/** Frozen JSON-family language profile (lib.rs). */
 enum class JsonProfile {
     /** RFC-style strict JSON plus the baseline duplicate/BOM diagnostics
      * (RFC 0005 §1). */
@@ -35,7 +35,7 @@ enum class JsonProfile {
     Json5StandardV1,
     ;
 
-    /** Immutable profile identifier (lib.rs:137-146). */
+    /** Immutable profile identifier (lib.rs). */
     fun id(): ProfileId =
         when (this) {
             StrictV1 -> ProfileId("json.strict", 1)
@@ -44,19 +44,19 @@ enum class JsonProfile {
         }
 
     /** Whether bounded comments and trailing commas are accepted
-     * (lib.rs:148-153). */
+     * (lib.rs). */
     internal fun permitsJsoncExtensions(): Boolean =
         this == JsoncBoundedV1 || this == Json5StandardV1
 
     /** Whether the Standard JSON5 lexical surface is accepted
-     * (lib.rs:154-159). */
+     * (lib.rs). */
     internal fun isJson5(): Boolean = this == Json5StandardV1
 }
 
 /**
- * Closed JSON-family lossless syntax-piece classification (lib.rs:47-84).
+ * Closed JSON-family lossless syntax-piece classification (lib.rs).
  * The enum order is the Rust declaration order; the wire/query vocabulary is
- * [asStr] (lib.rs:86-135), which is byte-identical to the vector spellings.
+ * [asStr] (lib.rs), which is byte-identical to the vector spellings.
  */
 enum class JsonSyntaxKind {
     /** Leading UTF-8 byte-order mark. */
@@ -111,7 +111,7 @@ enum class JsonSyntaxKind {
     ErrorRegion,
     ;
 
-    /** Stable query and protocol name (lib.rs:86-109). */
+    /** Stable query and protocol name (lib.rs). */
     fun asStr(): String =
         when (this) {
             Bom -> "Bom"
@@ -134,7 +134,7 @@ enum class JsonSyntaxKind {
         }
 
     companion object {
-        /** Resolves one exact stable kind name (lib.rs:111-135). */
+        /** Resolves one exact stable kind name (lib.rs). */
         fun fromName(name: String): JsonSyntaxKind? =
             entries.firstOrNull { it.asStr() == name }
     }

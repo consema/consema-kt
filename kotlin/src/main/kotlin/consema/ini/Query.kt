@@ -1,7 +1,7 @@
 // Versioned INI native-semantic and lossless-syntax query execution.
 //
 // Data authority:
-//   - RFC 0009 §9 (https://github.com/consema/consema/blob/main/docs/rfcs/0009-ini-family-profiles-v1.md:286-345): the
+//   - RFC 0009 §9 (https://github.com/consema/consema/blob/main/docs/rfcs/0009-ini-family-profiles-v1.md): the
 //     native operator schemas (ini.document-sections@1 through
 //     ini.logical-lines@1), the exact comparison modes OriginalExact |
 //     ProfileEquivalent and the exact state values Missing | Empty |
@@ -14,17 +14,17 @@
 //   - conformance/vectors/ini-v1.json (query.*) pins the match order, the
 //     duplicate-group facts, the syntax-kind ordinals, and the
 //     resource-limit behavior; https://github.com/consema/consema-rs/blob/main/consema-ini/src/query.rs is the
-//     byte-arbitration authority (execution query.rs:117-218, operators
-//     query.rs:421-625, source order query.rs:627-659, decoded text
-//     query.rs:661-676); consema-core/src/query.rs:2967-2993 pins QueryLimits
+//     byte-arbitration authority (execution query.rs, operators
+//     query.rs, source order query.rs, decoded text
+//     query.rs); consema-core/src/query.rs pins QueryLimits
 //     defaults and the CancellationToken shape.
 //   - The operator table and argument vocabularies live in the protocol
-//     package (kotlin/src/main/kotlin/consema/protocol/QueryValidate.kt:108-137, 721-730,
-//     827-846, 929-935) and validate INI queries before execution.
+//     package (kotlin/src/main/kotlin/consema/protocol/QueryValidate.kt
+//) and validate INI queries before execution.
 //
 // Kotlin-idiomatic design: execution throws the protocol package's typed
 // [consema.protocol.QueryFailureException] carrying the registered code
-// (query_failure_code mapping, error_registry.rs:1515-1529); the cursor
+// (query_failure_code mapping, error_registry.rs); the cursor
 // terminal contract (RFC 0003 §9) is a synchronous complete result list
 // here, with the terminal state always Completed after a successful
 // execution.
@@ -46,7 +46,7 @@ import consema.protocol.QuerySelection
 import java.math.BigInteger
 import java.util.concurrent.atomic.AtomicBoolean
 
-/** Query resource limits (query.rs:2967-2981). */
+/** Query resource limits (query.rs). */
 data class QueryLimits(
     /** Maximum operator steps. */
     val maxSteps: Int,
@@ -54,13 +54,13 @@ data class QueryLimits(
     val maxResults: Int,
 ) {
     companion object {
-        /** The frozen defaults (query.rs:2974-2981): 100,000 steps and
+        /** The frozen defaults (query.rs): 100,000 steps and
          * 100,000 results. */
         val default = QueryLimits(maxSteps = 100_000, maxResults = 100_000)
     }
 }
 
-/** Cooperative cancellation flag (query.rs:2984-2993). */
+/** Cooperative cancellation flag (query.rs). */
 class CancellationToken {
     private val cancelled = AtomicBoolean(false)
 
@@ -73,7 +73,7 @@ class CancellationToken {
     }
 }
 
-/** Owned snapshot-bound INI native semantic query match (query.rs:9-67). */
+/** Owned snapshot-bound INI native semantic query match (query.rs). */
 sealed class IniMatch {
     /** Complete INI document. */
     data class Document(
@@ -145,7 +145,7 @@ sealed class IniMatch {
         }
 }
 
-/** Owned snapshot-bound INI lossless syntax query match (query.rs:81-114). */
+/** Owned snapshot-bound INI lossless syntax query match (query.rs). */
 data class IniSyntaxMatch(
     /** Process-local syntax-piece identity. */
     val node: NodeRef,
@@ -159,7 +159,7 @@ data class IniSyntaxMatch(
 
 /**
  * Executes a validated INI native semantic query against one immutable
- * snapshot (query.rs:117-143). The document is the first standard result.
+ * snapshot (query.rs). The document is the first standard result.
  */
 fun executeIniQuery(
     executable: ExecutableQuery,
@@ -185,7 +185,7 @@ fun executeIniQuery(
 
 /**
  * Executes a validated INI lossless syntax query against every source piece
- * in raw order (query.rs:159-204). Text comparisons use the decoded Unicode
+ * in raw order (query.rs). Text comparisons use the decoded Unicode
  * scalar text of the exact piece span (RFC 0009 §9).
  */
 fun executeIniSyntaxQuery(
@@ -219,7 +219,7 @@ fun executeIniSyntaxQuery(
     return applySelection(matches, definition.selection)
 }
 
-/** Execution context carrying limits and cancellation (query.rs:220-296). */
+/** Execution context carrying limits and cancellation (query.rs). */
 private class QueryContext(
     val document: IniDocument,
     val limits: QueryLimits,
@@ -523,7 +523,7 @@ private fun applyOperator(
     return output
 }
 
-/** Push with the buffered-result limit (query.rs:242-255). */
+/** Push with the buffered-result limit (query.rs). */
 private fun pushMatch(context: QueryContext, output: ArrayList<IniMatch>, match: IniMatch) {
     val observed = output.size + 1
     if (observed > context.limits.maxResults) {
@@ -532,7 +532,7 @@ private fun pushMatch(context: QueryContext, output: ArrayList<IniMatch>, match:
     output.add(match)
 }
 
-/** The stable source-order key of one native match (query.rs:627-659). */
+/** The stable source-order key of one native match (query.rs). */
 private fun sourceOrder(document: IniDocument, item: IniMatch): Pair<Int, Int> =
     when (item) {
         is IniMatch.Document -> 0 to 0
@@ -565,7 +565,7 @@ private fun keyComparisonName(profile: IniProfile, key: String): String =
         IniProfile.PythonConfigParserV1 -> optionxform(key)
     }
 
-/** Applies the cardinality selection (query.rs:693-710). */
+/** Applies the cardinality selection (query.rs). */
 internal fun <T> applySelection(values: List<T>, selection: QuerySelection): List<T> =
     when (selection) {
         QuerySelection.All -> values

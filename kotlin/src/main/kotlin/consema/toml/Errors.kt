@@ -1,27 +1,27 @@
 // Typed formation failures of the TOML family.
 //
 // Data authority:
-//   - RFC 0016 §5.1 F10 (https://github.com/consema/consema/blob/main/docs/rfcs/0016-go-api-mapping-v1.md:171-176): a
+//   - RFC 0016 §5.1 F10 (https://github.com/consema/consema/blob/main/docs/rfcs/0016-go-api-mapping-v1.md): a
 //     formation failure carries the ordered diagnostics (code, category,
 //     severity, span, arguments, notes, occurrence) with registry-bound
 //     validation; TOML forms no partial Document.
 //   - The frozen toml-family codes (https://github.com/consema/consema-rs/blob/main/consema-protocol/src/
-//     error_registry.rs:338-361; transcribed verbatim into
-//     kotlin/src/main/kotlin/consema/protocol/ErrorRegistry.kt:228-231):
-//       toml.edit.representation-fallback@1    Edit       0.2.0 (error_registry.rs:338-343)
-//       toml.parse.syntax@1                    Syntax     0.2.0 (error_registry.rs:344-349)
-//       toml.projection.core-invariant@1       Projection 0.2.0 (error_registry.rs:350-355)
-//       toml.projection.unrepresentable-datetime@1 Projection 0.2.0 (error_registry.rs:356-361)
-//   - The core codes used by formation (consema-document/src/lib.rs:643-798):
-//       core.parse.resource-limit@1   (resource_limit, lib.rs:771-791)
-//       core.source.invalid-utf8@1    (invalid_utf8, lib.rs:658-672)
+//     error_registry.rs; transcribed verbatim into
+//     kotlin/src/main/kotlin/consema/protocol/ErrorRegistry.kt):
+//       toml.edit.representation-fallback@1    Edit       0.2.0 (error_registry.rs)
+//       toml.parse.syntax@1                    Syntax     0.2.0 (error_registry.rs)
+//       toml.projection.core-invariant@1       Projection 0.2.0 (error_registry.rs)
+//       toml.projection.unrepresentable-datetime@1 Projection 0.2.0 (error_registry.rs)
+//   - The core codes used by formation (consema-document/src/lib.rs):
+//       core.parse.resource-limit@1   (resource_limit, lib.rs)
+//       core.source.invalid-utf8@1    (invalid_utf8, lib.rs)
 //       core.source.invalid-sequence@1, encoding-conflict@1,
 //       core.source.unsupported-bom@1, core.source.resource-limit@1
-//       (source_error, lib.rs:676-767)
-//   - The projection failure codes (consema-toml/src/projection.rs:410-435):
+//       (source_error, lib.rs)
+//   - The projection failure codes (consema-toml/src/projection.rs):
 //       toml.projection.unrepresentable-datetime@1 / core.projection.
 //       resource-limit@1 (argument "limit") / toml.projection.core-invariant@1.
-//   - The edit codes (consema-toml/src/edit.rs:1280-1332, the StableFailure
+//   - The edit codes (consema-toml/src/edit.rs, the StableFailure
 //       diagnostic_code mapping; RFC 0004 §17 registers core.edit.*@1 in
 //       error_registry.rs v3): core.edit.wrong-snapshot@1, wrong-role@1,
 //       unsupported-value@1, invalid-literal@1, representation-incompatible@1,
@@ -31,7 +31,7 @@
 //
 // Kotlin-idiomatic design: the family carries its own immutable diagnostic
 // record because the protocol `Diagnostic` primary location is wire-shaped
-// (a caller-stable source ID is mandatory, Diagnostic.kt:56-64) while
+// (a caller-stable source ID is mandatory, kotlin/src/main/kotlin/consema/protocol/Diagnostic.kt) while
 // formation/projection/edit diagnostics are snapshot-bound byte spans
 // (DiagnosticLocation { snapshot: None, start_byte, end_byte } in the Rust
 // crate). [TomlDiagnostic.toProtocolDiagnostic] maps a record to the
@@ -46,27 +46,27 @@ import consema.protocol.ErrorCodeRegistry
 import consema.protocol.Severity
 import consema.protocol.SourceLocation
 
-/** The frozen toml-family edit-fallback code (error_registry.rs:338-343;
- * ErrorRegistry.kt:228). */
+/** The frozen toml-family edit-fallback code (error_registry.rs;
+ * kotlin/src/main/kotlin/consema/protocol/ErrorRegistry.kt). */
 const val TOML_EDIT_REPRESENTATION_FALLBACK = "toml.edit.representation-fallback@1"
 
-/** The frozen toml-family syntax code (error_registry.rs:344-349;
- * ErrorRegistry.kt:229). */
+/** The frozen toml-family syntax code (error_registry.rs;
+ * kotlin/src/main/kotlin/consema/protocol/ErrorRegistry.kt). */
 const val TOML_PARSE_SYNTAX = "toml.parse.syntax@1"
 
-/** The frozen toml-family projection invariant code (error_registry.rs:
- * 350-355; ErrorRegistry.kt:230). */
+/** The frozen toml-family projection invariant code (error_registry.rs
+ * ; kotlin/src/main/kotlin/consema/protocol/ErrorRegistry.kt). */
 const val TOML_PROJECTION_CORE_INVARIANT = "toml.projection.core-invariant@1"
 
-/** The frozen toml-family projection temporal code (error_registry.rs:
- * 356-361; ErrorRegistry.kt:231). */
+/** The frozen toml-family projection temporal code (error_registry.rs
+ * ; kotlin/src/main/kotlin/consema/protocol/ErrorRegistry.kt). */
 const val TOML_PROJECTION_UNREPRESENTABLE_DATETIME =
     "toml.projection.unrepresentable-datetime@1"
 
-/** The frozen core formation resource-limit code (lib.rs:771-791). */
+/** The frozen core formation resource-limit code (lib.rs). */
 const val CORE_PARSE_RESOURCE_LIMIT = "core.parse.resource-limit@1"
 
-/** The frozen core invalid-UTF-8 code (lib.rs:658-672). */
+/** The frozen core invalid-UTF-8 code (lib.rs). */
 const val CORE_SOURCE_INVALID_UTF8 = "core.source.invalid-utf8@1"
 
 /**
@@ -129,12 +129,12 @@ data class TomlDiagnostic(
 
 /**
  * The typed fatal formation failure; no Document exists (RFC 0001 §3;
- * FatalFormationFailure, consema-document/src/lib.rs:643-645). The stable
+ * FatalFormationFailure, consema-document/src/lib.rs). The stable
  * [code] is the first diagnostic's frozen registered code.
  */
 class TomlFormationException(
     /** Ordered diagnostics explaining why no Document exists
-     * (lib.rs:793-798). */
+     * (lib.rs). */
     val diagnostics: List<TomlDiagnostic>,
 ) : Exception("toml formation: ${diagnostics.firstOrNull()?.code}") {
     /** The frozen registered code of the first diagnostic. */
@@ -142,7 +142,7 @@ class TomlFormationException(
         get() = diagnostics.first().code
 }
 
-/** Builds one resource-limit diagnostic (lib.rs:771-791: code
+/** Builds one resource-limit diagnostic (lib.rs: code
  * core.parse.resource-limit@1 with arguments limit/name/observed). */
 internal fun resourceLimitDiagnostic(
     name: String,
@@ -163,7 +163,7 @@ internal fun resourceLimitDiagnostic(
     occurrence = 0,
 )
 
-/** Builds the invalid-UTF-8 diagnostic (lib.rs:658-672: primary at the
+/** Builds the invalid-UTF-8 diagnostic (lib.rs: primary at the
  * valid prefix boundary). */
 internal fun invalidUtf8Diagnostic(validUpTo: Int): TomlDiagnostic = TomlDiagnostic(
     code = CORE_SOURCE_INVALID_UTF8,
@@ -176,7 +176,7 @@ internal fun invalidUtf8Diagnostic(validUpTo: Int): TomlDiagnostic = TomlDiagnos
     occurrence = 0,
 )
 
-/** Builds one syntax diagnostic (consema-toml/src/parser.rs:65-82: code
+/** Builds one syntax diagnostic (consema-toml/src/parser.rs: code
  * toml.parse.syntax@1 with the stable `parser_reason` argument and the
  * provable minimal primary span). */
 internal fun syntaxDiagnostic(

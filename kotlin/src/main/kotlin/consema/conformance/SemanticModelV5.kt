@@ -123,7 +123,7 @@ private fun runSemanticModelV5Case(case: CaseData) {
 }
 
 // ---------------------------------------------------------------------------
-// Registry facts (semantic_model_v5.rs:158-228).
+// Registry facts (semantic_model_v5.rs).
 // ---------------------------------------------------------------------------
 
 private fun registryV5Manifest(case: CaseData) {
@@ -204,7 +204,7 @@ private fun registryErrorCodes(case: CaseData) {
 }
 
 // ---------------------------------------------------------------------------
-// Portable-graph dual transport (semantic_model_v5.rs:230-257).
+// Portable-graph dual transport (semantic_model_v5.rs).
 // ---------------------------------------------------------------------------
 
 private fun portableGraphTransport(case: CaseData) {
@@ -230,8 +230,8 @@ private fun portableGraphTransport(case: CaseData) {
     )
 }
 
-/** The core.portable-graph@1 record rejection cases (semantic_model_v5.rs:
- * 259-301): a readable/PGCE disagreement and an explicit node limit. */
+/** The core.portable-graph@1 record rejection cases (semantic_model_v5.rs
+ *): a readable/PGCE disagreement and an explicit node limit. */
 private fun portableGraphDisagreement(case: CaseData) {
     val graph = graphFromInput(case, "graph")
     val message = transport { PortableGraphMessage.fromGraph(graph, PgceLimits.default) }
@@ -276,7 +276,7 @@ private fun portableGraphLimit(case: CaseData) {
     ensure(failure != null && failure.kind.code == expectedCode)
 }
 
-/** The graph-query result cases (semantic_model_v5.rs:303-327). */
+/** The graph-query result cases (semantic_model_v5.rs). */
 private fun graphQueryCase(case: CaseData) {
     val graph = graphFromInput(case, "graph")
     val message = transport { PortableGraphMessage.fromGraph(graph, PgceLimits.default) }
@@ -300,7 +300,7 @@ private fun graphQueryCase(case: CaseData) {
     }
 }
 
-/** The graph provenance order rejection (semantic_model_v5.rs:329-336). */
+/** The graph provenance order rejection (semantic_model_v5.rs). */
 private fun graphProvenanceOrder(case: CaseData) {
     val entries = graphProvenanceEntries(case)
     val failure = try {
@@ -313,7 +313,7 @@ private fun graphProvenanceOrder(case: CaseData) {
     ensure(failure != null && failure.kind.code == expectedCode)
 }
 
-/** The graph projection result cases (semantic_model_v5.rs:338-355). */
+/** The graph projection result cases (semantic_model_v5.rs). */
 private fun graphProjectionCase(case: CaseData) {
     val graph = graphFromInput(case, "graph")
     val message = transport { PortableGraphMessage.fromGraph(graph, PgceLimits.default) }
@@ -329,7 +329,7 @@ private fun graphProjectionCase(case: CaseData) {
     }
 }
 
-/** The yaml-query round-trip cases (semantic_model_v5.rs:357-388). */
+/** The yaml-query round-trip cases (semantic_model_v5.rs). */
 private fun yamlQueryRoundtrip(case: CaseData) {
     val roles = inputSequence(case, "roles") ?: fail("missing input.roles")
     val sourceId = inputString(case, "source_id") ?: fail("missing input.source_id")
@@ -354,7 +354,7 @@ private fun yamlQueryRoundtrip(case: CaseData) {
     ensure(count.toLong() == (expectedLong(case, "role_count") ?: fail("missing expected.role_count")))
 }
 
-/** The yaml-query domain/role rejection (semantic_model_v5.rs:390-408). */
+/** The yaml-query domain/role rejection (semantic_model_v5.rs). */
 private fun yamlQueryDomainRejection(case: CaseData) {
     val role = inputString(case, "role") ?: fail("missing input.role")
     val locator = transport { YamlMatchLocator.new("sha256:source", "/syntax/0", role, 0uL) }
@@ -369,7 +369,7 @@ private fun yamlQueryDomainRejection(case: CaseData) {
     ensure(failure != null && failure.kind.code == expectedCode)
 }
 
-/** The yaml-query process-local boundary (semantic_model_v5.rs:410-418). */
+/** The yaml-query process-local boundary (semantic_model_v5.rs). */
 private fun yamlQueryProcessLocal(case: CaseData) {
     val failure = try {
         YamlMatchLocator.fromProcessLocal()
@@ -382,7 +382,7 @@ private fun yamlQueryProcessLocal(case: CaseData) {
 }
 
 /** The unknown payload field rejection of the registered portable-graph
- * record (semantic_model_v5.rs:486-500). */
+ * record (semantic_model_v5.rs). */
 private fun protocolUnknownField(case: CaseData) {
     val graph = graphFromInput(case, "graph")
     val message = transport { PortableGraphMessage.fromGraph(graph, PgceLimits.default) }
@@ -405,7 +405,7 @@ private fun protocolUnknownField(case: CaseData) {
 }
 
 /** Builds the provenance entries of one vector case: every input location
- * with one common origin (semantic_model_v5.rs:533-544). */
+ * with one common origin (semantic_model_v5.rs). */
 private fun graphProvenanceEntries(case: CaseData): List<GraphProvenanceEntryMessage> {
     val locations = inputSequence(case, "locations") ?: fail("missing input.locations")
     val sourceId = inputString(case, "source_id") ?: fail("missing input.source_id")
@@ -456,7 +456,7 @@ private fun replaceField(value: PvObject, name: String, replacement: PortableVal
     )
 
 /** Encodes the canonical `core.portable-graph@1` readable value of one
- * graph (portable_graph.rs:41-104): canonical wire IDs, the exact PGCE
+ * graph (portable_graph.rs): canonical wire IDs, the exact PGCE
  * bytes, and the fixed field order. */
 private fun portableGraphValue(graph: Graph, pgce: ByteArray): PortableValue {
     val order = ArrayList<NodeId>()
@@ -546,7 +546,7 @@ private fun portableGraphValue(graph: Graph, pgce: ByteArray): PortableValue {
 }
 
 // ---------------------------------------------------------------------------
-// Protocol envelope cases (semantic_model_v5.rs:420-500).
+// Protocol envelope cases (semantic_model_v5.rs).
 // ---------------------------------------------------------------------------
 
 private fun protocolV4Rejection(case: CaseData) {
@@ -635,7 +635,7 @@ private fun <T> transport(block: () -> T): T =
 // Shared helpers.
 // ---------------------------------------------------------------------------
 
-/** The fixed `core.completion@1` value (execution.rs:141-153). */
+/** The fixed `core.completion@1` value (execution.rs). */
 private fun completionValue(status: String, processed: Long, produced: Long, failureCode: String?): PortableValue =
     PvObject(
         listOf(
@@ -669,7 +669,7 @@ private fun graphFromInput(case: CaseData, name: String): Graph =
     graphFromValue(caseInput(case, name) ?: fail("missing input.$name"))
 
 /** Builds one PortableGraph from the language-neutral vector descriptor
- * (semantic_model_v5.rs:530-595): a `{nodes, roots}` object whose node
+ * (semantic_model_v5.rs): a `{nodes, roots}` object whose node
  * records carry `kind`/`tag` and `content`, `items`, or `entries`. */
 private fun graphFromValue(value: PortableValue): Graph {
     val fields = value as? PvObject ?: fail("graph must be Object")

@@ -2,10 +2,10 @@
 //
 // Data authority: https://github.com/consema/consema-rs/blob/main/consema-protocol/src/error_registry.rs — the v7
 // registry pins 187 codes (55/62/90/92/132/166/187 across v1..v7;
-// ERROR_CODES_V2 at error_registry.rs:412, V3 :617, V4 :662, V5 :935,
+// ERROR_CODES_V2 at error_registry.rs, V3 :617, V4 :662, V5 :935,
 // V6 :1172, V7 :1339). The records below are transcribed VERBATIM from the
 // Rust registries (cross-checked against consema-go/go/protocol/error_registry.go:
-// 206-425): every code, category, introduced version, and description is
+//): every code, category, introduced version, and description is
 // byte-identical; nothing may be invented or dropped. The description
 // wording is presentation metadata; code/category/introduced are
 // normative.
@@ -113,7 +113,7 @@ class ErrorCodeRegistry private constructor(val version: ErrorRegistryVersion) {
         return null
     }
 
-    /** Rejects an unregistered public code (error_registry.rs:1495-1510). */
+    /** Rejects an unregistered public code (error_registry.rs). */
     fun validate(candidate: String) {
         if (!contains(candidate)) {
             throw invalid("$.code", "unregistered public code: $candidate")
@@ -127,7 +127,7 @@ private fun errorCode(id: String, category: DiagnosticCategory, introduced: Stri
 /**
  * Returns the frozen records of one semantic-model version. Versions v2..v7
  * are sorted merges of the previous version plus the version's new codes,
- * mirroring the Rust const-merge builders (error_registry.rs:412-1367); the
+ * mirroring the Rust const-merge builders (error_registry.rs); the
  * test battery re-pins the counts, sortedness, and superset relationships.
  */
 internal fun codesForVersion(version: ErrorRegistryVersion): List<ErrorCodeDescriptor> =
@@ -172,7 +172,7 @@ private fun mergeErrorCodes(
 
 // The semantic-model v1 records (ERROR_CODES_V1, 55 codes). Strictly sorted
 // by code; introduced versions and descriptions transcribed verbatim from
-// https://github.com/consema/consema-rs/blob/main/consema-protocol/src/error_registry.rs:31-362.
+// https://github.com/consema/consema-rs/blob/main/consema-protocol/src/error_registry.rs.
 private val ERROR_CODES_V1: List<ErrorCodeDescriptor> = listOf(
     errorCode("core.diagnostic.truncated@1", DiagnosticCategory.Resource, "0.1.0", "Diagnostic limit truncated a sequence"),
     errorCode("core.parse.resource-limit@1", DiagnosticCategory.Resource, "0.1.0", "Parser resource limit was reached"),
@@ -387,14 +387,14 @@ private val NEW_CODES_V7: List<ErrorCodeDescriptor> = listOf(
     errorCode("cli.write.symlink-policy@1", DiagnosticCategory.Edit, "0.12.0", "Write path rejected by the symlink policy"),
     errorCode("cli.write.target-is-directory@1", DiagnosticCategory.Edit, "0.12.0", "Write target is a directory"),
     // Registered in 0.13.0 (audit finding F3): the 0.13.0 json
-    // Recovered-document gate emits this code (consema-json projection.rs:
+    // Recovered-document gate emits this code (consema-json projection.rs
     // 756) and the CLI's failed projection record requires it to be
     // registry-validated; without the entry the CLI panicked on `.expect`.
     errorCode("json.projection.incomplete-document@1", DiagnosticCategory.Projection, "0.13.0", "Recovered JSON syntax cannot enter a complete semantic projection"),
 )
 
 /** Encodes one `core.error-code-registry@1` payload
- * (error_registry.rs:1573-1594). */
+ * (error_registry.rs). */
 internal fun errorCodeManifestValueFor(registry: ErrorCodeRegistry): PortableValue {
     val items = registry.codes().map { descriptor ->
         PvObject(
@@ -420,7 +420,7 @@ fun errorCodeManifestValue(): PortableValue =
     errorCodeManifestValueFor(ErrorCodeRegistry.forVersion(ErrorRegistryVersion.V7))
 
 /** Strictly validates one transferable `core.error-code-registry@1` value
- * (error_registry.rs:1596-1645). Identity, ordering, category, and
+ * (error_registry.rs). Identity, ordering, category, and
  * stability are normative; the description wording is presentation metadata
  * and is not re-checked for equality. */
 fun validateErrorCodeManifestValue(value: PortableValue) {
@@ -455,7 +455,7 @@ fun validateErrorCodeManifestValue(value: PortableValue) {
 }
 
 /** Requires the `id@version` shape of a registered code
- * (error_registry.rs:1647-1655). */
+ * (error_registry.rs). */
 internal fun validateVersionedCode(code: String, path: String) {
     val at = code.lastIndexOf('@')
     if (at < 0) {

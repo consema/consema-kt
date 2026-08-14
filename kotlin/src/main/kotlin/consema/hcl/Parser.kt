@@ -3,7 +3,7 @@
 // the deterministic recovery boundaries of RFC 0014 §3.
 //
 // Data authority:
-//   - RFC 0014 §3-§6 (https://github.com/consema/consema/blob/main/docs/rfcs/0014-hcl-family-profiles-v1.md:94-446):
+//   - RFC 0014 §3-§6 (https://github.com/consema/consema/blob/main/docs/rfcs/0014-hcl-family-profiles-v1.md):
 //     Complete/Recovered/FatalFormationFailure; recovery happens only at
 //     deterministic boundaries and never asserts unproven semantics; the
 //     per-body duplicate-attribute rule makes formation Recovered with the
@@ -12,12 +12,12 @@
 //     heredocs (§4.5), and constructors/for-expressions (§4.6); the native
 //     semantic model (§6).
 //   - https://github.com/consema/consema-rs/blob/main/consema-hcl/src/parser.rs pins the parse structure: parse_body
-//     (parser.rs:620-727), parse_attribute (parser.rs:729-767), parse_block
-//     (parser.rs:769-864), the expression ladder (parser.rs:982-1259), the
-//     term layer (parser.rs:1263-1382), traversal steps (parser.rs:1351-
-//     1560), call/tuple/object/paren forms, the recovery scan (parser.rs:
-//     533-616), and the limit checks (parser.rs:620-863).
-//   - The failure codes are pinned in Errors.kt (parser.rs:80-97).
+//     (parser.rs), parse_attribute (parser.rs), parse_block
+//     (parser.rs), the expression ladder (parser.rs), the
+//     term layer (parser.rs), traversal steps (parser.rs
+//     1560), call/tuple/object/paren forms, the recovery scan (parser.rs
+//), and the limit checks (parser.rs).
+//   - The failure codes are pinned in Errors.kt (parser.rs).
 //   - consema-go/go/hcl is a cross-reference only.
 //
 // Kotlin-idiomatic design: a single-pass cursor parser over immutable
@@ -51,7 +51,7 @@ private enum class BodyEnd {
     BraceClose,
 }
 
-/** Why an attribute failed to parse (parser.rs:300-305). */
+/** Why an attribute failed to parse (parser.rs). */
 private enum class AttributeFailure(val code: String) {
     /** The `=` sign is missing. */
     MissingEquals(HCL_PARSE_ATTRIBUTE),
@@ -60,7 +60,7 @@ private enum class AttributeFailure(val code: String) {
     MissingExpression(HCL_PARSE_EXPRESSION),
 }
 
-/** The outcome of one attribute parse (parser.rs:307-311). */
+/** The outcome of one attribute parse (parser.rs). */
 private sealed class AttributeOutcome {
     data class Formed(val attribute: HclAttribute) : AttributeOutcome()
     data class Failed(val failure: AttributeFailure) : AttributeOutcome()
@@ -82,7 +82,7 @@ internal class HclFormed(
     val limits: HclParseLimits,
 )
 
-/** Forms one document from the lexed tokens (parser.rs:356-387). */
+/** Forms one document from the lexed tokens (parser.rs). */
 internal fun parseHcl(
     bytes: ByteArray,
     source: SourceSnapshot,
@@ -94,7 +94,7 @@ internal fun parseHcl(
     return parser.parse()
 }
 
-/** One deterministic parser pass (parser.rs:314-387). */
+/** One deterministic parser pass (parser.rs). */
 private class Parser(
     private val bytes: ByteArray,
     private val source: SourceSnapshot,
@@ -212,8 +212,8 @@ private class Parser(
     }
 
     /** Emits one error region with its diagnostic; a zero-length region
-     * publishes the diagnostic only, never an empty piece (parser.rs:
-     * 483-504). */
+     * publishes the diagnostic only, never an empty piece (parser.rs
+ *). */
     private fun emitErrorRegion(start: Int, end: Int, code: String) {
         recovered = true
         val regionSpan = span(start, end)
@@ -242,7 +242,7 @@ private class Parser(
 
     /** Fails one body item: emits the error region from the item start to
      * the deterministic recovery boundary and advances past the region
-     * (parser.rs:533-537). */
+     * (parser.rs). */
     private fun failItem(start: Int, code: String) {
         val boundary = scanRecovery(brackets.toList())
         brackets.clear()
@@ -250,7 +250,7 @@ private class Parser(
     }
 
     /** Scans forward from the current token to the recovery boundary and
-     * advances `pos` to the boundary token (parser.rs:549-588). */
+     * advances `pos` to the boundary token (parser.rs). */
     private fun scanRecovery(stack: List<HclTokenKind>): Int {
         var remaining = stack.toMutableList()
         loop@ while (true) {
@@ -288,7 +288,7 @@ private class Parser(
     }
 
     /** Consumes tokens through the next `}` at brace depth zero and returns
-     * its end byte; null at end of file (parser.rs:593-616). */
+     * its end byte; null at end of file (parser.rs). */
     private fun scanToCloseBrace(): Int? {
         var braces = 0
         while (true) {
@@ -312,7 +312,7 @@ private class Parser(
         }
     }
 
-    // -- body grammar (parser.rs:620-727) ----------------------------------
+    // -- body grammar (parser.rs) ----------------------------------
 
     private fun parseBody(depth: Int, end: BodyEnd): HclBody {
         if (depth > limits.maxBodyDepth) {
@@ -550,7 +550,7 @@ private class Parser(
     }
 
     /** Parses the one-line block body `{ (Identifier "=" Expression)? }`
-     * (parser.rs:900-978). */
+     * (parser.rs). */
     private fun parseOneLineBody(blockStart: Int): Pair<HclBody, Int>? {
         if (peekKind() == HclTokenKind.Identifier) {
             val nameToken = peek()
@@ -595,7 +595,7 @@ private class Parser(
         return HclBody(emptyList()) to closeEnd
     }
 
-    // -- expression grammar (parser.rs:982-1382) ---------------------------
+    // -- expression grammar (parser.rs) ---------------------------
 
     private fun parseExpression(mode: ExprMode, depth: Int): HclExpression? {
         if (depth >= limits.maxExpressionDepth) {
@@ -626,7 +626,7 @@ private class Parser(
 
     /** One left-associative binary level; the precedence ladder is `||`,
      * `&&`, `==`/`!=`, `<`/`>`/`<=`/`>=`, `+`/`-`, `*`/`/`/`%` (RFC 0014
-     * §4.3; parser.rs:1036-1242). The chain length is bounded by the
+     * §4.3; parser.rs). The chain length is bounded by the
      * expression depth. */
     private fun parseOr(mode: ExprMode, depth: Int): HclExpression? =
         parseBinaryLevel(mode, depth, { it == HclTokenKind.OpOr }, { HclBinaryOp.Or }, ::parseAnd)
@@ -704,7 +704,7 @@ private class Parser(
     }
 
     /** The term layer: unary chains over the base term and its postfix
-     * traversal steps (RFC 0014 §4.3; parser.rs:1263-1382). */
+     * traversal steps (RFC 0014 §4.3; parser.rs). */
     private fun parseTerm(mode: ExprMode, depth: Int): HclExpression? {
         if (depth >= limits.maxExpressionDepth) {
             throw limitFailure("expression-depth", depth + 1, limits.maxExpressionDepth)
@@ -758,7 +758,7 @@ private class Parser(
 
     /** One identifier term: a variable reference, a keyword literal, a
      * function call, or a static traversal (RFC 0014 §4.1, §4.3;
-     * parser.rs:1351-1560). */
+     * parser.rs). */
     private fun parseIdentifierTerm(mode: ExprMode, depth: Int): HclExpression? {
         val nameToken = peek()
         val name = text(nameToken)
@@ -922,7 +922,7 @@ private class Parser(
     }
 
     /** One function call `name(args)`; the name is a plain identifier only
-     * (RFC 0014 §4.3; parser.rs:1561-1685). */
+     * (RFC 0014 §4.3; parser.rs). */
     private fun parseCall(nameToken: HclToken, depth: Int): HclExpression? {
         brackets.add(HclTokenKind.ParenOpen)
         advance() // open paren
@@ -1372,7 +1372,7 @@ private class Parser(
         )
     }
 
-    /** Parses one directive interior region (parser.rs:1930-2010). */
+    /** Parses one directive interior region (parser.rs). */
     private fun parseDirectiveKind(start: Int, end: Int, depth: Int): HclDirectiveKind? {
         val region = lexRegion(bytes, authority, start, end, limits)
         mergeRegion(region)
@@ -1598,7 +1598,7 @@ private class Parser(
 
     /** Parses one expression from an interpolation interior region, merging
      * the region's diagnostics and error regions into this parse
-     * (parser.rs:2220-2266). */
+     * (parser.rs). */
     private fun parseRegionExpression(start: Int, end: Int, depth: Int): HclExpression? {
         if (depth >= limits.maxExpressionDepth) {
             throw limitFailure("expression-depth", depth + 1, limits.maxExpressionDepth)
@@ -1630,7 +1630,7 @@ private class Parser(
             listOf(hclLimitDiagnostic(limitCode(name), name, observed, limit)),
         )
 
-    /** The frozen `hcl.limit.*@1` code of one limit name (parser.rs:4074-
+    /** The frozen `hcl.limit.*@1` code of one limit name (parser.rs
      * 4330). */
     private fun limitCode(name: String): String = when (name) {
         "expression-depth" -> HCL_LIMIT_EXPRESSION_DEPTH
@@ -1674,7 +1674,7 @@ private class Parser(
 /**
  * One expression/directive parser over a bounded region token stream; the
  * region tokens carry exact spans bound to the same authority but do not
- * form a source-covering index (lexer.rs:316-333).
+ * form a source-covering index (lexer.rs).
  */
 private class RegionParser(
     private val bytes: ByteArray,

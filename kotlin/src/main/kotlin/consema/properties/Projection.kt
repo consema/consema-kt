@@ -3,7 +3,7 @@
 // targets.
 //
 // Data authority:
-//   - RFC 0010 §11 (https://github.com/consema/consema/blob/main/docs/rfcs/0010-java-properties-profiles-v1.md:310-349):
+//   - RFC 0010 §11 (https://github.com/consema/consema/blob/main/docs/rfcs/0010-java-properties-profiles-v1.md):
 //     java-properties.projection.best-exact-entry-mapping@1 produces one
 //     source-ordered EntryMapping association per property and fails
 //     atomically on any unpaired surrogate; RequireObject accepts only
@@ -16,19 +16,19 @@
 //     counts, first/last entry facts, provenance relations, and failure
 //     codes (projection.* cases, lines 74-89).
 //   - https://github.com/consema/consema-rs/blob/main/consema-properties/src/projection.rs is the byte-arbitration
-//     authority (targets projection.rs:9-27, request projection.rs:29-82,
-//     limits projection.rs:84-106, failure codes projection.rs:741-752,
-//     exact projection.rs:430-497, object projection.rs:499-648).
+//     authority (targets projection.rs, request projection.rs,
+//     limits projection.rs, failure codes projection.rs,
+//     exact projection.rs, object projection.rs).
 //     consema-go/go/properties/projection.go is a cross-reference only.
 //   - Value paths come from the L0 core agent (consema.core.ValuePath /
 //     ValuePathSegment / AssociationLocation / AssociationRole mirroring
-//     https://github.com/consema/consema-rs/blob/main/consema-core/src/location.rs:1-89), the same dependency the
-//     JSON family declares (kotlin/src/main/kotlin/consema/json/Projection.kt:21-24).
+//     https://github.com/consema/consema-rs/blob/main/consema-core/src/location.rs), the same dependency the
+//     JSON family declares (kotlin/src/main/kotlin/consema/json/Projection.kt).
 //
 // Kotlin-idiomatic design: the completion algebra is a sealed class, so
 // exhaustive `when` over Complete/Failed can never meet an unknown outcome;
 // failures carry their frozen registered code via [projectionCode]
-// (projection.rs:741-752).
+// (projection.rs).
 
 package consema.properties
 
@@ -48,7 +48,7 @@ import consema.protocol.Diagnostic
 import consema.protocol.DiagnosticCategory
 import consema.protocol.Severity
 
-/** Versioned Java Properties projection target (projection.rs:9-16). */
+/** Versioned Java Properties projection target (projection.rs). */
 enum class ProjectionTarget {
     /** Source-ordered EntryMapping preserving every association. */
     BestExactEntryMappingV1,
@@ -58,7 +58,7 @@ enum class ProjectionTarget {
 }
 
 /** Explicit duplicate behavior for [ProjectionTarget.RequireObjectV1]
- * (projection.rs:18-27). */
+ * (projection.rs). */
 enum class DuplicatePolicy {
     /** Reject every duplicate key. */
     RequireUnique,
@@ -71,7 +71,7 @@ enum class DuplicatePolicy {
     LastWinsJdkTable,
 }
 
-/** Java Properties projection limits (projection.rs:84-106). */
+/** Java Properties projection limits (projection.rs). */
 data class ProjectionLimits(
     /** Maximum source property associations inspected. */
     val maxSourceAssociations: Int,
@@ -83,7 +83,7 @@ data class ProjectionLimits(
     val maxProvenanceUnits: Int,
 ) {
     companion object {
-        /** The frozen defaults (projection.rs:97-106). */
+        /** The frozen defaults (projection.rs). */
         val default = ProjectionLimits(
             maxSourceAssociations = 2_000_000,
             maxValueNodes = 4_000_001,
@@ -93,7 +93,7 @@ data class ProjectionLimits(
     }
 }
 
-/** Immutable explicit Properties projection request (projection.rs:29-82). */
+/** Immutable explicit Properties projection request (projection.rs). */
 data class ProjectionRequest(
     /** Frozen target contract. */
     val target: ProjectionTarget,
@@ -104,7 +104,7 @@ data class ProjectionRequest(
 ) {
     companion object {
         /** Exact default that preserves every property occurrence
-         * (projection.rs:39-47). */
+         * (projection.rs). */
         fun bestExactEntryMapping(): ProjectionRequest =
             ProjectionRequest(
                 ProjectionTarget.BestExactEntryMappingV1,
@@ -112,7 +112,7 @@ data class ProjectionRequest(
                 ProjectionLimits.default,
             )
 
-        /** Explicit unique Object request (projection.rs:49-56). */
+        /** Explicit unique Object request (projection.rs). */
         fun requireObject(duplicatePolicy: DuplicatePolicy): ProjectionRequest =
             ProjectionRequest(
                 ProjectionTarget.RequireObjectV1,
@@ -121,12 +121,12 @@ data class ProjectionRequest(
             )
     }
 
-    /** Replaces immutable resource limits (projection.rs:58-62). */
+    /** Replaces immutable resource limits (projection.rs). */
     fun withLimits(limits: ProjectionLimits): ProjectionRequest =
         copy(limits = limits)
 }
 
-/** Projection fidelity classification (projection.rs:108-117). */
+/** Projection fidelity classification (projection.rs). */
 enum class Fidelity {
     /** Target directly represents every native association. */
     Exact,
@@ -139,7 +139,7 @@ enum class Fidelity {
     Lossy,
 }
 
-/** Projected value or association location (projection.rs:119-126). */
+/** Projected value or association location (projection.rs). */
 sealed class ProjectedLocation {
     /** Portable value location. */
     data class Value(val path: ValuePath) : ProjectedLocation()
@@ -148,7 +148,7 @@ sealed class ProjectedLocation {
     data class Association(val location: AssociationLocation) : ProjectedLocation()
 }
 
-/** Source-to-projection relation (projection.rs:128-143). */
+/** Source-to-projection relation (projection.rs). */
 enum class ProvenanceRelation {
     /** Direct property-association origin. */
     Direct,
@@ -169,7 +169,7 @@ enum class ProvenanceRelation {
     Collapsed,
 }
 
-/** One exact source origin (projection.rs:145-156). */
+/** One exact source origin (projection.rs). */
 data class SourceOrigin(
     /** Source document snapshot. */
     val snapshot: SnapshotIdentity,
@@ -181,7 +181,7 @@ data class SourceOrigin(
     val relation: ProvenanceRelation,
 )
 
-/** One many-valued provenance entry (projection.rs:158-165). */
+/** One many-valued provenance entry (projection.rs). */
 data class ProvenanceEntry(
     /** Projected value or association. */
     val projected: ProjectedLocation,
@@ -189,7 +189,7 @@ data class ProvenanceEntry(
     val origins: List<SourceOrigin>,
 )
 
-/** Immutable many-valued provenance mapping (projection.rs:167-179). */
+/** Immutable many-valued provenance mapping (projection.rs). */
 class ProvenanceMap private constructor(private val entries: List<ProvenanceEntry>) {
     companion object {
         internal fun of(entries: List<ProvenanceEntry>): ProvenanceMap = ProvenanceMap(entries)
@@ -204,7 +204,7 @@ class ProvenanceMap private constructor(private val entries: List<ProvenanceEntr
     override fun hashCode(): Int = entries.hashCode()
 }
 
-/** One explicit duplicate-collapse event (projection.rs:181-196). */
+/** One explicit duplicate-collapse event (projection.rs). */
 data class ProjectionEvent(
     /** Stable event code (java-properties.projection.duplicate-collapsed@1). */
     val code: String,
@@ -220,7 +220,7 @@ data class ProjectionEvent(
     val impact: Fidelity,
 )
 
-/** Complete ordered projection report (projection.rs:198-210). */
+/** Complete ordered projection report (projection.rs). */
 class ProjectionReport private constructor(private val events: List<ProjectionEvent>) {
     companion object {
         internal val EMPTY = ProjectionReport(emptyList())
@@ -238,7 +238,7 @@ class ProjectionReport private constructor(private val events: List<ProjectionEv
 }
 
 /** Complete successful projection; its value is never partial
- * (projection.rs:212-223). */
+ * (projection.rs). */
 data class CompleteProjection(
     /** Complete immutable mapping. */
     val value: PortableValue,
@@ -250,7 +250,7 @@ data class CompleteProjection(
     val provenance: ProvenanceMap,
 )
 
-/** Failed projection attempt without a partial value (projection.rs:225-232). */
+/** Failed projection attempt without a partial value (projection.rs). */
 data class FailedProjectionAttempt(
     /** Stable ordered diagnostics. */
     val diagnostics: List<Diagnostic>,
@@ -258,7 +258,7 @@ data class FailedProjectionAttempt(
     val report: ProjectionReport,
 )
 
-/** Projection completion algebra (projection.rs:234-241). */
+/** Projection completion algebra (projection.rs). */
 sealed class ProjectionResult {
     /** Complete success. */
     data class Complete(val projection: CompleteProjection) : ProjectionResult()
@@ -267,7 +267,7 @@ sealed class ProjectionResult {
     data class Failed(val attempt: FailedProjectionAttempt) : ProjectionResult()
 }
 
-/** Internal projection failure classification (projection.rs:243-262). */
+/** Internal projection failure classification (projection.rs). */
 internal sealed class ProjectionFailure {
     data object RecoveredDocument : ProjectionFailure()
 
@@ -285,7 +285,7 @@ internal enum class StringComponent { Key, Value }
 
 /**
  * Projects this snapshot under one explicit target and duplicate contract
- * (projection.rs:264-306). A failure contains no partial value.
+ * (projection.rs). A failure contains no partial value.
  */
 fun Document.project(request: ProjectionRequest): ProjectionResult {
     if (formationStatus != FormationStatus.Complete) {
@@ -453,7 +453,7 @@ private fun Document.projectObject(request: ProjectionRequest): ProjectionResult
     )
 }
 
-/** The closed retention selection outcome (projection.rs:613-648). */
+/** The closed retention selection outcome (projection.rs). */
 private sealed class Selection {
     /** Ordered retained source indices. */
     data class Indices(val indices: List<Int>) : Selection()
@@ -496,7 +496,7 @@ private fun selectIndices(
     )
 }
 
-/** The projection context (projection.rs:308-428). */
+/** The projection context (projection.rs). */
 private class ProjectionContext(
     val document: Document,
     val request: ProjectionRequest,
@@ -539,7 +539,7 @@ private class ProjectionContext(
         return null
     }
 
-    /** Key/value fragment and escape origins (projection.rs:364-404). */
+    /** Key/value fragment and escape origins (projection.rs). */
     fun addStringOrigins(
         projected: ProjectedLocation,
         propertyIndex: Int,
@@ -585,7 +585,7 @@ private class ProjectionContext(
         return null
     }
 
-    /** The derived root origin over the complete document (projection.rs:415-428). */
+    /** The derived root origin over the complete document (projection.rs). */
     fun addRootOrigin(): ProjectionFailure? {
         val rootSpan = try {
             document.authority.span(0, document.source.len)
@@ -602,7 +602,7 @@ private class ProjectionContext(
     }
 }
 
-/** The frozen code mapping (projection.rs:741-752). */
+/** The frozen code mapping (projection.rs). */
 internal fun projectionCode(failure: ProjectionFailure): String =
     when (failure) {
         is ProjectionFailure.RecoveredDocument -> "java-properties.projection.incomplete-document@1"
@@ -613,7 +613,7 @@ internal fun projectionCode(failure: ProjectionFailure): String =
         is ProjectionFailure.ResourceLimit -> "core.projection.resource-limit@1"
     }
 
-/** Builds the failed attempt with the ordered diagnostic (projection.rs:654-711). */
+/** Builds the failed attempt with the ordered diagnostic (projection.rs). */
 private fun failed(document: Document, failure: ProjectionFailure): ProjectionResult {
     val arguments = HashMap<String, String>()
     arguments["reason"] = when (failure) {
@@ -648,7 +648,7 @@ private fun failed(document: Document, failure: ProjectionFailure): ProjectionRe
     val diagnostic = Diagnostic.of(
         projectionCode(failure),
         // `core.projection.resource-limit@1` is registered Resource; every
-        // other projection failure is Projection (ErrorRegistry.kt:181-183).
+        // other projection failure is Projection (kotlin/src/main/kotlin/consema/protocol/ErrorRegistry.kt).
         if (failure is ProjectionFailure.ResourceLimit) {
             DiagnosticCategory.Resource
         } else {
@@ -678,12 +678,12 @@ private fun failed(document: Document, failure: ProjectionFailure): ProjectionRe
 }
 
 /** One snapshot-bound property span of the failure location
- * (the Rust failure_span, projection.rs:730-739). */
+ * (the Rust failure_span, projection.rs). */
 private fun Document.propertySpan(node: NodeRef): Span? =
     propertyEntities.firstOrNull { it.node == node }?.span
 
 /** The source ordinal of one property node (the Rust
- * insert_property_ordinal, projection.rs:713-728). */
+ * insert_property_ordinal, projection.rs). */
 private fun insertPropertyOrdinal(
     document: Document,
     arguments: MutableMap<String, String>,

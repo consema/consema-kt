@@ -2,7 +2,7 @@
 //
 // Data authority: conformance/vectors/operations-v1.json (operations.v1.
 // materialize-toml-*, cited in each test), RFC 0004 §3-§8, and the Rust
-// crate materialization tests (consema-toml/src/materialization.rs:886-
+// crate materialization tests (consema-toml/src/materialization.rs
 // 1115). The L5 conformance runner executes the shared vectors directly;
 // these unit tests pin the golden transcriptions in the committed CI.
 
@@ -141,7 +141,7 @@ class TomlMaterializationTest {
         assertEquals("output-bytes", result.attempt.failure.name)
     }
 
-    /** materialization.rs:908-959: a full scalar/container/temporal root
+    /** materialization.rs: a full scalar/container/temporal root
      * round-trips with Exact fidelity and a final newline. */
     @Test
     fun canonicalDocumentRoundTripsScalarContainerAndTemporalValues() {
@@ -175,7 +175,7 @@ class TomlMaterializationTest {
         assertTrue(consema.core.equal(reprojectedComplete.projection.value, root))
     }
 
-    /** materialization.rs:996-1114: unrepresentable values and implicit
+    /** materialization.rs: unrepresentable values and implicit
      * conversions fail; the request contract is enforced. */
     @Test
     fun unrepresentableValuesAndContractFailures() {

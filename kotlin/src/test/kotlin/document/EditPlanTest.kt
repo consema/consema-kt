@@ -1,14 +1,14 @@
 // EditPlan (dry-run plan) tests.
 //
 // Data authority: RFC 0004 §14 (https://github.com/consema/consema/blob/main/docs/rfcs/0004-materialization-conversion-
-// and-structural-edit-v1.md:338-356) — the transferable dry-run plan
+// and-structural-edit-v1.md) — the transferable dry-run plan
 // contains source_id, base_digest, profile, ordered operations, exact
 // SourcePatch replacement facts, precomputed target_digest, and an ordered
 // report; a dry-run plan is not authority to write a file and is never
 // applied without rechecking base digest and every original-byte
 // precondition. The validation bounds and the operation-metadata
-// cross-check follow https://github.com/consema/consema-rs/blob/main/consema-document/src/edit_plan.rs:13-127
-// (test data adapted from edit_plan.rs:235-272).
+// cross-check follow https://github.com/consema/consema-rs/blob/main/consema-document/src/edit_plan.rs
+// (test data adapted from edit_plan.rs).
 
 package document
 
@@ -34,7 +34,7 @@ class EditPlanTest {
     private fun utf8(text: String): SourceSnapshot =
         SourceSnapshot.fromRaw(text.toByteArray(Charsets.UTF_8), EncodingRequest.new(SourceEncoding.Utf8))
 
-    /** edit_plan.rs:235-272: a plan requires a stable source identity, and
+    /** edit_plan.rs: a plan requires a stable source identity, and
      * its operation metadata must match the ordered operation IDs; with an
      * empty replacement set base and target digests coincide. */
     @Test
@@ -67,7 +67,7 @@ class EditPlanTest {
         assertEquals(ProfileId("json.strict", 1), plan.profile)
     }
 
-    /** edit_plan.rs:91-113: an operation whose metadata key disagrees with
+    /** edit_plan.rs: an operation whose metadata key disagrees with
      * the patch is refused at plan construction. */
     @Test
     fun planRejectsOperationMetadataMismatch() {
@@ -94,7 +94,7 @@ class EditPlanTest {
         assertEquals(0, error.index)
     }
 
-    /** edit_plan.rs:44-58: summary argument names are bounded
+    /** edit_plan.rs: summary argument names are bounded
      * lowercase/digit/underscore strings and values are non-empty and
      * bounded. */
     @Test
@@ -120,7 +120,7 @@ class EditPlanTest {
         assertEquals(2, valid.arguments.size)
     }
 
-    /** edit_plan.rs:15-31: the source identity is bounded to 1024
+    /** edit_plan.rs: the source identity is bounded to 1024
      * characters. */
     @Test
     fun sourceIdentityIsBounded() {
@@ -163,7 +163,7 @@ class EditPlanTest {
         assertEquals(plan.targetDigest, target.digest)
     }
 
-    /** edit_plan.rs:173-196: redaction passes through to the underlying
+    /** edit_plan.rs: redaction passes through to the underlying
      * SourcePatch. */
     @Test
     fun planRedactionPassesThrough() {
@@ -191,7 +191,7 @@ class EditPlanTest {
     }
 
     /** SourceLimits.UNBOUNDED is used by already-bounded format parsers
-     * (source.rs:392-399); the document snapshot construction in this test
+     * (source.rs); the document snapshot construction in this test
      * class uses the default limits otherwise. */
     @Test
     fun sourceLimitsAreExplicitlyExposed() {

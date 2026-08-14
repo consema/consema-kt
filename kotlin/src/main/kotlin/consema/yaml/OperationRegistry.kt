@@ -2,19 +2,19 @@
 //
 // Data authority:
 //   - RFC 0004 §10 (https://github.com/consema/consema/blob/main/docs/rfcs/0004-materialization-conversion-and-
-//     structural-edit-v1.md:244-269): every structural operation has an
+//     structural-edit-v1.md): every structural operation has an
 //     immutable ID/version, target role, argument schema, and support
 //     classification; the registry does not claim that operations with
 //     similar names have identical format semantics.
-//   - RFC 0007 §12 (https://github.com/consema/consema/blob/main/docs/rfcs/0007-yaml-family-profiles-and-safety-v1.md:
-//     355-368) freezes the eight YAML operation ids (yaml.edit.
+//   - RFC 0007 §12 (https://github.com/consema/consema/blob/main/docs/rfcs/0007-yaml-family-profiles-and-safety-v1.md
+//) freezes the eight YAML operation ids (yaml.edit.
 //     replace-scalar-semantic, replace-scalar-literal, insert-mapping-entry,
 //     remove-mapping-entry, insert-sequence-element, remove-sequence-element,
 //     rename-anchor, insert-alias).
-//   - https://github.com/consema/consema-rs/blob/main/consema-yaml/src/operation_registry.rs:16-97 is the exact
+//   - https://github.com/consema/consema-rs/blob/main/consema-yaml/src/operation_registry.rs is the exact
 //     byte-arbitration source of the eight descriptor records (ids, target
 //     roles, argument names/kinds, support classes); the frozen surface test
-//     (operation_registry.rs:103-136) pins the six Supported operations and
+//     (operation_registry.rs) pins the six Supported operations and
 //     the total count of 8.
 //
 // Kotlin-idiomatic design: the registry is an immutable list of descriptor
@@ -26,7 +26,7 @@ package consema.yaml
 
 import consema.document.FormatOperationId
 
-/** Argument kind of one operation descriptor (operation_registry.rs:22-25). */
+/** Argument kind of one operation descriptor (operation_registry.rs). */
 enum class OperationArgumentKind {
     /** Decoded anchor name (String). */
     String,
@@ -47,7 +47,7 @@ enum class OperationArgumentKind {
     NodeRef,
 }
 
-/** Support classification of one operation (operation_registry.rs:26). */
+/** Support classification of one operation (operation_registry.rs). */
 enum class OperationSupport {
     /** Structural operation supported by every YAML profile. */
     Supported,
@@ -57,7 +57,7 @@ enum class OperationSupport {
     ExistingTypedCapability,
 }
 
-/** One immutable operation descriptor (operation_registry.rs:16-97). */
+/** One immutable operation descriptor (operation_registry.rs). */
 data class YamlOperationDescriptor(
     /** Exact immutable operation ID/version. */
     val id: FormatOperationId,
@@ -71,8 +71,8 @@ data class YamlOperationDescriptor(
 
 /**
  * Returns the validated operation registry for one exact YAML profile
- * (operation_registry.rs:9-14). Every profile publishes the same frozen
- * eight-record surface (operation_registry.rs:103-136).
+ * (operation_registry.rs). Every profile publishes the same frozen
+ * eight-record surface (operation_registry.rs).
  */
 fun formatOperationRegistry(profile: YamlProfile): List<YamlOperationDescriptor> =
     descriptors()
@@ -90,7 +90,7 @@ private fun descriptor(
         support,
     )
 
-/** The frozen eight descriptor records (operation_registry.rs:16-97). */
+/** The frozen eight descriptor records (operation_registry.rs). */
 private fun descriptors(): List<YamlOperationDescriptor> =
     listOf(
         descriptor(

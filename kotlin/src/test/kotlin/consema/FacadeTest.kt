@@ -1,6 +1,6 @@
 // The L4 root facade tests: Registry, Document union, and Convert.
 //
-// Data authority: https://github.com/consema/consema-rs/blob/main/consema/src/lib.rs:317-1068 (the Rust facade's
+// Data authority: https://github.com/consema/consema-rs/blob/main/consema/src/lib.rs (the Rust facade's
 // own test suite this file mirrors: registry_lists_eight_families_and_
 // sixteen_profiles, registry_query_domains_are_sorted_and_unique,
 // registry_parse_document_round_trips_every_profile,

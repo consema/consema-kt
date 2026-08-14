@@ -90,7 +90,7 @@ class QueryTest {
     }
 
     /** Vector case query.logical-and-syntax-order (java-properties-v1.json:
-     * 65-69): logical-line-natural-lines returns the exact natural
+ *): logical-line-natural-lines returns the exact natural
      * constituents in source order; the syntax filters (text, raw bytes,
      * UTF16BE/1) merge into the Key/Value pieces with the exact kinds. */
     @Test
@@ -156,7 +156,7 @@ class QueryTest {
     @Test
     fun validationLimitCancellation() {
         // Odd-length (one byte) UTF16BE/1 key filter is invalid
-        // (QueryValidate.kt:801-816; query.rs:653-660).
+        // (kotlin/src/main/kotlin/consema/protocol/QueryValidate.kt; query.rs).
         val invalid = assertFailsWith<QueryFailureException> {
             QueryDefinition(Domains.javaPropertiesNativeV1())
                 .withExpression(
@@ -202,7 +202,7 @@ class QueryTest {
 }
 
 /** Binds one validated properties native/syntax query to the ordered-results
- * capability (the Rust test helper, query.rs:704-717). */
+ * capability (the Rust test helper, query.rs). */
 private fun executable(
     expression: QueryExpression,
     domain: consema.protocol.QueryDomain = Domains.javaPropertiesNativeV1(),

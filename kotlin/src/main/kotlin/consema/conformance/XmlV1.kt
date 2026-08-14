@@ -86,7 +86,7 @@ private fun runXml10SafeV1Case(case: CaseData) {
         "xml.materialization@1" -> runXmlMaterialization(case)
         "xml.edit@1" -> runXmlEdit(case)
         // Every published limit vector is formation-class today
-        // (xml_v1.rs:815-829): the vocabulary expresses
+        // (xml_v1.rs): the vocabulary expresses
         // input.amplification_ratio and input.max_mixed_content_items, both
         // resolved into the formation contract.
         "xml.limit@1" -> runXmlFormation(case)
@@ -149,7 +149,7 @@ private fun utf16LeBytes(source: String): ByteArray {
     return bytes
 }
 
-/** Formation-class limit facts of one vector case (xml_v1.rs:133-149). */
+/** Formation-class limit facts of one vector case (xml_v1.rs). */
 private fun xmlParseLimits(case: CaseData): XmlParseLimits {
     var limits = XmlParseLimits.default
     longField(case.input, "amplification_ratio")?.let {
@@ -215,7 +215,7 @@ private fun runXmlNativeQuery(case: CaseData) {
     }
 }
 
-/** Builds the ordered filter chain (xml_v1.rs:231-258). */
+/** Builds the ordered filter chain (xml_v1.rs). */
 private fun xmlFilterExpression(case: CaseData): QueryExpression {
     val filters = inputSequence(case, "filters") ?: fail("missing input.filters")
     var expression = QueryExpression(ExpressionKind.Input)
@@ -249,7 +249,7 @@ private fun xmlExecutable(expression: QueryExpression, domain: QueryDomain): Exe
 }
 
 /** Decodes one raw-byte span under the selected source encoding
- * (xml_v1.rs:306-323). */
+ * (xml_v1.rs). */
 private fun decodeXmlSpanText(document: consema.xml.Document, bytes: ByteArray): String =
     when (document.source().encodingFacts.selected) {
         SourceEncoding.Utf8 -> String(bytes, Charsets.UTF_8)
@@ -353,7 +353,7 @@ private fun runXmlMaterialization(case: CaseData) {
         val failed = result as? MaterializationResult.Failed ?: fail("materialization must fail")
         ensure(materializationFailureSpelling(failed.attempt.failure) == failure)
         // A failed attempt never claims to have analyzed more input than the
-        // request's node budget (xml_v1.rs:551-563).
+        // request's node budget (xml_v1.rs).
         ensure(failed.attempt.analyzedInputPaths.size <= request.limits.maxInputNodes)
         return
     }
@@ -363,7 +363,7 @@ private fun runXmlMaterialization(case: CaseData) {
 }
 
 /** The stable vector spelling of one materialization failure
- * (xml_v1.rs:855-871). */
+ * (xml_v1.rs). */
 private fun materializationFailureSpelling(failure: MaterializationException): String =
     when (failure.kind) {
         MaterializationFailureKind.INVALID_REQUEST -> "invalid-record"
@@ -461,7 +461,7 @@ private fun runXmlEdit(case: CaseData) {
 /** Optional `"ordinal": N` occurrence selector; absent means the first (0). */
 private fun operationOrdinal(operation: PortableValue): Long = occurrenceOrdinal(operation, "ordinal")
 
-/** Reads an optional occurrence selector under `name` (xml_v1.rs:712-727). */
+/** Reads an optional occurrence selector under `name` (xml_v1.rs). */
 private fun occurrenceOrdinal(operation: PortableValue, name: String): Long =
     longField(operation, name) ?: 0L
 

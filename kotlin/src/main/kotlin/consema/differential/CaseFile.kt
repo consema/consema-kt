@@ -8,7 +8,7 @@
 // normalized@1 / protocol-exchange@1). They are language-neutral JSON
 // documents, so every
 // side reads the same text: like the Rust examples
-// (https://github.com/consema/consema-rs/blob/main/consema-conformance/examples/emit_parity_bytes.rs:49-64), this
+// (https://github.com/consema/consema-rs/blob/main/consema-conformance/examples/emit_parity_bytes.rs), this
 // harness parses the case file with the strict JSON parser and projects it
 // to the best-exact core value — no second authority.
 //
@@ -46,7 +46,7 @@ val allKindNames: List<String> = listOf(
 /**
  * Parses one differential case file with the strict JSON parser and
  * projects it to the best-exact core value (the Rust example's pipeline:
- * emit_parity_bytes.rs:49-64). The root must be an Object.
+ * emit_parity_bytes.rs). The root must be an Object.
  */
 fun loadCaseFile(file: File): PvObject {
     val document = parse(file.readBytes(), JsonProfile.StrictV1, ParseLimits.default)

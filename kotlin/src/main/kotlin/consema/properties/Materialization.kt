@@ -3,10 +3,10 @@
 //
 // Data authority:
 //   - RFC 0004 §3-§8 (https://github.com/consema/consema/blob/main/docs/rfcs/0004-materialization-conversion-and-
-//     structural-edit-v1.md:56-218): the common MaterializationRequest v1,
+//     structural-edit-v1.md): the common MaterializationRequest v1,
 //     ExactOnly representability, the completion algebra, and the
 //     provenance direction (portable input locations to the new Document).
-//   - RFC 0010 §12 (https://github.com/consema/consema/blob/main/docs/rfcs/0010-java-properties-profiles-v1.md:351-381):
+//   - RFC 0010 §12 (https://github.com/consema/consema/blob/main/docs/rfcs/0010-java-properties-profiles-v1.md):
 //     the canonical styles java-properties.reader-canonical@1 and
 //     java-properties.latin1-canonical@1; both emit `key=value` in input
 //     order with an explicitly selected newline and deterministic escaping
@@ -22,13 +22,13 @@
 //     and-closure, lines 90-99; materialization.atomic-failures-and-limits,
 //     lines 100-104).
 //   - https://github.com/consema/consema-rs/blob/main/consema-properties/src/materialization.rs is the byte-
-//     arbitration authority (writer materialization.rs:176-346, closure
-//     materialization.rs:348-395, provenance materialization.rs:397-468,
-//     encoding materialization.rs:520-631, parse limits materialization.rs:
-//     124-150). consema-go/go/properties/materialization.go is a cross-reference only.
+//     arbitration authority (writer materialization.rs, closure
+//     materialization.rs, provenance materialization.rs,
+//     encoding materialization.rs, parse limits materialization.rs
+//). consema-go/go/properties/materialization.go is a cross-reference only.
 //   - The Kotlin document package owns the completion algebra types
 //     (MaterializationResult/CompleteMaterialization/...,
-//     kotlin/src/main/kotlin/consema/document/Materialization.kt:286-371). Windows code pages
+//     kotlin/src/main/kotlin/consema/document/Materialization.kt). Windows code pages
 //     are not representable in the document-layer closed v1 SourceEncoding,
 //     so this package exposes the code-page materialization as an explicit
 //     overload ([materialize] with [WindowsCodePage]).
@@ -71,7 +71,7 @@ import java.nio.charset.CodingErrorAction
 /**
  * Materializes one complete PortableValue into a new immutable Java
  * Properties document under the exact target profile and canonical style
- * (materialization.rs:24-39). A failure contains no Document, no partial
+ * (materialization.rs). A failure contains no Document, no partial
  * bytes, and no provenance that can be mistaken for a result (RFC 0004 §3).
  */
 fun materialize(
@@ -82,7 +82,7 @@ fun materialize(
 
 /**
  * Materializes a Reader-profile document in one explicit published Windows
- * code page (materialization.rs:617-631). The document-layer request cannot
+ * code page (materialization.rs). The document-layer request cannot
  * carry code pages (its SourceEncoding is the closed v1 set), so the code
  * page is an explicit overload parameter; the profile must be
  * java-properties.reader@1 or the request fails with UnsupportedEncoding.
@@ -157,7 +157,7 @@ private fun materializeComplete(
     )
 }
 
-/** The exact target profile (materialization.rs:79-90). */
+/** The exact target profile (materialization.rs). */
 private fun requestedProfile(request: MaterializationRequest): PropertiesProfile =
     when {
         request.targetProfile.id == "java-properties.reader" && request.targetProfile.version == 1 ->
@@ -169,7 +169,7 @@ private fun requestedProfile(request: MaterializationRequest): PropertiesProfile
         else -> throw MaterializationException(MaterializationFailureKind.UNSUPPORTED_PROFILE)
     }
 
-/** The resolved output encoding of one request (materialization.rs:92-122).
+/** The resolved output encoding of one request (materialization.rs).
  * The edit surface reuses the same encoding for replacement fragments
  * (kotlin/src/main/kotlin/consema/properties/Edit.kt:sourceOutputEncoding). */
 internal sealed class OutputEncoding {
@@ -223,7 +223,7 @@ private fun resolveOutputEncoding(
 }
 
 /** Derives the closure parse limits from the materialization limits
- * (materialization.rs:124-150). */
+ * (materialization.rs). */
 private fun parseLimits(limits: MaterializationLimits): PropertiesParseLimits =
     PropertiesParseLimits(
         common = ParseLimits(
@@ -257,7 +257,7 @@ private fun saturatingMul(left: Int, right: Int): Int =
 private fun saturatingMulAdd(left: Int, right: Int, add: Int): Int =
     (left.toLong() * right + add).coerceAtMost(Int.MAX_VALUE.toLong()).toInt()
 
-/** The decoded-text budget of one output encoding (materialization.rs:520-534). */
+/** The decoded-text budget of one output encoding (materialization.rs). */
 private fun textBudget(encoding: OutputEncoding, maxOutputBytes: Int): Int =
     when (encoding) {
         OutputEncoding.Utf8 -> maxOutputBytes
@@ -268,7 +268,7 @@ private fun textBudget(encoding: OutputEncoding, maxOutputBytes: Int): Int =
             if (encoding.number != 65001) saturatingMul(maxOutputBytes, 3) else maxOutputBytes
     }
 
-/** One input mapping entry and its input locations (materialization.rs:152-157). */
+/** One input mapping entry and its input locations (materialization.rs). */
 private data class InputEntry(
     val association: MaterializationInputLocation,
     val key: MaterializationInputLocation,
@@ -296,7 +296,7 @@ private class Writer(
 
     fun finish(): String = output.finish()
 
-    /** Writes one `key=value` record per mapping entry (materialization.rs:177-211). */
+    /** Writes one `key=value` record per mapping entry (materialization.rs). */
     fun document(value: PortableValue, path: ValuePath, depth: Int): List<InputEntry> {
         val entries = mappingItems(value, path, depth)
         val inputEntries = ArrayList<InputEntry>(entries.size)
@@ -325,7 +325,7 @@ private class Writer(
         return inputEntries
     }
 
-    /** Flattens one root Object or EntryMapping (materialization.rs:213-288). */
+    /** Flattens one root Object or EntryMapping (materialization.rs). */
     private fun mappingItems(value: PortableValue, path: ValuePath, depth: Int): List<MappingItem> {
         analyze(path, depth)
         val length = when (value) {
@@ -401,7 +401,7 @@ private class Writer(
         analyzed.add(path)
     }
 
-    /** Deterministic escaping (RFC 0010 §12; materialization.rs:308-345). */
+    /** Deterministic escaping (RFC 0010 §12; materialization.rs). */
     private fun writeString(value: String, isKey: Boolean) {
         var leadingValueSpace = !isKey
         for (ch in value) {
@@ -429,7 +429,7 @@ private class Writer(
     }
 
     /** Uppercase four-digit `\uXXXX` escapes, one per UTF-16 code unit
-     * (materialization.rs:338-345). */
+     * (materialization.rs). */
     private fun writeUnicodeScalar(value: Char) {
         output.pushString("\\u")
         output.pushHexUnit(value.code)
@@ -444,7 +444,7 @@ private class Writer(
         )
 }
 
-/** Bounded UTF-8-byte text accumulation (materialization.rs:470-518). */
+/** Bounded UTF-8-byte text accumulation (materialization.rs). */
 private class BoundedText(private val maxBytes: Int) {
     private val text = StringBuilder()
     private var utf8Bytes = 0
@@ -484,7 +484,7 @@ private class BoundedText(private val maxBytes: Int) {
 }
 
 /** Encodes the canonical text to exact output bytes, adding the UTF-16 BOM
- * only here (materialization.rs:536-631). */
+ * only here (materialization.rs). */
 private fun encodeText(text: String, encoding: OutputEncoding, maxOutputBytes: Int): ByteArray {
     val bomBytes = when (encoding) {
         OutputEncoding.Utf16Le, OutputEncoding.Utf16Be -> 2
@@ -513,7 +513,7 @@ private fun encodeText(text: String, encoding: OutputEncoding, maxOutputBytes: I
     return output
 }
 
-/** Encodes one text fragment without a BOM (materialization.rs:566-631). */
+/** Encodes one text fragment without a BOM (materialization.rs). */
 internal fun encodeFragment(text: String, encoding: OutputEncoding, maxOutputBytes: Int): ByteArray {
     val output: ByteArray = when (encoding) {
         OutputEncoding.Utf8 -> {
@@ -577,7 +577,7 @@ internal fun encodeFragment(text: String, encoding: OutputEncoding, maxOutputByt
 }
 
 /** One Windows code-page encode (1252 uses the exact WHATWG table; the
- * other published pages use the JDK charsets, materialization.rs:633-652). */
+ * other published pages use the JDK charsets, materialization.rs). */
 private fun encodeCodePage(text: String, number: Int, maxOutputBytes: Int): ByteArray {
     if (number == 1252) {
         val codePage = WindowsCodePage(1252)
@@ -617,7 +617,7 @@ private fun encodeCodePage(text: String, number: Int, maxOutputBytes: Int): Byte
 
 /** Exact closure: the materialized document reprojects to the identical
  * portable value under the request's policy (RFC 0010 §12;
- * materialization.rs:348-395). */
+ * materialization.rs). */
 private fun verifyClosure(
     input: PortableValue,
     request: MaterializationRequest,
@@ -665,7 +665,7 @@ private fun verifyClosure(
     }
 }
 
-/** Input-to-output provenance (materialization.rs:397-468). */
+/** Input-to-output provenance (materialization.rs). */
 private fun buildProvenance(
     inputEntries: List<InputEntry>,
     document: Document,

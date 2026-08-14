@@ -1,10 +1,10 @@
 // The closed TOML v1 lossless syntax-piece classification.
 //
 // Data authority:
-//   - https://github.com/consema/consema-rs/blob/main/consema-toml/src/lib.rs:41-109 (TomlSyntaxKind, as_str,
+//   - https://github.com/consema/consema-rs/blob/main/consema-toml/src/lib.rs (TomlSyntaxKind, as_str,
 //     from_name) pins the twelve kind spellings; the same spellings are the
 //     argument vocabulary of `toml.syntax-kind-is@1`
-//     (kotlin/src/main/kotlin/consema/protocol/QueryValidate.kt:911-916 transcribes them).
+//     (kotlin/src/main/kotlin/consema/protocol/QueryValidate.kt transcribes them).
 //   - conformance/vectors/syntax-query-v1.json cases syntax.toml.*
 //     (lines 54-99) pin the wire behavior (kind names in matches, ordinal
 //     ordering, "TomlSyntaxPiece" match role).
@@ -17,7 +17,7 @@
 package consema.toml
 
 /** Closed TOML v1 lossless syntax-piece classification
- * (consema-toml/src/lib.rs:41-68). */
+ * (consema-toml/src/lib.rs). */
 enum class TomlSyntaxKind {
     /** Horizontal whitespace. */
     Whitespace,
@@ -56,11 +56,11 @@ enum class TomlSyntaxKind {
     Dot,
     ;
 
-    /** Stable query and protocol name (lib.rs:70-88). */
+    /** Stable query and protocol name (lib.rs). */
     fun asStr(): String = name
 
     companion object {
-        /** Resolves one exact stable kind name (lib.rs:91-108). */
+        /** Resolves one exact stable kind name (lib.rs). */
         fun fromName(name: String): TomlSyntaxKind? =
             entries.firstOrNull { it.name == name }
     }

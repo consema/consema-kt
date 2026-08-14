@@ -1,6 +1,6 @@
 // Strict PortableValue equality and deterministic hashing.
 //
-// Data authority: RFC 0016 §4.1 (https://github.com/consema/consema/blob/main/docs/rfcs/0016-go-api-mapping-v1.md:151-154):
+// Data authority: RFC 0016 §4.1 (https://github.com/consema/consema/blob/main/docs/rfcs/0016-go-api-mapping-v1.md):
 // strict equality is kind identity plus canonical content equality, order-
 // dependent for containers; Hash is consistent with Equal and order-
 // dependent. conformance/vectors/v1.json pins the contract

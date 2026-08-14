@@ -61,7 +61,7 @@ class TfvarsTest {
     }
 
     /** Vector case hcl.tfvars-formation.expression-grammar-full (hcl-v1.json:
-     * 530-540): the full native expression grammar is admitted inside tfvars
+ *): the full native expression grammar is admitted inside tfvars
      * values — function calls, traversals, and interpolations are native
      * facts, never evaluated (RFC 0014 §5). */
     @Test
@@ -75,7 +75,7 @@ class TfvarsTest {
     }
 
     /** Vector case hcl.tfvars-formation.duplicate-attribute (hcl-v1.json:
-     * 542-551): the per-body duplicate-attribute rule applies unchanged. */
+ *): the per-body duplicate-attribute rule applies unchanged. */
     @Test
     fun duplicateAttribute() {
         val document = tfvars("a = 1\na = 2\n")

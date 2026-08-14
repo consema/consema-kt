@@ -3,21 +3,21 @@
 // (RFC 0012 §2-4, §6-7, §12-13).
 //
 // Data authority:
-//   - RFC 0012 §2 (https://github.com/consema/consema/blob/main/docs/rfcs/0012-xml-1.0-safe-profile-v1.md:46-81) pins the
+//   - RFC 0012 §2 (https://github.com/consema/consema/blob/main/docs/rfcs/0012-xml-1.0-safe-profile-v1.md) pins the
 //     source/encoding table; §3 (0012-...:83-130) the safe DTD/entity
 //     boundary; §4 (0012-...:132-166) Complete/Recovered formation and
 //     deterministic recovery at markup boundaries; §6 (0012-...:228-256)
 //     text/CDATA/reference facts; §7 (0012-...:258-282) exhaustive piece
 //     coverage.
 //   - https://github.com/consema/consema-rs/blob/main/consema-xml/src/parser.rs is the byte-arbitration authority:
-//     the parse entry (parser.rs:22-46), encoding resolution (parser.rs:
-//     48-108), the token dispatch (parser.rs:287-332), the declaration
-//     handler (parser.rs:334-503), PI (parser.rs:505-579), comment
-//     (parser.rs:581-644), doctype handlers (parser.rs:646-911), element
-//     start/attribute/finalize (parser.rs:913-1174), element end and frame
-//     close (parser.rs:1176-1305), text/CDATA (parser.rs:1307-1458), text
-//     fragments and reference resolution (parser.rs:1460-1729), recovery
-//     (parser.rs:1731-1790), and finish/gap filling (parser.rs:1792-1914).
+//     the parse entry (parser.rs), encoding resolution (parser.rs
+//), the token dispatch (parser.rs), the declaration
+//     handler (parser.rs), PI (parser.rs), comment
+//     (parser.rs), doctype handlers (parser.rs), element
+//     start/attribute/finalize (parser.rs), element end and frame
+//     close (parser.rs), text/CDATA (parser.rs), text
+//     fragments and reference resolution (parser.rs), recovery
+//     (parser.rs), and finish/gap filling (parser.rs).
 //   - The tokenizer follows the xmlparser 0.13.6 token stream contract that
 //     the Rust parser consumes (RFC 0012 §13, 0012-...:435-453); consema-go/go/xml/
 //     parser.go is the cross-reference confirming the token boundaries and
@@ -25,13 +25,13 @@
 //     the end of the document (xmlparser Stream::jump_to_end), so the
 //     recovery region is always the final byte and tokenization stops"
 //     (consema-go/go/xml/parser.go:153-161), which is why the Rust recovery loop reads
-//     `tokenizer.stream().pos()` as the document end (parser.rs:255-268).
+//     `tokenizer.stream().pos()` as the document end (parser.rs).
 //
 // Kotlin-idiomatic design (NOT a translation): a hand-rolled deterministic
 // tokenizer over the decoded UTF-8 byte view (the Kotlin SourceSnapshot
 // decodes at construction and the tokenizer works on byte offsets, so raw
 // spans stay byte-exact for UTF-16 sources through the source boundary
-// index, parser.rs:2022-2068); handlers mirror the Rust parser semantics;
+// index, parser.rs); handlers mirror the Rust parser semantics;
 // recovery is explicit and deterministic.
 
 package consema.xml
@@ -54,7 +54,7 @@ import java.nio.charset.StandardCharsets
 
 /**
  * Forms one `xml.1.0-safe@1` document from a complete document entity
- * (parser.rs:22-46; lib.rs:174-186). The Profile is selected before
+ * (parser.rs; lib.rs). The Profile is selected before
  * formation and never by extension; the parser consumes the supplied bytes
  * and opens no other entity, file, URI, network connection, registry,
  * classpath, or catalog. Source/encoding/limit failures are fatal and throw
@@ -93,7 +93,7 @@ fun parse(
 }
 
 /** Resolves the source encoding request under the RFC 0012 §2 table
- * (parser.rs:55-80). */
+ * (parser.rs). */
 private fun encodingRequest(selection: XmlEncodingSelection): EncodingRequest =
     when (selection) {
         XmlEncodingSelection.ProfileDefault ->
@@ -113,7 +113,7 @@ private fun encodingRequest(selection: XmlEncodingSelection): EncodingRequest =
     }
 
 /** Verifies the resolved source facts under the profile table
- * (parser.rs:82-108). */
+ * (parser.rs). */
 private fun validateProfileEncoding(source: SourceSnapshot, selection: XmlEncodingSelection) {
     val facts = source.encodingFacts
     val valid = when (selection) {
@@ -142,8 +142,8 @@ private fun validateProfileEncoding(source: SourceSnapshot, selection: XmlEncodi
 }
 
 /** Wraps a source construction failure with the frozen code mapping of
- * FatalFormationFailure::source_error (consema-document lib.rs:676-707;
- * the json family transcription kotlin/src/main/kotlin/consema/json/Parser.kt:117-158). */
+ * FatalFormationFailure::source_error (consema-document lib.rs;
+ * the json family transcription kotlin/src/main/kotlin/consema/json/Parser.kt). */
 private fun wrapSourceError(error: consema.document.SourceException): XmlFormationException =
     when (error.kind) {
         consema.document.SourceErrorKind.INVALID_UTF8 ->
@@ -187,7 +187,7 @@ private fun wrapSourceError(error: consema.document.SourceException): XmlFormati
             )
     }
 
-/** Fatal profile or limit failure (parser.rs:120-128). */
+/** Fatal profile or limit failure (parser.rs). */
 private fun profileFailure(code: String): XmlFormationException =
     XmlFormationException(code, "xml: formation profile or limit failure $code")
 
@@ -303,7 +303,7 @@ private sealed class XmlToken {
 
 /** One tokenizer failure. Per the xmlparser 0.13.6 contract the failing
  * stream jumps to the end of the document, so the position is not used for
- * the recovery region (consema-go/go/xml/parser.go:153-161; parser.rs:255-268). */
+ * the recovery region (consema-go/go/xml/parser.go:153-161; parser.rs). */
 private class TokenizerError : Exception()
 
 // ---------------------------------------------------------------------------
@@ -598,7 +598,7 @@ private class XmlTokenizer(
 
     /** Scans the internal DTD subset until `]>`, queueing the admitted
      * subset tokens. The DtdEnd token span covers `]` plus any skipped
-     * spaces plus `>` (the xmlparser Dtd state, lib.rs:448-466). */
+     * spaces plus `>` (the xmlparser Dtd state, lib.rs). */
     private fun scanSubset(start: Int): Int {
         var cursor = start
         while (true) {
@@ -662,7 +662,7 @@ private class XmlTokenizer(
                     startsWith(cursor, "<!NOTATION") ->
                     // Excluded validation declarations are consumed by the
                     // tokenizer and flagged from the subset text at the DTD
-                    // end (scan_excluded_dtd_markup, parser.rs:865-911).
+                    // end (scan_excluded_dtd_markup, parser.rs).
                     {
                         val closeAt = indexOfByte(decoded, cursor, '>'.code.toByte())
                         if (closeAt < 0) {
@@ -1018,14 +1018,14 @@ private class XmlTokenizer(
 // ---------------------------------------------------------------------------
 
 /** One namespace declaration seen before start-tag finalization
- * (parser.rs:161-166). */
+ * (parser.rs). */
 private class PendingDeclaration(
     val qname: QNameFacts,
     val uri: String,
     val uriSpan: Span,
 )
 
-/** One attribute seen before start-tag finalization (parser.rs:151-159). */
+/** One attribute seen before start-tag finalization (parser.rs). */
 private class PendingAttribute(
     val qname: QNameFacts,
     val span: Span,
@@ -1035,7 +1035,7 @@ private class PendingAttribute(
     val singleQuote: Boolean,
 )
 
-/** One open element frame (parser.rs:168-180). */
+/** One open element frame (parser.rs). */
 private class Frame(
     val start: Int,
     var span: Span,
@@ -1051,7 +1051,7 @@ private class Frame(
 )
 
 /**
- * The XML formation engine (parser.rs:182-2074). Immutable inputs, ordered
+ * The XML formation engine (parser.rs). Immutable inputs, ordered
  * deterministic outputs; recovery only at deterministic markup boundaries.
  */
 private class Parser(
@@ -1091,7 +1091,7 @@ private class Parser(
                 // A tokenizer error jumps the stream to the end of the
                 // document (xmlparser Stream::jump_to_end), so the recovery
                 // region is always the final byte and tokenization stops
-                // (consema-go/go/xml/parser.go:153-161; parser.rs:255-268).
+                // (consema-go/go/xml/parser.go:153-161; parser.rs).
                 val end = decoded.size
                 val start = (end - 1).coerceAtLeast(0)
                 recoverErrorRegion(start, end)
@@ -1103,7 +1103,7 @@ private class Parser(
     }
 
     /** Covers a leading BOM as trivia; the tokenizer skips it in decoded
-     * text (parser.rs:275-285). */
+     * text (parser.rs). */
     private fun coverBom() {
         val bom = source.encodingFacts.bom ?: return
         val len = when (bom) {
@@ -1134,7 +1134,7 @@ private class Parser(
         }
     }
 
-    // -- declaration (parser.rs:334-503) --------------------------------------
+    // -- declaration (parser.rs) --------------------------------------
 
     private fun declaration(token: XmlToken.Declaration) {
         val raw = rawSpan(token.start, token.end)
@@ -1190,7 +1190,7 @@ private class Parser(
     }
 
     /** Pushes declaration part pieces and locates the standalone value span
-     * (parser.rs:398-503). The declaration grammar is fixed, so the walk is
+     * (parser.rs). The declaration grammar is fixed, so the walk is
      * deterministic in decoded space; `=`/quote/space bytes between parts
      * remain gaps covered as trivia by the final piece assembly. */
     private fun declarationParts(token: XmlToken.Declaration): Pair<Span, Boolean>? {
@@ -1275,7 +1275,7 @@ private class Parser(
         return standaloneFacts
     }
 
-    // -- processing instruction (parser.rs:505-579) ---------------------------
+    // -- processing instruction (parser.rs) ---------------------------
 
     private fun processingInstruction(token: XmlToken.ProcessingInstruction) {
         val raw = rawSpan(token.start, token.end)
@@ -1337,7 +1337,7 @@ private class Parser(
         }
     }
 
-    // -- comment (parser.rs:581-644) ------------------------------------------
+    // -- comment (parser.rs) ------------------------------------------
 
     private fun comment(token: XmlToken.Comment) {
         val raw = rawSpan(token.start, token.end)
@@ -1385,7 +1385,7 @@ private class Parser(
         }
     }
 
-    // -- doctype (parser.rs:646-911) ------------------------------------------
+    // -- doctype (parser.rs) ------------------------------------------
 
     private fun doctypeStart(token: XmlToken.DtdStart) {
         val raw = rawSpan(token.start, token.end)
@@ -1412,7 +1412,7 @@ private class Parser(
     }
 
     /** Assembles the immutable DOCTYPE facts once its end is known
-     * (parser.rs:691-711). */
+     * (parser.rs). */
     private fun buildDoctype(end: Span) {
         val start = doctypeSpanStart
             ?: throw profileFailure("xml.source.span@1")
@@ -1429,7 +1429,7 @@ private class Parser(
     }
 
     /** Pushes the `<!DOCTYPE` opening piece for a DTD start span
-     * (parser.rs:713-718). */
+     * (parser.rs). */
     private fun pushDoctypeOpen(raw: Span) {
         pushPiece(
             span(raw.startByte, raw.startByte + 9),
@@ -1538,10 +1538,10 @@ private class Parser(
     }
 
     /** Scans the internal subset raw text for excluded declarations
-     * (parser.rs:865-911). Comments are skipped as a whole: their text is
+     * (parser.rs). Comments are skipped as a whole: their text is
      * character data, so `<!-- <!ELEMENT x> -->` must not be misread as a
      * declaration. All offsets are decoded UTF-8 byte offsets, matching the
-     * Rust `&str` scanning (parser.rs:869-910). */
+     * Rust `&str` scanning (parser.rs). */
     private fun scanExcludedDtdMarkup(subsetStart: Int, subsetEnd: Int) {
         val markers = listOf("<!ELEMENT", "<!ATTLIST", "<!NOTATION", "<![")
         var searchStart = subsetStart
@@ -1583,7 +1583,7 @@ private class Parser(
         }
     }
 
-    // -- elements (parser.rs:913-1305) ----------------------------------------
+    // -- elements (parser.rs) ----------------------------------------
 
     private fun elementStart(token: XmlToken.ElementStart) {
         val raw = rawSpan(token.start, token.end)
@@ -1713,7 +1713,7 @@ private class Parser(
 
     /** Resolves element and attribute names once the whole start tag has
      * been read, so declarations on this element apply to every attribute
-     * (parser.rs:1065-1174). */
+     * (parser.rs). */
     private fun finalizeStartTag() {
         val frame = stack.lastOrNull() ?: return
         val pendingDeclarations = frame.pendingDeclarations.toList()
@@ -1911,7 +1911,7 @@ private class Parser(
         }
     }
 
-    // -- text and CDATA (parser.rs:1307-1458) ---------------------------------
+    // -- text and CDATA (parser.rs) ---------------------------------
 
     private fun text(token: XmlToken.Text) {
         val raw = rawSpan(token.start, token.end)
@@ -2027,7 +2027,7 @@ private class Parser(
     }
 
     /** Splits one whitespace-only text run into Whitespace and LineBreak
-     * pieces; CRLF counts as one line break (parser.rs:1424-1458). */
+     * pieces; CRLF counts as one line break (parser.rs). */
     private fun pushWhitespacePieces(start: Int, end: Int) {
         var index = start
         while (index < end) {
@@ -2057,7 +2057,7 @@ private class Parser(
         }
     }
 
-    // -- fragments and references (parser.rs:1460-1729) -----------------------
+    // -- fragments and references (parser.rs) -----------------------
 
     /**
      * Splits one text or attribute-value occurrence into reference
@@ -2065,7 +2065,7 @@ private class Parser(
      * data, AttributeValue in attribute values) and each admitted reference
      * emits its own EntityReference/CharacterReference piece. Failing
      * references recover with a diagnostic and emit no piece; their spans
-     * become error-region gaps in the final assembly (parser.rs:1460-1555).
+     * become error-region gaps in the final assembly (parser.rs).
      */
     private fun textFragments(start: Int, end: Int, literalKind: XmlSyntaxKind): List<ReferenceFragment> {
         if (!containsByte(start, end, '&'.code.toByte())) {
@@ -2132,12 +2132,12 @@ private class Parser(
     }
 
     /**
-     * Resolves one `&…;` reference body into a fragment (parser.rs:1557-1645).
+     * Resolves one `&…;` reference body into a fragment (parser.rs).
      * Both decimal and hexadecimal character references resolve, and both
      * resolve only to legal XML 1.0 characters (RFC 0012 §6,
-     * https://github.com/consema/consema/blob/main/docs/rfcs/0012-xml-1.0-safe-profile-v1.md:236-241; vector case
+     * https://github.com/consema/consema/blob/main/docs/rfcs/0012-xml-1.0-safe-profile-v1.md; vector case
      * xml.formation.predefined-and-character-references pins `&#65;` as
-     * Complete). NOTE: the Rust parser.rs:1579-1584 expression binds the
+     * Complete). NOTE: the Rust parser.rs expression binds the
      * is_xml_char filter to the else branch only (decimal references would
      * never resolve there); the vector and the Go cross-reference
      * (consema-go/go/xml/parser.go:2015-2034) require both forms, so this
@@ -2218,7 +2218,7 @@ private class Parser(
      * Resolves nested references inside one replacement text. Unknown
      * references, cycles, or limit breaches inside replacement text produce
      * no partial native text; the outer reference is rejected
-     * (parser.rs:1647-1692).
+     * (parser.rs).
      */
     private fun resolveNested(replacement: String, sourceSpan: Span, depth: Int): String? {
         if (depth > limits.maxEntityExpansionDepth) {
@@ -2255,7 +2255,7 @@ private class Parser(
     }
 
     /** Splits an attribute value into fragments and applies XML 1.0 CDATA
-     * normalization to the semantic value (parser.rs:1694-1729). */
+     * normalization to the semantic value (parser.rs). */
     private fun valueFragments(start: Int, end: Int): Pair<List<ReferenceFragment>, String> {
         val fragments = textFragments(start, end, XmlSyntaxKind.AttributeValue)
         val normalized = StringBuilder()
@@ -2286,10 +2286,10 @@ private class Parser(
         return fragments to normalized.toString()
     }
 
-    // -- recovery and limits (parser.rs:1731-1790) ----------------------------
+    // -- recovery and limits (parser.rs) ----------------------------
 
     /** Records a recovery diagnostic with its exact failing span
-     * (parser.rs:1731-1749). */
+     * (parser.rs). */
     private fun recover(code: String, span: Span, category: DiagnosticCategory) {
         recovered = true
         if (errorRegions >= limits.maxRecoveryRegions) {
@@ -2314,7 +2314,7 @@ private class Parser(
     }
 
     /** Covers one tokenizer error region and publishes the well-formedness
-     * diagnostic (parser.rs:1759-1786). */
+     * diagnostic (parser.rs). */
     private fun recoverErrorRegion(start: Int, end: Int) {
         recovered = true
         if (errorRegions >= limits.maxRecoveryRegions) {
@@ -2338,7 +2338,7 @@ private class Parser(
         )
     }
 
-    // -- finish (parser.rs:1792-1914) -----------------------------------------
+    // -- finish (parser.rs) -----------------------------------------
 
     private fun finish(): Document {
         if (stack.isNotEmpty()) {
@@ -2451,7 +2451,7 @@ private class Parser(
         )
     }
 
-    // -- qname helpers (parser.rs:1916-2007) ----------------------------------
+    // -- qname helpers (parser.rs) ----------------------------------
 
     private fun qnameFacts(start: Int, end: Int): QNameFacts {
         val text = decodedSlice(start, end)
@@ -2478,7 +2478,7 @@ private class Parser(
     }
 
     /** Pushes the QName part pieces for one element or end-tag name
-     * (parser.rs:1944-1976). */
+     * (parser.rs). */
     private fun pushQNameParts(prefixStart: Int, prefixEnd: Int, localStart: Int, localEnd: Int) {
         if (prefixEnd <= prefixStart) {
             pushPiece(
@@ -2524,7 +2524,7 @@ private class Parser(
         )
     }
 
-    // -- offsets and pieces (parser.rs:2009-2073) -----------------------------
+    // -- offsets and pieces (parser.rs) -----------------------------
 
     private fun ordinal(): Long {
         val ordinal = nextOrdinal

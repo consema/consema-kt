@@ -4,7 +4,7 @@
 // return partial documents).
 //
 // Data authority: RFC 0007 §3-§4, §8, §13 (https://github.com/consema/consema/blob/main/docs/rfcs/0007-yaml-family-
-// profiles-and-safety-v1.md:54-97, 194-213, 400-429) and the vector cases
+// profiles-and-safety-v1.md) and the vector cases
 // stream.empty, stream.multi-document, formation.undefined-alias,
 // source.utf16le-bom, resource.parse-source-bytes
 // (conformance/vectors/yaml-v1.json:15-29, 41-44, 126-129).
@@ -150,7 +150,7 @@ class FormationTest {
         assertEquals(100, graph.edgeCount())
 
         // A bounded token budget rejects a large alias stream atomically
-        // (the backend syntax-event limit, backend.rs:128-142).
+        // (the backend syntax-event limit, backend.rs).
         val limited = assertFailsWith<YamlFormationException> {
             parse(
                 bomb.toByteArray(Charsets.UTF_8),

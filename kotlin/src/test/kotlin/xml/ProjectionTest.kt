@@ -2,7 +2,7 @@
 // xml-1-0-safe-v1.json (cases xml.projection.*).
 //
 // Data authority: the `xml.element-tree@1` record shape is pinned by the
-// vector cases and by https://github.com/consema/consema-rs/blob/main/consema-xml/src/projection.rs:600-797; the
+// vector cases and by https://github.com/consema/consema-rs/blob/main/consema-xml/src/projection.rs; the
 // recovered-document failure code xml.projection.recovered-document@1 is
 // pinned by case xml.projection.recovered-never-projects
 // (xml-1-0-safe-v1.json:341-350).
@@ -43,7 +43,7 @@ class ProjectionTest {
     @Test
     fun `element tree record projects the exact root facts`() {
         // Case xml.projection.element-tree-record (xml-1-0-safe-v1.json:
-        // 311-325).
+ //).
         val document = parseUtf8("<root a=\"1\"><child>t</child></root>")
         val result = document.project(ProjectionRequest.elementTree())
         val projection = assertIs<ProjectionResult.Complete>(result).projection
@@ -68,7 +68,7 @@ class ProjectionTest {
     @Test
     fun `namespace record projects the resolved uri`() {
         // Case xml.projection.namespace-record (xml-1-0-safe-v1.json:
-        // 327-339).
+ //).
         val document = parseUtf8("<p:root xmlns:p=\"urn:p\"/>")
         val result = document.project(ProjectionRequest.elementTree())
         val projection = assertIs<ProjectionResult.Complete>(result).projection

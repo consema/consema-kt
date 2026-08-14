@@ -211,7 +211,7 @@ class PatchTest {
     }
 
     /** RFC 0003 §10: redaction flags control review presentation, not the
-     * bytes required for application (source_patch.rs:791-802). */
+     * bytes required for application (source_patch.rs). */
     @Test
     fun redactedBytesRemainApplicableButHiddenFromPresentation() {
         val secret = replacement(0, 6, "736563726574", "68696464656e")
@@ -224,7 +224,7 @@ class PatchTest {
         assertFalse(rendered.contains("hidden"))
         assertTrue(rendered.contains("<redacted>"))
 
-        // Application still verifies the exact bytes (source_patch.rs:312-336).
+        // Application still verifies the exact bytes (source_patch.rs).
         val base = utf8("736563726574")
         val patch = SourcePatch.create(base, listOf(secret), emptyMap())
             .withAllReplacementsRedacted(redactOriginal = true, redactReplacement = true)
@@ -233,7 +233,7 @@ class PatchTest {
     }
 
     /** Patch construction validates limits before any allocation
-     * (source_patch.rs:769-789): an oversized insertion fails at creation. */
+     * (source_patch.rs): an oversized insertion fails at creation. */
     @Test
     fun patchByteLimitIsEnforcedAtCreation() {
         val base = utf8("61")

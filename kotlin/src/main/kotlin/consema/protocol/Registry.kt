@@ -2,8 +2,8 @@
 // registry manifest.
 //
 // Data authority: https://github.com/consema/consema-rs/blob/main/consema-protocol/src/registry.rs and
-// registry_manifest.rs (namespace rules at registry.rs:475-498; manifest
-// validation at registry_manifest.rs:119-151). consema-go/go/protocol/
+// registry_manifest.rs (namespace rules at registry.rs; manifest
+// validation at registry_manifest.rs). consema-go/go/protocol/
 // registry_descriptor.go is a cross-reference.
 //
 // Kotlin-idiomatic design: immutable value types; validation throws
@@ -22,7 +22,7 @@ import java.math.BigInteger
 
 /**
  * A versioned reference to a Profile, whose ID may contain numeric segments
- * (registry.rs:14-46).
+ * (registry.rs).
  */
 data class ProfileReference(val id: String, val version: Int) {
     init {
@@ -34,9 +34,9 @@ data class ProfileReference(val id: String, val version: Int) {
 }
 
 /**
- * An immutable language profile registry descriptor (registry.rs:48-250).
+ * An immutable language profile registry descriptor (registry.rs).
  * Constructs a normalized descriptor and rejects malformed or duplicate
- * facts (registry.rs:60-114): differences and required capabilities are
+ * facts (registry.rs): differences and required capabilities are
  * sorted and must be unique.
  */
 class ProfileDescriptor private constructor(
@@ -94,8 +94,8 @@ class ProfileDescriptor private constructor(
             )
         }
 
-        /** Strictly decodes `core.profile-descriptor@1` (registry.rs:
-         * 203-249). */
+        /** Strictly decodes `core.profile-descriptor@1` (registry.rs
+ *). */
         fun fromValue(value: PortableValue): ProfileDescriptor {
             val fields = schemaFields(
                 value,
@@ -128,7 +128,7 @@ class ProfileDescriptor private constructor(
         }
     }
 
-    /** Encodes `core.profile-descriptor@1` (registry.rs:158-201). */
+    /** Encodes `core.profile-descriptor@1` (registry.rs). */
     fun toValue(): PortableValue = PvObject(
         listOf(
             consema.core.Entry("schema", PvString("core.profile-descriptor@1")),
@@ -150,7 +150,7 @@ class ProfileDescriptor private constructor(
 }
 
 /**
- * A stable namespaced capability contract (consema-core capability.rs:7-28).
+ * A stable namespaced capability contract (consema-core capability.rs).
  */
 data class CapabilityId(val namespace: String, val version: Int) : Comparable<CapabilityId> {
     override fun compareTo(other: CapabilityId): Int {
@@ -175,10 +175,10 @@ enum class SupportKind {
 data class Precondition(val key: String, val value: String)
 
 /** The declared support state of one capability (consema-core
- * capability.rs:30-43). */
+ * capability.rs). */
 data class ImplementationSupport(val kind: SupportKind, val preconditions: List<Precondition>)
 
-/** How capability support was verified (consema-core capability.rs:45-56). */
+/** How capability support was verified (consema-core capability.rs). */
 enum class VerificationStatus(val wireName: String) {
     /** Verified against the named conformance suite. */
     Verified("Verified"),
@@ -197,8 +197,8 @@ fun parseVerificationStatus(name: String): VerificationStatus =
 
 /**
  * One implementation's support and verification claim for a capability
- * (registry.rs:252-439). Construction validates the cross-field support and
- * verification invariants (registry.rs:262-315): Conditional support
+ * (registry.rs). Construction validates the cross-field support and
+ * verification invariants (registry.rs): Conditional support
  * requires preconditions, only Conditional support may carry preconditions,
  * and Verified requires a suite ID.
  */
@@ -240,7 +240,7 @@ class CapabilityDeclaration private constructor(
         }
 
         /** Strictly decodes `core.capability-declaration@1`
-         * (registry.rs:381-438). */
+         * (registry.rs). */
         fun fromValue(value: PortableValue): CapabilityDeclaration {
             val fields = schemaFields(
                 value,
@@ -273,7 +273,7 @@ class CapabilityDeclaration private constructor(
         }
     }
 
-    /** Encodes `core.capability-declaration@1` (registry.rs:341-379). */
+    /** Encodes `core.capability-declaration@1` (registry.rs). */
     fun toValue(): PortableValue {
         val supportName = when (support.kind) {
             SupportKind.Conformant -> "Conformant"
@@ -299,7 +299,7 @@ class CapabilityDeclaration private constructor(
 }
 
 /** A deterministic set of capabilities available to an operation
- * (consema-core capability.rs:59-96). */
+ * (consema-core capability.rs). */
 class CapabilitySet {
     private val capabilities = HashMap<String, CapabilityId>()
 
@@ -334,7 +334,7 @@ data class ErrorCodeManifestEntry(
 
 /**
  * The `core.registry-manifest@1` record of one semantic-model contract set
- * (registry_manifest.rs:30-282).
+ * (registry_manifest.rs).
  */
 class RegistryManifest private constructor(
     val semanticModel: ContractId,
@@ -367,7 +367,7 @@ class RegistryManifest private constructor(
         }
 
         /** Validates a manifest's sorted, unique, versioned records
-         * (registry_manifest.rs:119-151). */
+         * (registry_manifest.rs). */
         fun validate(
             semanticModel: ContractId,
             contracts: List<ContractManifestEntry>,
@@ -393,7 +393,7 @@ class RegistryManifest private constructor(
         }
 
         /** Strictly decodes `core.registry-manifest@1`
-         * (registry_manifest.rs:232-281). */
+         * (registry_manifest.rs). */
         fun fromValue(value: PortableValue): RegistryManifest {
             val fields = schemaFields(
                 value,
@@ -442,7 +442,7 @@ class RegistryManifest private constructor(
             errorCodes == current.errorCodes
     }
 
-    /** Encodes `core.registry-manifest@1` (registry_manifest.rs:177-230). */
+    /** Encodes `core.registry-manifest@1` (registry_manifest.rs). */
     fun toValue(): PortableValue {
         val contractValues = contracts.map { entry ->
             PvObject(
@@ -488,14 +488,14 @@ internal fun referenceValue(id: String, version: Int): PortableValue =
     )
 
 /** Strictly decodes a {"id","version"} contract reference
- * (registry_manifest.rs:284-290). */
+ * (registry_manifest.rs). */
 internal fun parseContractReference(value: PortableValue, path: String): ContractId {
     val fields = exactFields(value, listOf("id", "version"), path)
     return ContractId(stringOf(fields[0], "$path.id"), unsigned32(fields[1], "$path.version"))
 }
 
 /** Strictly decodes a {"id","version"} profile reference
- * (registry.rs:459-465). */
+ * (registry.rs). */
 internal fun parseProfileReference(value: PortableValue, path: String): ProfileReference {
     val fields = exactFields(value, listOf("id", "version"), path)
     return ProfileReference(stringOf(fields[0], "$path.id"), unsigned32(fields[1], "$path.version"))

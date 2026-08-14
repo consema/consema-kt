@@ -1,18 +1,18 @@
 // One-pass decoded-scalar to raw-byte offset resolution.
 //
-// Data authority: https://github.com/consema/consema-rs/blob/main/consema-yaml/src/offsets.rs:1-80 pins the single
+// Data authority: https://github.com/consema/consema-rs/blob/main/consema-yaml/src/offsets.rs pins the single
 // forward walk that resolves every lexeme and node boundary in non-decreasing
 // order (constant-width per-scalar raw advances for the only encodings the
 // YAML parse can select: UTF-8 and BOM-detected UTF-16). Lookups may be
 // repeated and need not be sorted; a lookup behind the cursor restarts the
 // walk. The Kotlin SourceSnapshot boundary index
-// (kotlin/src/main/kotlin/consema/document/Source.kt:244-296) resolves any single boundary, but
+// (kotlin/src/main/kotlin/consema/document/Source.kt) resolves any single boundary, but
 // the YAML pipeline resolves O(pieces + nodes) boundaries, so the shared
 // walk keeps the parse linear.
 //
 // Kotlin-idiomatic design: a small stateful resolver owned by one parse
-// (never shared across parses), with the exact raw advances of offsets.rs:
-// 67-78.
+// (never shared across parses), with the exact raw advances of offsets.rs
+// .
 
 package consema.yaml
 
@@ -20,7 +20,7 @@ import consema.document.SourceEncoding
 import consema.document.SourceSnapshot
 
 /** Resolves decoded Unicode scalar offsets to exact raw byte offsets
- * (offsets.rs:15-80). */
+ * (offsets.rs). */
 internal class RawByteResolver(source: SourceSnapshot) {
     private val text: String = source.decodedText()
         ?: throw YamlFormationException("yaml.parse.syntax@1", "yaml: no decoded text")

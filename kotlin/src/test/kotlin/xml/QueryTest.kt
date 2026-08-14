@@ -5,7 +5,7 @@
 // Data authority: the operator spellings, the match order, and the ordinal
 // facts are pinned by the vector cases; the conformance runner builds the
 // filter chain exactly as these tests do (https://github.com/consema/consema-rs/blob/main/consema-conformance/src/
-// xml_v1.rs:231-258). The syntax-piece ordinal is the zero-based source
+// xml_v1.rs). The syntax-piece ordinal is the zero-based source
 // order of the piece in the exhaustive lossless index (RFC 0012 §7).
 
 package xml
@@ -68,10 +68,10 @@ class QueryTest {
     @Test
     fun `syntax query kind filter matches local names with exact ordinals`() {
         // Case xml.syntax-query.kind-and-text-filter (xml-1-0-safe-v1.json:
-        // 175-202). NOTE: the vector's informational ordinal column says
+ //). NOTE: the vector's informational ordinal column says
         // "10" for the second match, but the language-neutral runner asserts
-        // kind and text only (https://github.com/consema/consema-rs/blob/main/consema-conformance/src/xml_v1.rs:
-        // 297-325), and the byte authority emits a Whitespace gap piece
+        // kind and text only (https://github.com/consema/consema-rs/blob/main/consema-conformance/src/xml_v1.rs
+ //), and the byte authority emits a Whitespace gap piece
         // between the QName and the attribute (probed against the Rust:
         // pieces tag-open 0, local-name 1, whitespace 2, attribute-name 3,
         // equals 4, quote 5, attribute-value 6, quote 7, tag-close 8, text
@@ -99,7 +99,7 @@ class QueryTest {
     @Test
     fun `syntax query matches the entity reference piece`() {
         // Case xml.syntax-query.entity-reference-kind (xml-1-0-safe-v1.json:
-        // 203-215).
+ //).
         val document = parseUtf8("<root>&lt;</root>")
         val matches = executeXmlSyntaxQuery(
             syntaxExecutable(
@@ -121,7 +121,7 @@ class QueryTest {
     @Test
     fun `syntax query matches the attribute value piece`() {
         // Case xml.syntax-query.attribute-value-kind (xml-1-0-safe-v1.json:
-        // 226-250).
+ //).
         val document = parseUtf8("<root a=\"1\"/>")
         val matches = executeXmlSyntaxQuery(
             syntaxExecutable(
@@ -143,7 +143,7 @@ class QueryTest {
     @Test
     fun `native query returns attributes and values`() {
         // Case xml.native-query.attributes-and-values (xml-1-0-safe-v1.json:
-        // 251-276).
+ //).
         val document = parseUtf8("<root a=\"1\"/>")
         val matches = executeXmlQuery(
             nativeExecutable(
@@ -163,7 +163,7 @@ class QueryTest {
     @Test
     fun `native query traverses descendants in document order`() {
         // Case xml.native-query.descendants-order (xml-1-0-safe-v1.json:
-        // 277-309).
+ //).
         val document = parseUtf8("<root><a/><b/><c/></root>")
         val matches = executeXmlQuery(
             nativeExecutable(

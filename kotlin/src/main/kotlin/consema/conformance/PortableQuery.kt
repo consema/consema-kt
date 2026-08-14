@@ -1,7 +1,7 @@
 // The conformance-runner portable-value query executor.
 //
 // Data authority (language-neutral sources first):
-//   - https://github.com/consema/consema-rs/blob/main/consema-conformance/src/lib.rs:641-711 (query.root-result-limit
+//   - https://github.com/consema/consema-rs/blob/main/consema-conformance/src/lib.rs (query.root-result-limit
 //     and query.cursor-failure-terminal handlers) pins the exact behaviors
 //     this executor reproduces: the bare Input expression yields the root
 //     value as one match; `core.try-sequence-elements@1` yields the elements
@@ -35,7 +35,7 @@ import consema.protocol.QueryFailureKind
 import consema.protocol.QuerySelection
 
 /** Query execution resource limits (the frozen defaults mirror the family
- * QueryLimits defaults, query.rs:2967-2993). */
+ * QueryLimits defaults, query.rs). */
 data class PortableQueryLimits(
     /** Maximum evaluation steps. */
     val maxSteps: Int,
@@ -68,7 +68,7 @@ fun executePortableQuery(
     return applySelection(matches, executable.validated.definition.selection)
 }
 
-/** The terminal state of one ordered cursor (query.rs:3008-3046). */
+/** The terminal state of one ordered cursor (query.rs). */
 enum class PortableTerminalState {
     /** All matches were produced. */
     Completed,

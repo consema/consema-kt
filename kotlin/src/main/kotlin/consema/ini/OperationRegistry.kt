@@ -2,30 +2,30 @@
 //
 // Data authority:
 //   - RFC 0004 §10 (https://github.com/consema/consema/blob/main/docs/rfcs/0004-materialization-conversion-and-
-//     structural-edit-v1.md:244-269): every structural operation has an
+//     structural-edit-v1.md): every structural operation has an
 //     immutable ID/version, target role, argument schema, and support
 //     classification; the registry does not claim that operations with
 //     similar names have identical format semantics.
-//   - RFC 0009 §12 (https://github.com/consema/consema/blob/main/docs/rfcs/0009-ini-family-profiles-v1.md:437-472):
+//   - RFC 0009 §12 (https://github.com/consema/consema/blob/main/docs/rfcs/0009-ini-family-profiles-v1.md):
 //     all three format profiles publish the same operation count but
 //     independently typed INI operations: the eight ini.edit.*@1 names.
 //   - conformance/vectors/ini-v1.json registry.frozen-eight-operation-
 //     surface pins the eight ids and the six direct structural operations;
-//     https://github.com/consema/consema-rs/blob/main/consema-ini/src/operation_registry.rs:16-80 is the exact
+//     https://github.com/consema/consema-rs/blob/main/consema-ini/src/operation_registry.rs is the exact
 //     byte-arbitration source of the descriptor records and the support
-//     classes (operation_registry.rs:105-136).
+//     classes (operation_registry.rs).
 //
 // Kotlin-idiomatic design: the registry is an immutable list of descriptor
 // data classes per profile; argument kinds use the language-neutral
 // spellings of the Rust OperationArgumentKind; target-role strings carry
 // the `@1` version suffix, the established Kotlin family convention
-// (kotlin/src/main/kotlin/consema/json/OperationRegistry.kt:56-66).
+// (kotlin/src/main/kotlin/consema/json/OperationRegistry.kt).
 
 package consema.ini
 
 import consema.document.FormatOperationId
 
-/** Argument kind of one operation descriptor (operation_registry.rs:22-25). */
+/** Argument kind of one operation descriptor (operation_registry.rs). */
 enum class OperationArgumentKind {
     /** Decoded name (String). */
     String,
@@ -40,7 +40,7 @@ enum class OperationArgumentKind {
     ExactBytes,
 }
 
-/** Support classification of one operation (operation_registry.rs:26). */
+/** Support classification of one operation (operation_registry.rs). */
 enum class OperationSupport {
     /** Structural operation supported by every INI profile. */
     Supported,
@@ -50,7 +50,7 @@ enum class OperationSupport {
     ExistingTypedCapability,
 }
 
-/** One immutable operation descriptor (operation_registry.rs:16-80). */
+/** One immutable operation descriptor (operation_registry.rs). */
 data class IniOperationDescriptor(
     /** Exact immutable operation ID/version. */
     val id: FormatOperationId,
@@ -64,10 +64,10 @@ data class IniOperationDescriptor(
 
 /**
  * Returns the validated operation registry for one exact INI profile
- * (operation_registry.rs:9-14). Every profile publishes the same frozen
- * eight-record surface (operation_registry.rs:105-136); the records are
+ * (operation_registry.rs). Every profile publishes the same frozen
+ * eight-record surface (operation_registry.rs); the records are
  * ordered by id, the order the frozen surface test and the shared vectors
- * assert (operation_registry.rs:106-115).
+ * assert (operation_registry.rs).
  */
 fun formatOperationRegistry(profile: IniProfile): List<IniOperationDescriptor> =
     descriptors().sortedBy { it.id.toString() }
@@ -85,7 +85,7 @@ private fun descriptor(
         support,
     )
 
-/** The frozen eight descriptor records (operation_registry.rs:16-80). */
+/** The frozen eight descriptor records (operation_registry.rs). */
 private fun descriptors(): List<IniOperationDescriptor> =
     listOf(
         descriptor(

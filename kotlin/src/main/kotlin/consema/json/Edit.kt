@@ -3,13 +3,13 @@
 //
 // Data authority:
 //   - RFC 0004 §11-§16 (https://github.com/consema/consema/blob/main/docs/rfcs/0004-materialization-conversion-and-
-//     structural-edit-v1.md:271-384): snapshot-bound operations; inserted
+//     structural-edit-v1.md): snapshot-bound operations; inserted
 //     values use the target profile's canonical materialization fragment;
 //     delimiter edits own only the necessary comma plus inserted/removed
 //     association span; JSONC comment ownership is explicit; the conflict
 //     algebra; the dry-run plan; the untouched-byte proof; the derived
 //     SourcePatch.
-//   - RFC 0005 §10 (https://github.com/consema/consema/blob/main/docs/rfcs/0005-json-family-production-v1.md:220-241):
+//   - RFC 0005 §10 (https://github.com/consema/consema/blob/main/docs/rfcs/0005-json-family-production-v1.md):
 //     move-member supports Start/End/Before/After within one Object, moves
 //     only the exact member association span, owns the required source and
 //     destination comma edits explicitly, and rejects cross-object anchors;
@@ -19,17 +19,17 @@
 //     (edit.*, lines 107-141, 173-177) pins the PreserveCompatible /
 //     CanonicalForProfile / PreserveElseCanonical scalar behaviors.
 //   - https://github.com/consema/consema-rs/blob/main/consema-json/src/edit.rs is the byte-arbitration authority
-//     (commit edit.rs:301-451, dry-run edit.rs:453-468, prepare edit.rs:
-//     472-1023, dependencies edit.rs:1025-1078, metadata/summaries edit.rs:
-//     1095-1267, scalar style edit.rs:1346-1862).
+//     (commit edit.rs, dry-run edit.rs, prepare edit.rs
+// dependencies edit.rs, metadata/summaries edit.rs
+// scalar style edit.rs).
 //   - Kotlin document owns SourcePatch (create/apply, kotlin/src/main/kotlin/consema/document/
-//     Patch.kt:147-296) and UntouchedByteProof (kotlin/src/main/kotlin/consema/document/
-//     UntouchedProof.kt:83-138). ChangeSet is not shipped in the Kotlin
+//     kotlin/src/main/kotlin/consema/document/Patch.kt) and UntouchedByteProof (kotlin/src/main/kotlin/consema/document/
+//     kotlin/src/main/kotlin/consema/document/UntouchedProof.kt). ChangeSet is not shipped in the Kotlin
 //     JSON family (recorded gap, six-repo audit G090); the commit carries
 //     the ordered diagnostics instead.
 //
 // Kotlin-idiomatic design: failures are a sealed hierarchy whose [name] is
-// the exact vector spelling (edit_failure_name, json_family_v2.rs:900-922);
+// the exact vector spelling (edit_failure_name, json_family_v2.rs);
 // commit/dry-run throw the typed [EditFailureException] so callers match
 // exhaustively on the failure class.
 
@@ -63,7 +63,7 @@ import consema.protocol.DiagnosticCategory
 import consema.protocol.Severity
 import java.math.BigInteger
 
-/** Explicit semantic scalar representation policy (edit.rs:17-28). */
+/** Explicit semantic scalar representation policy (edit.rs). */
 enum class RepresentationPolicy {
     /** Caller must instead use Literal replacement; semantic replacement
      * rejects this. */
@@ -81,7 +81,7 @@ enum class RepresentationPolicy {
 }
 
 /** One scalar operation bound to the transaction's base snapshot
- * (edit.rs:30-49). */
+ * (edit.rs). */
 sealed class ScalarReplacement {
     /** Exact target NodeRef. */
     abstract val target: NodeRef
@@ -106,7 +106,7 @@ sealed class ScalarReplacement {
 }
 
 /** One typed JSON edit operation bound to an immutable base snapshot
- * (edit.rs:59-108). */
+ * (edit.rs). */
 sealed class EditOperation {
     /** Existing scalar semantic or literal replacement. */
     data class ReplaceScalar(val replacement: ScalarReplacement) : EditOperation()
@@ -157,7 +157,7 @@ sealed class EditOperation {
 }
 
 /** Immutable transaction; every operation resolves against one base snapshot
- * (edit.rs:110-129). */
+ * (edit.rs). */
 class EditTransaction internal constructor(
     /** Base snapshot identity. */
     val baseSnapshot: SnapshotIdentity,
@@ -165,18 +165,18 @@ class EditTransaction internal constructor(
     val operations: List<EditOperation>,
 )
 
-/** Builder that is not a committed edit (edit.rs:131-243). */
+/** Builder that is not a committed edit (edit.rs). */
 class EditTransactionBuilder internal constructor(private val base: SnapshotIdentity) {
     private val operations = ArrayList<EditOperation>()
 
     companion object {
         /** Binds a new transaction to one immutable base document
-         * (edit.rs:138-146). */
+         * (edit.rs). */
         fun new(document: Document): EditTransactionBuilder =
             EditTransactionBuilder(document.snapshotIdentity)
     }
 
-    /** Adds semantic scalar replacement (edit.rs:148-161). */
+    /** Adds semantic scalar replacement (edit.rs). */
     fun semanticScalar(
         target: NodeRef,
         value: PortableValue,
@@ -186,13 +186,13 @@ class EditTransactionBuilder internal constructor(private val base: SnapshotIden
         return this
     }
 
-    /** Adds exact literal scalar replacement (edit.rs:163-171). */
+    /** Adds exact literal scalar replacement (edit.rs). */
     fun literalScalar(target: NodeRef, literal: ByteArray): EditTransactionBuilder {
         operations.add(EditOperation.ReplaceScalar(ScalarReplacement.Literal(target, literal)))
         return this
     }
 
-    /** Adds one JSON Object member insertion (edit.rs:173-189). */
+    /** Adds one JSON Object member insertion (edit.rs). */
     fun insertMember(
         objectRef: NodeRef,
         name: String,
@@ -203,25 +203,25 @@ class EditTransactionBuilder internal constructor(private val base: SnapshotIden
         return this
     }
 
-    /** Adds one exact JSON Object member removal (edit.rs:191-195). */
+    /** Adds one exact JSON Object member removal (edit.rs). */
     fun removeMember(target: NodeRef): EditTransactionBuilder {
         operations.add(EditOperation.RemoveMember(target))
         return this
     }
 
-    /** Adds one exact same-Object member move (edit.rs:197-202). */
+    /** Adds one exact same-Object member move (edit.rs). */
     fun moveMember(target: NodeRef, placement: AssociationPlacement): EditTransactionBuilder {
         operations.add(EditOperation.MoveMember(target, placement))
         return this
     }
 
-    /** Adds one exact JSON Object member rename (edit.rs:204-211). */
+    /** Adds one exact JSON Object member rename (edit.rs). */
     fun renameMember(target: NodeRef, name: String): EditTransactionBuilder {
         operations.add(EditOperation.RenameMember(target, name))
         return this
     }
 
-    /** Adds one JSON Array element insertion (edit.rs:213-223). */
+    /** Adds one JSON Array element insertion (edit.rs). */
     fun insertArrayElement(
         array: NodeRef,
         value: PortableValue,
@@ -231,18 +231,18 @@ class EditTransactionBuilder internal constructor(private val base: SnapshotIden
         return this
     }
 
-    /** Adds one exact JSON Array element removal (edit.rs:225-232). */
+    /** Adds one exact JSON Array element removal (edit.rs). */
     fun removeArrayElement(target: NodeRef): EditTransactionBuilder {
         operations.add(EditOperation.RemoveArrayElement(target))
         return this
     }
 
     /** Completes the immutable request; target validation happens atomically
-     * at commit (edit.rs:235-242). */
+     * at commit (edit.rs). */
     fun build(): EditTransaction = EditTransaction(base, operations.toList())
 }
 
-/** Atomic edit success (edit.rs:246-256). ChangeSet is not shipped in the
+/** Atomic edit success (edit.rs). ChangeSet is not shipped in the
  * Kotlin JSON family (recorded gap, six-repo audit G090); the commit
  * carries the ordered edit diagnostics instead. */
 class EditCommit(
@@ -256,8 +256,8 @@ class EditCommit(
     val diagnostics: List<Diagnostic>,
 )
 
-/** Stable edit validation or commit failure (edit.rs:258-299). The [name]
- * is the exact vector spelling (json_family_v2.rs:900-922). */
+/** Stable edit validation or commit failure (edit.rs). The [name]
+ * is the exact vector spelling (json_family_v2.rs). */
 sealed class EditFailure(val name: String) {
     /** Edits are forbidden on a recovered document. */
     data object RecoveredDocument : EditFailure("RecoveredDocument")
@@ -332,13 +332,13 @@ sealed class EditFailure(val name: String) {
 class EditFailureException(val failure: EditFailure) :
     Exception("edit: ${failure.name}")
 
-/** One prepared byte edit (edit.rs:317-399). */
+/** One prepared byte edit (edit.rs). */
 private data class PreparedEdit(
     val oldSpan: Span,
     val replacement: ByteArray,
 )
 
-/** Source ownership interval helper (edit.rs:330-346). */
+/** Source ownership interval helper (edit.rs). */
 private data class SourceEdit(
     val oldSpan: Span,
     val newSpan: Span,
@@ -347,7 +347,7 @@ private data class SourceEdit(
 
 /**
  * Atomically commits scalar and structural operations. On failure the
- * document remains unchanged (edit.rs:301-451).
+ * document remains unchanged (edit.rs).
  */
 fun Document.commit(transaction: EditTransaction): EditCommit {
     if (formationStatus != FormationStatus.Complete) {
@@ -435,7 +435,7 @@ fun Document.commit(transaction: EditTransaction): EditCommit {
 
 /**
  * Fully validates and plans an edit without returning a new Document
- * (edit.rs:453-468; RFC 0004 §14). Dry-run and commit produce the same
+ * (edit.rs; RFC 0004 §14). Dry-run and commit produce the same
  * replacement set and target digest (RFC 0004 §20).
  */
 fun Document.dryRun(
@@ -456,7 +456,7 @@ fun Document.dryRun(
     }
 }
 
-/** Content-free operation summaries (edit.rs:1135-1229). */
+/** Content-free operation summaries (edit.rs). */
 private fun operationSummariesOrFail(transaction: EditTransaction): List<EditOperationSummary> =
     try {
         operationSummaries(transaction)
@@ -798,7 +798,7 @@ private fun Document.resolveAnchor(
     return index
 }
 
-/** The canonical fragment writer (edit.rs:902-923). */
+/** The canonical fragment writer (edit.rs). */
 private fun Document.fragment(value: PortableValue): ByteArray =
     try {
         canonicalFragment(
@@ -826,7 +826,7 @@ private fun Document.fragment(value: PortableValue): ByteArray =
         }
     }
 
-/** Parent Object lookup by entity scan (edit.rs:925-939). */
+/** Parent Object lookup by entity scan (edit.rs). */
 private data class ParentContainer(
     val containerIndex: Int,
     val members: List<Int>,
@@ -869,7 +869,7 @@ private fun Document.parentArray(element: Int): ParentArray? {
     return null
 }
 
-/** Comma ownership of one removal (edit.rs:957-987). */
+/** Comma ownership of one removal (edit.rs). */
 private fun Document.removalComma(
     associations: List<Int>,
     ordinal: Int,
@@ -898,7 +898,7 @@ private fun Document.removalComma(
     ) ?: throw EditFailureException(EditFailure.IncompleteTarget)
 }
 
-/** Container delimiter lookup (edit.rs:989-997). */
+/** Container delimiter lookup (edit.rs). */
 private fun Document.delimiter(
     kind: JsonSyntaxKind,
     container: Span,
@@ -908,7 +908,7 @@ private fun Document.delimiter(
         ?: throw EditFailureException(EditFailure.IncompleteTarget)
 
 /** Finds the first (or last) syntax piece of one kind inside a range
- * (edit.rs:999-1022). */
+ * (edit.rs). */
 private fun Document.syntaxBetween(
     kind: JsonSyntaxKind,
     start: Int,
@@ -921,7 +921,7 @@ private fun Document.syntaxBetween(
     return if (last) matches.lastOrNull() else matches.firstOrNull()
 }
 
-/** Cross-operation dependency validation (edit.rs:1025-1078). */
+/** Cross-operation dependency validation (edit.rs). */
 private fun validateDependencies(transaction: EditTransaction) {
     val destructive = HashSet<NodeRef>()
     val removed = HashSet<NodeRef>()
@@ -977,7 +977,7 @@ private fun collectAnchor(placement: AssociationPlacement, anchors: ArrayList<No
     }
 }
 
-/** Checked fragment append (edit.rs:1080-1093). */
+/** Checked fragment append (edit.rs). */
 private fun appendFragment(output: ByteArray, fragment: ByteArray, max: Int): ByteArray {
     val newLength = output.size + fragment.size
     if (newLength > max) {
@@ -990,7 +990,7 @@ private fun appendFragment(output: ByteArray, fragment: ByteArray, max: Int): By
 }
 
 /** Patch metadata: operation.{index} -> frozen operation id@version
- * (edit.rs:1110-1133). */
+ * (edit.rs). */
 private fun operationMetadata(transaction: EditTransaction): Map<String, String> {
     val metadata = LinkedHashMap<String, String>()
     for ((index, operation) in transaction.operations.withIndex()) {
@@ -999,7 +999,7 @@ private fun operationMetadata(transaction: EditTransaction): Map<String, String>
     return metadata
 }
 
-/** The frozen operation id@version (edit.rs:1116-1129). */
+/** The frozen operation id@version (edit.rs). */
 internal fun operationId(operation: EditOperation): FormatOperationId =
     FormatOperationId(
         when (operation) {
@@ -1017,7 +1017,7 @@ internal fun operationId(operation: EditOperation): FormatOperationId =
         1,
     )
 
-/** Content-free operation summaries (edit.rs:1135-1229). */
+/** Content-free operation summaries (edit.rs). */
 private fun operationSummaries(transaction: EditTransaction): List<EditOperationSummary> =
     transaction.operations.map { operation ->
         val (id, targetRole, arguments) = when (operation) {
@@ -1119,7 +1119,7 @@ internal fun valueKindName(kind: consema.core.Kind): String =
 // ---------------------------------------------------------------------------
 
 /** Renders the replacement literal for one semantic scalar operation
- * (edit.rs:1346-1386). */
+ * (edit.rs). */
 private fun semanticLiteral(
     authority: consema.document.DocumentAuthority,
     value: PortableValue,
@@ -1169,11 +1169,11 @@ private fun semanticLiteral(
 }
 
 /** Maximum digits a preserved fixed-fraction rendering may produce
- * (edit.rs:1388-1389). */
+ * (edit.rs). */
 private const val MAX_PRESERVED_FRACTION_DIGITS = 1_000_000
 
 /** Bounded lexical style retained by PreserveCompatible edits
- * (edit.rs:1391-1440). */
+ * (edit.rs). */
 private sealed class JsonScalarLexicalStyle {
     data object Null : JsonScalarLexicalStyle()
 
@@ -1215,7 +1215,7 @@ private data class StringLexicalStyle(
 )
 
 /** Analyzes the lexical style of one complete scalar literal
- * (edit.rs:1442-1504). */
+ * (edit.rs). */
 private fun analyzeLexicalStyle(literal: ByteArray, old: InternalValueKind): JsonScalarLexicalStyle? {
     return when (old) {
         is InternalValueKind.Null -> JsonScalarLexicalStyle.Null
@@ -1276,7 +1276,7 @@ private fun analyzeLexicalStyle(literal: ByteArray, old: InternalValueKind): Jso
 }
 
 /** Analyzes the per-character escape choices of one string literal
- * (edit.rs:1506-1579). */
+ * (edit.rs). */
 private fun analyzeStringStyle(literal: ByteArray): StringLexicalStyle? {
     val text = literal.toString(Charsets.UTF_8)
     if (text.isEmpty()) return null
@@ -1352,7 +1352,7 @@ private fun analyzeStringStyle(literal: ByteArray): StringLexicalStyle? {
     return StringLexicalStyle(quote, escapes)
 }
 
-/** Renders the new value in the old lexical style (edit.rs:1581-1613). */
+/** Renders the new value in the old lexical style (edit.rs). */
 private fun renderPreservingStyle(
     value: PortableValue,
     style: JsonScalarLexicalStyle,
@@ -1389,7 +1389,7 @@ private fun renderPreservingStyle(
     }
 }
 
-/** Renders one integer preserving radix and explicit sign (edit.rs:1615-1651). */
+/** Renders one integer preserving radix and explicit sign (edit.rs). */
 private fun renderIntegerStyle(value: BigInteger, style: IntegerLexicalStyle): ByteArray? {
     val output = StringBuilder()
     if (value.signum() < 0) {
@@ -1409,7 +1409,7 @@ private fun renderIntegerStyle(value: BigInteger, style: IntegerLexicalStyle): B
 }
 
 /** Renders one decimal preserving fraction scale, exponent marker/sign, and
- * leading plus/point (edit.rs:1653-1702). */
+ * leading plus/point (edit.rs). */
 private fun renderDecimalStyle(value: PortableValue, style: DecimalLexicalStyle): ByteArray? {
     val coefficient: BigInteger = when (value) {
         is PvDecimal -> value.coefficient
@@ -1447,7 +1447,7 @@ private fun renderDecimalStyle(value: PortableValue, style: DecimalLexicalStyle)
             }
             else -> {
                 // The Rust checked_sub returns None when the scale cannot
-                // absorb the exponent (edit.rs:1682-1687).
+                // absorb the exponent (edit.rs).
                 val negative = exponent.negate().toIntExactOrNull() ?: return null
                 (scale.toLong() - negative.toLong()).toIntExactOrNull()
                     ?.takeIf { it >= 0 } ?: return null
@@ -1492,7 +1492,7 @@ private fun BigInteger.toIntExactOrNull(): Int? =
         null
     }
 
-/** Removes a leading zero before the decimal point (edit.rs:1704-1709). */
+/** Removes a leading zero before the decimal point (edit.rs). */
 private fun removeLeadingZero(text: String): String? {
     val zero = if (text.startsWith("-0.")) 1 else 0
     if (text.length < zero + 2 || text.substring(zero, zero + 2) != "0.") {
@@ -1501,7 +1501,7 @@ private fun removeLeadingZero(text: String): String? {
     return text.removeRange(zero, zero + 1)
 }
 
-/** Renders one non-finite value preserving the explicit sign (edit.rs:1711-1725). */
+/** Renders one non-finite value preserving the explicit sign (edit.rs). */
 private fun renderNonFiniteStyle(bits: Long, style: NonFiniteLexicalStyle): ByteArray? {
     val text: String = when (bits) {
         java.lang.Double.doubleToRawLongBits(Double.POSITIVE_INFINITY) ->
@@ -1515,7 +1515,7 @@ private fun renderNonFiniteStyle(bits: Long, style: NonFiniteLexicalStyle): Byte
     return text.toByteArray(Charsets.US_ASCII)
 }
 
-/** Fixed-point rendering of one integer at a scale (edit.rs:1727-1739). */
+/** Fixed-point rendering of one integer at a scale (edit.rs). */
 private fun decimalFixedText(mantissa: BigInteger, scale: Int): String {
     val text = mantissa.toString()
     val (sign, digits) = if (text.startsWith("-")) {
@@ -1532,7 +1532,7 @@ private fun decimalFixedText(mantissa: BigInteger, scale: Int): String {
 }
 
 /** Renders one string preserving quote and per-character escapes
- * (edit.rs:1741-1753). */
+ * (edit.rs). */
 private fun renderStringStyle(value: String, style: StringLexicalStyle): String {
     val output = StringBuilder(value.length + 2)
     output.append(style.quote)
@@ -1548,7 +1548,7 @@ private fun renderStringStyle(value: String, style: StringLexicalStyle): String 
     return output.toString()
 }
 
-/** The portable kinds a JSON scalar edit accepts (edit.rs:1755-1767). */
+/** The portable kinds a JSON scalar edit accepts (edit.rs). */
 private fun portableJsonKind(value: PortableValue, profile: JsonProfile): JsonValueKind? =
     when (value) {
         is PvNull -> JsonValueKind.Null
@@ -1562,7 +1562,7 @@ private fun portableJsonKind(value: PortableValue, profile: JsonProfile): JsonVa
         else -> null
     }
 
-/** The deterministic profile-canonical literal (edit.rs:1769-1795). */
+/** The deterministic profile-canonical literal (edit.rs). */
 private fun canonicalLiteral(value: PortableValue, profile: JsonProfile): ByteArray {
     val text = when (value) {
         is PvNull -> "null"
@@ -1582,7 +1582,7 @@ private fun canonicalLiteral(value: PortableValue, profile: JsonProfile): ByteAr
     return text.toByteArray(Charsets.US_ASCII)
 }
 
-/** Canonical double-quoted string encoding (edit.rs:1797-1805). */
+/** Canonical double-quoted string encoding (edit.rs). */
 private fun encodeJsonString(value: String, json5: Boolean): String {
     val output = StringBuilder(value.length + 2)
     output.append('"')
@@ -1593,7 +1593,7 @@ private fun encodeJsonString(value: String, json5: Boolean): String {
     return output.toString()
 }
 
-/** One canonical string character (edit.rs:1807-1829). */
+/** One canonical string character (edit.rs). */
 private fun pushJsonStringChar(
     output: StringBuilder,
     character: Char,
@@ -1620,7 +1620,7 @@ private fun pushJsonStringChar(
     }
 }
 
-/** Validates one exact literal candidate for the profile (edit.rs:1831-1862). */
+/** Validates one exact literal candidate for the profile (edit.rs). */
 private fun validateLiteral(
     literal: ByteArray,
     profile: JsonProfile,

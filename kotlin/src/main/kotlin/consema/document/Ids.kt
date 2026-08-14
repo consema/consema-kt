@@ -1,13 +1,13 @@
 // Namespaced identifiers of the document domain.
 //
-// Data authority: https://github.com/consema/consema-rs/blob/main/consema-document/src/lib.rs:344-402 (FormatFamilyId,
-// ProfileId), https://github.com/consema/consema-rs/blob/main/consema-document/src/materialization.rs:11-39
-// (MaterializationStyleId), https://github.com/consema/consema-rs/blob/main/consema-document/src/operation_registry.rs:
-// 8-42 (FormatOperationId). The v1 target profiles and style IDs frozen by
+// Data authority: https://github.com/consema/consema-rs/blob/main/consema-document/src/lib.rs (FormatFamilyId,
+// ProfileId), https://github.com/consema/consema-rs/blob/main/consema-document/src/materialization.rs
+// (MaterializationStyleId), https://github.com/consema/consema-rs/blob/main/consema-document/src/operation_registry.rs
+// (FormatOperationId). The v1 target profiles and style IDs frozen by
 // RFC 0004 §4 are: json.strict@1, jsonc.bounded@1, toml.1.0@1 and
 // json.canonical-compact@1, json.canonical-pretty@1, toml.canonical-
 // document@1 (https://github.com/consema/consema/blob/main/docs/rfcs/0004-materialization-conversion-and-structural-edit-
-// v1.md:98-117). consema-go/go/document/ids.go is a cross-reference only.
+// v1.md). consema-go/go/document/ids.go is a cross-reference only.
 //
 // Kotlin-idiomatic design: immutable data classes with the namespaced `id`
 // spelling kept as the exact language-neutral string and the `version`
@@ -15,7 +15,7 @@
 
 package consema.document
 
-/** Stable namespaced format family contract (lib.rs:344-372). */
+/** Stable namespaced format family contract (lib.rs). */
 data class FormatFamilyId(
     /** Namespace (the exact language-neutral spelling, e.g. "json"). */
     val id: String,
@@ -23,7 +23,7 @@ data class FormatFamilyId(
     val version: Int,
 )
 
-/** Immutable named language profile (lib.rs:374-402). */
+/** Immutable named language profile (lib.rs). */
 data class ProfileId(
     /** Namespace (the exact language-neutral spelling, e.g. "json.strict"). */
     val id: String,
@@ -32,7 +32,7 @@ data class ProfileId(
 )
 
 /** Versioned format-owned materialization style identifier
- * (materialization.rs:11-39). */
+ * (materialization.rs). */
 data class MaterializationStyleId(
     /** Namespaced style ID without version suffix, e.g. "json.canonical-compact". */
     val id: String,
@@ -40,9 +40,9 @@ data class MaterializationStyleId(
     val version: Int,
 )
 
-/** Immutable namespaced operation identifier (operation_registry.rs:8-42).
+/** Immutable namespaced operation identifier (operation_registry.rs).
  * A registry validates its public spelling; `toString` renders the frozen
- * `id@version` form used by EditPlan metadata (operation_registry.rs:38-42). */
+ * `id@version` form used by EditPlan metadata (operation_registry.rs). */
 data class FormatOperationId(
     /** Namespaced identifier without its version suffix. */
     val id: String,

@@ -3,8 +3,8 @@
 //
 // Data authority:
 //   - The registered properties-family codes are transcribed in
-//     kotlin/src/main/kotlin/consema/protocol/ErrorRegistry.kt:351-362 from
-//     https://github.com/consema/consema-rs/blob/main/consema-protocol/src/error_registry.rs:1099-1169 (the twelve
+//     kotlin/src/main/kotlin/consema/protocol/ErrorRegistry.kt from
+//     https://github.com/consema/consema-rs/blob/main/consema-protocol/src/error_registry.rs (the twelve
 //     0.8.0 codes: java-properties.edit.canonical-fallback@1,
 //     java-properties.edit.invalid-placement@1,
 //     java-properties.java-string.invalid-wire@1,
@@ -23,16 +23,16 @@
 //     exchange); the parse/edit/projection/source codes are raised by this
 //     package.
 //   - Fatal formation failures use the frozen core.parse.resource-limit@1
-//     (error_registry.rs:39-42) and core.source.* codes (source_v1.rs:
-//     410-421), mapped in Encoding.kt.
-//   - RFC 0016 §6 (https://github.com/consema/consema/blob/main/docs/rfcs/0016-go-api-mapping-v1.md:194-200): SDK errors
+//     (error_registry.rs) and core.source.* codes (source_v1.rs
+//), mapped in Encoding.kt.
+//   - RFC 0016 §6 (https://github.com/consema/consema/blob/main/docs/rfcs/0016-go-api-mapping-v1.md): SDK errors
 //     carry the stable registered code; error text is human presentation only.
 //
 // Kotlin-idiomatic design: fatal formation failure is a typed exception
 // carrying the frozen registered code (the established consema.core/
 // consema.document style); the diagnostic factory binds the current (v7)
 // error registry because the v7 array is the ordered superset containing
-// every properties-family code (ErrorRegistry.kt:133-142).
+// every properties-family code (kotlin/src/main/kotlin/consema/protocol/ErrorRegistry.kt).
 
 package consema.properties
 
@@ -48,7 +48,7 @@ import consema.protocol.SourceLocation
 /**
  * Registry bound to every diagnostic this package constructs: the semantic-
  * model v7 registry (187 codes), the ordered superset containing all
- * properties-family codes (ErrorRegistry.kt:133-142). The L5 conformance
+ * properties-family codes (kotlin/src/main/kotlin/consema/protocol/ErrorRegistry.kt). The L5 conformance
  * runner may rebind per-suite registry versions.
  */
 internal val PROPERTIES_DIAGNOSTIC_REGISTRY: ErrorCodeRegistry =
@@ -56,7 +56,7 @@ internal val PROPERTIES_DIAGNOSTIC_REGISTRY: ErrorCodeRegistry =
 
 /**
  * The fatal formation failure of the properties parser (the Rust
- * FatalFormationFailure, lib.rs:643-790). Exceeding a parse limit is a
+ * FatalFormationFailure, lib.rs). Exceeding a parse limit is a
  * ResourceLimit failure carrying the frozen limit code and the stable limit
  * name (RFC 0016 §5.1); source construction failures carry their core.source
  * code. A fatal failure returns no Document and no partial snapshot.
@@ -75,7 +75,7 @@ class PropertiesFormationException(
     override val cause: Exception? = null,
 ) : Exception(message, cause)
 
-/** Resource-limit fatal failure (parser.rs:830-845; error_registry.rs:39-42). */
+/** Resource-limit fatal failure (parser.rs; error_registry.rs). */
 internal fun propertiesResourceLimit(name: String, observed: Int, limit: Int): PropertiesFormationException =
     PropertiesFormationException(
         "core.parse.resource-limit@1",
@@ -109,7 +109,7 @@ class PropertiesAccessException(val kind: PropertiesAccessErrorKind) :
  * Builds one snapshot-bound diagnostic in the `core.diagnostic@1` shape.
  * The primary source location uses the process-local snapshot identity as
  * the caller-stable source ID (the same convention as the JSON family,
- * kotlin/src/main/kotlin/consema/json/Errors.kt:95-101).
+ * kotlin/src/main/kotlin/consema/json/Errors.kt).
  */
 internal fun sourceDiagnostic(
     authority: DocumentAuthority,

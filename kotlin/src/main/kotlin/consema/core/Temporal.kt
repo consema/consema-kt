@@ -1,16 +1,16 @@
 // The four temporal PortableValue kinds: Date, Time, LocalDateTime,
 // OffsetDateTime.
 //
-// Data authority: RFC 0016 §4.1 (https://github.com/consema/consema/blob/main/docs/rfcs/0016-go-api-mapping-v1.md:140-143)
-// plus the Rust constructors (https://github.com/consema/consema-rs/blob/main/consema-core/src/value.rs:419-576):
+// Data authority: RFC 0016 §4.1 (https://github.com/consema/consema/blob/main/docs/rfcs/0016-go-api-mapping-v1.md)
+// plus the Rust constructors (https://github.com/consema/consema-rs/blob/main/consema-core/src/value.rs):
 //   - Date uses the proleptic Gregorian calendar with astronomical year
 //     numbering; the leap rule operates on the year's absolute magnitude
-//     (value.rs:433-434);
+//     (value.rs);
 //   - Time rejects leap seconds and 24:00:00, and requires the fractional
-//     second to be an exact finite decimal in [0, 1) (value.rs:475-492,
+//     second to be an exact finite decimal in [0, 1) (value.rs,
 //     is_fraction at 337-352);
 //   - OffsetDateTime requires |offset_seconds| < 24 * 60 * 60
-//     (value.rs:553-563).
+//     (value.rs).
 //
 // Validation happens at construction (Kotlin idiom): an invalid calendar
 // date, time, or offset throws [InvalidTemporalException] carrying the
@@ -21,7 +21,7 @@ package consema.core
 
 import java.math.BigInteger
 
-/** The frozen invalid-temporal code (https://github.com/consema/consema-rs/blob/main/consema-pvce/src/lib.rs:1082). */
+/** The frozen invalid-temporal code (https://github.com/consema/consema-rs/blob/main/consema-pvce/src/lib.rs). */
 internal const val CODE_INVALID_TEMPORAL = "core.pvce.invalid-temporal@1"
 
 /**
@@ -124,7 +124,7 @@ data class PvOffsetDateTime(val local: PvLocalDateTime, val offsetSeconds: Int) 
 
 /**
  * Reports whether the canonical decimal represents a value in [0, 1) (the
- * Rust Decimal::is_fraction, https://github.com/consema/consema-rs/blob/main/consema-core/src/value.rs:337-352): a
+ * Rust Decimal::is_fraction, https://github.com/consema/consema-rs/blob/main/consema-core/src/value.rs): a
  * non-negative coefficient, and either a zero coefficient or an exponent
  * small enough that the coefficient's decimal digits plus the exponent
  * is <= 0.

@@ -1,16 +1,16 @@
 // The frozen XML format operation registry (RFC 0012 §11; RFC 0004 §10).
 //
 // Data authority:
-//   - RFC 0012 §11 (https://github.com/consema/consema/blob/main/docs/rfcs/0012-xml-1.0-safe-profile-v1.md:375-403):
+//   - RFC 0012 §11 (https://github.com/consema/consema/blob/main/docs/rfcs/0012-xml-1.0-safe-profile-v1.md):
 //     V1 publishes exactly these eight snapshot-bound operations:
 //     xml.edit.replace-text@1, xml.edit.insert-attribute@1,
 //     xml.edit.remove-attribute@1, xml.edit.rename-attribute@1,
 //     xml.edit.set-attribute-value@1, xml.edit.insert-element@1,
 //     xml.edit.remove-element@1, xml.edit.rename-element@1.
-//   - https://github.com/consema/consema-rs/blob/main/consema-xml/src/operation_registry.rs:16-93 is the exact
+//   - https://github.com/consema/consema-rs/blob/main/consema-xml/src/operation_registry.rs is the exact
 //     byte-arbitration source of the eight descriptor records (ids, target
 //     roles, argument names/kinds, support classes); the frozen surface test
-//     (operation_registry.rs:95-125) pins the exact eight-operation surface
+//     (operation_registry.rs) pins the exact eight-operation surface
 //     and the Supported classification of every record.
 //   - consema-go/go/xml has no registry file; the operation_test.go surface is a
 //     cross-check against the Rust records only.
@@ -18,14 +18,14 @@
 // Kotlin-idiomatic design: the registry is an immutable list of descriptor
 // data classes per profile; argument kinds use the language-neutral
 // spellings of the Rust OperationArgumentKind (String, Placement), matching
-// the json family registry (kotlin/src/main/kotlin/consema/json/OperationRegistry.kt:28-44).
+// the json family registry (kotlin/src/main/kotlin/consema/json/OperationRegistry.kt).
 
 package consema.xml
 
 import consema.document.FormatOperationId
 
-/** Argument kind of one operation descriptor (operation_registry.rs:22-25;
- * the json family transcription json/OperationRegistry.kt:28-44). */
+/** Argument kind of one operation descriptor (operation_registry.rs;
+ * the json family transcription kotlin/src/main/kotlin/consema/json/OperationRegistry.kt). */
 enum class OperationArgumentKind {
     /** Decoded name or text (String). */
     String,
@@ -34,13 +34,13 @@ enum class OperationArgumentKind {
     Placement,
 }
 
-/** Support classification of one operation (operation_registry.rs:26). */
+/** Support classification of one operation (operation_registry.rs). */
 enum class OperationSupport {
     /** Structural operation supported by the xml.1.0-safe@1 profile. */
     Supported,
 }
 
-/** One immutable operation descriptor (operation_registry.rs:16-93). */
+/** One immutable operation descriptor (operation_registry.rs). */
 data class XmlOperationDescriptor(
     /** Exact immutable operation ID/version. */
     val id: FormatOperationId,
@@ -54,8 +54,8 @@ data class XmlOperationDescriptor(
 
 /**
  * Returns the validated operation registry for one exact XML profile
- * (operation_registry.rs:9-14). The profile publishes the frozen eight-
- * record surface (operation_registry.rs:95-125).
+ * (operation_registry.rs). The profile publishes the frozen eight-
+ * record surface (operation_registry.rs).
  */
 fun formatOperationRegistry(profile: XmlProfile): List<XmlOperationDescriptor> =
     descriptors()
@@ -72,7 +72,7 @@ private fun descriptor(
         OperationSupport.Supported,
     )
 
-/** The frozen eight descriptor records (operation_registry.rs:16-75). */
+/** The frozen eight descriptor records (operation_registry.rs). */
 private fun descriptors(): List<XmlOperationDescriptor> =
     listOf(
         descriptor(

@@ -2,10 +2,10 @@
 //
 // Data authority:
 //   - RFC 0004 §3-§8 (https://github.com/consema/consema/blob/main/docs/rfcs/0004-materialization-conversion-and-
-//     structural-edit-v1.md:56-218): the common MaterializationRequest v1,
+//     structural-edit-v1.md): the common MaterializationRequest v1,
 //     ExactOnly representability, the completion algebra, and the
 //     provenance direction (portable input locations to the new Document).
-//   - RFC 0005 §9 (https://github.com/consema/consema/blob/main/docs/rfcs/0005-json-family-production-v1.md:195-218):
+//   - RFC 0005 §9 (https://github.com/consema/consema/blob/main/docs/rfcs/0005-json-family-production-v1.md):
 //     styles json5.canonical-compact@1 / json5.canonical-pretty@1; canonical
 //     JSON5 deliberately emits the strict-JSON subset for ordinary core
 //     values and emits Infinity/-Infinity/NaN/-NaN only for the four frozen
@@ -15,10 +15,10 @@
 //   - conformance/vectors/json-family-v2.json (json5.materialize.*) pins the
 //     golden output bytes and failure names; https://github.com/consema/consema-rs/blob/main/consema-json/src/
 //     materialization.rs is the byte-arbitration authority (writer
-//     materialization.rs:154-494, provenance materialization.rs:500-756).
+//     materialization.rs, provenance materialization.rs).
 //   - The Kotlin document package owns the completion algebra types
 //     (MaterializationResult/CompleteMaterialization/...,
-//     kotlin/src/main/kotlin/consema/document/Materialization.kt:286-371); the failure-name
+//     kotlin/src/main/kotlin/consema/document/Materialization.kt); the failure-name
 //     spellings asserted by the vectors are mapped here.
 //
 // Kotlin-idiomatic design: a bounded output buffer wraps the JDK byte
@@ -61,7 +61,7 @@ import java.math.BigInteger
 
 /**
  * Materializes one complete PortableValue into a new immutable JSON or JSONC
- * document (materialization.rs:17-32). A failure contains no Document, no
+ * document (materialization.rs). A failure contains no Document, no
  * partial bytes, and no provenance that can be mistaken for a result
  * (RFC 0004 §3).
  */
@@ -80,7 +80,7 @@ fun materialize(
 }
 
 /** The canonical scalar/container fragment writer used by structural edits
- * (materialization.rs:34-52). */
+ * (materialization.rs). */
 internal fun canonicalFragment(
     value: PortableValue,
     profile: JsonProfile,
@@ -141,7 +141,7 @@ private fun materializeComplete(
     )
 }
 
-/** The frozen output style (materialization.rs:95-111). */
+/** The frozen output style (materialization.rs). */
 internal enum class JsonStyle {
     Compact,
     Pretty,
@@ -154,7 +154,7 @@ internal enum class JsonStyle {
     fun isJson5(): Boolean = this == Json5Compact || this == Json5Pretty
 }
 
-/** Resolves the target profile (materialization.rs:113-125). */
+/** Resolves the target profile (materialization.rs). */
 private fun requestedProfile(request: MaterializationRequest): JsonProfile =
     when {
         request.targetProfile.id == "json.strict" && request.targetProfile.version == 1 ->
@@ -169,7 +169,7 @@ private fun requestedProfile(request: MaterializationRequest): JsonProfile =
         else -> throw MaterializationException(MaterializationFailureKind.UNSUPPORTED_PROFILE)
     }
 
-/** Resolves the style for the exact profile (materialization.rs:127-142). */
+/** Resolves the style for the exact profile (materialization.rs). */
 private fun requestedStyle(request: MaterializationRequest, profile: JsonProfile): JsonStyle =
     when {
         (profile == JsonProfile.StrictV1 || profile == JsonProfile.JsoncBoundedV1) &&
@@ -192,7 +192,7 @@ private fun requestedStyle(request: MaterializationRequest, profile: JsonProfile
     }
 
 /** Derives the closure parse limits from the materialization limits
- * (materialization.rs:144-152). */
+ * (materialization.rs). */
 private fun parseLimits(limits: MaterializationLimits): ParseLimits =
     ParseLimits(
         maxSourceBytes = limits.maxOutputBytes,
@@ -245,7 +245,7 @@ private class JsonWriter(
 
     private fun writeDecimal(value: PvDecimal) {
         // The canonical exact decimal spelling is coefficient e exponent
-        // (materialization.rs:257-268).
+        // (materialization.rs).
         output.pushBytes(
             "${value.coefficient}e${value.exponent}".toByteArray(Charsets.US_ASCII),
         )
@@ -268,8 +268,8 @@ private class JsonWriter(
                 )
                 code == 0x2028 || code == 0x2029 -> {
                     // Canonical JSON5 escapes the line separators; the
-                    // strict/JSONC styles emit them raw (materialization.rs:
-                    // 285-288).
+                    // strict/JSONC styles emit them raw (materialization.rs
+ //).
                     if (style.isJson5()) {
                         output.pushBytes(
                             "\\u%04x".format(code).toByteArray(Charsets.US_ASCII),
@@ -286,7 +286,7 @@ private class JsonWriter(
 
     private fun writeBinaryFloat64(bits: Long, path: ValuePath) {
         // Only the four frozen JSON5 non-finite spellings are representable
-        // (materialization.rs:299-317; RFC 0005 §6, §9).
+        // (materialization.rs; RFC 0005 §6, §9).
         val spelling: String = when (bits) {
             java.lang.Double.doubleToRawLongBits(Double.POSITIVE_INFINITY) -> "Infinity"
             java.lang.Double.doubleToRawLongBits(Double.NEGATIVE_INFINITY) -> "-Infinity"
@@ -420,7 +420,7 @@ private class JsonWriter(
         )
 }
 
-/** Bounded byte accumulation (materialization.rs:456-498). */
+/** Bounded byte accumulation (materialization.rs). */
 private class BoundedOutput(private val max: Int) {
     private val bytes = java.io.ByteArrayOutputStream()
 
@@ -447,7 +447,7 @@ private class BoundedOutput(private val max: Int) {
     fun finish(): ByteArray = bytes.toByteArray()
 }
 
-/** Input-to-output provenance collection (materialization.rs:500-756). */
+/** Input-to-output provenance collection (materialization.rs). */
 private class ProvenanceBuilder(
     private val document: Document,
     private val limits: MaterializationLimits,
@@ -634,7 +634,7 @@ private class ProvenanceBuilder(
             MaterializationProvenanceEntry(input, outputs)
     }
 
-    /** Checked provenance-unit arithmetic (materialization.rs:703-708). */
+    /** Checked provenance-unit arithmetic (materialization.rs). */
     private fun checkedProvenanceUnits(left: Int, right: Int): Int {
         if (left > Int.MAX_VALUE - right) {
             throw MaterializationException(
@@ -665,7 +665,7 @@ private class ProvenanceBuilder(
 }
 
 /** The frozen failure-name spellings asserted by the shared vectors
- * (json_family_v2.rs:887-898, materialization.rs:327-351). */
+ * (json_family_v2.rs, materialization.rs). */
 internal fun materializationFailureName(kind: MaterializationFailureKind): String =
     when (kind) {
         MaterializationFailureKind.INVALID_REQUEST -> "InvalidRequest"

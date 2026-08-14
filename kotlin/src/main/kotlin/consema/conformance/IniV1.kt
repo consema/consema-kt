@@ -3,8 +3,8 @@
 //
 // Data authority: https://github.com/consema/consema-rs/blob/main/consema-conformance/src/ini_v1.rs (the per-case
 // dispatch and every fact are transcribed from the Rust handlers; the
-// capability mapping at ini_v1.rs:112-126 and the case table at
-// ini_v1.rs:130-152); the vector file itself drives every input and
+// capability mapping at ini_v1.rs and the case table at
+// ini_v1.rs); the vector file itself drives every input and
 // expectation (conformance/README.md rules 3-4). consema-go/go/conformance/ini_v1.go
 // is a cross-reference only.
 //
@@ -142,7 +142,7 @@ private fun runIniV1Case(case: CaseData) {
     }
 }
 
-/** formation.portable-lossless (ini_v1.rs:155-188). */
+/** formation.portable-lossless (ini_v1.rs). */
 private fun portableLossless(case: CaseData) {
     val document = parseIni(case)
     ensure(
@@ -157,7 +157,7 @@ private fun portableLossless(case: CaseData) {
     )
 }
 
-/** formation.profile-counterexample-matrix (ini_v1.rs:190-230). */
+/** formation.profile-counterexample-matrix (ini_v1.rs). */
 private fun profileCounterexamples(case: CaseData) {
     val samples = inputSequence(case, "samples") ?: fail("missing input.samples")
     val profiles = listOf(
@@ -188,7 +188,7 @@ private fun profileCounterexamples(case: CaseData) {
     }
 }
 
-/** formation.windows-utf16-case-and-quote (ini_v1.rs:232-275). */
+/** formation.windows-utf16-case-and-quote (ini_v1.rs). */
 private fun windowsUtf16(case: CaseData) {
     val bytes = decodeHex(inputString(case, "source_hex") ?: fail("missing input.source_hex"))
         ?: fail("invalid hex")
@@ -217,7 +217,7 @@ private fun windowsUtf16(case: CaseData) {
     )
 }
 
-/** formation.windows-explicit-code-page (ini_v1.rs:277-299). */
+/** formation.windows-explicit-code-page (ini_v1.rs). */
 private fun windowsCodePage(case: CaseData) {
     val bytes = decodeHex(inputString(case, "source_hex") ?: fail("missing input.source_hex"))
         ?: fail("invalid hex")
@@ -241,7 +241,7 @@ private fun windowsCodePage(case: CaseData) {
     )
 }
 
-/** formation.python-default-continuation-raw (ini_v1.rs:301-326). */
+/** formation.python-default-continuation-raw (ini_v1.rs). */
 private fun pythonMultiline(case: CaseData) {
     val document = parseIni(case)
     val comparisonKeys = document.entries().map { it.comparisonKey }
@@ -262,7 +262,7 @@ private fun pythonMultiline(case: CaseData) {
     )
 }
 
-/** formation.python-unicode16-optionxform (ini_v1.rs:328-347). */
+/** formation.python-unicode16-optionxform (ini_v1.rs). */
 private fun pythonOptionxform(case: CaseData) {
     val document = parseIni(case)
     val comparisons = document.entries().map { it.comparisonKey }
@@ -276,7 +276,7 @@ private fun pythonOptionxform(case: CaseData) {
     )
 }
 
-/** formation.recovery-never-fabricates-entry (ini_v1.rs:349-372). */
+/** formation.recovery-never-fabricates-entry (ini_v1.rs). */
 private fun recoveredIsAtomic(case: CaseData) {
     val document = parseIni(case)
     val projectionCode = when (
@@ -302,10 +302,10 @@ private fun recoveredIsAtomic(case: CaseData) {
     )
 }
 
-/** query.native-order-and-profile-equivalence (ini_v1.rs:374-429). The
+/** query.native-order-and-profile-equivalence (ini_v1.rs). The
  * Kotlin INI family completes the whole query at once, so the Rust
  * terminal-state fact (Completed) holds by the family contract
- * (ini/Query.kt:28-30). */
+ * (kotlin/src/main/kotlin/consema/ini/Query.kt). */
 private fun nativeQuery(case: CaseData) {
     val document = parseIni(case)
     val expression = QueryExpression(ExpressionKind.Input)
@@ -344,7 +344,7 @@ private fun nativeQuery(case: CaseData) {
     )
 }
 
-/** query.validation-limit-cancellation (ini_v1.rs:474-518): the invalid
+/** query.validation-limit-cancellation (ini_v1.rs): the invalid
  * composition fails validation; the all-entries query under the vector
  * result limit fails with the resource-limit code; the ordered cursor
  * yields the first match and then reports the Cancelled terminal. The
@@ -404,7 +404,7 @@ private fun queryFailures(case: CaseData) {
     )
 }
 
-/** query.syntax-decoded-structure-order (ini_v1.rs:431-472). */
+/** query.syntax-decoded-structure-order (ini_v1.rs). */
 private fun syntaxQuery(case: CaseData) {
     val document = parseIni(case)
     val text = inputString(case, "text") ?: fail("missing input.text")
@@ -449,7 +449,7 @@ private fun syntaxQuery(case: CaseData) {
     )
 }
 
-/** projection.exact-duplicate-entry-mapping (ini_v1.rs:520-568). */
+/** projection.exact-duplicate-entry-mapping (ini_v1.rs). */
 private fun projectionExact(case: CaseData) {
     val document = parseIni(case)
     val result = document.project(ProjectionRequest.bestExactEntryMapping())
@@ -478,7 +478,7 @@ private fun projectionExact(case: CaseData) {
     )
 }
 
-/** projection.explicit-object-collapse (ini_v1.rs:570-613). */
+/** projection.explicit-object-collapse (ini_v1.rs). */
 private fun projectionCollapse(case: CaseData) {
     val document = parseIni(case)
     val comparison = when (inputString(case, "comparison")) {
@@ -518,7 +518,7 @@ private fun projectionCollapse(case: CaseData) {
     )
 }
 
-/** projection.fragmented-value-provenance (ini_v1.rs:615-640). */
+/** projection.fragmented-value-provenance (ini_v1.rs). */
 private fun projectionFragments(case: CaseData) {
     val python = parseText(
         IniProfile.PythonConfigParserV1,
@@ -552,7 +552,7 @@ private fun projectionFragments(case: CaseData) {
     )
 }
 
-/** materialization.all-canonical-styles (ini_v1.rs:642-697). */
+/** materialization.all-canonical-styles (ini_v1.rs). */
 private fun materializationStyles(case: CaseData) {
     val portable = nestedMapping(caseInput(case, "portable") ?: fail("missing input.portable"))
     val windows = nestedMapping(caseInput(case, "windows") ?: fail("missing input.windows"))
@@ -586,7 +586,7 @@ private fun materializationStyles(case: CaseData) {
     )
 }
 
-/** materialization.atomic-failures-and-limits (ini_v1.rs:699-744). */
+/** materialization.atomic-failures-and-limits (ini_v1.rs). */
 private fun materializationLimitsCase(case: CaseData) {
     val scalar = PvString("x")
     val scalarResult = materialize(scalar, materializationRequest(IniProfile.PortableV1))
@@ -629,7 +629,7 @@ private fun materializationLimitsCase(case: CaseData) {
     )
 }
 
-/** edit.all-eight-operations (ini_v1.rs:746-821). */
+/** edit.all-eight-operations (ini_v1.rs). */
 private fun editAllOperations(case: CaseData) {
     val source = inputString(case, "source") ?: fail("missing input.source")
     val profile = iniProfile(case)
@@ -746,7 +746,7 @@ private fun editAllOperations(case: CaseData) {
     )
 }
 
-/** edit.dry-run-patch-proof-and-atomic-failure (ini_v1.rs:823-869). */
+/** edit.dry-run-patch-proof-and-atomic-failure (ini_v1.rs). */
 private fun editAuditArtifacts(case: CaseData) {
     val document = parseIni(case)
     val transaction = EditTransactionBuilder.new(document)
@@ -814,7 +814,7 @@ private fun editAuditArtifacts(case: CaseData) {
     )
 }
 
-/** resource.formation-limit-matrix (ini_v1.rs:871-905). */
+/** resource.formation-limit-matrix (ini_v1.rs). */
 private fun formationLimits(case: CaseData) {
     val descriptors = inputSequence(case, "limits") ?: fail("missing input.limits")
     var fatal = 0
@@ -855,7 +855,7 @@ private fun formationLimits(case: CaseData) {
     )
 }
 
-/** resource.projection-limit-matrix (ini_v1.rs:907-936). */
+/** resource.projection-limit-matrix (ini_v1.rs). */
 private fun projectionLimitsCase(case: CaseData) {
     val document = parseIni(case)
     val names = inputStrings(case, "limits")
@@ -881,7 +881,7 @@ private fun projectionLimitsCase(case: CaseData) {
     ensure(failedCount.toLong() == expectedLong(case, "failed_count"))
 }
 
-/** registry.frozen-eight-operation-surface (ini_v1.rs:938-958). */
+/** registry.frozen-eight-operation-surface (ini_v1.rs). */
 private fun operationRegistry(case: CaseData) {
     val expected = expectedStrings(case, "operations")
     for (profileNameValue in inputStrings(case, "profiles")) {
@@ -912,7 +912,7 @@ private fun collectEdit(
 }
 
 /** The reparse-and-reproject closure of one canonical materialization
- * (ini_v1.rs:664-668). */
+ * (ini_v1.rs). */
 private fun closure(document: IniDocument, input: consema.core.PortableValue): Boolean =
     when (val projected = document.project(ProjectionRequest.bestExactEntryMapping())) {
         is ProjectionResult.Complete -> equal(projected.projection.value, input)
@@ -932,7 +932,7 @@ private fun materializeComplete(
 }
 
 /** The frozen canonical materialization request of one profile
- * (ini_v1.rs:1032-1052). */
+ * (ini_v1.rs). */
 private fun materializationRequest(profile: IniProfile): MaterializationRequest =
     when (profile) {
         IniProfile.PortableV1 -> MaterializationRequest.new(
@@ -952,7 +952,7 @@ private fun materializationRequest(profile: IniProfile): MaterializationRequest 
     }
 
 /** Decodes the vector `{section, entries: [[key, value]]}` descriptor into
- * one nested EntryMapping (ini_v1.rs:1002-1030). */
+ * one nested EntryMapping (ini_v1.rs). */
 private fun nestedMapping(descriptor: PortableValue): PvEntryMapping {
     val sections = descriptor as? PvArray ?: fail("mapping descriptor must be Sequence")
     val outer = EntryMappingBuilder()
@@ -979,7 +979,7 @@ private fun nestedMapping(descriptor: PortableValue): PvEntryMapping {
 }
 
 /** The first-section/first-entry triple of one projected Object
- * (ini_v1.rs:984-1000). */
+ * (ini_v1.rs). */
 private fun objectTriplet(value: PortableValue): Triple<String, String, String> {
     val sections = value as? PvObject ?: fail("projected outer Object missing")
     val section = sections.entries().firstOrNull() ?: fail("projected section missing")
@@ -1058,7 +1058,7 @@ private fun queryCapabilities(): CapabilitySet {
     return set
 }
 
-/** The exhaustive-coverage invariant the vectors assert (ini_v1.rs:1129-1144). */
+/** The exhaustive-coverage invariant the vectors assert (ini_v1.rs). */
 private fun exactCoverage(document: IniDocument): Boolean {
     val pieces = document.losslessStructuralIndex().pieces()
     if (document.source().isEmpty) {

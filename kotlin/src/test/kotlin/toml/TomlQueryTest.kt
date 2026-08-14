@@ -3,7 +3,7 @@
 // Data authority: conformance/vectors/syntax-query-v1.json (syntax.toml.*
 // cases, lines 54-99), conformance/vectors/toml-v1.json (toml.query.
 // nested-entry-order, toml.query.aot-element-order), RFC 0001 §4, and the
-// Rust crate query tests (consema-toml/src/query.rs:490-652). The L5
+// Rust crate query tests (consema-toml/src/query.rs). The L5
 // conformance runner executes the shared vectors directly; these unit tests
 // pin the golden transcriptions in the committed CI.
 
@@ -233,7 +233,7 @@ class TomlQueryTest {
         assertEquals(listOf(0, 1), matches.map { (it as TomlMatch.ArrayElement).ordinal })
     }
 
-    /** query.rs:516-547: a nested entry query retains the direct TOML
+    /** query.rs: a nested entry query retains the direct TOML
      * roles. */
     @Test
     fun nestedEntryQueryRetainsDirectTomlRoles() {
@@ -246,7 +246,7 @@ class TomlQueryTest {
         assertEquals(listOf("host", "ports"), matches.map { (it as TomlMatch.Entry).name })
     }
 
-    /** query.rs:550-596: selection and cancellation apply to native
+    /** query.rs: selection and cancellation apply to native
      * queries. */
     @Test
     fun arrayQueryObeysSelectionAndCancellation() {
@@ -281,7 +281,7 @@ class TomlQueryTest {
         assertEquals(QueryFailureKind.CANCELLED, failure.kind)
     }
 
-    /** query.rs:598-652: the syntax match role is TomlSyntaxPiece and the
+    /** query.rs: the syntax match role is TomlSyntaxPiece and the
      * source text is byte-exact. */
     @Test
     fun syntaxMatchCarriesPieceRoleAndText() {
@@ -299,7 +299,7 @@ class TomlQueryTest {
         assertEquals("# note", result.matches()[0].text())
     }
 
-    /** query.rs:88-113: a mismatched domain is refused before execution. */
+    /** query.rs: a mismatched domain is refused before execution. */
     @Test
     fun domainMismatchIsRefused() {
         val foreign = ExecutableQuery.bind(

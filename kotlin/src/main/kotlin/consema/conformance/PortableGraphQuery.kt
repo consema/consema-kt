@@ -1,7 +1,7 @@
 // The conformance-runner portable-graph query executor.
 //
 // Data authority (language-neutral sources first):
-//   - https://github.com/consema/consema-rs/blob/main/consema-conformance/src/portable_graph_v1.rs:184-219 (the
+//   - https://github.com/consema/consema-rs/blob/main/consema-conformance/src/portable_graph_v1.rs (the
 //     graph.query cases: the Input expression over a graph yields the root
 //     nodes, the pipeline operators run in order, and the final matches are
 //     compared by builder node ID).
@@ -48,7 +48,7 @@ internal sealed class GraphQueryMatch {
 /**
  * Evaluates one validated portable-graph query over one graph and returns
  * the ordered final matches (the graph.query execution path,
- * portable_graph_v1.rs:184-219). The Input expression yields the ordered
+ * portable_graph_v1.rs). The Input expression yields the ordered
  * root nodes; each pipeline operator transforms the match stream.
  */
 internal fun executeGraphQuery(
@@ -178,7 +178,7 @@ private fun applyGraphSelection(matches: List<GraphQueryMatch>, operatorId: Stri
     }
 
 /** Builds one pipeline expression from the vector's operator spellings
- * (portable_graph_v1.rs:189-193). */
+ * (portable_graph_v1.rs). */
 internal fun graphQueryExpression(pipeline: List<String>): QueryExpression {
     var expression = QueryExpression(ExpressionKind.Input)
     for (operator in pipeline) {
@@ -208,7 +208,7 @@ private fun parseGraphOperator(text: String): Pair<String, Int> {
 }
 
 /** The builder-local numeric ID of one final node match
- * (portable_graph_v1.rs:206-213). */
+ * (portable_graph_v1.rs). */
 internal fun graphMatchNodeId(match: GraphQueryMatch): ULong = when (match) {
     is GraphQueryMatch.Node -> match.node.asUint64()
     is GraphQueryMatch.SequenceElement -> match.node.asUint64()

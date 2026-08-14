@@ -2,7 +2,7 @@
 // classification (RFC 0012 §4-7).
 //
 // Data authority:
-//   - RFC 0012 §4 (https://github.com/consema/consema/blob/main/docs/rfcs/0012-xml-1.0-safe-profile-v1.md:132-166):
+//   - RFC 0012 §4 (https://github.com/consema/consema/blob/main/docs/rfcs/0012-xml-1.0-safe-profile-v1.md):
 //     Complete | Recovered | FatalFormationFailure; recovery only at
 //     deterministic markup boundaries; the parser never invents a closing
 //     tag, namespace binding, attribute value, entity replacement, or second
@@ -19,12 +19,12 @@
 //     adjacent Text occurrences are not merged.
 //   - RFC 0012 §7 (0012-...:258-282): every non-empty raw byte belongs to
 //     exactly one ordered structural piece; the frozen v1 kind set.
-//   - https://github.com/consema/consema-rs/blob/main/consema-xml/src/document.rs:17-94 (XmlSyntaxKind), document.rs:
-//     96-120 (QNameFacts), document.rs:122-172 (ReferenceFragment),
-//     document.rs:174-387 (the occurrence data structs), document.rs:388-568
-//     (Document), document.rs:570-763 (XmlDocument/XmlElement/XmlContentItem),
-//     document.rs:765-799 (text_semantic and the CR/CRLF->LF normalization),
-//     document.rs:801-890 (XmlSyntaxKind::as_str/from_name).
+//   - https://github.com/consema/consema-rs/blob/main/consema-xml/src/document.rs (XmlSyntaxKind), document.rs
+// (QNameFacts), document.rs (ReferenceFragment),
+//     document.rs (the occurrence data structs), document.rs
+//     (Document), document.rs (XmlDocument/XmlElement/XmlContentItem),
+//     document.rs (text_semantic and the CR/CRLF->LF normalization),
+//     document.rs (XmlSyntaxKind::as_str/from_name).
 //   - consema-go/go/xml/document.go is a cross-reference only.
 //
 // The `xml.*` diagnostic codes are registered by RFC 0012 as part of the
@@ -34,13 +34,13 @@
 // transcription ErrorRegistry.kt), so this family carries its own
 // [XmlDiagnostic] record instead of the registry-validated protocol
 // Diagnostic (the Rust xml parser constructs consema_core::Diagnostic
-// directly, parser.rs:1742-1748).
+// directly, parser.rs).
 //
 // Kotlin-idiomatic design (NOT a translation): the occurrence families are
 // immutable data classes; child content is a sealed [XmlContent] hierarchy
 // so `when` over it is exhaustive; handles are immutable classes carrying
 // (document, index) like the Go handle structs; the arena is an ordered
-// List plus an index-parallel parent table (document.rs:403-407).
+// List plus an index-parallel parent table (document.rs).
 
 package consema.xml
 
@@ -60,9 +60,9 @@ import consema.protocol.Severity
 import consema.protocol.SourceLocation
 
 /**
- * Closed XML lossless syntax-piece classification (document.rs:17-94). The
+ * Closed XML lossless syntax-piece classification (document.rs). The
  * enum order is the Rust declaration order; the wire/query vocabulary is
- * [asStr] (document.rs:801-844), which is byte-identical to the vector
+ * [asStr] (document.rs), which is byte-identical to the vector
  * spellings (conformance/vectors/xml-1-0-safe-v1.json xml.syntax-query.*
  * cases).
  */
@@ -180,7 +180,7 @@ enum class XmlSyntaxKind {
     ;
 
     /** Stable kind name used by the lossless syntax query protocol
-     * (document.rs:801-844). */
+     * (document.rs). */
     fun asStr(): String =
         when (this) {
             Bom -> "bom"
@@ -224,14 +224,14 @@ enum class XmlSyntaxKind {
 
     companion object {
         /** Resolves a stable kind name from the lossless syntax query
-         * protocol (document.rs:846-889). */
+         * protocol (document.rs). */
         fun fromName(name: String): XmlSyntaxKind? =
             entries.firstOrNull { it.asStr() == name }
     }
 }
 
 /** One lexical QName with its source-derived facts (RFC 0012 §5;
- * document.rs:96-120). */
+ * document.rs). */
 data class QNameFacts(
     /** Original prefix spelling, when present. */
     val prefix: String?,
@@ -245,16 +245,16 @@ data class QNameFacts(
     val localSpan: Span,
 ) {
     /** Resolves this QName against an element's in-scope scope
-     * (document.rs:111-120). */
+     * (document.rs). */
     fun qname(): QName = QName(prefix, local)
 }
 
 /**
  * One ordered text or attribute-value fragment (RFC 0012 §6;
- * document.rs:135-172).
+ * document.rs).
  */
 sealed class ReferenceFragment {
-    /** Exact source span of this fragment (document.rs:122-133). */
+    /** Exact source span of this fragment (document.rs). */
     abstract val span: Span
 
     /** Literal character data. */
@@ -297,7 +297,7 @@ sealed class ReferenceFragment {
 }
 
 /** One XML namespace declaration association (RFC 0012 §5;
- * document.rs:174-187). */
+ * document.rs). */
 data class XmlNamespaceBindingData(
     /** Document-wide binding ordinal for stable identity. */
     val ordinal: Long,
@@ -311,7 +311,7 @@ data class XmlNamespaceBindingData(
     val uri: String,
 )
 
-/** One XML attribute association (RFC 0012 §5-6; document.rs:189-211). */
+/** One XML attribute association (RFC 0012 §5-6; document.rs). */
 data class XmlAttributeData(
     /** Document-wide attribute ordinal for stable identity. */
     val ordinal: Long,
@@ -333,7 +333,7 @@ data class XmlAttributeData(
 )
 
 /** One text occurrence with ordered fragments (RFC 0012 §6;
- * document.rs:213-222). */
+ * document.rs). */
 data class XmlTextData(
     /** Document-wide text ordinal for stable identity. */
     val ordinal: Long,
@@ -343,7 +343,7 @@ data class XmlTextData(
     val fragments: List<ReferenceFragment>,
 )
 
-/** One CDATA occurrence (RFC 0012 §6; document.rs:224-235). */
+/** One CDATA occurrence (RFC 0012 §6; document.rs). */
 data class XmlCdataData(
     /** Document-wide ordinal for stable identity. */
     val ordinal: Long,
@@ -355,7 +355,7 @@ data class XmlCdataData(
     val text: String,
 )
 
-/** One comment occurrence (RFC 0012 §6; document.rs:237-248). */
+/** One comment occurrence (RFC 0012 §6; document.rs). */
 data class XmlCommentData(
     /** Document-wide ordinal for stable identity. */
     val ordinal: Long,
@@ -367,7 +367,7 @@ data class XmlCommentData(
     val text: String,
 )
 
-/** One processing instruction (RFC 0012 §6; document.rs:250-263). */
+/** One processing instruction (RFC 0012 §6; document.rs). */
 data class XmlPiData(
     /** Document-wide ordinal for stable identity. */
     val ordinal: Long,
@@ -381,7 +381,7 @@ data class XmlPiData(
     val content: Pair<Span, String>?,
 )
 
-/** One recovered error region (RFC 0012 §4; document.rs:265-272). */
+/** One recovered error region (RFC 0012 §4; document.rs). */
 data class XmlErrorRegionData(
     /** Document-wide ordinal for stable identity. */
     val ordinal: Long,
@@ -389,7 +389,7 @@ data class XmlErrorRegionData(
     val span: Span,
 )
 
-/** One element occurrence (RFC 0012 §5; document.rs:274-296). */
+/** One element occurrence (RFC 0012 §5; document.rs). */
 data class XmlElementData(
     /** Arena index for stable identity. */
     val index: Int,
@@ -412,9 +412,9 @@ data class XmlElementData(
     val children: List<Int>,
 )
 
-/** One child content occurrence (RFC 0012 §5; document.rs:298-313). */
+/** One child content occurrence (RFC 0012 §5; document.rs). */
 sealed class XmlContent {
-    /** Exact source span of this occurrence (document.rs:315-328). */
+    /** Exact source span of this occurrence (document.rs). */
     abstract val span: Span
 
     /** Child element. */
@@ -448,7 +448,7 @@ sealed class XmlContent {
     }
 }
 
-/** One prolog or epilog occurrence (document.rs:330-345). */
+/** One prolog or epilog occurrence (document.rs). */
 sealed class XmlPrologItem {
     /** The XML declaration, only in the prolog. */
     data class Declaration(val data: XmlDeclarationData) : XmlPrologItem()
@@ -469,7 +469,7 @@ sealed class XmlPrologItem {
     data class Whitespace(val span: Span) : XmlPrologItem()
 }
 
-/** XML declaration facts (RFC 0012 §2; document.rs:347-360). */
+/** XML declaration facts (RFC 0012 §2; document.rs). */
 data class XmlDeclarationData(
     /** `<?xml …?>` span. */
     val span: Span,
@@ -484,7 +484,7 @@ data class XmlDeclarationData(
 )
 
 /** One admitted internal general entity declaration (RFC 0012 §3;
- * document.rs:362-373). */
+ * document.rs). */
 data class EntityDeclarationData(
     /** `<!ENTITY …>` span. */
     val span: Span,
@@ -496,7 +496,7 @@ data class EntityDeclarationData(
     val replacement: String,
 )
 
-/** DOCTYPE facts (RFC 0012 §3; document.rs:375-386). */
+/** DOCTYPE facts (RFC 0012 §3; document.rs). */
 data class XmlDoctypeData(
     /** `<!DOCTYPE …>` span. */
     val span: Span,
@@ -513,8 +513,8 @@ data class XmlDoctypeData(
  * The xml codes are part of the `xml.1.0-safe@1` contract, not the
  * consema-protocol core registry, so this record mirrors the Rust
  * consema_core::Diagnostic::new surface (https://github.com/consema/consema-rs/blob/main/consema-core/src/
- * diagnostic.rs:65-104) and is constructed without registry validation.
- * [occurrence] is the final stable ordering key (diagnostic.rs:80-81).
+ * diagnostic.rs) and is constructed without registry validation.
+ * [occurrence] is the final stable ordering key (diagnostic.rs).
  */
 data class XmlDiagnostic(
     /** Stable namespaced code. */
@@ -531,7 +531,7 @@ data class XmlDiagnostic(
 
 /**
  * One stable `xml.*` diagnostic with an argument map, mirroring the full
- * consema_core::Diagnostic record (diagnostic.rs:65-82) for the projection
+ * consema_core::Diagnostic record (diagnostic.rs) for the projection
  * and edit failure surfaces that carry structured arguments.
  */
 data class XmlDiagnosticWithArguments(
@@ -550,7 +550,7 @@ data class XmlDiagnosticWithArguments(
 )
 
 /**
- * The immutable XML document (RFC 0012 §4; document.rs:388-568). The
+ * The immutable XML document (RFC 0012 §4; document.rs). The
  * Document retains prolog order, one document element, epilog order, and
  * every exact source span. Parsing happens in Parser.kt; this file pins the
  * read surface and the module-internal arena access shared by query,
@@ -574,64 +574,64 @@ class Document internal constructor(
     internal val parseLimits: XmlParseLimits,
 ) {
     /** Snapshot identity to which every NodeRef and Span belongs
-     * (document.rs:532-536). */
+     * (document.rs). */
     val snapshotIdentity: SnapshotIdentity
         get() = authority.identity
 
-    /** Exact immutable source (document.rs:460-464). */
+    /** Exact immutable source (document.rs). */
     fun source(): SourceSnapshot = source
 
-    /** Default rendering is the exact current source bytes (document.rs:466-470). */
+    /** Default rendering is the exact current source bytes (document.rs). */
     fun render(): ByteArray = source.bytes()
 
-    /** XML format family contract (document.rs:545-549). */
+    /** XML format family contract (document.rs). */
     fun formatFamily(): FormatFamilyId = FormatFamilyId("xml", 1)
 
-    /** Stable profile identifier (document.rs:551-555). */
+    /** Stable profile identifier (document.rs). */
     fun profileId(): ProfileId = profile.id()
 
-    /** Formation status (document.rs:448-458). */
+    /** Formation status (document.rs). */
     fun formationStatus(): FormationStatus = formationStatus
 
-    /** Deterministically ordered document diagnostics (document.rs:490-494). */
+    /** Deterministically ordered document diagnostics (document.rs). */
     fun diagnostics(): List<XmlDiagnostic> = diagnosticsList
 
     /** Exhaustive token/trivia/error-region byte coverage
-     * (document.rs:472-476). */
+     * (document.rs). */
     fun losslessStructuralIndex(): LosslessStructuralIndex = structuralIndex
 
     /** Format-specific kind for every structural piece, in the same source
-     * order (document.rs:478-482). */
+     * order (document.rs). */
     fun losslessSyntaxKinds(): List<XmlSyntaxKind> = syntaxKindList
 
-    /** The XML declaration, when present (document.rs:496-500). */
+    /** The XML declaration, when present (document.rs). */
     fun declaration(): XmlDeclarationData? = declarationData
 
-    /** The DOCTYPE occurrence, when present (document.rs:502-506). */
+    /** The DOCTYPE occurrence, when present (document.rs). */
     fun doctype(): XmlDoctypeData? = doctypeData
 
-    /** Ordered prolog items before the document element (document.rs:508-512). */
+    /** Ordered prolog items before the document element (document.rs). */
     fun prolog(): List<XmlPrologItem> = prologItems
 
-    /** Ordered epilog items after the document element (document.rs:514-518). */
+    /** Ordered epilog items after the document element (document.rs). */
     fun epilog(): List<XmlPrologItem> = epilogItems
 
-    /** The one document element, when formation proved it (document.rs:520-526). */
+    /** The one document element, when formation proved it (document.rs). */
     fun root(): XmlElement? = rootIndex?.let { XmlElement(this, it) }
 
     /** All arena nodes; child content of every element is reachable here
-     * (document.rs:528-530). */
+     * (document.rs). */
     fun nodes(): List<XmlContent> = nodes
 
     /** Parent element arena index of one arena node; null for the root
-     * element and for orphaned content (document.rs:538-543). */
+     * element and for orphaned content (document.rs). */
     internal fun parentOf(index: Int): Int? = parentOf.getOrNull(index)
 
-    /** Snapshot-bound document handle (document.rs:557-561). */
+    /** Snapshot-bound document handle (document.rs). */
     fun nodeRef(): NodeRef = authority.nodeRef(0, NodeRole.XmlDocument)
 
     /** Snapshot-bound identity of one ordinal-scoped occurrence
-     * (document.rs:563-567). */
+     * (document.rs). */
     fun occurrenceNodeRef(ordinal: Long, role: NodeRole): NodeRef =
         authority.nodeRef(ordinal, role)
 
@@ -642,7 +642,7 @@ class Document internal constructor(
             else -> error("element handle always points at element arena data")
         }
 
-    /** Child role of one arena node (document.rs:690-700). */
+    /** Child role of one arena node (document.rs). */
     internal fun nodeRoleOf(index: Int): NodeRole =
         when (nodes[index]) {
             is XmlContent.Element -> NodeRole.XmlElement
@@ -653,7 +653,7 @@ class Document internal constructor(
             is XmlContent.ErrorRegion -> NodeRole.XmlErrorRegion
         }
 
-    /** Snapshot-bound element identity (document.rs:618-626). */
+    /** Snapshot-bound element identity (document.rs). */
     internal fun elementNodeRef(index: Int): NodeRef =
         authority.nodeRef(index.toLong(), NodeRole.XmlElement)
 
@@ -678,98 +678,98 @@ class Document internal constructor(
         return index.toInt()
     }
 
-    /** Structural coverage pieces (document.rs:472-476). */
+    /** Structural coverage pieces (document.rs). */
     internal fun pieces(): List<StructuralPiece> = structuralIndex.pieces()
 }
 
-/** Snapshot-bound view of the whole document (document.rs:570-609). */
+/** Snapshot-bound view of the whole document (document.rs). */
 class XmlDocument internal constructor(
     private val owner: Document,
 ) {
-    /** Snapshot-bound document identity (document.rs:583-587). */
+    /** Snapshot-bound document identity (document.rs). */
     fun nodeRef(): NodeRef = owner.nodeRef()
 
-    /** Exact raw document span (document.rs:589-596). */
+    /** Exact raw document span (document.rs). */
     fun span(): Span = owner.authority.span(0, owner.source.len)
 
-    /** The document element (document.rs:598-602). */
+    /** The document element (document.rs). */
     fun root(): XmlElement? = owner.root()
 
-    /** Formation status (document.rs:604-608). */
+    /** Formation status (document.rs). */
     fun status(): FormationStatus = owner.formationStatus
 }
 
-/** Snapshot-bound element handle (document.rs:611-679). */
+/** Snapshot-bound element handle (document.rs). */
 class XmlElement internal constructor(
     private val owner: Document,
     internal val index: Int,
 ) {
-    /** Snapshot-bound stable identity (document.rs:618-626). */
+    /** Snapshot-bound stable identity (document.rs). */
     fun nodeRef(): NodeRef = owner.elementNodeRef(index)
 
-    /** Full start-tag or empty-element span (document.rs:628-632). */
+    /** Full start-tag or empty-element span (document.rs). */
     fun span(): Span = elementData().span
 
-    /** Lexical QName facts (document.rs:634-637). */
+    /** Lexical QName facts (document.rs). */
     fun qname(): QNameFacts = elementData().qname
 
     /** Resolved expanded name, when the namespace binding could be proven
-     * (document.rs:639-643). */
+     * (document.rs). */
     fun expanded(): ExpandedName? = elementData().expanded
 
-    /** Ordered namespace declarations on this element (document.rs:645-649). */
+    /** Ordered namespace declarations on this element (document.rs). */
     fun namespaceBindings(): List<XmlNamespaceBindingData> = elementData().namespaces
 
     /** Ordered attributes, excluding namespace declarations
-     * (document.rs:651-655). */
+     * (document.rs). */
     fun attributes(): List<XmlAttributeData> = elementData().attributes
 
     /** Ordered child content occurrences; mixed-content order is retained
-     * (document.rs:657-665). */
+     * (document.rs). */
     fun children(): List<XmlContentItem> =
         elementData().children.map { XmlContentItem(owner, it) }
 
-    /** Whether the element has no child content (document.rs:667-671). */
+    /** Whether the element has no child content (document.rs). */
     fun isEmpty(): Boolean = elementData().children.isEmpty()
 
     internal fun elementData(): XmlElementData = owner.elementData(index)
 }
 
-/** One child content occurrence (document.rs:681-763). */
+/** One child content occurrence (document.rs). */
 class XmlContentItem internal constructor(
     private val owner: Document,
     internal val index: Int,
 ) {
-    /** Snapshot-bound stable identity (document.rs:688-701). */
+    /** Snapshot-bound stable identity (document.rs). */
     fun nodeRef(): NodeRef = owner.authority.nodeRef(index.toLong(), owner.nodeRoleOf(index))
 
-    /** Exact source span (document.rs:703-714). */
+    /** Exact source span (document.rs). */
     fun span(): Span = owner.nodes[index].span
 
-    /** Element content, when this is an element occurrence (document.rs:716-726). */
+    /** Element content, when this is an element occurrence (document.rs). */
     fun element(): XmlElement? =
         if (owner.nodes[index] is XmlContent.Element) XmlElement(owner, index) else null
 
-    /** Text occurrence data, when this is a text occurrence (document.rs:728-735). */
+    /** Text occurrence data, when this is a text occurrence (document.rs). */
     fun text(): XmlTextData? =
         (owner.nodes[index] as? XmlContent.Text)?.data
 
-    /** CDATA occurrence data, when present (document.rs:737-744). */
+    /** CDATA occurrence data, when present (document.rs). */
     fun cdata(): XmlCdataData? =
         (owner.nodes[index] as? XmlContent.Cdata)?.data
 
-    /** Comment occurrence data, when present (document.rs:746-753). */
+    /** Comment occurrence data, when present (document.rs). */
     fun comment(): XmlCommentData? =
         (owner.nodes[index] as? XmlContent.Comment)?.data
 
-    /** Processing-instruction data, when present (document.rs:755-762). */
+    /** Processing-instruction data, when present (document.rs). */
     fun processingInstruction(): XmlPiData? =
         (owner.nodes[index] as? XmlContent.ProcessingInstruction)?.data
 }
 
 /**
  * Semantic concatenation of one text occurrence after XML line-end
- * normalization to LF (RFC 0012 §6; document.rs:765-799).
+ * normalization to LF (RFC 0012 §6; document.rs).
  */
 fun textSemantic(text: XmlTextData): String {
     val out = StringBuilder()
@@ -802,7 +802,7 @@ private fun pushNormalized(out: StringBuilder, text: String) {
     }
 }
 
-/** Stable typed XML access failure (document.rs:596-604; the Rust
+/** Stable typed XML access failure (document.rs; the Rust
  * LocationError surface). The [name] spellings are the language-neutral
  * comparison facts; these names are NOT registered error codes. */
 enum class XmlAccessErrorKind {

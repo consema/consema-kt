@@ -9,7 +9,7 @@
 //     `operations` facts) and https://github.com/consema/consema/blob/main/docs/multi-language-implementation-plan.md §6
 //     (the capability parity gate: the Kotlin mandatory capability set
 //     matches the manifest; no "Rust only" mandatory behavior).
-//   - https://github.com/consema/consema-rs/blob/main/consema/src/lib.rs:42-489 (the facade registry this
+//   - https://github.com/consema/consema-rs/blob/main/consema/src/lib.rs (the facade registry this
 //     surface mirrors); https://github.com/consema/consema-rs/blob/main/consema/src/bin/consema/capabilities.rs
 //     (the Rust CLI derives its capabilities list from the facade registry,
 //     never redeclares it).

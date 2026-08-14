@@ -1,8 +1,8 @@
 // Typed graph construction and PGCE/1 codec failures.
 //
 // Data authority: the frozen codes are transcribed from the Rust
-// StableFailure mappings (https://github.com/consema/consema-rs/blob/main/consema-graph/src/lib.rs:228-242 for
-// graph_build_error_code; https://github.com/consema/consema-rs/blob/main/consema-graph/src/pgce.rs:162-216 for the
+// StableFailure mappings (https://github.com/consema/consema-rs/blob/main/consema-graph/src/lib.rs for
+// graph_build_error_code; https://github.com/consema/consema-rs/blob/main/consema-graph/src/pgce.rs for the
 // PGCE decode/encode codes). Verified against the public error-code registry
 // (https://github.com/consema/consema-rs/blob/main/consema-protocol/src/error_registry.rs registers
 // core.graph.invalid@1, core.graph.resource-limit@1, core.pgce.invalid@1,
@@ -16,7 +16,7 @@ package consema.graph
 
 /**
  * The stable graph construction failures (the Rust GraphBuildError,
- * https://github.com/consema/consema-rs/blob/main/consema-graph/src/lib.rs:192-218). Every kind maps to one frozen
+ * https://github.com/consema/consema-rs/blob/main/consema-graph/src/lib.rs). Every kind maps to one frozen
  * registered code (see [GraphException.code]).
  */
 enum class GraphErrorKind {
@@ -69,8 +69,8 @@ class GraphException(
      * null otherwise. */
     val id: NodeId? = null,
 ) : Exception(message) {
-    /** The frozen registered code (https://github.com/consema/consema-rs/blob/main/consema-graph/src/lib.rs:
-     * 228-242): "core.graph.resource-limit@1" or "core.graph.invalid@1". */
+    /** The frozen registered code (https://github.com/consema/consema-rs/blob/main/consema-graph/src/lib.rs
+ *): "core.graph.resource-limit@1" or "core.graph.invalid@1". */
     val code: String
         get() = when (kind) {
             GraphErrorKind.RESOURCE_LIMIT, GraphErrorKind.SIZE_OVERFLOW ->
@@ -81,8 +81,8 @@ class GraphException(
 
 /**
  * The strict PGCE/1 failures of the encoder and decoder (the Rust
- * PgceEncodeError and PgceDecodeError, https://github.com/consema/consema-rs/blob/main/consema-graph/src/pgce.rs:
- * 70-152).
+ * PgceEncodeError and PgceDecodeError, https://github.com/consema/consema-rs/blob/main/consema-graph/src/pgce.rs
+ *).
  */
 enum class PgceErrorKind {
     /** The stream magic did not match "PGCE". */
@@ -151,8 +151,8 @@ class PgceException(
      * [PgceErrorKind.INVALID_GRAPH]; null otherwise. */
     override val cause: GraphException? = null,
 ) : Exception(message) {
-    /** The frozen registered code (https://github.com/consema/consema-rs/blob/main/consema-graph/src/pgce.rs:
-     * 162-216). */
+    /** The frozen registered code (https://github.com/consema/consema-rs/blob/main/consema-graph/src/pgce.rs
+ *). */
     val code: String
         get() = when (kind) {
             PgceErrorKind.RESOURCE_LIMIT -> "core.pgce.resource-limit@1"

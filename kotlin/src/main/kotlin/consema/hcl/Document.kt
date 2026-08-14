@@ -2,7 +2,7 @@
 // tree of RFC 0014 §6 bound to one snapshot, plus the formation facade.
 //
 // Data authority:
-//   - RFC 0014 §3-§6 (https://github.com/consema/consema/blob/main/docs/rfcs/0014-hcl-family-profiles-v1.md:94-446):
+//   - RFC 0014 §3-§6 (https://github.com/consema/consema/blob/main/docs/rfcs/0014-hcl-family-profiles-v1.md):
 //     Complete/Recovered/FatalFormationFailure; recovery retains every
 //     independently proven construct; the native semantic model
 //     (HclDocument/HclBody/HclAttribute/HclBlock/HclBlockLabel/
@@ -19,12 +19,12 @@
 //     formation Recovered with one `hcl.tfvars.block-not-allowed@1`
 //     diagnostic per top-level block occurrence; the rejected block remains
 //     a native item of the Recovered document.
-//   - https://github.com/consema/consema-rs/blob/main/consema-hcl/src/document.rs:50-217 (Document and its
-//     accessors), https://github.com/consema/consema-rs/blob/main/consema-hcl/src/native.rs:37-325 (HclDocument,
+//   - https://github.com/consema/consema-rs/blob/main/consema-hcl/src/document.rs (Document and its
+//     accessors), https://github.com/consema/consema-rs/blob/main/consema-hcl/src/native.rs (HclDocument,
 //     HclBody, HclBodyItem, HclAttribute, HclBlock, HclBlockLabel,
-//     HclErrorRegion), https://github.com/consema/consema-rs/blob/main/consema-hcl/src/lib.rs:275-311 (the formation
-//     entry), and the frozen NodeRole spellings (document/Location.kt:
-//     202-231: HclDocument/HclBody/HclAttribute/HclBlock/HclBlockLabel/
+//     HclErrorRegion), https://github.com/consema/consema-rs/blob/main/consema-hcl/src/lib.rs (the formation
+//     entry), and the frozen NodeRole spellings (document/Location.kt
+//     HclDocument/HclBody/HclAttribute/HclBlock/HclBlockLabel/
 //     HclExpression/HclTemplatePart/HclErrorRegion/HclSyntaxPiece).
 //   - consema-go/go/hcl is a cross-reference only.
 //
@@ -51,7 +51,7 @@ import consema.protocol.DiagnosticCategory
 import consema.protocol.Severity
 
 /** One recovered HCL error region with its stable diagnostic code (RFC 0014
- * §3, §7.2; native.rs:302-325). */
+ * §3, §7.2; native.rs). */
 data class HclErrorRegion(
     /** Exact recovered region span. */
     val span: Span,
@@ -60,7 +60,7 @@ data class HclErrorRegion(
 )
 
 /** One block label with its quote/naked fact (RFC 0014 §4.2, §6;
- * native.rs:259-291). */
+ * native.rs). */
 data class HclBlockLabel(
     /** Label text; for a quoted label this is the content without the quote
      * delimiters (escapes are decoded by the parser). */
@@ -73,7 +73,7 @@ data class HclBlockLabel(
 )
 
 /** One block occurrence: type, ordered labels, and nested body (RFC 0014
- * §4.2, §6; native.rs:203-251). A one-line block is the same native shape
+ * §4.2, §6; native.rs). A one-line block is the same native shape
  * with at most one attribute and no nested blocks. */
 data class HclBlock(
     /** Block type identifier. */
@@ -88,7 +88,7 @@ data class HclBlock(
 )
 
 /** One attribute occurrence: name, equals sign, and expression (RFC 0014
- * §4.2, §6; native.rs:145-193). */
+ * §4.2, §6; native.rs). */
 data class HclAttribute(
     /** Attribute name; keyword spellings such as `true` are valid names. */
     val name: String,
@@ -110,7 +110,7 @@ data class HclAttribute(
 }
 
 /** One body item: an attribute or a block occurrence (RFC 0014 §4.2, §6;
- * native.rs:111-136). Identity is per-occurrence; nothing is merged. */
+ * native.rs). Identity is per-occurrence; nothing is merged. */
 sealed class HclBodyItem {
     /** An attribute occurrence. */
     data class Attribute(val attribute: HclAttribute) : HclBodyItem()
@@ -119,7 +119,7 @@ sealed class HclBodyItem {
     data class Block(val block: HclBlock) : HclBodyItem()
 }
 
-/** Ordered body item container (RFC 0014 §6; native.rs:72-103). The root
+/** Ordered body item container (RFC 0014 §6; native.rs). The root
  * body of a document and every nested block body share this container. */
 data class HclBody(val items: List<HclBodyItem>) {
     /** Number of body items. */
@@ -156,7 +156,7 @@ internal sealed class HclEntity {
 }
 
 /**
- * Opaque immutable HCL document snapshot (RFC 0014 §3; document.rs:50-217).
+ * Opaque immutable HCL document snapshot (RFC 0014 §3; document.rs).
  * Both profiles share the one syntax system and the one native model; the
  * profile gates Complete formation and the operation surface.
  */
@@ -183,17 +183,17 @@ class HclDocument internal constructor(
      * §2: unmodified rendering returns the exact original bytes). */
     fun render(): ByteArray = source.bytes()
 
-    /** HCL format family contract (RFC 0014 §1; document.rs:164-166). */
+    /** HCL format family contract (RFC 0014 §1; document.rs). */
     fun formatFamily(): FormatFamilyId = FormatFamilyId("hcl", 1)
 
-    /** Exact language profile (document.rs:158-160). */
+    /** Exact language profile (document.rs). */
     fun profileId(): ProfileId = profile.id()
 
     /** Complete or explicitly recovered formation state (RFC 0014 §3). */
     fun formationStatus(): FormationStatus = formationStatus
 
     /** Deterministically ordered formation diagnostics; the tfvars gate
-     * diagnostics are merged with the parser's own (document.rs:142-147). */
+     * diagnostics are merged with the parser's own (document.rs). */
     fun diagnostics(): List<HclDiagnostic> = diagnosticsList
 
     /** Exhaustive ordered lossless piece coverage of the raw bytes; always
@@ -444,7 +444,7 @@ class HclExpressionHandle internal constructor(
 
 /**
  * Forms one HCL document from raw bytes under one exact profile (RFC 0014
- * §1, §3, §5; lib.rs:275-311). The profile is selected by the caller before
+ * §1, §3, §5; lib.rs). The profile is selected by the caller before
  * formation; neither the `.tf` nor the `.tfvars` extension selects a
  * profile, representation, or encoding. The frozen formation order is:
  * max_source_bytes, UTF-8 validation, the native grammar with recovery, the
@@ -458,7 +458,7 @@ fun parse(
 ): HclDocument {
     if (source.size > limits.common.maxSourceBytes) {
         // The common source bound uses the frozen core resource-limit code
-        // (RFC 0016 §5.1; consema-document lib.rs:771-791).
+        // (RFC 0016 §5.1; consema-document lib.rs).
         throw HclFormationException(
             listOf(
                 HclDiagnostic(
@@ -501,7 +501,7 @@ fun parse(
     val authority = DocumentAuthority.fresh()
     val formed = parseHcl(source, snapshot, authority, limits)
 
-    // The tfvars gate (RFC 0014 §5; document.rs:87-116).
+    // The tfvars gate (RFC 0014 §5; document.rs).
     var status = formed.status
     val diagnostics = ArrayList(formed.diagnostics)
     if (profile == HclProfile.TFVARS_V1) {

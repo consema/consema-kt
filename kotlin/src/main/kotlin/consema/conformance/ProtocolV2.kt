@@ -419,7 +419,7 @@ private fun optionalEncoding(value: PortableValue, path: String): SourceEncoding
     return encodingFromName(stringOf(value, path))
 }
 
-/** The v1 encoding-facts record (encoding_value, source.rs:563-596). */
+/** The v1 encoding-facts record (encoding_value, source.rs). */
 private fun v1EncodingFactsValue(facts: EncodingFacts): PortableValue = PvObject(
     listOf(
         Entry("profile_default", PvString(encodingName(facts.profileDefault))),
@@ -441,7 +441,7 @@ private fun v1EncodingFactsValue(facts: EncodingFacts): PortableValue = PvObject
 )
 
 /** Strictly decodes the v1 encoding-facts record (encoding_from_value,
- * source.rs:659-679). */
+ * source.rs). */
 private fun v1EncodingFactsFromValue(value: PortableValue, path: String): EncodingFacts {
     val fields = exactFields(
         value,
@@ -461,7 +461,7 @@ private fun v1EncodingFactsFromValue(value: PortableValue, path: String): Encodi
 }
 
 /** Rebuilds the resolution request from claimed facts (request_from_facts,
- * source.rs:791-800). */
+ * source.rs). */
 private fun requestFromFacts(facts: EncodingFacts): EncodingRequest {
     var request = EncodingRequest.new(facts.profileDefault)
     facts.declaration?.let { request = request.withDeclaration(it) }
@@ -498,8 +498,8 @@ private fun digestFromValue(value: PortableValue, path: String): ContentDigest {
     return ContentDigest.fromBytes(bytes)
 }
 
-/** Encodes `core.source-snapshot@1` (source_snapshot_value, source.rs:
- * 241-260). */
+/** Encodes `core.source-snapshot@1` (source_snapshot_value, source.rs
+ *). */
 private fun sourceSnapshotValue(snapshot: SourceSnapshot): PortableValue = PvObject(
     listOf(
         Entry("schema", PvString("core.source-snapshot@1")),
@@ -514,7 +514,7 @@ private fun sourceSnapshotValue(snapshot: SourceSnapshot): PortableValue = PvObj
 )
 
 /** Strictly decodes and re-verifies `core.source-snapshot@1`
- * (source_snapshot_from_value, source.rs:262-321). */
+ * (source_snapshot_from_value, source.rs). */
 private fun sourceSnapshotFromValue(
     value: PortableValue,
     limits: SourceLimits,
@@ -551,7 +551,7 @@ private fun sourceSnapshotFromValue(
     return snapshot
 }
 
-/** Encodes `core.source-patch@1` (source_patch_value, source.rs:323-370). */
+/** Encodes `core.source-patch@1` (source_patch_value, source.rs). */
 private fun sourcePatchValue(patch: SourcePatch): PortableValue = PvObject(
     listOf(
         Entry("schema", PvString("core.source-patch@1")),
@@ -580,7 +580,7 @@ private fun sourcePatchValue(patch: SourcePatch): PortableValue = PvObject(
 )
 
 /** Strictly decodes `core.source-patch@1` structural facts
- * (source_patch_from_value, source.rs:372-430). */
+ * (source_patch_from_value, source.rs). */
 private fun sourcePatchFromValue(
     value: PortableValue,
     limits: SourcePatchLimits,
@@ -635,7 +635,7 @@ private fun sourcePatchFromValue(
     }
 }
 
-/** The Rust source_error mapping (source.rs:821-831): resource limits
+/** The Rust source_error mapping (source.rs): resource limits
  * surface as the protocol resource-limit code, everything else as
  * invalid-value. */
 private fun sourceErrorToProtocol(e: SourceException): ProtocolException =
@@ -645,7 +645,7 @@ private fun sourceErrorToProtocol(e: SourceException): ProtocolException =
         invalid("$.raw_bytes", e.message ?: "source failure")
     }
 
-/** The Rust patch_error mapping (source.rs:833-846). */
+/** The Rust patch_error mapping (source.rs). */
 private fun patchErrorToProtocol(e: SourcePatchException): ProtocolException =
     if (e.kind == SourcePatchErrorKind.SOURCE_RESOURCE_LIMIT) {
         resource("$.replacements", e.message ?: "patch failure")

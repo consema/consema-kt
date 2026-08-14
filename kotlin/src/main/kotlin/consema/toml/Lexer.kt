@@ -1,13 +1,13 @@
 // The lossless TOML tokenizer: exhaustive token/trivia byte coverage.
 //
 // Data authority:
-//   - https://github.com/consema/consema-rs/blob/main/consema-toml/src/parser.rs:360-431 (tokenize): whitespace
+//   - https://github.com/consema/consema-rs/blob/main/consema-toml/src/parser.rs (tokenize): whitespace
 //     (space/tab), newline (LF, CRLF, or bare CR), `#` comment to EOL,
 //     single String piece per `'`/`"` token (the string_end approximation,
-//     parser.rs:480-499), one piece per punctuation byte, and Bare runs
+//     parser.rs), one piece per punctuation byte, and Bare runs
 //     otherwise; every piece is checked against max_token_count BEFORE it is
-//     pushed (parser.rs:413-420).
-//   - https://github.com/consema/consema-rs/blob/main/consema-toml/src/parser.rs:433-461 (preflight_delimiter_nesting):
+//     pushed (parser.rs).
+//   - https://github.com/consema/consema-rs/blob/main/consema-toml/src/parser.rs (preflight_delimiter_nesting):
 //     `[`/`{` increment and `]`/`}` decrement a depth counter over Token
 //     pieces only; exceeding max_nesting_depth fails with
 //     resource_limit("nesting_depth", depth, max) BEFORE any syntax parse.
@@ -39,8 +39,8 @@ internal class LexedSource(
 
 /**
  * Tokenizes the complete decoded text into exhaustive token/trivia pieces
- * (parser.rs:360-431) and runs the delimiter nesting preflight
- * (parser.rs:433-461). Any limit failure throws [TomlFormationException].
+ * (parser.rs) and runs the delimiter nesting preflight
+ * (parser.rs). Any limit failure throws [TomlFormationException].
  */
 internal fun tokenize(
     text: String,
@@ -129,7 +129,7 @@ internal fun tokenize(
     return LexedSource(pieces, kinds, structuralIndex)
 }
 
-/** Counts `[`/`{` vs `]`/`}` over Token pieces only (parser.rs:433-461).
+/** Counts `[`/`{` vs `]`/`}` over Token pieces only (parser.rs).
  * Delimiter tokens are single ASCII bytes, so byte comparison is exact. */
 private fun preflightDelimiterNesting(
     bytes: ByteArray,
@@ -162,7 +162,7 @@ private fun preflightDelimiterNesting(
 }
 
 /** The Rust `u8::is_ascii_whitespace` set: space, tab, LF, FF, CR
- * (parser.rs:404). */
+ * (parser.rs). */
 private fun isAsciiWhitespace(byte: Byte): Boolean =
     byte == ' '.code.toByte() || byte == '\t'.code.toByte() || byte == '\n'.code.toByte() ||
         byte == 0x0C.toByte() || byte == '\r'.code.toByte()
@@ -185,7 +185,7 @@ private fun punctuationKind(byte: Byte): TomlSyntaxKind =
     }
 
 /** Scans one `'`/`"` string token to its closing quote, treating `\"` as
- * escaped for double-quoted strings (parser.rs:480-499). This is a lossless
+ * escaped for double-quoted strings (parser.rs). This is a lossless
  * piece boundary approximation; the real string grammar is validated by the
  * parser. */
 private fun stringEnd(bytes: ByteArray, start: Int): Int {

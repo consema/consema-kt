@@ -2,7 +2,7 @@
 // classification.
 //
 // Data authority (language-neutral sources first):
-//   - RFC 0014 §1 (https://github.com/consema/consema/blob/main/docs/rfcs/0014-hcl-family-profiles-v1.md:23-54): the two
+//   - RFC 0014 §1 (https://github.com/consema/consema/blob/main/docs/rfcs/0014-hcl-family-profiles-v1.md): the two
 //     mandatory profiles `hcl.native@1` and `hcl.tfvars@1`; both share one
 //     native syntax system, and `hcl.tfvars@1` is `hcl.native@1` under one
 //     structural restriction (the top-level body admits attributes only,
@@ -10,8 +10,8 @@
 //   - RFC 0014 §7.2 (:487-507): the v1 lossless syntax kind set is exactly
 //     the thirty PascalCase spellings below; there is no `Bom` kind because
 //     a BOM is excluded at formation (RFC 0014 §2).
-//   - https://github.com/consema/consema-rs/blob/main/consema-hcl/src/lib.rs:101-118 (HclProfile and its id mapping),
-//     https://github.com/consema/consema-rs/blob/main/consema-hcl/src/native.rs:335-398 (HclSyntaxKind declaration
+//   - https://github.com/consema/consema-rs/blob/main/consema-hcl/src/lib.rs (HclProfile and its id mapping),
+//     https://github.com/consema/consema-rs/blob/main/consema-hcl/src/native.rs (HclSyntaxKind declaration
 //     order) pin the spellings; consema-go/go/hcl is a cross-reference only.
 //
 // Kotlin-idiomatic design (NOT a translation): the profile is a closed enum;
@@ -23,7 +23,7 @@ package consema.hcl
 
 import consema.document.ProfileId
 
-/** Frozen HCL formation profiles (RFC 0014 §1; lib.rs:101-107). */
+/** Frozen HCL formation profiles (RFC 0014 §1; lib.rs). */
 enum class HclProfile {
     /** The full HCL Native Syntax (RFC 0014 §4). */
     NATIVE_V1,
@@ -33,7 +33,7 @@ enum class HclProfile {
     TFVARS_V1,
     ;
 
-    /** Stable profile identifier (lib.rs:109-118). */
+    /** Stable profile identifier (lib.rs). */
     fun id(): ProfileId =
         when (this) {
             NATIVE_V1 -> ProfileId("hcl.native", 1)
@@ -46,7 +46,7 @@ enum class HclProfile {
 
 /**
  * Closed HCL lossless syntax-piece classification (RFC 0014 §7.2;
- * native.rs:335-398). Exactly thirty kinds; the enum order is the Rust
+ * native.rs). Exactly thirty kinds; the enum order is the Rust
  * declaration order, and the wire/query vocabulary is [asStr], which is
  * byte-identical to the vector spellings. There is no `Bom` kind: a BOM is
  * excluded at formation (RFC 0014 §2).
@@ -145,7 +145,7 @@ enum class HclSyntaxKind {
     ErrorRegion,
     ;
 
-    /** Stable query and protocol spelling (native.rs:400-435). */
+    /** Stable query and protocol spelling (native.rs). */
     fun asStr(): String =
         when (this) {
             Whitespace -> "Whitespace"
@@ -181,7 +181,7 @@ enum class HclSyntaxKind {
         }
 
     companion object {
-        /** Resolves one exact stable kind name (native.rs:437-467). */
+        /** Resolves one exact stable kind name (native.rs). */
         fun fromName(name: String): HclSyntaxKind? = entries.firstOrNull { it.asStr() == name }
     }
 }

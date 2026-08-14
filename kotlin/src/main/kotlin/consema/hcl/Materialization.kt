@@ -1,7 +1,7 @@
 // Canonical `hcl.canonical-document@1` materialization (RFC 0014 §9).
 //
 // Data authority:
-//   - RFC 0014 §9 (https://github.com/consema/consema/blob/main/docs/rfcs/0014-hcl-family-profiles-v1.md:574-628):
+//   - RFC 0014 §9 (https://github.com/consema/consema/blob/main/docs/rfcs/0014-hcl-family-profiles-v1.md):
 //     materialization consumes a validated `hcl.body@1` record (or, under
 //     the tfvars profile, an attribute-only `hcl.body@1`) and creates a new
 //     Document; it is not a formatter for an existing source. The canonical
@@ -23,12 +23,12 @@
 //     bytes, and compares the reparsed native model to the promised input
 //     semantics; failure returns no target Document, partial bytes, or
 //     partial provenance.
-//   - RFC 0004 §3, §7-§8 (https://github.com/consema/consema/blob/main/docs/rfcs/0004-materialization-conversion-and-structural-edit-v1.md:56-92, 171-218): the common
+//   - RFC 0004 §3, §7-§8 (https://github.com/consema/consema/blob/main/docs/rfcs/0004-materialization-conversion-and-structural-edit-v1.md): the common
 //     MaterializationRequest fields and the completion algebra.
 //   - https://github.com/consema/consema-rs/blob/main/consema-hcl/src/materialization.rs pins the record validation
-//     (materialization.rs:232-264), the request validation
-//     (materialization.rs:267-285), the canonical layout, and the closure
-//     verification; the failure mapping is materialization.rs:124-133
+//     (materialization.rs), the request validation
+//     (materialization.rs), the canonical layout, and the closure
+//     verification; the failure mapping is materialization.rs
 //     (Unrepresentable -> hcl.materialization.unrepresentable@1,
 //     ResourceLimit -> hcl.materialization.resource-limit@1,
 //     InvalidRequest/Unsupported*/FormationFailed -> core.materialization.*@1).
@@ -69,7 +69,7 @@ import consema.document.SourceEncoding
 import java.math.BigInteger
 
 /** The closed family failure category of one materialization (RFC 0014
- * §9; materialization.rs:124-133). */
+ * §9; materialization.rs). */
 sealed class HclMaterializationFailure {
     /** A record fact cannot be expressed under the promised profile: the
      * tfvars block restriction, invalid attribute names and block types,
@@ -100,7 +100,7 @@ sealed class HclMaterializationFailure {
      * input semantics. */
     data object FormationFailed : HclMaterializationFailure()
 
-    /** The frozen registered code (materialization.rs:124-133). */
+    /** The frozen registered code (materialization.rs). */
     val code: String
         get() = when (this) {
             is Unrepresentable -> HCL_MATERIALIZATION_UNREPRESENTABLE
@@ -141,7 +141,7 @@ sealed class HclMaterializationResult {
 
 /**
  * Materializes one validated `hcl.body@1` record into a new canonical HCL
- * document (RFC 0014 §9; materialization.rs:213-226). A failure contains
+ * document (RFC 0014 §9; materialization.rs). A failure contains
  * no Document, no partial bytes, and no provenance that can be mistaken for
  * a result (RFC 0004 §3).
  */
@@ -197,7 +197,7 @@ private enum class Target {
 }
 
 /** Validates the request against the frozen style contract (RFC 0014 §9;
- * materialization.rs:267-285). */
+ * materialization.rs). */
 private fun validateRequest(request: MaterializationRequest): Target {
     val profile = request.targetProfile
     val style = request.style
@@ -223,7 +223,7 @@ private fun validateRequest(request: MaterializationRequest): Target {
 }
 
 /** Parse limits for the closure reparse, derived from the request so a
- * bounded input cannot fail its own closure (materialization.rs:295-328). */
+ * bounded input cannot fail its own closure (materialization.rs). */
 private fun parseLimits(limits: MaterializationLimits): HclParseLimits =
     HclParseLimits(
         common = consema.document.ParseLimits(
@@ -308,7 +308,7 @@ private sealed class ValueNode {
     ) : ValueNode()
 }
 
-/** One validated record; the validation follows materialization.rs:232-264
+/** One validated record; the validation follows materialization.rs
  * and the RFC 0014 §9 record contract. */
 private class RecordValidator(
     private val target: Target,
@@ -333,7 +333,7 @@ private class RecordValidator(
             )
         val entries = objectValue.entries()
         // A body record declares `items`; only the top-level record also
-        // declares the `record` discriminator (materialization.rs:384-414
+        // declares the `record` discriminator (materialization.rs
         // versus 525-542; the nested block bodies in the vectors carry no
         // discriminator). The top-level identity is checked in
         // Record.validate before this entry.
@@ -534,9 +534,9 @@ private class RecordValidator(
             "object" -> {
                 val fields = exactFields(value, listOf("kind", "entries"), "object")
                 // The value-record spelling declares `entries` as the
-                // ordered sequence of [key, value] pairs (materialization.rs:
-                // 822-858); the projection's raw typed member spelling uses
-                // an ordered EntryMapping (materialization.rs:972-987).
+                // ordered sequence of [key, value] pairs (materialization.rs
+ //); the projection's raw typed member spelling uses
+                // an ordered EntryMapping (materialization.rs).
                 val pairs = when (val entriesValue = fields[1]) {
                     is PvEntryMapping -> entriesValue.entries().map { entry ->
                         Pair((entry.key as? PvString)?.value, entry.value)
@@ -667,7 +667,7 @@ private class RecordValidator(
 /** The validated `hcl.body@1` record (RFC 0014 §9). */
 private class Record private constructor(val body: Body) {
     companion object {
-        /** The frozen record validation entry (materialization.rs:232-
+        /** The frozen record validation entry (materialization.rs
          * 264). */
         fun validate(
             value: PortableValue,
@@ -676,7 +676,7 @@ private class Record private constructor(val body: Body) {
         ): Record {
             val target = validateRequest(request)
             // The top-level record carries the `record` discriminator
-            // (materialization.rs:384-402); the vector pins the stable
+            // (materialization.rs); the vector pins the stable
             // failure name "invalid-record" for a wrong record identity
             // (hcl-v1.json hcl.materialization.unrepresentable sample 2).
             val objectValue = value as? PvObject
@@ -749,7 +749,7 @@ internal fun validIdentifier(name: String): Boolean {
 // ---------------------------------------------------------------------------
 
 /** The canonical `hcl.canonical-document@1` writer (RFC 0014 §9;
- * materialization.rs:236-264). */
+ * materialization.rs). */
 private class CanonicalWriter(
     private val limits: MaterializationLimits,
     private val analyzed: ArrayList<ValuePath>,
@@ -1027,7 +1027,7 @@ private fun verifyValueClosure(
 }
 
 /** Parses one standalone expression text (the `expr = <text>` sentinel
- * form of materialization.rs:190-192); null when the text is not exactly
+ * form of materialization.rs); null when the text is not exactly
  * one expression. */
 private fun parseExpressionText(text: String, limits: MaterializationLimits): HclExpression? {
     val wrapped = "expr = $text\n"
@@ -1053,7 +1053,7 @@ private fun parseExpressionText(text: String, limits: MaterializationLimits): Hc
 
 /** One provenance entry per input item, attribute value, block label, and
  * the root record, mapped to exact output origins (RFC 0014 §9;
- * materialization.rs:139-148). Relations are Direct. */
+ * materialization.rs). Relations are Direct. */
 private fun buildProvenance(
     document: HclDocument,
     limits: MaterializationLimits,

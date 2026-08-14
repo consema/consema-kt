@@ -25,7 +25,7 @@ import consema.core.PortableValue
 import java.math.BigInteger
 
 /** The YAML result roles accepted by the externalized YAML query records
- * (yaml_query.rs:259-274). */
+ * (yaml_query.rs). */
 internal fun isYamlRole(role: String): Boolean =
     role == Roles.YAML_STREAM ||
         role == Roles.YAML_DOCUMENT ||
@@ -39,7 +39,7 @@ internal fun isYamlRole(role: String): Boolean =
 internal fun isYamlNativeRole(role: String): Boolean =
     role != Roles.YAML_SYNTAX_PIECE && isYamlRole(role)
 
-/** Whether the YAML domain accepts the role (yaml_query.rs:251-257). */
+/** Whether the YAML domain accepts the role (yaml_query.rs). */
 internal fun yamlDomainAcceptsRole(domain: QueryDomain, role: String): Boolean =
     when (domain.id to domain.version) {
         "yaml.native-semantic-query" to 1 -> isYamlNativeRole(role)
@@ -48,7 +48,7 @@ internal fun yamlDomainAcceptsRole(domain: QueryDomain, role: String): Boolean =
     }
 
 /** One YAML match after caller externalization of its process-local handle
- * (yaml_query.rs:10-80). */
+ * (yaml_query.rs). */
 class YamlMatchLocator private constructor(
     /** Stable source identity. */
     val sourceId: String,
@@ -61,7 +61,7 @@ class YamlMatchLocator private constructor(
 ) {
     companion object {
         /** Validates stable identities, a YAML role, and its result ordinal
-         * (yaml_query.rs:20-45). */
+         * (yaml_query.rs). */
         fun new(
             sourceId: String,
             nodeLocator: String,
@@ -78,7 +78,7 @@ class YamlMatchLocator private constructor(
         }
 
         /** Explicitly refuses a raw process-local YAML node handle
-         * (yaml_query.rs:48-55). */
+         * (yaml_query.rs). */
         fun fromProcessLocal(): YamlMatchLocator =
             throw protocolError(
                 ProtocolErrorKind.PROCESS_LOCAL_HANDLE,
@@ -89,7 +89,7 @@ class YamlMatchLocator private constructor(
 }
 
 /** Complete or explicitly non-complete `core.yaml-query-result@1`
- * (yaml_query.rs:82-249). */
+ * (yaml_query.rs). */
 class YamlQueryResultMessage private constructor(
     /** Exact YAML query domain. */
     val domain: QueryDomain,
@@ -104,7 +104,7 @@ class YamlQueryResultMessage private constructor(
 ) {
     companion object {
         /** Validates domain/role binding, match ordering, and produced
-         * count (yaml_query.rs:92-127). */
+         * count (yaml_query.rs). */
         fun new(
             domain: QueryDomain,
             role: String,
@@ -128,7 +128,7 @@ class YamlQueryResultMessage private constructor(
         }
 
         /** Strictly decodes terminal facts under one explicit semantic-model
-         * registry (yaml_query.rs:192-248). */
+         * registry (yaml_query.rs). */
         fun fromValueWithRegistry(
             value: PortableValue,
             registry: ErrorCodeRegistry,
@@ -178,7 +178,7 @@ class YamlQueryResultMessage private constructor(
             )
     }
 
-    /** Encodes `core.yaml-query-result@1` (yaml_query.rs:159-190). */
+    /** Encodes `core.yaml-query-result@1` (yaml_query.rs). */
     fun toValue(): PortableValue =
         PvObject(
             listOf(
@@ -213,7 +213,7 @@ class YamlQueryResultMessage private constructor(
         )
 }
 
-/** Parses one YAML query role spelling (yaml_query.rs:290-302). */
+/** Parses one YAML query role spelling (yaml_query.rs). */
 internal fun parseYamlRole(value: String): String =
     when (value) {
         Roles.YAML_STREAM, Roles.YAML_DOCUMENT, Roles.YAML_NODE,
@@ -225,7 +225,7 @@ internal fun parseYamlRole(value: String): String =
     }
 
 /**
- * The native match locator boundary (protocol_v1.rs:612-618): a
+ * The native match locator boundary (protocol_v1.rs): a
  * process-local node handle can never be externalized into a transferable
  * native match locator. The Kotlin milestone exposes no process-local
  * NodeRef handle surface, so the boundary is the fixed rejection entry.
@@ -241,7 +241,7 @@ object NativeMatchLocator {
 }
 
 /**
- * The diagnostic source-binding boundary (protocol_v1.rs:511-527): a core
+ * The diagnostic source-binding boundary (protocol_v1.rs): a core
  * diagnostic whose primary location still references a process-local
  * snapshot handle can never be externalized; the Kotlin Diagnostic API
  * accepts only transferable SourceLocation facts, so the boundary is the

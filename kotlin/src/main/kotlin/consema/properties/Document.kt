@@ -3,23 +3,23 @@
 // comments, escapes, recovery records, and the lossless coverage index.
 //
 // Data authority:
-//   - RFC 0010 §2, §5, §9 (https://github.com/consema/consema/blob/main/docs/rfcs/0010-java-properties-profiles-v1.md:
-//     37-63, 132-159, 236-267): the Document ends at the native layer; the
+//   - RFC 0010 §2, §5, §9 (https://github.com/consema/consema/blob/main/docs/rfcs/0010-java-properties-profiles-v1.md
+//): the Document ends at the native layer; the
 //     native roles are PropertiesDocument / PropertiesNaturalLine /
 //     PropertiesLogicalLine / PropertiesProperty / PropertiesComment /
 //     PropertiesEscape / PropertiesErrorLine; duplicate keys never collapse;
 //     the immutable Document retains exact terminators, continuation
 //     markers, escape identity/spelling/output ranges, and exhaustive
 //     non-overlapping syntax coverage.
-//   - https://github.com/consema/consema-rs/blob/main/consema-properties/src/lib.rs:309-589 (the entity shapes and
-//     accessors) and lib.rs:590-775 (Document) are the byte-arbitration
+//   - https://github.com/consema/consema-rs/blob/main/consema-properties/src/lib.rs (the entity shapes and
+//     accessors) and lib.rs (Document) are the byte-arbitration
 //     authority. consema-go/go/properties/document.go is a cross-reference only.
-//   - The node roles are pinned in kotlin/src/main/kotlin/consema/document/Location.kt:119-141
+//   - The node roles are pinned in kotlin/src/main/kotlin/consema/document/Location.kt
 //     (PropertiesDocument .. PropertiesSyntaxPiece).
 //
 // Kotlin-idiomatic design (NOT a translation): the Rust borrowed handles are
 // immutable handle classes carrying (document, index) — the same idiom as
-// the JSON family (kotlin/src/main/kotlin/consema/json/Document.kt:15-19); entity storage is
+// the JSON family (kotlin/src/main/kotlin/consema/json/Document.kt); entity storage is
 // typed lists per role and `internal` accessors are module-visible so
 // query/projection/materialization/edit in this package share one truth.
 
@@ -42,7 +42,7 @@ import consema.protocol.Diagnostic
 // Internal entities
 // ---------------------------------------------------------------------------
 
-/** One exact natural source line (lib.rs:309-342). */
+/** One exact natural source line (lib.rs). */
 internal data class NaturalLineEntity(
     val node: NodeRef,
     val span: Span,
@@ -51,14 +51,14 @@ internal data class NaturalLineEntity(
 )
 
 /** One property/error logical line and its natural-line constituents
- * (lib.rs:344-370). */
+ * (lib.rs). */
 internal data class LogicalLineEntity(
     val node: NodeRef,
     val kind: PropertiesLogicalLineKind,
     val naturalLineIndices: List<Int>,
 )
 
-/** One comment natural line (lib.rs:372-405). */
+/** One comment natural line (lib.rs). */
 internal data class CommentEntity(
     val node: NodeRef,
     val naturalLineIndex: Int,
@@ -66,7 +66,7 @@ internal data class CommentEntity(
     val marker: Char,
 )
 
-/** One source escape and its exact Java-string output range (lib.rs:407-455). */
+/** One source escape and its exact Java-string output range (lib.rs). */
 internal data class EscapeEntity(
     val node: NodeRef,
     val propertyIndex: Int,
@@ -77,7 +77,7 @@ internal data class EscapeEntity(
     val outputEnd: Int,
 )
 
-/** One distinct source-ordered property association (lib.rs:457-546). */
+/** One distinct source-ordered property association (lib.rs). */
 internal data class PropertyEntity(
     val node: NodeRef,
     val logicalLineIndex: Int,
@@ -93,7 +93,7 @@ internal data class PropertyEntity(
     val duplicateGroup: Int?,
 )
 
-/** One recovered malformed logical line (lib.rs:548-588). */
+/** One recovered malformed logical line (lib.rs). */
 internal data class ErrorLineEntity(
     val node: NodeRef,
     val logicalLineIndex: Int,
@@ -107,164 +107,164 @@ internal data class ErrorLineEntity(
 // ---------------------------------------------------------------------------
 
 /** Borrowed natural source line handle bound to one Document snapshot
- * (lib.rs:311-342). */
+ * (lib.rs). */
 class PropertiesNaturalLine internal constructor(
     internal val document: Document,
     internal val index: Int,
 ) {
     private fun entity(): NaturalLineEntity = document.naturalLineEntity(index)
 
-    /** Snapshot-bound natural-line identity (lib.rs:318-321). */
+    /** Snapshot-bound natural-line identity (lib.rs). */
     fun nodeRef(): NodeRef = entity().node
 
-    /** Complete source span including the terminator (lib.rs:323-326). */
+    /** Complete source span including the terminator (lib.rs). */
     fun span(): Span = entity().span
 
-    /** Content span excluding the terminator (lib.rs:328-331). */
+    /** Content span excluding the terminator (lib.rs). */
     fun contentSpan(): Span = entity().contentSpan
 
-    /** LF, CR, or CRLF span; absent for an EOF line (lib.rs:333-338). */
+    /** LF, CR, or CRLF span; absent for an EOF line (lib.rs). */
     fun lineBreakSpan(): Span? = entity().lineBreakSpan
 }
 
-/** Borrowed property/error logical line handle (lib.rs:345-370). */
+/** Borrowed property/error logical line handle (lib.rs). */
 class PropertiesLogicalLine internal constructor(
     internal val document: Document,
     internal val index: Int,
 ) {
     private fun entity(): LogicalLineEntity = document.logicalLineEntity(index)
 
-    /** Snapshot-bound logical-line identity (lib.rs:352-355). */
+    /** Snapshot-bound logical-line identity (lib.rs). */
     fun nodeRef(): NodeRef = entity().node
 
-    /** Property or recovered-error classification (lib.rs:357-360). */
+    /** Property or recovered-error classification (lib.rs). */
     fun kind(): PropertiesLogicalLineKind = entity().kind
 
-    /** Ordered natural-line constituents (lib.rs:362-365). */
+    /** Ordered natural-line constituents (lib.rs). */
     fun naturalLines(): List<PropertiesNaturalLine> =
         entity().naturalLineIndices.map { PropertiesNaturalLine(document, it) }
 }
 
-/** Borrowed comment occurrence handle (lib.rs:373-405). */
+/** Borrowed comment occurrence handle (lib.rs). */
 class PropertiesComment internal constructor(
     internal val document: Document,
     internal val index: Int,
 ) {
     private fun entity(): CommentEntity = document.commentEntity(index)
 
-    /** Snapshot-bound comment identity (lib.rs:381-384). */
+    /** Snapshot-bound comment identity (lib.rs). */
     fun nodeRef(): NodeRef = entity().node
 
-    /** Owning natural line (lib.rs:386-389). */
+    /** Owning natural line (lib.rs). */
     fun naturalLine(): PropertiesNaturalLine =
         PropertiesNaturalLine(document, entity().naturalLineIndex)
 
-    /** Complete comment content span excluding its line break (lib.rs:391-394). */
+    /** Complete comment content span excluding its line break (lib.rs). */
     fun span(): Span = entity().span
 
-    /** Exact comment marker (lib.rs:396-399). */
+    /** Exact comment marker (lib.rs). */
     fun marker(): Char = entity().marker
 }
 
-/** Borrowed escape occurrence handle (lib.rs:408-455). */
+/** Borrowed escape occurrence handle (lib.rs). */
 class PropertiesEscape internal constructor(
     internal val document: Document,
     internal val index: Int,
 ) {
     private fun entity(): EscapeEntity = document.escapeEntity(index)
 
-    /** Snapshot-bound escape identity (lib.rs:419-422). */
+    /** Snapshot-bound escape identity (lib.rs). */
     fun nodeRef(): NodeRef = entity().node
 
-    /** Owning property occurrence (lib.rs:424-427). */
+    /** Owning property occurrence (lib.rs). */
     fun property(): Property = Property(document, entity().propertyIndex)
 
-    /** Whether the output range belongs to the decoded key (lib.rs:429-432). */
+    /** Whether the output range belongs to the decoded key (lib.rs). */
     fun inKey(): Boolean = entity().inKey
 
-    /** Exact escape kind (lib.rs:434-437). */
+    /** Exact escape kind (lib.rs). */
     fun kind(): PropertiesEscapeKind = entity().kind
 
-    /** Complete raw escape spelling (lib.rs:439-442). */
+    /** Complete raw escape spelling (lib.rs). */
     fun span(): Span = entity().span
 
     /** Half-open output code-unit range in the owning key or value
-     * (lib.rs:444-450). */
+     * (lib.rs). */
     fun outputStart(): Int = entity().outputStart
 
-    /** Exclusive output code-unit boundary (lib.rs:444-450). */
+    /** Exclusive output code-unit boundary (lib.rs). */
     fun outputEnd(): Int = entity().outputEnd
 }
 
 /** Borrowed duplicate-preserving property association handle
- * (lib.rs:458-546). */
+ * (lib.rs). */
 class Property internal constructor(
     internal val document: Document,
     internal val index: Int,
 ) {
     private fun entity(): PropertyEntity = document.propertyEntity(index)
 
-    /** Snapshot-bound property association identity (lib.rs:475-478). */
+    /** Snapshot-bound property association identity (lib.rs). */
     fun nodeRef(): NodeRef = entity().node
 
-    /** Owning logical line (lib.rs:480-483). */
+    /** Owning logical line (lib.rs). */
     fun logicalLine(): PropertiesLogicalLine =
         PropertiesLogicalLine(document, entity().logicalLineIndex)
 
-    /** Complete first-to-last property source range (lib.rs:485-488). */
+    /** Complete first-to-last property source range (lib.rs). */
     fun span(): Span = entity().span
 
-    /** Zero-width source anchor at the start of the decoded key (lib.rs:490-493). */
+    /** Zero-width source anchor at the start of the decoded key (lib.rs). */
     fun keyAnchor(): Span = entity().keyAnchor
 
-    /** Zero-width source anchor at the start of the decoded value (lib.rs:495-498). */
+    /** Zero-width source anchor at the start of the decoded value (lib.rs). */
     fun valueAnchor(): Span = entity().valueAnchor
 
-    /** Ordered raw source fragments contributing to the key (lib.rs:500-503). */
+    /** Ordered raw source fragments contributing to the key (lib.rs). */
     fun keyFragments(): List<Span> = entity().keyFragments
 
-    /** Ordered raw source fragments contributing to the value (lib.rs:505-508). */
+    /** Ordered raw source fragments contributing to the value (lib.rs). */
     fun valueFragments(): List<Span> = entity().valueFragments
 
-    /** Exact decoded Java UTF-16 key (lib.rs:510-513). */
+    /** Exact decoded Java UTF-16 key (lib.rs). */
     fun key(): JavaString = entity().key
 
-    /** Exact decoded Java UTF-16 element (lib.rs:515-518). */
+    /** Exact decoded Java UTF-16 element (lib.rs). */
     fun value(): JavaString = entity().value
 
-    /** Implicit, explicit empty, or present source state (lib.rs:520-523). */
+    /** Implicit, explicit empty, or present source state (lib.rs). */
     fun valueState(): PropertiesValueState = entity().valueState
 
-    /** Ordered escape identities in key-then-value decode order (lib.rs:525-528). */
+    /** Ordered escape identities in key-then-value decode order (lib.rs). */
     fun escapes(): List<PropertiesEscape> =
         entity().escapeIndices.map { PropertiesEscape(document, it) }
 
-    /** Deterministic exact-code-unit duplicate group (lib.rs:530-533). */
+    /** Deterministic exact-code-unit duplicate group (lib.rs). */
     fun duplicateGroup(): Int? = entity().duplicateGroup
 }
 
-/** Borrowed recovered error-line handle (lib.rs:549-588). */
+/** Borrowed recovered error-line handle (lib.rs). */
 class PropertiesErrorLine internal constructor(
     internal val document: Document,
     internal val index: Int,
 ) {
     private fun entity(): ErrorLineEntity = document.errorLineEntity(index)
 
-    /** Snapshot-bound error identity (lib.rs:558-561). */
+    /** Snapshot-bound error identity (lib.rs). */
     fun nodeRef(): NodeRef = entity().node
 
-    /** Owning recovered logical line (lib.rs:563-566). */
+    /** Owning recovered logical line (lib.rs). */
     fun logicalLine(): PropertiesLogicalLine =
         PropertiesLogicalLine(document, entity().logicalLineIndex)
 
-    /** Natural lines retained by this recovery record (lib.rs:568-571). */
+    /** Natural lines retained by this recovery record (lib.rs). */
     fun naturalLines(): List<PropertiesNaturalLine> =
         entity().naturalLineIndices.map { PropertiesNaturalLine(document, it) }
 
-    /** Complete recovered source range (lib.rs:573-576). */
+    /** Complete recovered source range (lib.rs). */
     fun span(): Span = entity().span
 
-    /** Stable diagnostic code (lib.rs:578-581). */
+    /** Stable diagnostic code (lib.rs). */
     fun code(): String = entity().code
 }
 
@@ -273,7 +273,7 @@ class PropertiesErrorLine internal constructor(
 // ---------------------------------------------------------------------------
 
 /**
- * Immutable, duplicate-preserving Java Properties document (lib.rs:590-775).
+ * Immutable, duplicate-preserving Java Properties document (lib.rs).
  * Parsing happens in Parser.kt; this file pins the read surface and the
  * module-internal entity access shared by query, projection, materialization,
  * and edit.
@@ -300,89 +300,89 @@ class Document internal constructor(
     internal val rootNode: NodeRef,
 ) {
     /** Snapshot identity to which every handle and span belongs
-     * (lib.rs:611-615). */
+     * (lib.rs). */
     val snapshotIdentity: SnapshotIdentity
         get() = authority.identity
 
-    /** Exact immutable source (lib.rs:617-622). */
+    /** Exact immutable source (lib.rs). */
     fun source(): SourceSnapshot = source
 
-    /** Default rendering is byte-for-byte source identity (lib.rs:624-627). */
+    /** Default rendering is byte-for-byte source identity (lib.rs). */
     fun render(): ByteArray = source.bytes()
 
-    /** Stable Java Properties format family (lib.rs:629-633). */
+    /** Stable Java Properties format family (lib.rs). */
     fun formatFamily(): FormatFamilyId = FormatFamilyId("java-properties", 1)
 
-    /** Exact selected profile (lib.rs:635-639). */
+    /** Exact selected profile (lib.rs). */
     fun profileId(): ProfileId = profile.id()
 
-    /** Concrete selected profile (lib.rs:641-645). */
+    /** Concrete selected profile (lib.rs). */
     fun selectedProfile(): PropertiesProfile = profile
 
-    /** Root Properties document identity (lib.rs:647-650). */
+    /** Root Properties document identity (lib.rs). */
     fun nodeRef(): NodeRef = rootNode
 
-    /** Complete or explicitly recovered formation state (lib.rs:652-656). */
+    /** Complete or explicitly recovered formation state (lib.rs). */
     fun formationStatus(): FormationStatus = formationStatus
 
-    /** Stable ordered diagnostics (lib.rs:658-663). */
+    /** Stable ordered diagnostics (lib.rs). */
     fun diagnostics(): List<Diagnostic> = diagnosticsList
 
-    /** Exhaustive ordered source coverage (lib.rs:665-669). */
+    /** Exhaustive ordered source coverage (lib.rs). */
     fun losslessStructuralIndex(): LosslessStructuralIndex = structuralIndex
 
-    /** Format kind aligned with every structural piece (lib.rs:671-675). */
+    /** Format kind aligned with every structural piece (lib.rs). */
     fun losslessSyntaxKinds(): List<PropertiesSyntaxKind> = syntaxKindList
 
-    /** Ordered natural source lines (lib.rs:677-681). */
+    /** Ordered natural source lines (lib.rs). */
     fun naturalLines(): List<PropertiesNaturalLine> =
         naturalLineEntities.indices.map { PropertiesNaturalLine(this, it) }
 
-    /** Ordered property/error logical lines (lib.rs:683-687). */
+    /** Ordered property/error logical lines (lib.rs). */
     fun logicalLines(): List<PropertiesLogicalLine> =
         logicalLineEntities.indices.map { PropertiesLogicalLine(this, it) }
 
-    /** Ordered duplicate-preserving property associations (lib.rs:689-693). */
+    /** Ordered duplicate-preserving property associations (lib.rs). */
     fun properties(): List<Property> =
         propertyEntities.indices.map { Property(this, it) }
 
-    /** Ordered comment occurrences (lib.rs:695-699). */
+    /** Ordered comment occurrences (lib.rs). */
     fun comments(): List<PropertiesComment> =
         commentEntities.indices.map { PropertiesComment(this, it) }
 
-    /** Ordered escape occurrences (lib.rs:701-705). */
+    /** Ordered escape occurrences (lib.rs). */
     fun escapes(): List<PropertiesEscape> =
         escapeEntities.indices.map { PropertiesEscape(this, it) }
 
-    /** Ordered recovered error lines (lib.rs:707-711). */
+    /** Ordered recovered error lines (lib.rs). */
     fun errorLines(): List<PropertiesErrorLine> =
         errorLineEntities.indices.map { PropertiesErrorLine(this, it) }
 
-    /** Resource contract used to form this snapshot (lib.rs:713-717). */
+    /** Resource contract used to form this snapshot (lib.rs). */
     fun parseLimits(): PropertiesParseLimits = parseLimits
 
-    /** Resolves one property handle only within this snapshot (lib.rs:719-729). */
+    /** Resolves one property handle only within this snapshot (lib.rs). */
     fun property(node: NodeRef): Property {
         val index = propertyOrdinal(node)
             ?: throw PropertiesAccessException(PropertiesAccessErrorKind.UnknownNode)
         return Property(this, index)
     }
 
-    /** Resolves one natural-line handle only within this snapshot (lib.rs:731-744). */
+    /** Resolves one natural-line handle only within this snapshot (lib.rs). */
     fun naturalLine(node: NodeRef): PropertiesNaturalLine {
         val index = naturalLineOrdinal(node)
             ?: throw PropertiesAccessException(PropertiesAccessErrorKind.UnknownNode)
         return PropertiesNaturalLine(this, index)
     }
 
-    /** Resolves one logical-line handle only within this snapshot (lib.rs:746-759). */
+    /** Resolves one logical-line handle only within this snapshot (lib.rs). */
     fun logicalLine(node: NodeRef): PropertiesLogicalLine {
         val index = logicalLineOrdinal(node)
             ?: throw PropertiesAccessException(PropertiesAccessErrorKind.UnknownNode)
         return PropertiesLogicalLine(this, index)
     }
 
-    /** Resolves one escape handle only within this snapshot (lib.rs:761-774). */
+    /** Resolves one escape handle only within this snapshot (lib.rs). */
     fun escape(node: NodeRef): PropertiesEscape {
         val index = escapeOrdinal(node)
             ?: throw PropertiesAccessException(PropertiesAccessErrorKind.UnknownNode)

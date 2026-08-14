@@ -1,7 +1,7 @@
 // Exact Java UTF-16 string semantics for the Properties native model.
 //
 // Data authority (language-neutral sources first):
-//   - RFC 0010 §4 (https://github.com/consema/consema/blob/main/docs/rfcs/0010-java-properties-profiles-v1.md:108-131):
+//   - RFC 0010 §4 (https://github.com/consema/consema/blob/main/docs/rfcs/0010-java-properties-profiles-v1.md):
 //     Java String is an ordered sequence of UTF-16 code units, not a
 //     guarantee of well-formed Unicode scalar values; the native JavaString
 //     value is an immutable sequence of code units with strict
@@ -11,9 +11,9 @@
 //   - conformance/vectors/java-properties-v1.json pins the UTF16BE/1 hex
 //     facts (value_utf16be_hex / key_utf16be_hex) and the statuses
 //     (formation.escape-and-java-utf16-matrix, lines 30-34).
-//   - https://github.com/consema/consema-rs/blob/main/consema-properties/src/lib.rs:124-206 (JavaStringStatus,
+//   - https://github.com/consema/consema-rs/blob/main/consema-properties/src/lib.rs (JavaStringStatus,
 //     JavaString, JavaStringConversionError) pins the shapes; the
-//     classification scan is lib.rs:814-830. consema-go/go/properties is a
+//     classification scan is lib.rs. consema-go/go/properties is a
 //     cross-reference only.
 //
 // Kotlin-idiomatic design (NOT a translation): a Kotlin Char IS one UTF-16
@@ -23,7 +23,7 @@
 
 package consema.properties
 
-/** Whether exact Java UTF-16 units form Unicode scalar text (lib.rs:124-131). */
+/** Whether exact Java UTF-16 units form Unicode scalar text (lib.rs). */
 enum class JavaStringStatus {
     /** Every surrogate participates in one adjacent high/low pair. */
     WellFormedUnicode,
@@ -33,13 +33,13 @@ enum class JavaStringStatus {
 }
 
 /** An exact Java string cannot enter a Unicode-only host string
- * (lib.rs:196-206). */
+ * (lib.rs). */
 class JavaStringConversionException :
     Exception("Java UTF-16 string contains an unpaired surrogate")
 
 /**
  * Exact Java string content as an immutable UTF-16 code-unit sequence
- * (RFC 0010 §4; lib.rs:133-194). Strict equality and hashing are over the
+ * (RFC 0010 §4; lib.rs). Strict equality and hashing are over the
  * exact code units, so an unpaired surrogate never compares equal to a
  * replacement character.
  */
@@ -50,22 +50,22 @@ class JavaString private constructor(
 ) {
     companion object {
         /** Creates exact Java content and computes surrogate well-formedness
-         * (lib.rs:141-147). */
+         * (lib.rs). */
         fun fromCodeUnits(units: CharArray): JavaString =
             JavaString(units.copyOf(), classifyJavaString(units))
 
         /** Converts one valid Unicode scalar string to its exact UTF-16 units
-         * (lib.rs:149-153). */
+         * (lib.rs). */
         fun fromUnicode(value: String): JavaString = fromCodeUnits(value.toCharArray())
     }
 
     /** Exact ordered Java UTF-16 code units; returns a defensive copy
-     * (lib.rs:155-159). */
+     * (lib.rs). */
     fun codeUnits(): CharArray = units.copyOf()
 
     internal fun rawUnits(): CharArray = units
 
-    /** Canonical BOM-free big-endian `UTF16BE/1` bytes (lib.rs:161-168). */
+    /** Canonical BOM-free big-endian `UTF16BE/1` bytes (lib.rs). */
     fun utf16beBytes(): ByteArray {
         val bytes = ByteArray(units.size * 2)
         for (i in units.indices) {
@@ -81,7 +81,7 @@ class JavaString private constructor(
         get() = units.size
 
     /** Converts only well-formed Java content to a Unicode String
-     * (lib.rs:176-179). */
+     * (lib.rs). */
     fun toUnicode(): String {
         if (status == JavaStringStatus.UnpairedSurrogate) {
             throw JavaStringConversionException()
@@ -98,7 +98,7 @@ class JavaString private constructor(
         "JavaString(${units.size} code units, $status)"
 }
 
-/** Classifies surrogate pairing (lib.rs:814-830). */
+/** Classifies surrogate pairing (lib.rs). */
 private fun classifyJavaString(units: CharArray): JavaStringStatus {
     var index = 0
     while (index < units.size) {

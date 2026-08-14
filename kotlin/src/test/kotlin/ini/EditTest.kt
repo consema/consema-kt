@@ -1,7 +1,7 @@
 // Structural edit tests: the frozen eight operations, dry-run/commit
 // equivalence, patch replay, untouched proof, and the conflict matrix.
 //
-// Authority: RFC 0009 §12 (https://github.com/consema/consema/blob/main/docs/rfcs/0009-ini-family-profiles-v1.md:437-
+// Authority: RFC 0009 §12 (https://github.com/consema/consema/blob/main/docs/rfcs/0009-ini-family-profiles-v1.md
 // 472), the vector cases edit.all-eight-operations and
 // edit.dry-run-patch-proof-and-atomic-failure (ini-v1.json:89-105), and
 // https://github.com/consema/consema-rs/blob/main/consema-ini/src/edit.rs (the byte-arbitration authority).
@@ -105,7 +105,7 @@ class EditTest {
     }
 
     /** Vector case edit.dry-run-patch-proof-and-atomic-failure (ini-v1.json:
-     * 102-105): dry-run and commit produce the same patch, the patch
+ *): dry-run and commit produce the same patch, the patch
      * replays onto the base snapshot, the untouched proof verifies, and a
      * transaction bound to another snapshot fails with
      * core.edit.wrong-snapshot@1 while the base stays unchanged. */

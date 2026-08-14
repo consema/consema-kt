@@ -1,16 +1,16 @@
 // Pinned Python 3.14 / Unicode 16.0 default `optionxform` semantics.
 //
 // Data authority:
-//   - RFC 0009 §7 (https://github.com/consema/consema/blob/main/docs/rfcs/0009-ini-family-profiles-v1.md:235-239): option
+//   - RFC 0009 §7 (https://github.com/consema/consema/blob/main/docs/rfcs/0009-ini-family-profiles-v1.md): option
 //     comparison and duplicate detection use the Python 3.14 default
 //     lowercase `optionxform`, pinned to Unicode 16.0 independently of the
 //     Rust compiler's Unicode tables; original option spelling is retained.
 //   - conformance/vectors/ini-v1.json formation.python-unicode16-optionxform
 //     pins the U+0130 -> "i" + U+0307 case-expansion duplicate fact.
-//   - https://github.com/consema/consema-rs/blob/main/consema-ini/src/python_case.rs:201-232 pins the mapping rule:
+//   - https://github.com/consema/consema-rs/blob/main/consema-ini/src/python_case.rs pins the mapping rule:
 //     a per-scalar simple lowercase mapping with the single special
 //     expansion U+0130 -> U+0069 U+0307; the pinned tables are Unicode 16.0
-//     (python_case.rs:5-199).
+//     (python_case.rs).
 //
 // Kotlin-idiomatic design: the JDK's Character.toLowerCase provides the
 // per-scalar simple lowercase mapping. The JDK Unicode tables approximate
@@ -24,7 +24,7 @@ package consema.ini
 /**
  * The Python 3.14 default optionxform: lowercase every scalar under the
  * pinned Unicode 16.0 simple mapping, with the single two-scalar expansion
- * U+0130 -> U+0069 U+0307 (python_case.rs:201-215).
+ * U+0130 -> U+0069 U+0307 (python_case.rs).
  */
 internal fun optionxform(value: String): String {
     val output = StringBuilder(value.length)
@@ -32,7 +32,7 @@ internal fun optionxform(value: String): String {
         val code = character.code
         if (code == 0x0130) {
             // The two-scalar expansion U+0130 -> U+0069 U+0307
-            // (python_case.rs:205-207).
+            // (python_case.rs).
             output.append('i')
             output.appendCodePoint(0x0307)
         } else {

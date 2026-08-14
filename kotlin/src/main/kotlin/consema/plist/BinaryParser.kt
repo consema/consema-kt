@@ -3,24 +3,24 @@
 // Complete/Recovered outcomes.
 //
 // Data authority:
-//   - RFC 0013 §2.2, §3, §5 (https://github.com/consema/consema/blob/main/docs/rfcs/0013-plist-family-profiles-v1.md:
-//     78-89, 90-124, 276-460): the 42-byte minimum, the header, the admitted
+//   - RFC 0013 §2.2, §3, §5 (https://github.com/consema/consema/blob/main/docs/rfcs/0013-plist-family-profiles-v1.md
+//): the 42-byte minimum, the header, the admitted
 //     marker table, the integer width rules, extended sizes, real/date/
 //     string/data/UID payloads, array/dictionary references, the offset
 //     table and trailer layout, and the mandatory integrity checks of
 //     §5.11 (no false Complete: every check runs before any object is
 //     decoded, and every offset/ref/size arithmetic is checked before
 //     allocation).
-//   - RFC 0013 §5.12 (https://github.com/consema/consema/blob/main/docs/rfcs/0013-plist-family-profiles-v1.md:451-460): non-minimal widths,
+//   - RFC 0013 §5.12 (https://github.com/consema/consema/blob/main/docs/rfcs/0013-plist-family-profiles-v1.md): non-minimal widths,
 //     extended-size spellings, and duplicated scalars are legal input
 //     facts, preserved and normalized only by canonical materialization.
 //   - conformance/vectors/plist-v1.json (plist.binary-formation.*) pins the
 //     recover/complete outcomes and the diagnostic codes case by case.
 //   - https://github.com/consema/consema-rs/blob/main/consema-plist/src/parser_binary.rs is the byte-arbitration
-//     authority (trailer checks parser_binary.rs:776-917, offset table
-//     parser_binary.rs:919-972, object scan parser_binary.rs:976-1252,
-//     extended sizes parser_binary.rs:1254-1324, dict keys parser_binary.rs:
-//     1326-1354, region assembly parser_binary.rs:703-730); consema-go/go/plist is a
+//     authority (trailer checks parser_binary.rs, offset table
+//     parser_binary.rs, object scan parser_binary.rs,
+//     extended sizes parser_binary.rs, dict keys parser_binary.rs
+// region assembly parser_binary.rs); consema-go/go/plist is a
 //     cross-reference only.
 //
 // Kotlin-idiomatic design (NOT a translation): the parser is a single
@@ -44,23 +44,23 @@ import consema.document.Span
 import consema.protocol.DiagnosticCategory
 import consema.protocol.Severity
 
-/** Exact `bplist00` header bytes (RFC 0013 §5.1; parser_binary.rs:42-43). */
+/** Exact `bplist00` header bytes (RFC 0013 §5.1; parser_binary.rs). */
 private val HEADER = byteArrayOf('b'.code.toByte(), 'p'.code.toByte(), 'l'.code.toByte(),
     'i'.code.toByte(), 's'.code.toByte(), 't'.code.toByte(), '0'.code.toByte(), '0'.code.toByte())
 
 /** Minimum admissible source length: 8-byte header, at least one 1-byte
  * object, at least one 1-byte offset entry, and the 32-byte trailer
- * (RFC 0013 §2.2; parser_binary.rs:44-47). */
+ * (RFC 0013 §2.2; parser_binary.rs). */
 private const val MIN_SOURCE_BYTES = 42
 
-/** Trailer byte length (RFC 0013 §5.10; parser_binary.rs:48-49). */
+/** Trailer byte length (RFC 0013 §5.10; parser_binary.rs). */
 private const val TRAILER_BYTES = 32
 
 /** Largest legal integer/offset/ref payload width in bytes (RFC 0013 §5.11;
- * parser_binary.rs:50-51). */
+ * parser_binary.rs). */
 private const val MAX_FIELD_WIDTH = 8
 
-/** Binary profile formation entry (lib.rs:241-260). */
+/** Binary profile formation entry (lib.rs). */
 internal fun parseBinaryEntry(
     bytes: ByteArray,
     selection: PlistEncodingSelection,
@@ -115,7 +115,7 @@ private fun wrapBinarySourceError(error: consema.document.SourceException): Plis
     }
 
 /** One object's structural shape: kind, marker, extent, and references
- * (parser_binary.rs:407-418). */
+ * (parser_binary.rs). */
 private class ObjectShape(
     val kind: ShapeKind,
     val marker: Int,
@@ -128,10 +128,10 @@ private class ObjectShape(
 )
 
 /** One decoded object-table reference with its exact byte span
- * (parser_binary.rs:400-405). */
+ * (parser_binary.rs). */
 private class RefTarget(val target: Int, val span: Span)
 
-/** Object shape kinds (parser_binary.rs:379-398). */
+/** Object shape kinds (parser_binary.rs). */
 private enum class ShapeKind {
     False,
     True,
@@ -149,7 +149,7 @@ private enum class ShapeKind {
     fun isString(): Boolean = this == AsciiString || this == Utf16String
 }
 
-/** Raw trailer field values (RFC 0013 §5.10; parser_binary.rs:420-478). */
+/** Raw trailer field values (RFC 0013 §5.10; parser_binary.rs). */
 private class RawTrailer(
     val unused: BooleanArray,
     val sortVersion: Int,
@@ -300,7 +300,7 @@ internal class BinaryParser(
         val entities = ArrayList<Entity>()
         if (!nativeUnproven && cut > 0) {
             // Cycle and container-depth validation from the top object
-            // (RFC 0013 §5.11; parser_binary.rs:657-670).
+            // (RFC 0013 §5.11; parser_binary.rs).
             val open = HashSet<Int>()
             val cycle = !visit(shapes, topObject, 0, open)
             if (cycle) {
@@ -394,7 +394,7 @@ internal class BinaryParser(
         }
         val binaryFacts = BinaryFacts(objects, offsetFacts, refs, trailerFacts)
 
-        // Exhaustive region coverage (parser_binary.rs:703-730).
+        // Exhaustive region coverage (parser_binary.rs).
         val regions = ArrayList<BinaryRegion>()
         regions.add(region(0, if (headerOk) "header" else "error-region", 0, 8))
         if (cut > 0) {
@@ -472,8 +472,7 @@ internal class BinaryParser(
         )
     }
 
-    /** Validates the mandatory trailer checks (RFC 0013 §5.11; parser_binary
-     * .rs:776-917). */
+    /** Validates the mandatory trailer checks (RFC 0013 §5.11; parser_binary.rs). */
     private fun validateTrailer(raw: RawTrailer): Boolean {
         var ok = true
         val len = bytes.size
@@ -568,7 +567,7 @@ internal class BinaryParser(
     }
 
     /** Reads and validates the offset table in entry order (RFC 0013 §5.10,
-     * §5.11; parser_binary.rs:919-972). */
+     * §5.11; parser_binary.rs). */
     private fun readOffsetTable(
         offsetTableOffset: Int,
         numObjects: Int,
@@ -605,7 +604,7 @@ internal class BinaryParser(
     }
 
     /** Scans objects in index order and returns the proven shapes plus the
-     * prefix cut (RFC 0013 §5.2-§5.9; parser_binary.rs:974-1000). */
+     * prefix cut (RFC 0013 §5.2-§5.9; parser_binary.rs). */
     private fun scanObjects(
         objectOffsets: List<Int>,
         initialCut: Int,
@@ -628,7 +627,7 @@ internal class BinaryParser(
     }
 
     /** Decodes one object's marker, size, extent, and references; null is a
-     * fault that cuts the proven prefix at [index] (parser_binary.rs:1002-
+     * fault that cuts the proven prefix at [index] (parser_binary.rs
      * 1252). */
     private fun scanObject(
         index: Int,
@@ -802,7 +801,7 @@ internal class BinaryParser(
     }
 
     /** Reads a sized construct's count, honoring the extended-size integer
-     * rule (RFC 0013 §5.4; parser_binary.rs:1254-1267). */
+     * rule (RFC 0013 §5.4; parser_binary.rs). */
     private fun sizedCount(marker: Int, objectOffset: Int, index: Int): Pair<Int, Int>? {
         val nibble = marker and 0x0F
         if (nibble != 0x0F) {
@@ -812,7 +811,7 @@ internal class BinaryParser(
     }
 
     /** Reads one extended-size integer and enforces its limits (RFC 0013
-     * §5.4, §12; parser_binary.rs:1269-1324). */
+     * §5.4, §12; parser_binary.rs). */
     private fun readCount(objectOffset: Int, index: Int): Pair<Int, Int>? {
         if (objectOffset + 1 >= bytes.size) {
             recover(PlistCodes.BINARY_OFFSET_TABLE, DiagnosticCategory.Syntax,
@@ -844,7 +843,7 @@ internal class BinaryParser(
     }
 
     /** Verifies that every dictionary key target is a string object (RFC
-     * 0013 §5.9; parser_binary.rs:1326-1354). */
+     * 0013 §5.9; parser_binary.rs). */
     private fun verifyDictKeys(shapes: List<ObjectShape>, initialCut: Int): Int {
         var cut = initialCut
         for (index in 0 until cut) {
@@ -872,7 +871,7 @@ internal class BinaryParser(
         return cut
     }
 
-    /** Builds native values in object-table order (parser_binary.rs:1356-
+    /** Builds native values in object-table order (parser_binary.rs
      * 1449). Container natives hold element/entry ENTITY indices: value
      * entities occupy 0..cut-1 and the element/entry entities follow at
      * `cut + elementBase[i] + position`. */

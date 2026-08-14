@@ -3,7 +3,7 @@
 // structural facts.
 //
 // Data authority:
-//   - RFC 0013 §6 (https://github.com/consema/consema/blob/main/docs/rfcs/0013-plist-family-profiles-v1.md:461-511): the
+//   - RFC 0013 §6 (https://github.com/consema/consema/blob/main/docs/rfcs/0013-plist-family-profiles-v1.md): the
 //     native value model is representation-independent and owned by the plist
 //     family (PlistDocument/PlistValue/PlistDict/PlistDictEntry/PlistKey/
 //     PlistArray/PlistString/PlistInteger/PlistReal/PlistBoolean/PlistDate/
@@ -16,16 +16,16 @@
 //     value; shared object identity from the binary object table is
 //     preserved (one source object referenced by several containers is one
 //     native node with multiple owners).
-//   - RFC 0013 §3 (https://github.com/consema/consema/blob/main/docs/rfcs/0013-plist-family-profiles-v1.md:90-124): formation is Complete or
+//   - RFC 0013 §3 (https://github.com/consema/consema/blob/main/docs/rfcs/0013-plist-family-profiles-v1.md): formation is Complete or
 //     Recovered; a Recovered Document retains the immutable source,
 //     exhaustive piece coverage, ordered diagnostics, and every independently
 //     proven construct; recovery never invents unproven native semantics.
 //   - RFC 0013 §8.3 and §5 (binary structure facts: object table, offset
-//     table, references, trailer); https://github.com/consema/consema-rs/blob/main/consema-plist/src/parser_binary.rs:
-//     53-172 pins BinaryObjectFact/BinaryOffsetFact/BinaryObjectRefFact/
-//     BinaryTrailerFacts and native.rs:828-864 the arena document.
-//   - https://github.com/consema/consema-rs/blob/main/consema-plist/src/native.rs:39-140 (PlistString/PlistKey),
-//     native.rs:201-423 (PlistInteger/PlistReal/PlistBoolean/PlistDate/
+//     table, references, trailer); https://github.com/consema/consema-rs/blob/main/consema-plist/src/parser_binary.rs
+// pins BinaryObjectFact/BinaryOffsetFact/BinaryObjectRefFact/
+//     BinaryTrailerFacts and native.rs the arena document.
+//   - https://github.com/consema/consema-rs/blob/main/consema-plist/src/native.rs (PlistString/PlistKey),
+//     native.rs (PlistInteger/PlistReal/PlistBoolean/PlistDate/
 //     PlistData/PlistUid) pins the value semantics; consema-go/go/plist is a
 //     cross-reference only.
 //
@@ -52,7 +52,7 @@ import consema.document.Span
 import java.util.Arrays
 
 /** Well-formedness status of one exact UTF-16 string (RFC 0013 §6;
- * native.rs:39-54). */
+ * native.rs). */
 enum class PlistStringStatus {
     /** The code-unit sequence is well-formed Unicode. */
     WellFormedUnicode,
@@ -63,7 +63,7 @@ enum class PlistStringStatus {
 
 /**
  * Exact UTF-16 code units with a bounded validation result (RFC 0013 §6;
- * native.rs:56-117). Equality is code-unit equality; the unpaired-surrogate
+ * native.rs). Equality is code-unit equality; the unpaired-surrogate
  * status blocks ordinary Unicode projection and XML conversion (RFC 0013 §7,
  * §9).
  */
@@ -73,12 +73,12 @@ class PlistString private constructor(
 ) {
     companion object {
         /** Builds the exact code-unit sequence of one Unicode string
-         * (native.rs:72-77). */
+         * (native.rs). */
         fun fromUnicode(value: String): PlistString =
             PlistString(encodeUtf16(value), PlistStringStatus.WellFormedUnicode)
 
         /** Adopts an exact code-unit sequence and validates its well-formed
-         * status (native.rs:64-70). */
+         * status (native.rs). */
         fun fromCodeUnits(codeUnits: IntArray): PlistString {
             val units = codeUnits.copyOf()
             val status = if (hasUnpairedSurrogate(units)) {
@@ -93,7 +93,7 @@ class PlistString private constructor(
     /** Exact UTF-16 code units; returns a defensive copy. */
     fun codeUnits(): IntArray = units.copyOf()
 
-    /** Exact UTF-16BE bytes (native.rs:84-95). */
+    /** Exact UTF-16BE bytes (native.rs). */
     fun utf16beBytes(): ByteArray {
         val output = ByteArray(units.size * 2)
         for ((index, unit) in units.withIndex()) {
@@ -104,7 +104,7 @@ class PlistString private constructor(
     }
 
     /** Decoded Unicode text, or null when the sequence has an unpaired
-     * surrogate (native.rs:98-116). */
+     * surrogate (native.rs). */
     fun toUnicode(): String? {
         if (status == PlistStringStatus.UnpairedSurrogate) {
             return null
@@ -126,15 +126,15 @@ class PlistString private constructor(
 
 /**
  * A string key identity of one dictionary association (RFC 0013 §6;
- * native.rs:135-198). Equality is exact code-unit equality; `toUnicode`
+ * native.rs). Equality is exact code-unit equality; `toUnicode`
  * returns null for an unpaired-surrogate key.
  */
 class PlistKey private constructor(private val string: PlistString) {
     companion object {
-        /** Builds a key from one Unicode string (native.rs:154-163). */
+        /** Builds a key from one Unicode string (native.rs). */
         fun fromUnicode(value: String): PlistKey = PlistKey(PlistString.fromUnicode(value))
 
-        /** Adopts an exact code-unit sequence (native.rs:148-152). */
+        /** Adopts an exact code-unit sequence (native.rs). */
         fun fromCodeUnits(codeUnits: IntArray): PlistKey =
             PlistKey(PlistString.fromCodeUnits(codeUnits))
     }
@@ -159,10 +159,10 @@ class PlistKey private constructor(private val string: PlistString) {
     override fun toString(): String = "PlistKey(${string.toUnicode() ?: "<unpaired>"})"
 }
 
-/** Signed 64-bit native integer (RFC 0013 §6; native.rs:201-217). */
+/** Signed 64-bit native integer (RFC 0013 §6; native.rs). */
 data class PlistInteger(val value: Long)
 
-/** Real width fact of one native real (RFC 0013 §5.5; native.rs:219-231). */
+/** Real width fact of one native real (RFC 0013 §5.5; native.rs). */
 enum class RealWidth {
     /** 4-byte IEEE 754 single; the width fact survives parsing and
      * re-emission. */
@@ -173,7 +173,7 @@ enum class RealWidth {
 }
 
 /**
- * Exact IEEE 754 real with its width fact (RFC 0013 §6; native.rs:233-295).
+ * Exact IEEE 754 real with its width fact (RFC 0013 §6; native.rs).
  * The identity is the exact bit pattern plus width; NaN payloads and the
  * sign of zero are preserved.
  */
@@ -185,14 +185,14 @@ data class PlistReal(
     val width: RealWidth,
 ) {
     companion object {
-        /** Exact 64-bit double (native.rs:243-249). */
+        /** Exact 64-bit double (native.rs). */
         fun double(bits: Long): PlistReal = PlistReal(bits, RealWidth.Float64)
 
-        /** Exact 32-bit single (native.rs:251-257). */
+        /** Exact 32-bit single (native.rs). */
         fun single(bits: Int): PlistReal = PlistReal(bits.toLong() and 0xFFFF_FFFFL, RealWidth.Float32)
     }
 
-    /** The exact double-converted value (native.rs:259-294). */
+    /** The exact double-converted value (native.rs). */
     fun asDouble(): Double =
         when (width) {
             RealWidth.Float64 -> java.lang.Double.longBitsToDouble(bits)
@@ -200,26 +200,26 @@ data class PlistReal(
         }
 }
 
-/** Two-valued native boolean (native.rs:297-320). */
+/** Two-valued native boolean (native.rs). */
 data class PlistBoolean(val value: Boolean)
 
 /**
  * Exact double seconds since `2001-01-01T00:00:00Z` (RFC 0013 §6;
- * native.rs:322-372). A non-finite payload is rejected at construction.
+ * native.rs). A non-finite payload is rejected at construction.
  */
 data class PlistDate(val seconds: Double) {
     companion object {
         /** Constructs a date, rejecting non-finite payloads
-         * (native.rs:328-357). */
+         * (native.rs). */
         fun fromSeconds(seconds: Double): PlistDate? =
             if (seconds.isFinite()) PlistDate(seconds) else null
     }
 }
 
-/** Exact data bytes (RFC 0013 §6; native.rs:374-398). */
+/** Exact data bytes (RFC 0013 §6; native.rs). */
 class PlistData private constructor(private val content: ByteArray) {
     companion object {
-        /** Wraps a copy of the bytes (native.rs:381-387). */
+        /** Wraps a copy of the bytes (native.rs). */
         fun fromBytes(bytes: ByteArray): PlistData = PlistData(bytes.copyOf())
     }
 
@@ -236,7 +236,7 @@ class PlistData private constructor(private val content: ByteArray) {
     override fun hashCode(): Int = content.contentHashCode()
 }
 
-/** Unsigned 32-bit UID value (RFC 0013 §6; native.rs:400-422). */
+/** Unsigned 32-bit UID value (RFC 0013 §6; native.rs). */
 data class PlistUid(val value: Int) {
     /** The value as an unsigned long. */
     fun toLong(): Long = value.toLong() and 0xFFFF_FFFFL
@@ -346,7 +346,7 @@ internal sealed class NativeValue {
 /** One value entity (RFC 0013 §6; the json-family ValueEntity precedent).
  * XML dict keys are value entities too; [isKey] keeps the post-order rank
  * of value-only entities aligned with the native arena ordinals
- * (materialization.rs:1120-1122). */
+ * (materialization.rs). */
 internal data class ValueEntity(
     val span: Span,
     /** Native value when proven; null for an invalid or unproven value. */
@@ -388,10 +388,10 @@ internal sealed class Entity {
 }
 
 // ---------------------------------------------------------------------------
-// Binary structure facts (RFC 0013 §8.3; parser_binary.rs:53-172)
+// Binary structure facts (RFC 0013 §8.3; parser_binary.rs)
 // ---------------------------------------------------------------------------
 
-/** One proven object-table entry fact (parser_binary.rs:53-89). */
+/** One proven object-table entry fact (parser_binary.rs). */
 data class BinaryObjectFact(
     /** Object-table ordinal. */
     val index: Int,
@@ -403,7 +403,7 @@ data class BinaryObjectFact(
     val span: Span,
 )
 
-/** One validated offset-table entry fact (parser_binary.rs:91-117). */
+/** One validated offset-table entry fact (parser_binary.rs). */
 data class BinaryOffsetFact(
     /** Object-table ordinal of this entry. */
     val index: Int,
@@ -413,8 +413,8 @@ data class BinaryOffsetFact(
     val span: Span,
 )
 
-/** One decoded object reference of a proven container (parser_binary.rs:
- * 119-156). For dictionaries keys occupy positions `0..count` and values
+/** One decoded object reference of a proven container (parser_binary.rs
+ *). For dictionaries keys occupy positions `0..count` and values
  * `count..2*count`. */
 data class BinaryObjectRefFact(
     /** Referencing object index. */
@@ -427,7 +427,7 @@ data class BinaryObjectRefFact(
     val span: Span,
 )
 
-/** Trailer field facts (RFC 0013 §5.10; parser_binary.rs:158-218). The raw
+/** Trailer field facts (RFC 0013 §5.10; parser_binary.rs). The raw
  * field values are always recorded; validity is carried by formation
  * diagnostics and status. */
 data class BinaryTrailerFacts(
@@ -448,7 +448,7 @@ data class BinaryTrailerFacts(
 )
 
 /** Complete binary structural facts of the proven prefix (RFC 0013 §8.3;
- * parser_binary.rs:696-701). */
+ * parser_binary.rs). */
 data class BinaryFacts(
     /** Proven object facts in table order. */
     val objects: List<BinaryObjectFact>,
@@ -738,7 +738,7 @@ internal fun encodeUtf16(value: String): IntArray {
 }
 
 /** Whether one code-unit sequence contains an unpaired surrogate
- * (native.rs:98-116). */
+ * (native.rs). */
 internal fun hasUnpairedSurrogate(units: IntArray): Boolean {
     var index = 0
     while (index < units.size) {

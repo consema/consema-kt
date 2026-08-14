@@ -1,17 +1,17 @@
 // Scalar and structural edit transactions for TOML 1.0.
 //
 // Data authority:
-//   - RFC 0001 §6 (https://github.com/consema/consema/blob/main/docs/rfcs/0001-toml-1.0-profile.md:102-120): scalar
+//   - RFC 0001 §6 (https://github.com/consema/consema/blob/main/docs/rfcs/0001-toml-1.0-profile.md): scalar
 //     edits accept only TomlItem scalar targets; the four representation
 //     policies; transactions validate all targets, conflicts, and candidate
 //     representations before one atomic replace-and-reparse.
 //   - RFC 0004 §12-§16 (https://github.com/consema/consema/blob/main/docs/rfcs/0004-materialization-conversion-and-
-//     structural-edit-v1.md:291-384): native ownership of the five
+//     structural-edit-v1.md): native ownership of the five
 //     structural operations, the transaction conflict algebra, the dry-run
 //     EditPlan, the untouched-byte proof, and SourcePatch derivation.
-//   - https://github.com/consema/consema-rs/blob/main/consema-toml/src/operation_registry.rs:16-74 pins the seven
+//   - https://github.com/consema/consema-rs/blob/main/consema-toml/src/operation_registry.rs pins the seven
 //     frozen operation IDs and their target roles.
-//   - https://github.com/consema/consema-rs/blob/main/consema-toml/src/edit.rs:15-47 (RepresentationPolicy,
+//   - https://github.com/consema/consema-rs/blob/main/consema-toml/src/edit.rs (RepresentationPolicy,
 //     ScalarReplacement), :57-99 (EditOperation), :101-227 (transaction and
 //     builder), :229-280 (EditCommit/EditFailure), :281-430 (commit),
 //     :432-447 (dry_run), :449-1062 (preparation), :1064-1100
@@ -60,7 +60,7 @@ import consema.protocol.ErrorCodeRegistry
 import consema.protocol.ErrorRegistryVersion
 import consema.protocol.Severity
 
-/** Explicit semantic scalar representation policy (edit.rs:15-26). */
+/** Explicit semantic scalar representation policy (edit.rs). */
 enum class RepresentationPolicy {
     /** Caller must use an exact literal operation instead. */
     ExactLiteral,
@@ -76,7 +76,7 @@ enum class RepresentationPolicy {
     PreserveElseCanonical,
     ;
 
-    /** The stable summary spelling (toml_policy_name, edit.rs:1251-1258). */
+    /** The stable summary spelling (toml_policy_name, edit.rs). */
     internal fun summaryName(): String =
         when (this) {
             ExactLiteral -> "exact-literal"
@@ -86,8 +86,8 @@ enum class RepresentationPolicy {
         }
 }
 
-/** One scalar operation bound to a transaction base snapshot (edit.rs:
- * 28-55). */
+/** One scalar operation bound to a transaction base snapshot (edit.rs
+ *). */
 sealed class ScalarReplacement {
     /** Replace by public semantic value under an explicit policy. */
     data class Semantic(
@@ -113,7 +113,7 @@ sealed class ScalarReplacement {
 }
 
 /** One typed TOML edit operation bound to an immutable base snapshot
- * (edit.rs:57-99). */
+ * (edit.rs). */
 sealed class EditOperation {
     /** Existing scalar semantic or literal replacement. */
     data class ReplaceScalar(val replacement: ScalarReplacement) : EditOperation()
@@ -162,7 +162,7 @@ sealed class EditOperation {
 }
 
 /** Immutable transaction; every operation resolves against one base
- * snapshot (edit.rs:101-120). */
+ * snapshot (edit.rs). */
 class EditTransaction internal constructor(
     /** Base snapshot identity. */
     val baseSnapshot: consema.document.SnapshotIdentity,
@@ -172,19 +172,19 @@ class EditTransaction internal constructor(
     fun operations(): List<EditOperation> = operations
 }
 
-/** Builder that is not a committed edit (edit.rs:122-227). */
+/** Builder that is not a committed edit (edit.rs). */
 class EditTransactionBuilder internal constructor(
     private val base: consema.document.SnapshotIdentity,
     private val operations: MutableList<EditOperation> = ArrayList(),
 ) {
     companion object {
         /** Binds a new transaction to one immutable base document
-         * (edit.rs:130-138). */
+         * (edit.rs). */
         fun new(document: TomlDocument): EditTransactionBuilder =
             EditTransactionBuilder(document.snapshotIdentity)
     }
 
-    /** Adds a semantic scalar replacement (edit.rs:140-153). */
+    /** Adds a semantic scalar replacement (edit.rs). */
     fun semanticScalar(
         target: NodeRef,
         value: PortableValue,
@@ -194,13 +194,13 @@ class EditTransactionBuilder internal constructor(
         return this
     }
 
-    /** Adds an exact TOML scalar literal replacement (edit.rs:155-163). */
+    /** Adds an exact TOML scalar literal replacement (edit.rs). */
     fun literalScalar(target: NodeRef, literal: ByteArray): EditTransactionBuilder {
         operations.add(EditOperation.ReplaceScalar(ScalarReplacement.Literal(target, literal)))
         return this
     }
 
-    /** Adds one direct TOML table entry insertion (edit.rs:165-180). */
+    /** Adds one direct TOML table entry insertion (edit.rs). */
     fun insertEntry(
         table: NodeRef,
         key: String,
@@ -211,19 +211,19 @@ class EditTransactionBuilder internal constructor(
         return this
     }
 
-    /** Adds one exact TOML table entry removal (edit.rs:182-186). */
+    /** Adds one exact TOML table entry removal (edit.rs). */
     fun removeEntry(target: NodeRef): EditTransactionBuilder {
         operations.add(EditOperation.RemoveEntry(target))
         return this
     }
 
-    /** Adds one exact TOML direct key rename (edit.rs:188-195). */
+    /** Adds one exact TOML direct key rename (edit.rs). */
     fun renameEntry(target: NodeRef, key: String): EditTransactionBuilder {
         operations.add(EditOperation.RenameEntry(target, key))
         return this
     }
 
-    /** Adds one TOML array element insertion (edit.rs:197-209). */
+    /** Adds one TOML array element insertion (edit.rs). */
     fun insertArrayElement(
         array: NodeRef,
         value: PortableValue,
@@ -233,22 +233,22 @@ class EditTransactionBuilder internal constructor(
         return this
     }
 
-    /** Adds one exact TOML array element removal (edit.rs:211-217). */
+    /** Adds one exact TOML array element removal (edit.rs). */
     fun removeArrayElement(target: NodeRef): EditTransactionBuilder {
         operations.add(EditOperation.RemoveArrayElement(target))
         return this
     }
 
     /** Completes the immutable request; target validation occurs atomically
-     * at commit (edit.rs:219-226). */
+     * at commit (edit.rs). */
     fun build(): EditTransaction = EditTransaction(base, operations.toList())
 }
 
-/** The closed edit failure vocabulary (edit.rs:242-279). The kind names
+/** The closed edit failure vocabulary (edit.rs). The kind names
  * are the language-neutral comparison facts (the vector
  * `"failure": "UnsupportedSemanticValue"` spelling); [code] is the frozen
  * registered code (the StableFailure diagnostic_code mapping,
- * edit.rs:1280-1332). */
+ * edit.rs). */
 sealed class EditFailureKind {
     /** Transaction or target belongs to another snapshot. */
     data object WrongSnapshot : EditFailureKind()
@@ -309,7 +309,7 @@ sealed class EditFailureKind {
     data object NewDocumentFormationFailed : EditFailureKind()
     ;
 
-    /** The frozen registered code (edit.rs:1308-1331). */
+    /** The frozen registered code (edit.rs). */
     val code: String
         get() = when (this) {
             WrongSnapshot -> "core.edit.wrong-snapshot@1"
@@ -344,7 +344,7 @@ class TomlEditException(val kind: EditFailureKind) :
         get() = kind.code
 }
 
-/** Atomic edit success (edit.rs:229-240). ChangeSet is not shipped in the
+/** Atomic edit success (edit.rs). ChangeSet is not shipped in the
  * Kotlin TOML family (recorded gap, six-repo audit G090); the commit
  * exposes the equivalent facts ([diagnostics], [nodeMappings]) as family
  * records. */
@@ -365,7 +365,7 @@ class EditCommit(
 
 /** One old-to-new node mapping fact (the Rust NodeMapping of the
  * not-shipped-in-Kotlin ChangeSet, recorded gap, six-repo audit G090;
- * edit.rs:368-393). */
+ * edit.rs). */
 data class TomlNodeMapping(
     /** Old structural identity. */
     val old: NodeRef,
@@ -391,7 +391,7 @@ enum class TomlNodeMappingStatus {
 
 /**
  * Atomically commits scalar and structural operations. A failure never
- * changes this snapshot (edit.rs:281-430; RFC 0004 §13).
+ * changes this snapshot (edit.rs; RFC 0004 §13).
  */
 fun TomlDocument.commit(transaction: EditTransaction): EditCommit {
     if (transaction.baseSnapshot != snapshotIdentity) {
@@ -505,7 +505,7 @@ fun TomlDocument.commit(transaction: EditTransaction): EditCommit {
 
 /**
  * Fully validates and plans an edit without returning a new Document
- * (edit.rs:432-447; RFC 0004 §14). Dry-run and commit produce the same
+ * (edit.rs; RFC 0004 §14). Dry-run and commit produce the same
  * replacement set and target digest.
  */
 fun TomlDocument.dryRun(
@@ -524,20 +524,20 @@ fun TomlDocument.dryRun(
             report,
         )
     } catch (e: consema.document.EditPlanException) {
-        // edit.rs:439-446 maps the plan-closure failure to the frozen
+        // edit.rs maps the plan-closure failure to the frozen
         // formation code.
         throw TomlEditException(EditFailureKind.NewDocumentFormationFailed)
     }
 }
 
-/** One prepared raw-byte edit (edit.rs:1334-1338). */
+/** One prepared raw-byte edit (edit.rs). */
 private class PreparedEdit(
     val oldSpan: Span,
     val replacement: ByteArray,
     val mapping: Pair<NodeRef, MappingPlan>?,
 )
 
-/** The node-mapping plan of one prepared edit (edit.rs:1347-1352). */
+/** The node-mapping plan of one prepared edit (edit.rs). */
 private sealed class MappingPlan {
     data object ReplacedLiteral : MappingPlan()
     data object Deleted : MappingPlan()
@@ -572,7 +572,7 @@ private fun TomlDocument.prepareScalar(
         is ScalarReplacement.Literal -> {
             validateExactScalar(operation.literal)
             // Defensive copy: the transaction owns its literal bytes
-            // (edit.rs:492-493 `literal.to_vec()`).
+            // (edit.rs `literal.to_vec()`).
             operation.literal.copyOf()
         }
         is ScalarReplacement.Semantic -> semanticLiteral(
@@ -618,7 +618,7 @@ private fun TomlDocument.prepareInsertEntry(
     fragmentBuilder.write(fragment(value))
     val fragment = fragmentBuilder.toByteArray()
     if (fragment.size > parseLimits.maxSourceBytes) {
-        // append_fragment bound (edit.rs:1102-1115).
+        // append_fragment bound (edit.rs).
         throw TomlEditException(EditFailureKind.ResourceLimit("insert-fragment"))
     }
     return if (kind == TomlItemKind.InlineTable) {
@@ -657,7 +657,7 @@ private fun TomlDocument.prepareInsertArrayElement(
     )
 }
 
-/** The delimiter syntax of one delimited container (edit.rs:1340-1345). */
+/** The delimiter syntax of one delimited container (edit.rs). */
 private class DelimitedSyntax(
     val anchorRole: NodeRole,
     val open: TomlSyntaxKind,
@@ -665,7 +665,7 @@ private class DelimitedSyntax(
 )
 
 /** Prepares an insertion inside a delimited container (array or inline
- * table): a comma-owned zero-width replacement (edit.rs:585-656). */
+ * table): a comma-owned zero-width replacement (edit.rs). */
 private fun TomlDocument.prepareDelimitedInsertion(
     container: NodeRef,
     containerSpan: Span,
@@ -726,7 +726,7 @@ private fun TomlDocument.prepareDelimitedInsertion(
 }
 
 /** Prepares a line-owned insertion into a root or standard table
- * (edit.rs:658-699). */
+ * (edit.rs). */
 private fun TomlDocument.prepareTableLineInsertion(
     table: NodeRef,
     tableIndex: Int,
@@ -805,7 +805,7 @@ private fun TomlDocument.prepareRemoveArrayElement(target: NodeRef): List<Prepar
 }
 
 /** Prepares a removal inside a delimited container, owning the necessary
- * comma (edit.rs:743-791). */
+ * comma (edit.rs). */
 private fun TomlDocument.prepareDelimitedRemoval(
     target: NodeRef,
     index: Int,
@@ -905,7 +905,7 @@ private fun TomlDocument.resolveAnchor(
 }
 
 /** The canonical materialization fragment of one complete value
- * (edit.rs:858-878). */
+ * (edit.rs). */
 private fun TomlDocument.fragment(value: PortableValue): ByteArray {
     val limits = MaterializationLimits(
         maxInputNodes = parseLimits.maxNodeCount,
@@ -1017,7 +1017,7 @@ private fun TomlDocument.lineAfter(position: Int): Int {
 }
 
 /** Builds the line-owned insertion fragment with the document's newline
- * spelling (edit.rs:964-983). */
+ * spelling (edit.rs). */
 private fun TomlDocument.lineFragment(position: Int, fragment: ByteArray): ByteArray {
     val newline = newlineBytes()
     val needsPrefix = position > 0 && source.rawBytes()[position - 1] != '\n'.code.toByte()
@@ -1036,7 +1036,7 @@ private fun TomlDocument.lineFragment(position: Int, fragment: ByteArray): ByteA
 }
 
 /** The document's newline spelling: the first Newline piece, or LF when
- * the document has none (edit.rs:985-994). */
+ * the document has none (edit.rs). */
 private fun TomlDocument.newlineBytes(): ByteArray {
     for ((index, kind) in syntaxKinds.withIndex()) {
         if (kind == TomlSyntaxKind.Newline) {
@@ -1047,7 +1047,7 @@ private fun TomlDocument.newlineBytes(): ByteArray {
     return byteArrayOf('\n'.code.toByte())
 }
 
-/** Finds the comma owned by one removal, or null (edit.rs:996-1026). */
+/** Finds the comma owned by one removal, or null (edit.rs). */
 private fun TomlDocument.removalComma(
     associations: List<Int>,
     ordinal: Int,
@@ -1098,7 +1098,7 @@ private fun TomlDocument.syntaxBetween(
 }
 
 /** Validates cross-operation dependencies before any preparation
- * (edit.rs:1064-1100). */
+ * (edit.rs). */
 private fun validateDependencies(transaction: EditTransaction) {
     val destructive = HashSet<NodeRef>()
     val removed = HashSet<NodeRef>()
@@ -1143,7 +1143,7 @@ private fun validateDependencies(transaction: EditTransaction) {
     }
 }
 
-/** The derived SourcePatch limits (edit.rs:1117-1130). */
+/** The derived SourcePatch limits (edit.rs). */
 private fun sourcePatchLimits(parseLimits: ParseLimits, operationCount: Int): SourcePatchLimits =
     SourcePatchLimits(
         source = SourceLimits(
@@ -1156,7 +1156,7 @@ private fun sourcePatchLimits(parseLimits: ParseLimits, operationCount: Int): So
     )
 
 /** The ordered `operation.{index}` metadata of the derived SourcePatch
- * (edit.rs:1132-1154). */
+ * (edit.rs). */
 private fun operationMetadata(transaction: EditTransaction): Map<String, String> =
     transaction.operations().mapIndexed { index, operation ->
         "operation.$index" to operationId(operation)
@@ -1175,7 +1175,7 @@ private fun operationId(operation: EditOperation): String = when (operation) {
 }
 
 /** The safe content-free operation summaries of the EditPlan
- * (edit.rs:1156-1240). */
+ * (edit.rs). */
 private fun operationSummaries(transaction: EditTransaction): List<EditOperationSummary> =
     transaction.operations().map { operation ->
         val (id, targetRole, arguments) = when (operation) {
@@ -1240,7 +1240,7 @@ private fun placementName(placement: AssociationPlacement): String = when (place
     is AssociationPlacement.After -> "after"
 }
 
-/** The stable value-kind summary spelling (edit.rs:1260-1278). */
+/** The stable value-kind summary spelling (edit.rs). */
 internal fun valueKindName(kind: Kind): String = when (kind) {
     Kind.Null -> "null"
     Kind.Boolean -> "boolean"
@@ -1274,7 +1274,7 @@ internal fun isTableKind(kind: TomlItemKind): Boolean = when (kind) {
 
 /**
  * Validates that the candidate bytes are exactly one complete TOML 1.0
- * scalar literal (edit.rs:1379-1413): the parse of `_ = <literal>` must
+ * scalar literal (edit.rs): the parse of `_ = <literal>` must
  * yield exactly one entry whose value span is exactly the literal range
  * and whose category is scalar.
  */
@@ -1324,7 +1324,7 @@ internal fun validateExactScalar(literal: ByteArray): TomlItemKind {
 }
 
 /** Computes the semantic replacement literal under an explicit policy
- * (edit.rs:1415-1456). */
+ * (edit.rs). */
 private fun semanticLiteral(
     value: PortableValue,
     oldKind: TomlItemKind,
@@ -1367,7 +1367,7 @@ private fun semanticLiteral(
     return literal.toByteArray(Charsets.UTF_8)
 }
 
-/** The TOML scalar category of one PortableValue (edit.rs:1458-1470). */
+/** The TOML scalar category of one PortableValue (edit.rs). */
 internal fun portableTomlKind(value: PortableValue): TomlItemKind? = when (value.kind) {
     Kind.String -> TomlItemKind.String
     Kind.Integer -> TomlItemKind.Integer
@@ -1380,7 +1380,7 @@ internal fun portableTomlKind(value: PortableValue): TomlItemKind? = when (value
     else -> null
 }
 
-/** The canonical scalar literal of one PortableValue (edit.rs:1472-1514). */
+/** The canonical scalar literal of one PortableValue (edit.rs). */
 internal fun canonicalLiteral(value: PortableValue): String = when (value) {
     is PvString -> canonicalString(value.value)
     is PvInteger -> {
@@ -1441,7 +1441,7 @@ internal fun canonicalLiteral(value: PortableValue): String = when (value) {
 }
 
 /** Finds the unique item whose span is exactly [start, end) in the
- * reparsed document (edit.rs:1638-1651). */
+ * reparsed document (edit.rs). */
 private fun findItemBySpan(document: TomlDocument, start: Int, end: Int): Int? {
     val matches = document.entities.withIndex()
         .filter { (_, entity) ->

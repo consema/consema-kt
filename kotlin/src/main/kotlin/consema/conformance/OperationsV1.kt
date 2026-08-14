@@ -210,7 +210,7 @@ private fun protocolV3(case: CaseData) {
     var pvceEqual = true
     for (id in ids) {
         // The materialization-request contract is registered with its full
-        // record decoder (operations_v1.rs:216-218 builds a valid request);
+        // record decoder (operations_v1.rs builds a valid request);
         // the remaining v3 contracts validate at the envelope level until
         // their record types ship, so the schema-only payload suffices.
         val payload = if (id == "core.materialization-request") {
@@ -1189,7 +1189,7 @@ private fun verifyCommit(
         proofVerifies == (expectedBoolean(case, "proof_verifies") ?: fail("missing expected.proof_verifies"))
 }
 
-/** The frozen json edit code mapping (consema-json edit.rs:1299-1323). */
+/** The frozen json edit code mapping (consema-json edit.rs). */
 private fun jsonEditCode(failure: EditFailure): String =
     when (failure) {
         EditFailure.RecoveredDocument, EditFailure.IncompleteTarget -> "core.edit.incomplete-target@1"

@@ -3,17 +3,17 @@
 // canonical scalar spellings.
 //
 // Data authority:
-//   - RFC 0007 §5-§6 (https://github.com/consema/consema/blob/main/docs/rfcs/0007-yaml-family-profiles-and-safety-v1.md:
-//     98-166) freezes the resolved tag set, the canonical content rules
+//   - RFC 0007 §5-§6 (https://github.com/consema/consema/blob/main/docs/rfcs/0007-yaml-family-profiles-and-safety-v1.md
+//) freezes the resolved tag set, the canonical content rules
 //     (null "", booleans true/false, unbounded base-10 integers, normalized
 //     decimal coefficient/exponent, .inf/-.inf/.nan, decoded strings), the
 //     1.1 frozen implicit forms, and the exact UTC timestamp rule.
 //   - conformance/vectors/yaml-v1.json cases profile.yaml12-scalars (lines
-//     5-9) and profile.yaml11-scalars (lines 10-14) pin the per-profile
+//) and profile.yaml11-scalars (lines) pin the per-profile
 //     kind/canonical facts byte-for-byte.
-//   - https://github.com/consema/consema-rs/blob/main/consema-yaml/src/native.rs:746-1146 is the byte-arbitration
+//   - https://github.com/consema/consema-rs/blob/main/consema-yaml/src/native.rs is the byte-arbitration
 //     authority for every lexical rule (parse_null/bool/integer/float,
-//     timestamp canonicalization, base64 validation); native.rs:565-716 pins
+//     timestamp canonicalization, base64 validation); native.rs pins
 //     resolve_scalar / resolve_explicit / resolve_implicit. consema-go/go/yaml/scalar.go
 //     is a cross-reference only.
 //
@@ -26,7 +26,7 @@ package consema.yaml
 import consema.core.PvDecimal
 import java.math.BigInteger
 
-// The standard resolved tag identifiers (native.rs:17-31).
+// The standard resolved tag identifiers (native.rs).
 internal const val TAG_NULL: String = "tag:yaml.org,2002:null"
 internal const val TAG_BOOL: String = "tag:yaml.org,2002:bool"
 internal const val TAG_INT: String = "tag:yaml.org,2002:int"
@@ -44,7 +44,7 @@ internal const val TAG_VALUE: String = "tag:yaml.org,2002:value"
 internal const val TAG_YAML: String = "tag:yaml.org,2002:yaml"
 
 /** One resolved scalar fact: resolved tag, decoded content, canonical
- * content, kind, and presentation style (native.rs:62-68). */
+ * content, kind, and presentation style (native.rs). */
 internal class NativeScalar(
     val decoded: String,
     val canonical: String,
@@ -52,7 +52,7 @@ internal class NativeScalar(
     val style: YamlScalarStyle,
 )
 
-/** Resolves one explicit-tag or implicit plain scalar (native.rs:565-716). */
+/** Resolves one explicit-tag or implicit plain scalar (native.rs). */
 internal fun resolveScalar(
     decoded: String,
     style: YamlScalarStyle,
@@ -100,7 +100,7 @@ internal fun resolveScalar(
 }
 
 /** Resolves one explicit standard scalar tag with grammar validation
- * (native.rs:655-673). */
+ * (native.rs). */
 private fun resolveExplicit(
     decoded: String,
     style: YamlScalarStyle,
@@ -119,7 +119,7 @@ private fun resolveExplicit(
     return tag to NativeScalar(decoded, canonical, kind, style)
 }
 
-/** Applies the frozen implicit scalar resolution (native.rs:675-716). */
+/** Applies the frozen implicit scalar resolution (native.rs). */
 private fun resolveImplicit(
     decoded: String,
     style: YamlScalarStyle,
@@ -146,7 +146,7 @@ private fun resolveImplicit(
 }
 
 /** Resolves an explicit collection tag against the expected default tag
- * (native.rs:541-563). */
+ * (native.rs). */
 internal fun resolveCollectionTag(
     explicit: String?,
     expected: String,
@@ -181,12 +181,12 @@ internal fun isStandardScalarTag(tag: String): Boolean =
 internal fun isStandardGraphTag(tag: String): Boolean =
     isStandardCollectionTag(tag) || isStandardScalarTag(tag)
 
-/** YAML null spellings (native.rs:746-748). */
+/** YAML null spellings (native.rs). */
 internal fun parseNull(value: String): Boolean =
     value.isEmpty() || value == "~" || value == "null" || value == "Null" || value == "NULL"
 
 /** YAML boolean resolution; the 1.1 y/n/yes/no/on/off forms are frozen
- * (native.rs:750-766). */
+ * (native.rs). */
 internal fun parseBool(value: String, profile: YamlProfile): String? {
     when (value) {
         "true", "True", "TRUE" -> return "true"
@@ -201,8 +201,8 @@ internal fun parseBool(value: String, profile: YamlProfile): String? {
     return null
 }
 
-/** YAML integer resolution with the exact 1.2/1.1 rule order (native.rs:
- * 768-801). Underscores are 1.1-only and must sit between alphanumerics. */
+/** YAML integer resolution with the exact 1.2/1.1 rule order (native.rs
+ *). Underscores are 1.1-only and must sit between alphanumerics. */
 internal fun parseInteger(value: String, profile: YamlProfile): String? {
     val signPair = splitSign(value) ?: return null
     val sign = signPair.first
@@ -243,7 +243,7 @@ internal fun parseInteger(value: String, profile: YamlProfile): String? {
 }
 
 /** YAML float resolution: frozen non-finite spellings, normalized finite
- * decimals, and the 1.1 sexagesimal form (native.rs:803-829). */
+ * decimals, and the 1.1 sexagesimal form (native.rs). */
 internal fun parseFloat(value: String, profile: YamlProfile): String? {
     when (value) {
         ".inf", ".Inf", ".INF", "+.inf", "+.Inf", "+.INF" -> return ".inf"
@@ -268,8 +268,8 @@ internal fun parseFloat(value: String, profile: YamlProfile): String? {
     return decimalCanonical(decimal)
 }
 
-/** Normalizes the 1.2/1.1 decimal lexeme for JSON-number parsing (native.rs:
- * 831-846): strips a leading `+`, inserts `0` before a leading `.`, inserts
+/** Normalizes the 1.2/1.1 decimal lexeme for JSON-number parsing (native.rs
+ *): strips a leading `+`, inserts `0` before a leading `.`, inserts
  * `0` after a trailing `.` in the mantissa. */
 internal fun normalizeDecimalLexeme(value: String): String {
     var text = value
@@ -290,7 +290,7 @@ internal fun normalizeDecimalLexeme(value: String): String {
 }
 
 /** Canonical finite-decimal spelling: `coefficient` or `coefficient` +
- * `e` + `exponent` (native.rs:914-920; RFC 0007 §5). */
+ * `e` + `exponent` (native.rs; RFC 0007 §5). */
 internal fun decimalCanonical(decimal: PvDecimal): String =
     if (decimal.exponent.signum() == 0) {
         decimal.coefficient.toString()
@@ -299,7 +299,7 @@ internal fun decimalCanonical(decimal: PvDecimal): String =
     }
 
 /** Strict JSON-number parsing to a normalized exact decimal (the Rust
- * Decimal::parse_json_number, native.rs:826-829). Returns null when the
+ * Decimal::parse_json_number, native.rs). Returns null when the
  * lexeme is not a valid JSON number. */
 internal fun parseJsonNumber(text: String): PvDecimal? {
     var index = 0
@@ -352,7 +352,7 @@ internal fun parseJsonNumber(text: String): PvDecimal? {
     return PvDecimal.of(signed, exponent)
 }
 
-/** YAML 1.1 sexagesimal integer `[0-9]+(:[0-5][0-9])+` (native.rs:848-870). */
+/** YAML 1.1 sexagesimal integer `[0-9]+(:[0-5][0-9])+` (native.rs). */
 private fun parseSexagesimalInteger(sign: Int, value: String): String? {
     val parts = value.split(':')
     val first = parts[0]
@@ -377,7 +377,7 @@ private fun parseSexagesimalInteger(sign: Int, value: String): String? {
 }
 
 /** YAML 1.1 sexagesimal float `[0-9]+(:[0-5][0-9])+:[0-9]+\.[0-9]+`
- * (native.rs:872-912). */
+ * (native.rs). */
 private fun parseSexagesimalFloat(value: String): String? {
     val signPair = splitSign(value) ?: return null
     val sign = signPair.first
@@ -434,8 +434,8 @@ private fun splitSign(value: String): Pair<Int, String>? {
     }
 }
 
-/** Underscores are valid only between alphanumeric characters (native.rs:
- * 930-943). */
+/** Underscores are valid only between alphanumeric characters (native.rs
+ *). */
 private fun validUnderscored(value: String): String? {
     for (index in value.indices) {
         if (value[index] == '_' &&
@@ -448,7 +448,7 @@ private fun validUnderscored(value: String): String? {
     return value
 }
 
-/** Parses one non-empty base-N digit string (native.rs:945-954). */
+/** Parses one non-empty base-N digit string (native.rs). */
 private fun parseBaseMagnitude(value: String, base: Int): BigInteger? {
     if (value.isEmpty()) {
         return null
@@ -459,7 +459,7 @@ private fun parseBaseMagnitude(value: String, base: Int): BigInteger? {
     return BigInteger(value, base)
 }
 
-/** YAML 1.1 timestamp validation and canonicalization (native.rs:969-1075).
+/** YAML 1.1 timestamp validation and canonicalization (native.rs).
  * A timestamp with no zone follows the published 1.1 UTC rule and records
  * `Z` (RFC 0007 §6). */
 internal fun parseTimestamp(value: String): String? {
@@ -576,7 +576,7 @@ private fun takeOneOrTwoDigits(value: String): Pair<Int, String>? {
 }
 
 /** YAML `!!binary` canonicalization: whitespace-free base64 with strict
- * alphabet, length, and trailing-zero-bit validation (native.rs:1077-1111). */
+ * alphabet, length, and trailing-zero-bit validation (native.rs). */
 internal fun canonicalBase64(value: String): String? {
     val cleaned = value.filter { !it.isWhitespace() }
     val padding = cleaned.takeLastWhile { it == '=' }.length
@@ -607,7 +607,7 @@ private fun base64Value(value: Char): Int? =
         else -> null
     }
 
-/** Decodes one canonical base64 scalar to bytes (projection.rs:1191-1217). */
+/** Decodes one canonical base64 scalar to bytes (projection.rs). */
 internal fun decodeBase64(value: String): ByteArray? {
     val bytes = value.toByteArray(Charsets.US_ASCII)
     val output = ArrayList<Byte>(bytes.size / 4 * 3)

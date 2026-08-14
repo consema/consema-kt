@@ -2,17 +2,17 @@
 //
 // Data authority:
 //   - RFC 0004 §10 (https://github.com/consema/consema/blob/main/docs/rfcs/0004-materialization-conversion-and-structural-
-//     edit-v1.md:244-269): every structural operation has an immutable
+//     edit-v1.md): every structural operation has an immutable
 //     ID/version, target role, argument schema, and support classification;
 //     the registry does not claim that operations with similar names have
 //     identical format semantics.
-//   - RFC 0005 §10 (https://github.com/consema/consema/blob/main/docs/rfcs/0005-json-family-production-v1.md:220-241):
+//   - RFC 0005 §10 (https://github.com/consema/consema/blob/main/docs/rfcs/0005-json-family-production-v1.md):
 //     json.edit.move-member@1 raises the JSON format-operation registry to
 //     eight records for every JSON-family profile.
-//   - https://github.com/consema/consema-rs/blob/main/consema-json/src/operation_registry.rs:16-80 is the exact
+//   - https://github.com/consema/consema-rs/blob/main/consema-json/src/operation_registry.rs is the exact
 //     byte-arbitration source of the eight descriptor records (ids, target
 //     roles, argument names/kinds, support classes); the frozen surface test
-//     (operation_registry.rs:104-129) pins the six Supported operations and
+//     (operation_registry.rs) pins the six Supported operations and
 //     the total count of 8. consema-go/go/json has no registry file; it is cross-checked
 //     against the Rust records only.
 //
@@ -25,7 +25,7 @@ package consema.json
 
 import consema.document.FormatOperationId
 
-/** Argument kind of one operation descriptor (operation_registry.rs:22-25). */
+/** Argument kind of one operation descriptor (operation_registry.rs). */
 enum class OperationArgumentKind {
     /** Decoded member name (String). */
     String,
@@ -43,7 +43,7 @@ enum class OperationArgumentKind {
     ExactBytes,
 }
 
-/** Support classification of one operation (operation_registry.rs:26). */
+/** Support classification of one operation (operation_registry.rs). */
 enum class OperationSupport {
     /** Structural operation supported by every JSON-family profile. */
     Supported,
@@ -53,7 +53,7 @@ enum class OperationSupport {
     ExistingTypedCapability,
 }
 
-/** One immutable operation descriptor (operation_registry.rs:16-80). */
+/** One immutable operation descriptor (operation_registry.rs). */
 data class JsonOperationDescriptor(
     /** Exact immutable operation ID/version. */
     val id: FormatOperationId,
@@ -67,8 +67,8 @@ data class JsonOperationDescriptor(
 
 /**
  * Returns the validated operation registry for one exact JSON-family profile
- * (operation_registry.rs:9-14). Every profile publishes the same frozen
- * eight-record surface (operation_registry.rs:104-129).
+ * (operation_registry.rs). Every profile publishes the same frozen
+ * eight-record surface (operation_registry.rs).
  */
 fun formatOperationRegistry(profile: JsonProfile): List<JsonOperationDescriptor> =
     descriptors()
@@ -86,7 +86,7 @@ private fun descriptor(
         support,
     )
 
-/** The frozen eight descriptor records (operation_registry.rs:16-80). */
+/** The frozen eight descriptor records (operation_registry.rs). */
 private fun descriptors(): List<JsonOperationDescriptor> =
     listOf(
         descriptor(
