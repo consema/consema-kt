@@ -1,7 +1,7 @@
 // Versioned typed query definitions and their validation/binding.
 //
 // Data authority: RFC 0016 §5.4 (https://github.com/consema/consema/blob/main/docs/rfcs/0016-go-api-mapping-v1.md:189-192)
-// and consema-rs/consema-core/src/query.rs (the domain/operator tables and the
+// and https://github.com/consema/consema-rs/blob/main/consema-core/src/query.rs (the domain/operator tables and the
 // operator validation contract). The domain ids and operator ids are pinned
 // spellings, not invented names; the operator table is transcribed as data
 // in QueryValidate.kt. consema-go/go/protocol/query.go is a cross-reference.

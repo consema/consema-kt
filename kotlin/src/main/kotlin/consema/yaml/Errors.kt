@@ -2,20 +2,20 @@
 // diagnostic factory.
 //
 // Data authority:
-//   - consema-rs/consema-document/src/lib.rs:643-790 pins FatalFormationFailure
+//   - https://github.com/consema/consema-rs/blob/main/consema-document/src/lib.rs:643-790 pins FatalFormationFailure
 //     and its code mapping: resource limits use "core.parse.resource-limit@1"
 //     (lib.rs:771-776), source construction failures map through
 //     FatalFormationFailure::source_error (lib.rs:676-707).
 //   - The YAML-specific registered codes are frozen by
-//     consema-rs/consema-protocol/src/error_registry.rs:729-932 (yaml.alias.*,
+//     https://github.com/consema/consema-rs/blob/main/consema-protocol/src/error_registry.rs:729-932 (yaml.alias.*,
 //     yaml.anchor.*, yaml.edit.*, yaml.mapping.*, yaml.materialization.*,
 //     yaml.native.*, yaml.parse.syntax@1 at :850-854, yaml.profile.*,
 //     yaml.projection.*, yaml.scalar.*, yaml.tag.*) and transcribed in
-//     kotlin/.../protocol/ErrorRegistry.kt:291-324.
-//   - consema-rs/consema-yaml/src/lib.rs:789-858 maps version-directive and
+//     kotlin/src/main/kotlin/consema/protocol/ErrorRegistry.kt:291-324.
+//   - https://github.com/consema/consema-rs/blob/main/consema-yaml/src/lib.rs:789-858 maps version-directive and
 //     backend-syntax failures (yaml.profile.version-directive@1 at
 //     lib.rs:811-827; yaml.parse.syntax@1 at lib.rs:849-855);
-//     consema-rs/consema-yaml/src/native.rs:1148-1157 maps the composition
+//     https://github.com/consema/consema-rs/blob/main/consema-yaml/src/native.rs:1148-1157 maps the composition
 //     failures (yaml.native.*, yaml.anchor.*, yaml.alias.*,
 //     yaml.mapping.missing-value@1, yaml.tag.kind-mismatch@1,
 //     yaml.scalar.invalid-explicit-tag@1).
@@ -42,7 +42,7 @@ import consema.protocol.SourceLocation
 /**
  * Registry bound to every diagnostic this package constructs: the semantic-
  * model v7 registry (187 codes), the ordered superset containing all
- * YAML-family codes (kotlin/.../protocol/ErrorRegistry.kt:291-324). The L5
+ * YAML-family codes (kotlin/src/main/kotlin/consema/protocol/ErrorRegistry.kt:291-324). The L5
  * conformance runner may rebind per-suite registry versions.
  */
 internal val YAML_DIAGNOSTIC_REGISTRY: ErrorCodeRegistry =

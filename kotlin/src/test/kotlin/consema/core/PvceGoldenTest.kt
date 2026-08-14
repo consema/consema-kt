@@ -1,4 +1,4 @@
-// PVCE/1 golden byte tests — intent documents.
+// PVCE/1 golden byte tests.
 //
 // The hex vectors below are transcribed VERBATIM from
 // conformance/vectors/v1.json (the language-neutral machine-readable
@@ -8,8 +8,7 @@
 //   - pvce.object-vector         "5056434501410a01200201611003010101"
 //   - pvce.reject-nonminimal-varint input "5056434581000000" ->
 //     NonCanonicalVarint
-// These tests run once the toolchain is ready (START GATE,
-// https://github.com/consema/consema/blob/main/docs/multi-language-implementation-plan.md §7).
+// These tests run in the committed CI (kotlin-gates, gradlew test).
 
 package consema.core
 

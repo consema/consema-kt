@@ -1,7 +1,7 @@
 // The `consema.source.conformance@1` suite runner
 // (conformance/vectors/source-v1.json).
 //
-// Data authority: consema-rs/consema-conformance/src/source_v1.rs (the per-case
+// Data authority: https://github.com/consema/consema-rs/blob/main/consema-conformance/src/source_v1.rs (the per-case
 // dispatch is transcribed from the Rust handlers; the frozen failure-code
 // mappings come from source_error_code at source_v1.rs:410-421, the
 // location-error spellings from location_error_name at source_v1.rs:423-436,

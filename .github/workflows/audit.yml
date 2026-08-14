@@ -11,8 +11,9 @@
 #      runtimeClasspath`) and asserts it resolves nothing beyond the Kotlin
 #      platform (kotlin-stdlib + its transitive org.jetbrains:annotations —
 #      the language runtime, the same category as the Go stdlib). The
-#      test-only-dependency policy (§1.3; build.gradle.kts:27-32 keeps
-#      every declared configuration test-scoped) is violated the moment any
+#      test-only-dependency policy (§1.3; the build.gradle.kts
+#      dependencies block keeps every declared configuration test-scoped)
+#      is violated the moment any
 #      third-party group appears in runtimeClasspath. The source-level
 #      tripwire below (build.gradle.kts must not declare
 #      implementation/api/compileOnly/runtimeOnly) gates the same policy
@@ -24,12 +25,13 @@
 #      already tracks. Revisit (dependency-check, Gradle dependency
 #      verification, SBOM) only if a runtime dependency is ever added.
 #
-# Scope note (six-repo audit G135): this workflow is scheduled and
-# path-triggered (gradle files only) and is NOT part of the aggregate
-# required check `check (all gates green)` — an audit failure reddens the
-# PR but does not block merge by itself. The always-on merge gate for the
-# same policy is the ci-kotlin.yml kotlin-gates job's test-only-dependencies
-# source-level assertion.
+# Scope note (six-repo audit G135/G103): this workflow is the scheduled
+# and path-triggered track (gradle files only). The same runtimeClasspath
+# policy is ALSO gated inside ci-kotlin.yml by the runtime-classpath-audit
+# job (identical assertion), which IS part of the aggregate required check
+# `check (all gates green)` — an audit failure blocks merge. This
+# workflow's job is a runtimeClasspath group assertion only: it performs no
+# CVE-database scan (recorded gap, see the "Deeper SCA" note above).
 #
 # No repository secrets are required.
 name: Dependency audit
@@ -65,6 +67,12 @@ jobs:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
           persist-credentials: false
+      # Gradle wrapper jar integrity (G87, 2026-08-14): the committed
+      # gradle-wrapper.jar is a binary with no in-repo integrity anchor —
+      # wrapper-validation-action compares it with the official distribution
+      # before any wrapper step runs.
+      - name: validate the committed Gradle wrapper jar (official distribution)
+        uses: gradle/wrapper-validation-action@f9c9c575b8b21b6485636a91ffecd10e558c62f6 # v3.5.0
       - uses: actions/setup-java@cf277c60eb25467037889841efdb72551f06f6c3 # v4.9.1
         with:
           distribution: temurin
@@ -111,7 +119,7 @@ jobs:
         run: |
           $ErrorActionPreference = 'Stop'
           $buildFile = Get-Content (Join-Path $env:GITHUB_WORKSPACE 'kotlin\build.gradle.kts') -Raw
-          if ($buildFile -match '(?m)^\s*(implementation|api|compileOnly|runtimeOnly)(\s*\(|\s+")') {
+          if ($buildFile -match '(?m)^\s*(implementation|api|compileOnly|runtimeOnly)\s*(/\*.*?\*/)?\s*[("]') {
             throw 'build.gradle.kts must keep every declared configuration test-scoped (runtime-scoped dependency found)'
           }
           if ($buildFile -notmatch '(?m)^\s*testImplementation\s*\(' -or $buildFile -notmatch '(?m)^\s*testRuntimeOnly\s*\(') {

@@ -5,7 +5,7 @@
 // The definition validation and capability binding come from
 // consema.protocol (QueryValidate.kt:377-425); this test executes the
 // bound query against one immutable document, mirroring the conformance
-// runner (consema-rs/consema-conformance/src/hcl_v1.rs:613-632).
+// runner (https://github.com/consema/consema-rs/blob/main/consema-conformance/src/hcl_v1.rs:613-632).
 
 package hcl
 

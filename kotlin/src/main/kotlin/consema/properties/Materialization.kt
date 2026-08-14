@@ -21,14 +21,14 @@
 //     bytes and failure names (materialization.canonical-styles-encodings-
 //     and-closure, lines 90-99; materialization.atomic-failures-and-limits,
 //     lines 100-104).
-//   - consema-rs/consema-properties/src/materialization.rs is the byte-
+//   - https://github.com/consema/consema-rs/blob/main/consema-properties/src/materialization.rs is the byte-
 //     arbitration authority (writer materialization.rs:176-346, closure
 //     materialization.rs:348-395, provenance materialization.rs:397-468,
 //     encoding materialization.rs:520-631, parse limits materialization.rs:
 //     124-150). consema-go/go/properties/materialization.go is a cross-reference only.
 //   - The Kotlin document package owns the completion algebra types
 //     (MaterializationResult/CompleteMaterialization/...,
-//     kotlin/.../document/Materialization.kt:286-371). Windows code pages
+//     kotlin/src/main/kotlin/consema/document/Materialization.kt:286-371). Windows code pages
 //     are not representable in the document-layer closed v1 SourceEncoding,
 //     so this package exposes the code-page materialization as an explicit
 //     overload ([materialize] with [WindowsCodePage]).
@@ -171,7 +171,7 @@ private fun requestedProfile(request: MaterializationRequest): PropertiesProfile
 
 /** The resolved output encoding of one request (materialization.rs:92-122).
  * The edit surface reuses the same encoding for replacement fragments
- * (kotlin/.../properties/Edit.kt:sourceOutputEncoding). */
+ * (kotlin/src/main/kotlin/consema/properties/Edit.kt:sourceOutputEncoding). */
 internal sealed class OutputEncoding {
     data object Utf8 : OutputEncoding()
 

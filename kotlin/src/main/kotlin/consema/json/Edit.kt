@@ -18,12 +18,12 @@
 //     output bytes and failure names; conformance/vectors/v1.json
 //     (edit.*, lines 107-141, 173-177) pins the PreserveCompatible /
 //     CanonicalForProfile / PreserveElseCanonical scalar behaviors.
-//   - consema-rs/consema-json/src/edit.rs is the byte-arbitration authority
+//   - https://github.com/consema/consema-rs/blob/main/consema-json/src/edit.rs is the byte-arbitration authority
 //     (commit edit.rs:301-451, dry-run edit.rs:453-468, prepare edit.rs:
 //     472-1023, dependencies edit.rs:1025-1078, metadata/summaries edit.rs:
 //     1095-1267, scalar style edit.rs:1346-1862).
-//   - Kotlin document owns SourcePatch (create/apply, kotlin/.../document/
-//     Patch.kt:147-296) and UntouchedByteProof (kotlin/.../document/
+//   - Kotlin document owns SourcePatch (create/apply, kotlin/src/main/kotlin/consema/document/
+//     Patch.kt:147-296) and UntouchedByteProof (kotlin/src/main/kotlin/consema/document/
 //     UntouchedProof.kt:83-138). ChangeSet is not shipped in the Kotlin
 //     JSON family (recorded gap, six-repo audit G090); the commit carries
 //     the ordered diagnostics instead.

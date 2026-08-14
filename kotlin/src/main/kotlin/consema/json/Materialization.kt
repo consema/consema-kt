@@ -13,12 +13,12 @@
 //     all output reparses under the exact requested profile and reprojects
 //     to the identical PortableValue before completion.
 //   - conformance/vectors/json-family-v2.json (json5.materialize.*) pins the
-//     golden output bytes and failure names; consema-rs/consema-json/src/
+//     golden output bytes and failure names; https://github.com/consema/consema-rs/blob/main/consema-json/src/
 //     materialization.rs is the byte-arbitration authority (writer
 //     materialization.rs:154-494, provenance materialization.rs:500-756).
 //   - The Kotlin document package owns the completion algebra types
 //     (MaterializationResult/CompleteMaterialization/...,
-//     kotlin/.../document/Materialization.kt:286-371); the failure-name
+//     kotlin/src/main/kotlin/consema/document/Materialization.kt:286-371); the failure-name
 //     spellings asserted by the vectors are mapped here.
 //
 // Kotlin-idiomatic design: a bounded output buffer wraps the JDK byte

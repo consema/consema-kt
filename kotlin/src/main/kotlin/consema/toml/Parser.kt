@@ -17,7 +17,7 @@
 //     finalize with AOT append, parseValue dispatch order, the four string
 //     forms with mlb-escaped-nl, tryDateTime/tryFloatToken/trySpecialFloat/
 //     parseIntToken number grammar, parseArray, parseInlineTableValue.
-//   - consema-rs/consema-toml/src/parser.rs:84-337 (EntityBuilder): the exact
+//   - https://github.com/consema/consema-rs/blob/main/consema-toml/src/parser.rs:84-337 (EntityBuilder): the exact
 //     entity order (item first, then per entry key/item/entry), the span
 //     fallback rules, and the node-count/nesting limits.
 //

@@ -10,19 +10,19 @@
 //   - conformance/vectors/xml-1-0-safe-v1.json cases xml.syntax-query.* and
 //     xml.native-query.* pin the operator spellings, the match order, and
 //     the ordinal facts (the conformance runner build_filters,
-//     consema-rs/consema-conformance/src/xml_v1.rs:231-258).
-//   - consema-rs/consema-xml/src/query.rs is the byte-arbitration authority:
+//     https://github.com/consema/consema-rs/blob/main/consema-conformance/src/xml_v1.rs:231-258).
+//   - https://github.com/consema/consema-rs/blob/main/consema-xml/src/query.rs is the byte-arbitration authority:
 //     XmlReferenceKind (query.rs:20-29), XmlMatch (query.rs:31-165), the
 //     operator table (query.rs:583-619), the per-operator semantics
 //     (query.rs:624-1376), selection (query.rs:251-269, 337-355), and the
 //     syntax-piece input construction (query.rs:305-330).
 //   - The operator validation tables live in the protocol package
-//     (kotlin/.../protocol/QueryValidate.kt:253-326) and already pin the
+//     (kotlin/src/main/kotlin/consema/protocol/QueryValidate.kt:253-326) and already pin the
 //     xml operator roles; execution below dispatches on the operator IDs.
 //
 // Kotlin-idiomatic design: execution throws the protocol package's typed
 // [consema.protocol.QueryFailureException] carrying the registered code
-// (the json family pattern, kotlin/.../json/Query.kt:141-152); the cursor
+// (the json family pattern, kotlin/src/main/kotlin/consema/json/Query.kt:141-152); the cursor
 // terminal contract (RFC 0003 §9) is a synchronous complete result list
 // here, with the terminal state always Completed after a successful
 // execution.
@@ -42,7 +42,7 @@ import java.nio.charset.StandardCharsets
 import java.util.concurrent.atomic.AtomicBoolean
 
 /** Query resource limits (consema-core query.rs:2967-2981; the json family
- * transcription kotlin/.../json/Query.kt:44-56). */
+ * transcription kotlin/src/main/kotlin/consema/json/Query.kt:44-56). */
 data class QueryLimits(
     /** Maximum operator steps. */
     val maxSteps: Int,

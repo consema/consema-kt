@@ -1,7 +1,7 @@
 // The `consema.toml.conformance@1` suite runner
 // (conformance/vectors/toml-v1.json).
 //
-// Data authority: consema-rs/consema-conformance/src/toml_v1.rs (the per-case
+// Data authority: https://github.com/consema/consema-rs/blob/main/consema-conformance/src/toml_v1.rs (the per-case
 // dispatch is transcribed from the Rust handlers; the fixture files under
 // conformance/fixtures/toml/ drive the corpus cases); the vector file itself
 // drives every input and expectation. consema-go/go/conformance/toml_v1.go is a

@@ -11,12 +11,12 @@
 //     §5.11 (no false Complete: every check runs before any object is
 //     decoded, and every offset/ref/size arithmetic is checked before
 //     allocation).
-//   - RFC 0013 §5.12 (https://github.com/consema/consema/blob/main/docs/rfcs/0013-...md:451-460): non-minimal widths,
+//   - RFC 0013 §5.12 (https://github.com/consema/consema/blob/main/docs/rfcs/0013-plist-family-profiles-v1.md:451-460): non-minimal widths,
 //     extended-size spellings, and duplicated scalars are legal input
 //     facts, preserved and normalized only by canonical materialization.
 //   - conformance/vectors/plist-v1.json (plist.binary-formation.*) pins the
 //     recover/complete outcomes and the diagnostic codes case by case.
-//   - consema-rs/consema-plist/src/parser_binary.rs is the byte-arbitration
+//   - https://github.com/consema/consema-rs/blob/main/consema-plist/src/parser_binary.rs is the byte-arbitration
 //     authority (trailer checks parser_binary.rs:776-917, offset table
 //     parser_binary.rs:919-972, object scan parser_binary.rs:976-1252,
 //     extended sizes parser_binary.rs:1254-1324, dict keys parser_binary.rs:
@@ -444,11 +444,11 @@ internal class BinaryParser(
         val structuralIndex = try {
             BinaryStructuralIndex.new(authority.identity, source.len, regions)
         } catch (e: consema.document.LocationException) {
-            for (region in regions) {
-                System.err.println(
-                    "REGION [${region.span.startByte},${region.span.endByte}) ${region.kind}",
-                )
-            }
+            // The failure fact is carried by the typed exception; no
+            // per-region stderr output — the parser is an SDK library and
+            // embedded applications must not receive unsuppressible output
+            // (configurations routinely contain credentials; never dump
+            // region bytes).
             throw PlistFormationException(
                 PlistCodes.BINARY_COVERAGE,
                 "plist binary parse: structural coverage failure",

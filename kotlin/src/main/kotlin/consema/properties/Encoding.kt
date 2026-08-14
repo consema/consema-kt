@@ -12,11 +12,11 @@
 //     encodings (lines 40-49) pins Reader UTF-8/UTF-16LE/UTF-16BE/
 //     WindowsCodePage(1252) decoding and formation.latin1-byte-and-bom-
 //     content (lines 50-54) pins Latin-1 BOM-as-content.
-//   - consema-rs/consema-properties/src/parser.rs:17-91 pins the encoding
+//   - https://github.com/consema/consema-rs/blob/main/consema-properties/src/parser.rs:17-91 pins the encoding
 //     request construction and the profile/encoding validation
 //     (java-properties.source.profile-encoding@1); the published Windows
 //     code-page registry is the Rust SourceEncoding::WindowsCodePage set
-//     (consema-rs/consema-document/src/materialization.rs:633-652: 874, 932,
+//     (https://github.com/consema/consema-rs/blob/main/consema-document/src/materialization.rs:633-652: 874, 932,
 //     936, 949, 950, 1250-1258, 65001). consema-go/go/properties is a cross-reference
 //     only.
 //
@@ -147,7 +147,7 @@ private val CP1252_REVERSE: Map<Int, Int> = buildMap {
  * for Windows code pages the text is decoded by this package (the document
  * layer's closed v1 encoding set has no code-page decoding) and every raw
  * byte maps to exactly one decoded scalar, so the boundary index is a
- * per-char table (RFC 0003 §5 boundary semantics, kotlin/.../document/
+ * per-char table (RFC 0003 §5 boundary semantics, kotlin/src/main/kotlin/consema/document/
  * Source.kt:239-272).
  */
 internal class PropertiesText(

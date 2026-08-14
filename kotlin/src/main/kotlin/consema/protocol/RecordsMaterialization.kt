@@ -1,7 +1,7 @@
 // The materialization request and result protocol records (v1 and v2).
 //
 // Data authority (language-neutral sources first):
-//   - consema-rs/consema-protocol/src/materialization.rs:15-179 (the request
+//   - https://github.com/consema/consema-rs/blob/main/consema-protocol/src/materialization.rs:15-179 (the request
 //     records: the fixed request schema with the profile reference, style
 //     reference, encoding record, newline/mapping/representability
 //     spellings, and the limits record; v1 encodes the encoding as a String
@@ -9,7 +9,7 @@
 //   - materialization.rs:190-279 (MaterializationReportMessage), 327-535
 //     (MaterializationProvenanceMapMessage), 537-600 (the failure message),
 //     832-999 (MaterializationResultMessageV2 with the source-v2 outcome).
-//   - consema-rs/consema-protocol/src/query.rs:441-540 (the ValuePath and
+//   - https://github.com/consema/consema-rs/blob/main/consema-protocol/src/query.rs:441-540 (the ValuePath and
 //     AssociationLocation wire forms).
 //   - conformance/vectors/semantic-model-v6.json pins the round-trips and
 //     the exact-version dispatch rejection.

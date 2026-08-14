@@ -4,7 +4,7 @@
 // and the vector cases query.native-order-and-profile-equivalence,
 // query.syntax-decoded-structure-order, and
 // query.validation-limit-cancellation (ini-v1.json:44-58);
-// consema-rs/consema-ini/src/query.rs is the byte-arbitration authority.
+// https://github.com/consema/consema-rs/blob/main/consema-ini/src/query.rs is the byte-arbitration authority.
 
 package ini
 

@@ -54,14 +54,15 @@ powershell -File ../scripts/kotlin-verify-protocol-exchange.ps1
 Landing check (2026-08-12, Gradle wrapper exploration): `./gradlew
 koverHtmlReport koverXmlReport` produces HTML/XML reports (build/reports/kover/) and the
 `koverVerify` task enforces the documented 60% line threshold (kover 0.9.9,
-bound configured in build.gradle.kts). Measured with all 572 tests green
+bound configured in the build.gradle.kts kover block). Measured with all 572 tests green
 (2026-08-13 静态计数；CONSEMA_REPO set): **line 77.8%** (40385/51934) · instruction 74.6% ·
 branch 55.8% · method 86.9% · class 87.6%. The 60% gate passes with
 comfortable headroom. The gate is live in CI: kotlin-gates runs
 `.\gradlew.bat test koverVerify` since b640af6 (kover 0.9.9, 60% minimum,
-build.gradle.kts:44-52). The Knit-style doc-example gate remains deferred
-(tracked here — this section is the single authority; the ci-kotlin.yml
-header defers to it).
+build.gradle.kts kover block). The Knit-style doc-example gate landed with
+the examples job (2026-08-13): the README ```kotlin fence must equal
+kotlin/examples/Quickstart.kt after Trim and the header/package-line strip
+— the ```text command block is not part of the comparison surface.
 
 ## Gradle wrapper exploration (2026-08-12)
 

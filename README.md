@@ -1,7 +1,6 @@
 # Consema Kotlin（consema-kt）
 
 ![CI](https://img.shields.io/github/actions/workflow/status/consema/consema-kt/ci-kotlin.yml?branch=main)
-![Version](https://img.shields.io/github/v/tag/consema/consema-kt)
 ![License](https://img.shields.io/github/license/consema/consema-kt)
 
 Consema 语言中立契约（RFC 0016）的 **Kotlin/JVM 实现**仓库。本仓库是 Consema 六仓
@@ -14,7 +13,7 @@ Version: 1.0.0-rc.1
 （版本行：`kotlin/build.gradle.kts` rootProject version；CI
 check-version-consistency job 断言与 README 整行一致。）
 
-## 快速开始（30 秒跑通）
+## 快速开始
 
 Maven Central 坐标（发布后可用）：`dev.consema:consema-kotlin:1.0.0-rc.1`（Gradle：`implementation("dev.consema:consema-kotlin:1.0.0-rc.1")`）。
 
@@ -25,11 +24,13 @@ kotlinc -J-Xmx2g -jvm-target 17 -d out src/main/kotlin quickstart.kt
 java -cp "out;<kotlinc>\lib\kotlin-stdlib.jar" QuickstartKt
 ```
 
+（上面的命令块不是 CI 栅栏比对对象——examples job 只比对下方 ```kotlin 栅栏与入库文件；命令块按需保持最新。）
+
 注：kotlinc 2.2.0 启动器默认堆为 512 MiB，对 163 个主源文件的 K2 编译会在
 IR 阶段耗尽堆——必须加 `-J-Xmx2g`（与 CI 直驱路径的内存档位一致，见
-kotlin/gradle.properties 与 ci-kotlin.yml）。
+kotlin/gradle.properties 与 ci-kotlin.yml）。本地整仓编译约 2 分钟。
 
-同一示例已入库为 [`kotlin/examples/Quickstart.kt`](kotlin/examples/Quickstart.kt)（带 `package consema.examples`，运行类 `consema.examples.QuickstartKt`），由 CI examples job 与 SdkChain.kt 一起编译并运行验证；CI examples job 还逐字节比对 README 栅栏与入库文件（粘贴版与入库版必须保持一致，由门禁强制）。
+同一示例已入库为 [`kotlin/examples/Quickstart.kt`](kotlin/examples/Quickstart.kt)（带 `package consema.examples`，运行类 `consema.examples.QuickstartKt`），由 CI examples job 与 SdkChain.kt 一起编译并运行验证；CI examples job 还比对 README ```kotlin 栅栏与入库文件（两侧经 Trim 并剥离头部注释/package 行后比较，粘贴版与入库版必须保持一致，由门禁强制）。
 
 ```kotlin
 import consema.core.PvInteger
@@ -84,7 +85,7 @@ fun main() {
 | query | `consema.json.executeJsonQuery(executable: ExecutableQuery, document: Document, limits: QueryLimits = QueryLimits.default, cancellation: CancellationToken = CancellationToken()): List<JsonMatch>` |
 | project | `Document.project(request: ProjectionRequest): ProjectionResult`（请求：`ProjectionRequest.builder(ProjectionTarget.BestExactCoreV1).build()`） |
 | edit | `consema.json.EditTransactionBuilder.new(document)` + `Document.commit(transaction: EditTransaction): EditCommit`（`commit.document` 为编辑后文档） |
-| materialize | `consema.json.materialize(value: PortableValue, request: MaterializationRequest): MaterializationResult` |
+| materialize | `consema.json.materialize(value: PortableValue, request: MaterializationRequest): MaterializationResult<Document>` |
 | convert | `consema.convertJson(source: json.Document, projectionRequest: json.ProjectionRequest, materializationRequest: MaterializationRequest): ConversionResult`（另有 convertIni / convertProperties / convertToml / convertYaml / convertXml / convertPlist / convertHcl） |
 | registry | `consema.formatFamilies()` / `consema.profiles()` / `consema.queryDomains()` / `consema.operationRegistry(profile: ProfileId)`（8 家族 / 16 profiles / 21 查询域 / 16 操作注册表；组合示例：`profiles().map { operationRegistry(it.profile) }`） |
 

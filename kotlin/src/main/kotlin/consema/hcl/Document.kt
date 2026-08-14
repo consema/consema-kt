@@ -19,10 +19,10 @@
 //     formation Recovered with one `hcl.tfvars.block-not-allowed@1`
 //     diagnostic per top-level block occurrence; the rejected block remains
 //     a native item of the Recovered document.
-//   - consema-rs/consema-hcl/src/document.rs:50-217 (Document and its
-//     accessors), consema-rs/consema-hcl/src/native.rs:37-325 (HclDocument,
+//   - https://github.com/consema/consema-rs/blob/main/consema-hcl/src/document.rs:50-217 (Document and its
+//     accessors), https://github.com/consema/consema-rs/blob/main/consema-hcl/src/native.rs:37-325 (HclDocument,
 //     HclBody, HclBodyItem, HclAttribute, HclBlock, HclBlockLabel,
-//     HclErrorRegion), consema-rs/consema-hcl/src/lib.rs:275-311 (the formation
+//     HclErrorRegion), https://github.com/consema/consema-rs/blob/main/consema-hcl/src/lib.rs:275-311 (the formation
 //     entry), and the frozen NodeRole spellings (document/Location.kt:
 //     202-231: HclDocument/HclBody/HclAttribute/HclBlock/HclBlockLabel/
 //     HclExpression/HclTemplatePart/HclErrorRegion/HclSyntaxPiece).

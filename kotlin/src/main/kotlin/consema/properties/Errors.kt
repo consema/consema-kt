@@ -3,8 +3,8 @@
 //
 // Data authority:
 //   - The registered properties-family codes are transcribed in
-//     kotlin/.../protocol/ErrorRegistry.kt:351-362 from
-//     consema-rs/consema-protocol/src/error_registry.rs:1099-1169 (the twelve
+//     kotlin/src/main/kotlin/consema/protocol/ErrorRegistry.kt:351-362 from
+//     https://github.com/consema/consema-rs/blob/main/consema-protocol/src/error_registry.rs:1099-1169 (the twelve
 //     0.8.0 codes: java-properties.edit.canonical-fallback@1,
 //     java-properties.edit.invalid-placement@1,
 //     java-properties.java-string.invalid-wire@1,
@@ -109,7 +109,7 @@ class PropertiesAccessException(val kind: PropertiesAccessErrorKind) :
  * Builds one snapshot-bound diagnostic in the `core.diagnostic@1` shape.
  * The primary source location uses the process-local snapshot identity as
  * the caller-stable source ID (the same convention as the JSON family,
- * kotlin/.../json/Errors.kt:95-101).
+ * kotlin/src/main/kotlin/consema/json/Errors.kt:95-101).
  */
 internal fun sourceDiagnostic(
     authority: DocumentAuthority,

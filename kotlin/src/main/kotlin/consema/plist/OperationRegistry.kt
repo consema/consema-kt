@@ -9,7 +9,7 @@
 //     immutable ID/version, target role, argument schema, and support
 //     classification; the registry does not claim that operations with
 //     similar names have identical format semantics.
-//   - consema-rs/consema-plist/src/operation_registry.rs:20-101 is the exact
+//   - https://github.com/consema/consema-rs/blob/main/consema-plist/src/operation_registry.rs:20-101 is the exact
 //     byte-arbitration source of the six descriptor records (ids, target
 //     roles, argument names/kinds, support class); the frozen surface test
 //     (operation_registry.rs:107-132) pins the sorted six-operation list
@@ -17,7 +17,7 @@
 //
 // Kotlin-idiomatic design: the registry is an immutable list of descriptor
 // data classes per profile (the json-family precedent,
-// kotlin/.../json/OperationRegistry.kt); argument kinds use the language-
+// kotlin/src/main/kotlin/consema/json/OperationRegistry.kt); argument kinds use the language-
 // neutral spellings of the Rust OperationArgumentKind (NodeRef, PortableValue,
 // String, Placement).
 

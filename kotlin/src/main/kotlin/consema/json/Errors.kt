@@ -2,16 +2,16 @@
 // diagnostic factory.
 //
 // Data authority:
-//   - consema-rs/consema-document/src/lib.rs:643-790 pins FatalFormationFailure
+//   - https://github.com/consema/consema-rs/blob/main/consema-document/src/lib.rs:643-790 pins FatalFormationFailure
 //     and its code mapping: resource limits use "core.parse.resource-limit@1"
 //     (lib.rs:771-776), source construction failures map through
 //     FatalFormationFailure::source_error (lib.rs:676-707) to
 //     core.source.invalid-utf8@1 / invalid-sequence@1 / encoding-conflict@1 /
 //     unsupported-bom@1 / resource-limit@1.
-//   - consema-rs/consema-json/src/lib.rs:612-621 pins JsonAccessError
+//   - https://github.com/consema/consema-rs/blob/main/consema-json/src/lib.rs:612-621 pins JsonAccessError
 //     (WrongSnapshot, WrongRole, UnknownNode).
 //   - The registered codes are transcribed in
-//     kotlin/.../protocol/ErrorRegistry.kt (core.parse.resource-limit@1 at
+//     kotlin/src/main/kotlin/consema/protocol/ErrorRegistry.kt (core.parse.resource-limit@1 at
 //     ErrorRegistry.kt:178; core.source.* at ErrorRegistry.kt:206, 236-242).
 //   - RFC 0016 §6 (https://github.com/consema/consema/blob/main/docs/rfcs/0016-go-api-mapping-v1.md:194-200): SDK errors
 //     carry the stable registered code; error text is human presentation only.
@@ -20,7 +20,7 @@
 // carrying the frozen registered code (the established
 // consema.core/consema.document style); the diagnostic factory binds the
 // current (v7) error registry because the v7 array is the ordered superset
-// containing every JSON-family code (kotlin/.../protocol/ErrorRegistry.kt:
+// containing every JSON-family code (kotlin/src/main/kotlin/consema/protocol/ErrorRegistry.kt:
 // 133-142).
 
 package consema.json

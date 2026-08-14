@@ -1,15 +1,16 @@
 // The L4 conformance runner test: 18 suites / 519 cases / aggregate digest.
 //
 // Data authority (language-neutral sources first):
-//   - https://github.com/consema/consema/blob/main/docs/fc-manifest-0.13.0.json:39 (conformance_suite: 18 suites /
-//     519 cases / aggregate_sha256 cfd6e296da5b22b62d37b076d35bf6bbf58b0678
-//     ceddb37eea51a8b47200ab6a over the byte-order filename digest lines).
+//   - https://github.com/consema/consema/blob/main/docs/fc-manifest-0.13.0.json — digests.conformance_suite
+//     (18 suites / 519 cases / aggregate_sha256 cfd6e296da5b22b62d37b076d35
+//     bf6bbf58b0678ceddb37eea51a8b47200ab6a over the byte-order filename
+//     digest lines).
 //   - https://github.com/consema/consema/blob/main/docs/five-language-ci-design.md §2.2 (each runner must assert the
 //     case count 18/519 and the aggregate digest inside the runner; the
 //     suite-count assertion is per suite).
-//   - conformance/README.md:84 (rule 4: every suite must validate its
+//   - conformance/README.md 规则 4 (every suite must validate its
 //     case count).
-//   - consema-go/go/conformance/conformance_test.go:106 (cross-reference: the Go
+//   - https://github.com/consema/consema-go/blob/main/go/conformance/conformance_test.go:106 (cross-reference: the Go
 //     runner test asserts the same digest and counts).
 //
 // The vector files themselves drive every input and expectation; this test

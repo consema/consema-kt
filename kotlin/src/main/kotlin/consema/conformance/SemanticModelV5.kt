@@ -1,7 +1,7 @@
 // The `consema.semantic-model-v5.conformance@1` suite runner
 // (conformance/vectors/semantic-model-v5.json).
 //
-// Data authority: consema-rs/consema-conformance/src/semantic_model_v5.rs (the
+// Data authority: https://github.com/consema/consema-rs/blob/main/consema-conformance/src/semantic_model_v5.rs (the
 // per-case dispatch and every assertion are transcribed from the Rust
 // handlers); the vector file itself drives every input and expectation
 // (conformance/README.md rules 3-4). The registries, protocol envelope,

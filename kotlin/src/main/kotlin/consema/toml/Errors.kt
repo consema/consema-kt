@@ -5,9 +5,9 @@
 //     formation failure carries the ordered diagnostics (code, category,
 //     severity, span, arguments, notes, occurrence) with registry-bound
 //     validation; TOML forms no partial Document.
-//   - The frozen toml-family codes (consema-rs/consema-protocol/src/
+//   - The frozen toml-family codes (https://github.com/consema/consema-rs/blob/main/consema-protocol/src/
 //     error_registry.rs:338-361; transcribed verbatim into
-//     kotlin/.../protocol/ErrorRegistry.kt:228-231):
+//     kotlin/src/main/kotlin/consema/protocol/ErrorRegistry.kt:228-231):
 //       toml.edit.representation-fallback@1    Edit       0.2.0 (error_registry.rs:338-343)
 //       toml.parse.syntax@1                    Syntax     0.2.0 (error_registry.rs:344-349)
 //       toml.projection.core-invariant@1       Projection 0.2.0 (error_registry.rs:350-355)

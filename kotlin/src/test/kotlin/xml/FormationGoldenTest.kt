@@ -5,7 +5,7 @@
 // Data authority: conformance/vectors/xml-1-0-safe-v1.json is the
 // language-neutral pinned suite (aggregate digest cfd6e296 across Rust and
 // Go); every case id below is cited verbatim. The recovery diagnostics are
-// the frozen xml.* codes of consema-rs/consema-xml/src/parser.rs (each cited in
+// the frozen xml.* codes of https://github.com/consema/consema-rs/blob/main/consema-xml/src/parser.rs (each cited in
 // the test). The UTF-16 golden bytes are transcribed VERBATIM from the
 // vector's render_hex field (case xml.formation.utf16le-with-bom).
 

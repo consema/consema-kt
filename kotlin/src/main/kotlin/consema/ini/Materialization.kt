@@ -18,13 +18,13 @@
 //     unrepresentable; all styles reparse under the exact target profile and
 //     reproject under the request's policy before success.
 //   - conformance/vectors/ini-v1.json (materialization.*) pins the golden
-//     output bytes and failure names; consema-rs/consema-ini/src/
+//     output bytes and failure names; https://github.com/consema/consema-rs/blob/main/consema-ini/src/
 //     materialization.rs is the byte-arbitration authority (writer
 //     materialization.rs:191-461, encoding materialization.rs:724-850,
 //     closure materialization.rs:489-535, provenance materialization.rs:
 //     537-677).
 //   - The Kotlin document package owns the completion algebra types
-//     (kotlin/.../document/Materialization.kt:286-371).
+//     (kotlin/src/main/kotlin/consema/document/Materialization.kt:286-371).
 //
 // Kotlin-idiomatic design: a bounded output buffer wraps the JDK byte
 // accumulation with explicit checked growth; the writer is a single
@@ -99,7 +99,7 @@ fun materialize(
  * page (RFC 0009 §3.2, §11). The shared [MaterializationRequest] cannot yet
  * express a code page because the document package's v1 SourceEncoding set
  * has no WindowsCodePage member (the source-v2 extension belongs to the L2
- * properties milestone, kotlin/.../document/Encoding.kt:18-25); this
+ * properties milestone, kotlin/src/main/kotlin/consema/document/Encoding.kt:18-25); this
  * overload takes the code page explicitly and requires the windows profile
  * with the windows-canonical style and CRLF.
  */
@@ -987,7 +987,7 @@ private fun isWindowsNameChar(character: Char): Boolean {
 
 /** Content equality of two portable values. The core container classes
  * (PvObject, PvArray, PvEntryMapping) use reference equality
- * (kotlin/.../core/Value.kt:159-254), so the INI closure check compares
+ * (kotlin/src/main/kotlin/consema/core/Value.kt:159-254), so the INI closure check compares
  * recursively; the kinds INI can never produce (temporal values) fall back
  * to their own equality. */
 internal fun portableValuesEqual(left: PortableValue, right: PortableValue): Boolean {

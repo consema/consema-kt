@@ -9,7 +9,7 @@
 //     allocation by declaration count, reference count, reference depth,
 //     replacement bytes/scalars, total expanded bytes/scalars, and the
 //     amplification ratio; limits apply across the whole document.
-//   - consema-rs/consema-xml/src/entity.rs:9-40 (PredefinedEntity and the frozen
+//   - https://github.com/consema/consema-rs/blob/main/consema-xml/src/entity.rs:9-40 (PredefinedEntity and the frozen
 //     PREDEFINED_ENTITIES table), entity.rs:42-49 (predefined_value),
 //     entity.rs:51-59 (is_xml_char), entity.rs:61-89 (ReplacementError and
 //     validate_replacement_text), entity.rs:91-123 (ExpansionBreach and

@@ -7,18 +7,18 @@
 //     key comparison without case folding, duplicate-key-group expansion,
 //     and typed accessors that validate the value type before returning (a
 //     type mismatch is a query failure, never a null or converted result).
-//   - RFC 0013 §8.2 (https://github.com/consema/consema/blob/main/docs/rfcs/0013-...md:560-582): the lossless syntax
+//   - RFC 0013 §8.2 (https://github.com/consema/consema/blob/main/docs/rfcs/0013-plist-family-profiles-v1.md:560-582): the lossless syntax
 //     domain provides exact kind and decoded-text filters over pieces.
-//   - RFC 0013 §8.3 (https://github.com/consema/consema/blob/main/docs/rfcs/0013-...md:584-596): the binary structure
+//   - RFC 0013 §8.3 (https://github.com/consema/consema/blob/main/docs/rfcs/0013-plist-family-profiles-v1.md:584-596): the binary structure
 //     domain exposes the object/offset/reference/trailer facts with exact
 //     byte spans; the domain exists only for the `plist.binary@1`
 //     representation (hard gate 1: no invented text trivia).
 //   - conformance/vectors/plist-v1.json (plist.query.*) pins the match
-//     facts and the terminal states; consema-rs/consema-plist/src/query.rs is
+//     facts and the terminal states; https://github.com/consema/consema-rs/blob/main/consema-plist/src/query.rs is
 //     the byte-arbitration authority (native operators query.rs:333-660,
 //     binary operators query.rs:1330-1511, selection query.rs:440-459).
 //   - The operator table and role validation live in the protocol package
-//     (kotlin/.../protocol/QueryValidate.kt:330-375); this file executes
+//     (kotlin/src/main/kotlin/consema/protocol/QueryValidate.kt:330-375); this file executes
 //     validated definitions.
 //
 // Kotlin-idiomatic design: execution returns a closed sealed outcome
@@ -44,7 +44,7 @@ import consema.protocol.QuerySelection
 import java.util.concurrent.atomic.AtomicBoolean
 
 /** Query resource limits (query.rs:2967-2981; the json-family precedent
- * kotlin/.../json/Query.kt:44-56). */
+ * kotlin/src/main/kotlin/consema/json/Query.kt:44-56). */
 data class QueryLimits(
     /** Maximum operator steps. */
     val maxSteps: Int,

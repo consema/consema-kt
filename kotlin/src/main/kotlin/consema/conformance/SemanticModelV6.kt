@@ -1,7 +1,7 @@
 // The `consema.semantic-model-v6.conformance@1` suite runner
 // (conformance/vectors/semantic-model-v6.json).
 //
-// Data authority: consema-rs/consema-conformance/src/semantic_model_v6.rs (the
+// Data authority: https://github.com/consema/consema-rs/blob/main/consema-conformance/src/semantic_model_v6.rs (the
 // per-case dispatch and every assertion are transcribed from the Rust
 // handlers); the vector file itself drives every input and expectation
 // (conformance/README.md rules 3-4). The registries, the
@@ -690,11 +690,14 @@ private fun dualRoundtrip(contractId: String, version: Int, payload: PortableVal
 
 // ---------------------------------------------------------------------------
 // Java UTF-16 string cases (semantic_model_v6.rs:494-552). The
-// core.java-utf16-string@1 wire record is not yet shipped in the Kotlin
-// protocol package; the exact code-unit classification and the UTF16BE/1
-// bytes are the real consema.properties JavaString API, and the strict wire
-// checks below mirror the Rust JavaUtf16String::from_value (java_utf16.rs:
-// 92-168) one assertion at a time.
+// core.java-utf16-string@1 wire checks are implemented here
+// (javaUtf16WireCheck; the contract is registered in the protocol
+// ContractRegistry, and the protocol package dispatches it at envelope
+// level only — no separate record decoder there). The exact code-unit
+// classification and the UTF16BE/1 bytes are the real
+// consema.properties JavaString API, and the strict wire checks below
+// mirror the Rust JavaUtf16String::from_value (java_utf16.rs:92-168) one
+// assertion at a time.
 // ---------------------------------------------------------------------------
 
 private fun javaMatrix(case: CaseData) {

@@ -23,13 +23,13 @@
 //     conflict algebra; the dry-run plan; the untouched-byte proof; the
 //     derived SourcePatch.
 //   - conformance/vectors/plist-v1.json (plist.edit.*) pins the outcomes;
-//     consema-rs/consema-plist/src/edit.rs is the byte-arbitration authority
+//     https://github.com/consema/consema-rs/blob/main/consema-plist/src/edit.rs is the byte-arbitration authority
 //     (operation shapes edit.rs:83-251, failures edit.rs:389-455).
 //   - Kotlin document owns SourcePatch (create/apply,
-//     kotlin/.../document/Patch.kt:147-296) and UntouchedByteProof
-//     (kotlin/.../document/UntouchedProof.kt:83-138); ChangeSet is not
+//     kotlin/src/main/kotlin/consema/document/Patch.kt:147-296) and UntouchedByteProof
+//     (kotlin/src/main/kotlin/consema/document/UntouchedProof.kt:83-138); ChangeSet is not
 //     shipped in the Kotlin plist family (recorded gap, six-repo audit
-//     G090; the json-family precedent, kotlin/.../json/Edit.kt:27-28), so
+//     G090; the json-family precedent, kotlin/src/main/kotlin/consema/json/Edit.kt:27-28), so
 //     the commit carries the ordered diagnostics instead.
 //
 // Kotlin-idiomatic design: failures are a sealed hierarchy whose [code] is
@@ -337,7 +337,7 @@ class EditTransactionBuilder internal constructor(private val base: SnapshotIden
 
 /** Atomic edit success (edit.rs:378-387). ChangeSet is not shipped in the
  * Kotlin plist family (recorded gap, six-repo audit G090; the json-family
- * precedent, kotlin/.../json/Edit.kt:27-28); the commit carries the
+ * precedent, kotlin/src/main/kotlin/consema/json/Edit.kt:27-28); the commit carries the
  * ordered edit diagnostics instead. */
 class EditCommit(
     /** New immutable document. */
@@ -883,7 +883,7 @@ private fun Document.prepareXmlInsertDictEntry(
     // The insertion edit lands at prepared.size + its local index once the
     // returned list is appended by the caller.
     val localIndex = insertXmlFragment(container, workingContainer, position, fragment, edits,
-        native is NativeValue.Dict)
+        workingContainer.isDict)
     val slot = XmlSlot(-1, virtual = operation.value, virtualKey = operation.key)
     workingContainer.slots.add(position, slot)
     working.recordVirtualEdit(slot, prepared.size + localIndex)
@@ -1005,7 +1005,7 @@ private fun Document.prepareXmlInsertArrayElement(
     val fragment = xmlFragment(operation.value)
     val edits = ArrayList<PreparedEdit>()
     val localIndex = insertXmlFragment(container, workingContainer, operation.index, fragment, edits,
-        native is NativeValue.Dict)
+        workingContainer.isDict)
     val slot = XmlSlot(-1, virtual = operation.value)
     workingContainer.slots.add(operation.index, slot)
     working.recordVirtualEdit(slot, prepared.size + localIndex)

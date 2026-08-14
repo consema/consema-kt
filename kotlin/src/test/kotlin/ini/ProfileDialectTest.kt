@@ -3,8 +3,8 @@
 //
 // Authority: RFC 0009 §5-§7 (https://github.com/consema/consema/blob/main/docs/rfcs/0009-ini-family-profiles-v1.md:148-
 // 252) and the Rust crate tests (consema-ini/src/lib.rs:713-944). The L5
-// conformance runner executes the shared vectors directly; these tests are
-// the L2 intent documents.
+// conformance runner executes the shared vectors directly; these unit tests
+// pin the profile-dialect behaviors in the committed CI.
 
 package ini
 

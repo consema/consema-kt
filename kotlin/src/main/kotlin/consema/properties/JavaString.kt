@@ -11,7 +11,7 @@
 //   - conformance/vectors/java-properties-v1.json pins the UTF16BE/1 hex
 //     facts (value_utf16be_hex / key_utf16be_hex) and the statuses
 //     (formation.escape-and-java-utf16-matrix, lines 30-34).
-//   - consema-rs/consema-properties/src/lib.rs:124-206 (JavaStringStatus,
+//   - https://github.com/consema/consema-rs/blob/main/consema-properties/src/lib.rs:124-206 (JavaStringStatus,
 //     JavaString, JavaStringConversionError) pins the shapes; the
 //     classification scan is lib.rs:814-830. consema-go/go/properties is a
 //     cross-reference only.

@@ -10,12 +10,12 @@
 //     (`<plist version="1.0">` exactly, one value element), the value
 //     element vocabulary, the dictionary/key rules, the integer/real/date/
 //     data/string grammars, and the trailing-content rule.
-//   - RFC 0013 §8.2 (https://github.com/consema/consema/blob/main/docs/rfcs/0013-...md:560-582): the lossless syntax-kind
+//   - RFC 0013 §8.2 (https://github.com/consema/consema/blob/main/docs/rfcs/0013-plist-family-profiles-v1.md:560-582): the lossless syntax-kind
 //     set and the root-tag partition rule.
 //   - conformance/vectors/plist-v1.json (plist.xml-formation.* and
 //     plist.query.* XML cases) pins the recover/complete outcomes and the
 //     diagnostic codes case by case.
-//   - consema-rs/consema-plist/src/parser_xml.rs is the byte-arbitration
+//   - https://github.com/consema/consema-rs/blob/main/consema-plist/src/parser_xml.rs is the byte-arbitration
 //     authority (element/attribute rules parser_xml.rs:1060-1353, value
 //     building parser_xml.rs:1479-1800, text/reference resolution
 //     parser_xml.rs:1791-2060, gap assembly parser_xml.rs:2226-2303);
@@ -45,7 +45,7 @@ import java.util.ArrayDeque
 
 /**
  * Explicit source-encoding selection for plist formation (RFC 0013 §2;
- * consema-rs/consema-plist/src/lib.rs:94-110). For the XML profile the selection
+ * https://github.com/consema/consema-rs/blob/main/consema-plist/src/lib.rs:94-110). For the XML profile the selection
  * follows the RFC 0012 source contract: no-BOM source defaults to UTF-8, and
  * an explicit caller choice is evidence, not permission to contradict a BOM
  * or a declaration. The binary profile has no text encoding; only
@@ -1528,14 +1528,11 @@ internal class XmlParser(
         val structuralIndex = try {
             LosslessStructuralIndex.new(authority.identity, sourceLen, structuralPieces)
         } catch (e: consema.document.LocationException) {
-            for ((ordinal, piece) in structuralPieces.withIndex()) {
-                // Summary only — never dump the parsed document bytes
-                // (configurations routinely contain credentials).
-                System.err.println(
-                    "PIECE $ordinal [${piece.span.startByte},${piece.span.endByte}) " +
-                        "${piece.kind} ${syntaxKinds[ordinal].wireName()}",
-                )
-            }
+            // The failure fact is carried by the typed exception; no
+            // per-piece stderr output — the parser is an SDK library and
+            // embedded applications must not receive unsuppressible output
+            // (configurations routinely contain credentials; never dump
+            // piece bytes).
             throw PlistFormationException(
                 PlistCodes.XML_COVERAGE,
                 "plist xml parse: structural coverage failure",

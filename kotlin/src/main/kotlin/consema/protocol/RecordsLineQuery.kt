@@ -2,7 +2,7 @@
 // records.
 //
 // Data authority (language-neutral sources first):
-//   - consema-rs/consema-protocol/src/line_query.rs (IniMatchLocator,
+//   - https://github.com/consema/consema-rs/blob/main/consema-protocol/src/line_query.rs (IniMatchLocator,
 //     IniQueryResultMessage, JavaPropertiesMatchLocator,
 //     JavaPropertiesQueryResultMessage: the line-format domain/role
 //     matrices, the strictly increasing ordinals, the bounded identifiers,

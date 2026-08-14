@@ -10,7 +10,7 @@
 //     externalized through the protocol they follow RFC 0011's error-code
 //     classification rules (RFC 0014 §11).
 //   - The frozen codes are transcribed from the byte-arbitration source
-//     consema-rs/consema-hcl:
+//     https://github.com/consema/consema-rs/blob/main/consema-hcl:
 //       parse family: lexer.rs:461-486 (byte-order-mark@1, lone-cr@1,
 //         invalid-utf8@1, identifier@1, invalid-number@1,
 //         invalid-character@1, invalid-escape@1, unterminated-comment@1,

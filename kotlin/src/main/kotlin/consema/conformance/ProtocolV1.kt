@@ -1,11 +1,11 @@
 // The `consema.protocol.conformance@1` suite runner
 // (conformance/vectors/protocol-v1.json).
 //
-// Data authority: consema-rs/consema-conformance/src/protocol_v1.rs (the
+// Data authority: https://github.com/consema/consema-rs/blob/main/consema-conformance/src/protocol_v1.rs (the
 // per-case dispatch and every construction is transcribed from the Rust
 // handlers; the vector file carries the contract metadata but the facts are
 // pinned in the handlers). The record wire shapes are transcribed from
-// consema-rs/consema-protocol/src/execution.rs (Completion, ExecutionPolicy,
+// https://github.com/consema/consema-rs/blob/main/consema-protocol/src/execution.rs (Completion, ExecutionPolicy,
 // CancellationRequest), change.rs (ChangeSetMessage), projection.rs
 // (ProjectionPolicy/Rule/RequestMessage/ReportMessage/ResultMessage and the
 // provenance records), query.rs (QueryResultMessage), and diagnostic.rs.

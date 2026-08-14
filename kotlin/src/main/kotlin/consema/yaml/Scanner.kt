@@ -11,7 +11,7 @@
 //     (piece_count 48 with the exact required kinds, lines 31-34) and
 //     query.syntax-comments (Comment ordinals [5, 12], lines 61-64) pin the
 //     exact piece segmentation byte-for-byte.
-//   - consema-rs/consema-yaml/src/syntax.rs:16-421 is the byte-arbitration
+//   - https://github.com/consema/consema-rs/blob/main/consema-yaml/src/syntax.rs:16-421 is the byte-arbitration
 //     authority for the lexeme rules (plain-line continuation, node-property
 //     characters inside plain scalars, block-scalar content regions
 //     including their trailing line break, quote scanning, and the

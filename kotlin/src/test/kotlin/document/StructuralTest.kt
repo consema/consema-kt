@@ -5,7 +5,7 @@
 // Recovered); RFC 0003 §7 — binary coverage obeys the no-gap/no-overlap/
 // final-length invariant; conformance/vectors/source-v1.json cases
 // source.binary.* (lines 102-118, capability core.source.binary-coverage@1)
-// pin the coverage semantics; consema-rs/consema-document/src/lib.rs:404-579
+// pin the coverage semantics; https://github.com/consema/consema-rs/blob/main/consema-document/src/lib.rs:404-579
 // pins the validation outcomes.
 
 package document

@@ -1,4 +1,4 @@
-// PGCE/1 golden byte tests — intent documents.
+// PGCE/1 golden byte tests.
 //
 // The hex vectors below are transcribed VERBATIM from
 // conformance/vectors/portable-graph-v1.json (the language-neutral
@@ -9,7 +9,7 @@
 //     NonMinimalVarint
 //   - graph.isomorphic-builder-numbering: builder numbering is not semantic
 //   - pgce.cycle-roundtrip: byte-stable cycle encoding
-// These tests run once the toolchain is ready (START GATE).
+// These tests run in the committed CI (kotlin-gates, gradlew test).
 
 package consema.graph
 

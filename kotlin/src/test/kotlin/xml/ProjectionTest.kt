@@ -2,7 +2,7 @@
 // xml-1-0-safe-v1.json (cases xml.projection.*).
 //
 // Data authority: the `xml.element-tree@1` record shape is pinned by the
-// vector cases and by consema-rs/consema-xml/src/projection.rs:600-797; the
+// vector cases and by https://github.com/consema/consema-rs/blob/main/consema-xml/src/projection.rs:600-797; the
 // recovered-document failure code xml.projection.recovered-document@1 is
 // pinned by case xml.projection.recovered-never-projects
 // (xml-1-0-safe-v1.json:341-350).

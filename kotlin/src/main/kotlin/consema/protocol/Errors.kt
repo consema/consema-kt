@@ -1,9 +1,9 @@
 // Typed protocol failures.
 //
 // Data authority: the frozen `core.protocol.*@1` codes are registered in the
-// semantic-model v1 error registry (consema-rs/consema-protocol/src/
+// semantic-model v1 error registry (https://github.com/consema/consema-rs/blob/main/consema-protocol/src/
 // error_registry.rs:72-90 area; see ErrorRegistry.kt) and mapped from the
-// Rust ProtocolErrorKind (consema-rs/consema-protocol/src/error.rs).
+// Rust ProtocolErrorKind (https://github.com/consema/consema-rs/blob/main/consema-protocol/src/error.rs).
 // consema-go/go/protocol/errors.go is a cross-reference.
 //
 // Kotlin-idiomatic error handling: transport and record-level failures are

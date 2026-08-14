@@ -9,12 +9,12 @@
 //     provenance} | Failed{failure, report, analyzed_input_paths}), §8
 //     (provenance: Value(ValuePath) | Association(AssociationLocation) input
 //     locations; Direct|Reencoded|Generated relations).
-//   - consema-rs/consema-document/src/materialization.rs:1-495 pins the shapes,
+//   - https://github.com/consema/consema-rs/blob/main/consema-document/src/materialization.rs:1-495 pins the shapes,
 //     the frozen defaults (materialization.rs:95-105), and the failure
 //     codes; consema-go/go/document/materialization.go is a cross-reference only.
 //
 // The registered materialization codes (RFC 0004 §17
-// https://github.com/consema/consema/blob/main/docs/rfcs/0004-...md:412-420; error_registry.rs:556-604):
+// https://github.com/consema/consema/blob/main/docs/rfcs/0004-materialization-conversion-and-structural-edit-v1.md:412-420; error_registry.rs:556-604):
 //   core.materialization.invalid-request@1
 //   core.materialization.unsupported-profile@1
 //   core.materialization.unsupported-style@1
@@ -26,7 +26,7 @@
 //
 // Cross-domain dependencies (defined by the L0 core/protocol agents, NOT
 // here): consema.core.ValuePath / AssociationLocation / AssociationRole
-// mirror consema-rs/consema-core/src/location.rs:1-89; consema.protocol.
+// mirror https://github.com/consema/consema-rs/blob/main/consema-core/src/location.rs:1-89; consema.protocol.
 // Diagnostic is the RFC 0016 §6 diagnostic record owned by the protocol
 // package.
 

@@ -11,7 +11,7 @@
 //     (§4.2), expression grammar and precedence (§4.3), templates (§4.4),
 //     heredocs (§4.5), and constructors/for-expressions (§4.6); the native
 //     semantic model (§6).
-//   - consema-rs/consema-hcl/src/parser.rs pins the parse structure: parse_body
+//   - https://github.com/consema/consema-rs/blob/main/consema-hcl/src/parser.rs pins the parse structure: parse_body
 //     (parser.rs:620-727), parse_attribute (parser.rs:729-767), parse_block
 //     (parser.rs:769-864), the expression ladder (parser.rs:982-1259), the
 //     term layer (parser.rs:1263-1382), traversal steps (parser.rs:1351-

@@ -9,14 +9,15 @@
 // value as canonical compact JSON, and convert the edited document to TOML
 // (`toml.canonical-document`).
 //
-// Run (kotlinc must compile the main sources and the example together):
-//   kotlinc -jvm-target 17 -d out src/main/kotlin examples/SdkChain.kt
+// Run (kotlinc must compile the main sources and the example together;
+// -J-Xmx2g is required — the default 512 MiB heap exhausts on the
+// 163-main-file K2 compile, see kotlin/gradle.properties):
+//   kotlinc -J-Xmx2g -jvm-target 17 -d out src/main/kotlin examples/SdkChain.kt
 //   java -cp "out;<kotlinc>\lib\kotlin-stdlib.jar" consema.examples.SdkChainKt
 //
 // Language-neutral contract reference (consema spec repository):
 //   - https://github.com/consema/consema/blob/main/docs/cookbook.md — the CLI recipes for the same operations
 //   - https://github.com/consema/consema/blob/main/docs/multi-language-implementation-plan.md — the five-language SDK design
-//   https://github.com/consema/consema/blob/main/docs/cookbook.md
 package consema.examples
 
 import consema.ConversionResult

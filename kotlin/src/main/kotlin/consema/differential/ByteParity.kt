@@ -1,12 +1,12 @@
 // Cross-language PVCE/PGCE byte-parity harness (roadmap §16.1 hard gate:
 // "Rust 与 Go 的 PVCE/PGCE bytes 完全一致", extended to Kotlin).
 //
-// The Rust encoder is the single byte authority (consema-rs/consema-pvce,
-// consema-rs/consema-graph). The Kotlin side never imports or calls Rust: the
+// The Rust encoder is the single byte authority (https://github.com/consema/consema-rs/blob/main/consema-pvce,
+// https://github.com/consema/consema-rs/blob/main/consema-graph). The Kotlin side never imports or calls Rust: the
 // shared input set (conformance/differential/cases.json) is encoded with
 // the Kotlin codecs (consema.core.Pvce / consema.graph.Pgce) and compared
 // byte for byte with the Rust golden files produced by the Rust example
-// (consema-rs/consema-conformance/examples/emit_parity_bytes.rs) — one
+// (https://github.com/consema/consema-rs/blob/main/consema-conformance/examples/emit_parity_bytes.rs) — one
 // `<case-id>.hex` per case — plus the bidirectional direction (Rust bytes
 // decode under the Kotlin decoders and re-encode byte-identically).
 // Orchestration: scripts/kotlin-verify-byte-parity.ps1 provisions the golden
@@ -42,8 +42,10 @@ import java.io.File
 /** The frozen manifest id of the byte-parity input set. */
 const val PARITY_MANIFEST = "consema.differential.byte-parity@1"
 
-/** The task's lower bound for the input set ("至少 40 个 case"). */
-const val PARITY_MIN_CASES = 40
+/** The frozen case count of the byte-parity input set (cases.json, 68 —
+ * the same exact count ByteParityTest.caseFileIntegrity and the verify
+ * script assert; any drift fails the harness). */
+const val PARITY_CASES = 68
 
 /** One entry of cases.json. */
 data class ParityCase(
@@ -91,8 +93,8 @@ fun loadParityCaseFile(file: File): List<ParityCase> {
         "cases.json manifest = $manifest, want $PARITY_MANIFEST"
     }
     val caseValues = objectArray(root, "cases", "case file")
-    require(caseValues.size >= PARITY_MIN_CASES) {
-        "cases.json has ${caseValues.size} cases, want >= $PARITY_MIN_CASES (the differential input set)"
+    require(caseValues.size == PARITY_CASES) {
+        "cases.json has ${caseValues.size} cases, want exactly $PARITY_CASES (the frozen byte-parity case set)"
     }
     val seen = HashSet<String>()
     val kinds = HashSet<String>()

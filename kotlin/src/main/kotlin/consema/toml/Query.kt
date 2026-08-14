@@ -7,7 +7,7 @@
 //     toml.try-array-elements@1, toml.array-element-item@1, plus
 //     core.take@1 and core.distinct-by-identity@1); validation completes
 //     before execution.
-//   - consema-rs/consema-toml/src/query.rs:9-87 (TomlMatch, TomlSyntaxMatch),
+//   - https://github.com/consema/consema-rs/blob/main/consema-toml/src/query.rs:9-87 (TomlMatch, TomlSyntaxMatch),
 //     :88-180 (execute_toml_query / execute_toml_syntax_query and cursors),
 //     :182-488 (Context::step with the frozen QueryLimits defaults
 //     max_steps 100_000 / max_results 100_000, the expression evaluator,

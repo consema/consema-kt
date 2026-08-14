@@ -1,6 +1,6 @@
 // The stable public diagnostic and failure code registry.
 //
-// Data authority: consema-rs/consema-protocol/src/error_registry.rs — the v7
+// Data authority: https://github.com/consema/consema-rs/blob/main/consema-protocol/src/error_registry.rs — the v7
 // registry pins 187 codes (55/62/90/92/132/166/187 across v1..v7;
 // ERROR_CODES_V2 at error_registry.rs:412, V3 :617, V4 :662, V5 :935,
 // V6 :1172, V7 :1339). The records below are transcribed VERBATIM from the
@@ -172,7 +172,7 @@ private fun mergeErrorCodes(
 
 // The semantic-model v1 records (ERROR_CODES_V1, 55 codes). Strictly sorted
 // by code; introduced versions and descriptions transcribed verbatim from
-// consema-rs/consema-protocol/src/error_registry.rs:31-362.
+// https://github.com/consema/consema-rs/blob/main/consema-protocol/src/error_registry.rs:31-362.
 private val ERROR_CODES_V1: List<ErrorCodeDescriptor> = listOf(
     errorCode("core.diagnostic.truncated@1", DiagnosticCategory.Resource, "0.1.0", "Diagnostic limit truncated a sequence"),
     errorCode("core.parse.resource-limit@1", DiagnosticCategory.Resource, "0.1.0", "Parser resource limit was reached"),

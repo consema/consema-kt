@@ -15,7 +15,7 @@
 //   - conformance/vectors/yaml-v1.json pins the query facts
 //     (query.mapping-entries, query.alias-target, query.syntax-comments,
 //     query.resource-limit at lines 50-69).
-//   - consema-rs/consema-yaml/src/query.rs is the byte-arbitration authority
+//   - https://github.com/consema/consema-rs/blob/main/consema-yaml/src/query.rs is the byte-arbitration authority
 //     (matches query.rs:12-99, execution query.rs:166-269, operators
 //     query.rs:394-676, selection query.rs:690-707); consema-core/src/
 //     query.rs:2967-2993 pins QueryLimits defaults (max_steps 100_000,

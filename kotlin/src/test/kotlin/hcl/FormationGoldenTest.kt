@@ -3,7 +3,7 @@
 // Each test transcribes one vector case (input.source / expected.*) VERBATIM
 // from conformance/vectors/hcl-v1.json and asserts the language-neutral
 // facts the Rust/Go differential runners assert
-// (consema-rs/consema-conformance/src/hcl_v1.rs:412-422: status exact, the
+// (https://github.com/consema/consema-rs/blob/main/consema-conformance/src/hcl_v1.rs:412-422: status exact, the
 // expected diagnostic code present; the render is byte-exact). The case id
 // is cited on every test.
 //

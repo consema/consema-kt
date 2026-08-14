@@ -10,7 +10,7 @@
 //     `xmlns` is reserved and cannot be rebound; the default namespace
 //     applies to element names, not unprefixed attributes; namespace scope
 //     is immutable ancestry-derived data.
-//   - consema-rs/consema-xml/src/namespace.rs:9-13 (the two frozen URIs),
+//   - https://github.com/consema/consema-rs/blob/main/consema-xml/src/namespace.rs:9-13 (the two frozen URIs),
 //     namespace.rs:15-57 (QName, ExpandedName), namespace.rs:59-89
 //     (Binding, NamespaceError), namespace.rs:91-219 (NamespaceScope
 //     declare/resolve rules and the declaration expanded-name rule).

@@ -10,8 +10,8 @@
 //   - RFC 0014 §7.2 (:487-507): the v1 lossless syntax kind set is exactly
 //     the thirty PascalCase spellings below; there is no `Bom` kind because
 //     a BOM is excluded at formation (RFC 0014 §2).
-//   - consema-rs/consema-hcl/src/lib.rs:101-118 (HclProfile and its id mapping),
-//     consema-rs/consema-hcl/src/native.rs:335-398 (HclSyntaxKind declaration
+//   - https://github.com/consema/consema-rs/blob/main/consema-hcl/src/lib.rs:101-118 (HclProfile and its id mapping),
+//     https://github.com/consema/consema-rs/blob/main/consema-hcl/src/native.rs:335-398 (HclSyntaxKind declaration
 //     order) pin the spellings; consema-go/go/hcl is a cross-reference only.
 //
 // Kotlin-idiomatic design (NOT a translation): the profile is a closed enum;

@@ -23,9 +23,9 @@
 //     bytes, and compares the reparsed native model to the promised input
 //     semantics; failure returns no target Document, partial bytes, or
 //     partial provenance.
-//   - RFC 0004 §3, §7-§8 (https://github.com/consema/consema/blob/main/docs/rfcs/0004-...md:56-92, 171-218): the common
+//   - RFC 0004 §3, §7-§8 (https://github.com/consema/consema/blob/main/docs/rfcs/0004-materialization-conversion-and-structural-edit-v1.md:56-92, 171-218): the common
 //     MaterializationRequest fields and the completion algebra.
-//   - consema-rs/consema-hcl/src/materialization.rs pins the record validation
+//   - https://github.com/consema/consema-rs/blob/main/consema-hcl/src/materialization.rs pins the record validation
 //     (materialization.rs:232-264), the request validation
 //     (materialization.rs:267-285), the canonical layout, and the closure
 //     verification; the failure mapping is materialization.rs:124-133

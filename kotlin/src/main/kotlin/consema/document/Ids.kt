@@ -1,8 +1,8 @@
 // Namespaced identifiers of the document domain.
 //
-// Data authority: consema-rs/consema-document/src/lib.rs:344-402 (FormatFamilyId,
-// ProfileId), consema-rs/consema-document/src/materialization.rs:11-39
-// (MaterializationStyleId), consema-rs/consema-document/src/operation_registry.rs:
+// Data authority: https://github.com/consema/consema-rs/blob/main/consema-document/src/lib.rs:344-402 (FormatFamilyId,
+// ProfileId), https://github.com/consema/consema-rs/blob/main/consema-document/src/materialization.rs:11-39
+// (MaterializationStyleId), https://github.com/consema/consema-rs/blob/main/consema-document/src/operation_registry.rs:
 // 8-42 (FormatOperationId). The v1 target profiles and style IDs frozen by
 // RFC 0004 §4 are: json.strict@1, jsonc.bounded@1, toml.1.0@1 and
 // json.canonical-compact@1, json.canonical-pretty@1, toml.canonical-

@@ -11,7 +11,7 @@
 //     replace-scalar-semantic, replace-scalar-literal, insert-mapping-entry,
 //     remove-mapping-entry, insert-sequence-element, remove-sequence-element,
 //     rename-anchor, insert-alias).
-//   - consema-rs/consema-yaml/src/operation_registry.rs:16-97 is the exact
+//   - https://github.com/consema/consema-rs/blob/main/consema-yaml/src/operation_registry.rs:16-97 is the exact
 //     byte-arbitration source of the eight descriptor records (ids, target
 //     roles, argument names/kinds, support classes); the frozen surface test
 //     (operation_registry.rs:103-136) pins the six Supported operations and

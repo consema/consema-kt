@@ -1,7 +1,7 @@
 // The Kotlin side of the cross-language protocol exchange harness
 // (L5; https://github.com/consema/consema/blob/main/docs/five-language-ci-design.md §3.4; the Go
 // precedent consema-go/go/conformance/differential/protocol-exchange/exchange_test.go;
-// the Rust example consema-rs/consema-conformance/examples/emit_protocol_exchange.rs
+// the Rust example https://github.com/consema/consema-rs/blob/main/consema-conformance/examples/emit_protocol_exchange.rs
 // is the byte authority for the golden files).
 //
 // For every case (83: 40 accept + 43 reject):
@@ -51,12 +51,14 @@ import java.math.BigInteger
 /** The frozen manifest id of the exchange input set. */
 const val EXCHANGE_MANIFEST = "consema.differential.protocol-exchange@1"
 
-/** The task's lower bound for the input set ("至少 40 个 case"). */
-const val EXCHANGE_MIN_CASES = 40
+/** The frozen case count of the exchange input set (protocol-exchange/
+ * cases.json, 83 — the same exact count ExchangeTest.caseFileIntegrity and
+ * the verify script assert; any drift fails the harness). */
+const val EXCHANGE_CASES = 83
 
 /** The closed record inventory of the exchange set. It is exactly the
  * protocol record surface both implementations decode in full (the Go
- * payload.go dispatch intersect consema-rs/consema-protocol payload.rs
+ * payload.go dispatch intersect https://github.com/consema/consema-rs/blob/main/consema-protocol payload.rs
  * dispatch). No Rust type names appear anywhere in the case file. */
 val EXCHANGE_ALL_RECORDS: List<String> = listOf(
     "core.batch-plan@1",
@@ -120,8 +122,8 @@ fun loadExchangeCaseFile(file: File): List<ExchangeCase> {
         "cases.json manifest = $manifest, want $EXCHANGE_MANIFEST"
     }
     val caseValues = objectArray(root, "cases", "case file")
-    require(caseValues.size >= EXCHANGE_MIN_CASES) {
-        "cases.json has ${caseValues.size} cases, want >= $EXCHANGE_MIN_CASES (the differential input set)"
+    require(caseValues.size == EXCHANGE_CASES) {
+        "cases.json has ${caseValues.size} cases, want exactly $EXCHANGE_CASES (the frozen protocol-exchange case set)"
     }
     val known = EXCHANGE_ALL_RECORDS.toSet()
     val coverage = HashMap<String, IntArray>() // record -> {accept, reject}
@@ -265,9 +267,11 @@ fun decodeExchangeRecord(record: String, value: PortableValue): PortableValue = 
 }
 
 // ---------------------------------------------------------------------------
-// The record decoders the protocol package ships in a later milestone. The
-// wire authority is the Rust record codec; the decode/re-encode discipline
-// is the fixed-field schema discipline of the protocol package.
+// The record decoders of the exchange inventory that the protocol
+// package's validateRegisteredPayload dispatches only at envelope level
+// (records without a full record decoder there). The wire authority is the
+// Rust record codec; the decode/re-encode discipline is the fixed-field
+// schema discipline of the protocol package.
 // ---------------------------------------------------------------------------
 
 /** Strictly decodes and re-encodes `core.cancellation-request@1`

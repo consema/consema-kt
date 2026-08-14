@@ -4,8 +4,8 @@
 // cases, lines 54-99), conformance/vectors/toml-v1.json (toml.query.
 // nested-entry-order, toml.query.aot-element-order), RFC 0001 §4, and the
 // Rust crate query tests (consema-toml/src/query.rs:490-652). The L5
-// conformance runner executes the shared vectors directly; these tests are
-// the L1 intent documents.
+// conformance runner executes the shared vectors directly; these unit tests
+// pin the golden transcriptions in the committed CI.
 
 package toml
 

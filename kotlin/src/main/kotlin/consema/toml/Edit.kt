@@ -9,9 +9,9 @@
 //     structural-edit-v1.md:291-384): native ownership of the five
 //     structural operations, the transaction conflict algebra, the dry-run
 //     EditPlan, the untouched-byte proof, and SourcePatch derivation.
-//   - consema-rs/consema-toml/src/operation_registry.rs:16-74 pins the seven
+//   - https://github.com/consema/consema-rs/blob/main/consema-toml/src/operation_registry.rs:16-74 pins the seven
 //     frozen operation IDs and their target roles.
-//   - consema-rs/consema-toml/src/edit.rs:15-47 (RepresentationPolicy,
+//   - https://github.com/consema/consema-rs/blob/main/consema-toml/src/edit.rs:15-47 (RepresentationPolicy,
 //     ScalarReplacement), :57-99 (EditOperation), :101-227 (transaction and
 //     builder), :229-280 (EditCommit/EditFailure), :281-430 (commit),
 //     :432-447 (dry_run), :449-1062 (preparation), :1064-1100

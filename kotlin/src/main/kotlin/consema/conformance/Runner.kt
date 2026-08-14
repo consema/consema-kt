@@ -4,22 +4,23 @@
 //   - conformance/README.md (rules 3-4: the runner is only an executor; the
 //     vectors are the authority; every suite must validate its case count so
 //     the runner never silently skips unknown items).
-//   - consema-rs/consema-conformance/src/lib.rs:86-106 (ConformanceReport shape)
+//   - https://github.com/consema/consema-rs/blob/main/consema-conformance/src/lib.rs:86-106 (ConformanceReport shape)
 //     and the per-suite Rust runners (the dispatch authority); the Rust
 //     runner parses vector files with its own strict JSON parser and
-//     projects them to PortableValue (lib.rs:131-150), which the Kotlin
-//     runner mirrors with consema.json.
+//     projects them to PortableValue (the same file, lib.rs:131-150), which
+//     the Kotlin runner mirrors with consema.json.
 //   - https://github.com/consema/consema/blob/main/docs/five-language-ci-design.md §2 (the five-runner contract: vector
 //     files read by explicit repository-relative path, no embedded copies;
 //     per-runner fixed validations — suite id prefix `consema.*`, case-id
 //     dedupe, 18/519 count assertion, aggregate digest assertion, unknown
 //     case rejection; skip discipline).
-//   - https://github.com/consema/consema/blob/main/docs/fc-manifest-0.13.0.json:39 (the aggregate digest algorithm:
+//   - https://github.com/consema/consema/blob/main/docs/fc-manifest-0.13.0.json — digests.conformance_suite
+//     (the aggregate_sha256 value and the note key document the algorithm:
 //     file-name byte-order sort, per-file sha256 lowercase hex, lines
 //     `{basename}:{digest}` joined with '\n' without a trailing newline,
 //     then sha256 of that UTF-8 string; recorded value
 //     cfd6e296da5b22b62d37b076d35bf6bbf58b0678ceddb37eea51a8b47200ab6a).
-//   - consema-go/go/conformance/conformance.go (cross-reference only).
+//   - https://github.com/consema/consema-go/blob/main/go/conformance/conformance.go (cross-reference only).
 //
 // Kotlin-idiomatic design: immutable report data classes, a Runner with
 // explicit repository paths, and one handler function per suite (the
@@ -49,7 +50,10 @@ import java.math.BigInteger
 import java.security.MessageDigest
 
 /** One documented skip: the case was not executed because its capability is
- * not implemented by this Kotlin milestone. */
+ * not implemented by this Kotlin implementation. Zero-construction fact:
+ * no suite handler currently builds a SkipRecord — the skipped lists stay
+ * empty and ConformanceRunnerTest asserts 0 skipped; the type exists so a
+ * future skip would be documented (never silent) rather than dropped. */
 data class SkipRecord(
     /** The stable case identifier. */
     val id: String,
@@ -123,9 +127,15 @@ data class RunReport(
     val failed: Int,
 ) {
     /** Whether every applicable case passed, every count assertion held,
-     * and the aggregate digest matched the manifest. */
+     * the aggregate digest matched the manifest, and the full frozen
+     * inventory was actually executed. The executed-count hard assertion
+     * closes the empty-run hole: a suite dropped from ALL_SUITES (or a
+     * registration bug) would otherwise leave a smaller-but-green run that
+     * the per-suite checks cannot see. */
     fun conformant(): Boolean {
         if (!digest.ok) return false
+        if (suites.size != ALL_SUITES.size) return false
+        if (total != ALL_SUITES.sumOf { it.expectedCases }) return false
         return suites.all { it.conformant() }
     }
 }

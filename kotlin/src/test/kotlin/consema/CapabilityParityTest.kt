@@ -5,8 +5,8 @@
 // §6 capability parity gate).
 //
 // Data authority: https://github.com/consema/consema/blob/main/docs/fc-manifest-0.13.0.json:30-34 (capability_set
-// record); crates/consema/src/lib.rs:317-488 (the Rust facade's own
-// registry tests this test mirrors); consema-go/go/capability_parity_test.go is a
+// record); https://github.com/consema/consema-rs/blob/main/consema/src/lib.rs:317-488 (the Rust facade's own
+// registry tests this test mirrors); https://github.com/consema/consema-go/blob/main/go/capability_parity_test.go is a
 // cross-reference only.
 
 package consema
@@ -101,7 +101,7 @@ class CapabilityParityTest {
             "plist.xml" to 6, "plist.binary" to 6,
             // The tfvars profile admits attributes only, so its registry
             // publishes the four attribute operations (RFC 0014 §5;
-            // kotlin/.../hcl/Operations.kt:78-106).
+            // kotlin/src/main/kotlin/consema/hcl/Operations.kt:78-106).
             "hcl.native" to 6, "hcl.tfvars" to 4,
         )
         for ((profileId, ids) in parity.operationRegistries) {

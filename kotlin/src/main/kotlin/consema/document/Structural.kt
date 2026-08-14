@@ -7,7 +7,7 @@
 //     text and binary coverage obey the same no-gap/no-overlap/final-length
 //     invariant; empty source has an empty valid index; non-empty source
 //     requires at least one non-empty region.
-//   - consema-rs/consema-document/src/lib.rs:404-579 pins the shapes and the
+//   - https://github.com/consema/consema-rs/blob/main/consema-document/src/lib.rs:404-579 pins the shapes and the
 //     LocationError validation outcomes; conformance/vectors/source-v1.json
 //     cases source.binary.* (lines 102-118) pin the coverage semantics.
 //   - consema-go/go/document/structural.go and consema-go/go/document/formation.go are

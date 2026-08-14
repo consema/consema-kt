@@ -4,7 +4,7 @@
 // structural-edit-v1.md:57-96) — the common request fields and the closed
 // v1 policies (ExactOnly representability, RequireObject /
 // UniqueStringEntriesToObject mapping policy, None|Lf|CrLf newline);
-// consema-rs/consema-document/src/materialization.rs:107-203 (request defaults),
+// https://github.com/consema/consema-rs/blob/main/consema-document/src/materialization.rs:107-203 (request defaults),
 // materialization.rs:41-62 (newline bytes), materialization.rs:281-325
 // (provenance validation), materialization.rs:327-391 (failure codes).
 

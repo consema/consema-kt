@@ -4,7 +4,7 @@
 // materialize-toml-*, cited in each test), RFC 0004 §3-§8, and the Rust
 // crate materialization tests (consema-toml/src/materialization.rs:886-
 // 1115). The L5 conformance runner executes the shared vectors directly;
-// these tests are the L1 intent documents.
+// these unit tests pin the golden transcriptions in the committed CI.
 
 package toml
 

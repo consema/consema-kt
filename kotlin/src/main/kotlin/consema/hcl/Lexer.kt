@@ -3,7 +3,7 @@
 // §2, §7.2).
 //
 // Data authority:
-//   - consema-rs/consema-hcl/src/lexer.rs pins the token kind set (lexer.rs:146-
+//   - https://github.com/consema/consema-rs/blob/main/consema-hcl/src/lexer.rs pins the token kind set (lexer.rs:146-
 //     245), the token-to-piece kind mapping (lexer.rs:251-301), the
 //     structural classification (lexer.rs:305-313), the main scan (lexer.rs:
 //     680-888: operators, `::` as invalid-character, `_` as identifier@1,

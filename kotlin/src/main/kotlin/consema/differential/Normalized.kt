@@ -5,7 +5,7 @@
 // The harness compares the language-neutral normalized results of the same
 // data-driven input set (conformance/differential/normalized/cases.json,
 // 108 cases) executed by the Rust SDK
-// (consema-rs/consema-conformance/examples/emit_normalized_results.rs) and by
+// (https://github.com/consema/consema-rs/blob/main/consema-conformance/examples/emit_normalized_results.rs) and by
 // this file. Kotlin never imports or calls Rust: the Rust side emits one
 // `<case-id>.txt` evidence file per case, the Kotlin test computes the same
 // normalized facts and compares them field by field, and the reverse
@@ -78,8 +78,10 @@ import java.math.BigInteger
 /** The frozen manifest id of the normalized input set. */
 const val NORMALIZED_MANIFEST = "consema.differential.normalized@1"
 
-/** The task's lower bound for the input set (the Go harness's MinCaseCount). */
-const val NORMALIZED_MIN_CASES = 104
+/** The frozen case count of the normalized input set (normalized/cases.json,
+ * 108 — the same exact count NormalizedTest.caseFileIntegrity and the
+ * verify script assert; any drift fails the harness). */
+const val NORMALIZED_CASES = 108
 
 // ---------------------------------------------------------------------------
 // Case file schema (data-driven; shared with the Rust example)
@@ -187,8 +189,8 @@ fun loadNormalizedCaseFile(file: File): List<NormalizedCase> {
         "cases.json manifest = $manifest, want $NORMALIZED_MANIFEST"
     }
     val caseValues = objectArray(root, "cases", "case file")
-    require(caseValues.size >= NORMALIZED_MIN_CASES) {
-        "cases.json has ${caseValues.size} cases, want >= $NORMALIZED_MIN_CASES (the differential input set)"
+    require(caseValues.size == NORMALIZED_CASES) {
+        "cases.json has ${caseValues.size} cases, want exactly $NORMALIZED_CASES (the frozen normalized case set)"
     }
     val seen = HashSet<String>()
     return caseValues.map { value ->
@@ -1013,7 +1015,7 @@ private fun applyQueryLimits(desc: QueryLimitsDesc?): Pair<Int, Int> {
 
 /** Builds the executable from the declarative filters, mirroring the Go
  * harness's buildQueryDefinition and the conformance runner pipeline
- * (kotlin/.../conformance/SyntaxQueryV1.kt). Returns null on a
+ * (kotlin/src/main/kotlin/consema/conformance/SyntaxQueryV1.kt). Returns null on a
  * missing-argument invalid-argument failure. */
 private fun buildQueryDefinition(step: StepDesc, domain: QueryDomain, caseId: String): ExecutableQuery? {
     val format = when {

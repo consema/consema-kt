@@ -13,7 +13,7 @@
 //     canonical-decimal equality); unevaluated is the default contract.
 //   - RFC 0014 §8.1 (:511-537): the literal-complete boundary — a purely
 //     syntactic predicate; no arithmetic is ever computed (hard gate 1).
-//   - consema-rs/consema-hcl/src/expression.rs pins the exact shapes and
+//   - https://github.com/consema/consema-rs/blob/main/consema-hcl/src/expression.rs pins the exact shapes and
 //     spellings: HclExpressionKind (:200-312), HclExpressionKindName
 //     (:564-650, "number"/"boolean"/"null"/"template"/"function-call"/
 //     "variable-ref"/"traversal"/"unary"/"binary"/"conditional"/"for-tuple"/

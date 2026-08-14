@@ -1,10 +1,10 @@
 // The closed TOML v1 lossless syntax-piece classification.
 //
 // Data authority:
-//   - consema-rs/consema-toml/src/lib.rs:41-109 (TomlSyntaxKind, as_str,
+//   - https://github.com/consema/consema-rs/blob/main/consema-toml/src/lib.rs:41-109 (TomlSyntaxKind, as_str,
 //     from_name) pins the twelve kind spellings; the same spellings are the
 //     argument vocabulary of `toml.syntax-kind-is@1`
-//     (kotlin/.../protocol/QueryValidate.kt:911-916 transcribes them).
+//     (kotlin/src/main/kotlin/consema/protocol/QueryValidate.kt:911-916 transcribes them).
 //   - conformance/vectors/syntax-query-v1.json cases syntax.toml.*
 //     (lines 54-99) pin the wire behavior (kind names in matches, ordinal
 //     ordering, "TomlSyntaxPiece" match role).

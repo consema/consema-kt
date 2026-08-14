@@ -1,7 +1,7 @@
 // The `consema.yaml.conformance@1` suite runner
 // (conformance/vectors/yaml-v1.json).
 //
-// Data authority: consema-rs/consema-conformance/src/yaml_v1.rs (the per-case
+// Data authority: https://github.com/consema/consema-rs/blob/main/consema-conformance/src/yaml_v1.rs (the per-case
 // dispatch and every fact are transcribed from the Rust handlers; the
 // capability mapping at yaml_v1.rs:117-134 and the case table at
 // yaml_v1.rs:138-165); the vector file itself drives every input and

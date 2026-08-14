@@ -11,7 +11,7 @@
 //     computed target digest must match; any mismatch fails atomically.
 //   - conformance/vectors/source-v1.json cases source.patch.* (lines 120-172)
 //     pin the success bytes and the rejection codes.
-//   - consema-rs/consema-document/src/source_patch.rs:1-566 pins the shapes and
+//   - https://github.com/consema/consema-rs/blob/main/consema-document/src/source_patch.rs:1-566 pins the shapes and
 //     the error-code mapping (source_patch.rs:434-458).
 //   - consema-go/go/document/source_patch.go is a cross-reference only.
 //

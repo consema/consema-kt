@@ -9,7 +9,7 @@
 //     regions and never acquire a decoded name.
 //   - conformance/vectors/json-family-v2.json pins the recover/complete
 //     outcomes and the diagnostic codes case by case.
-//   - consema-rs/consema-json/src/parser.rs is the byte-arbitration authority
+//   - https://github.com/consema/consema-rs/blob/main/consema-json/src/parser.rs is the byte-arbitration authority
 //     (lexing parser.rs:174-402, JSON5 lexing parser.rs:404-581, number
 //     validation parser.rs:701-815, string decoding parser.rs:1232-1347,
 //     object/array recovery parser.rs:953-1133, diagnostic sink

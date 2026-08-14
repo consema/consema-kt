@@ -1,7 +1,7 @@
 // The `consema.hcl.conformance@1` suite runner
 // (conformance/vectors/hcl-v1.json).
 //
-// Data authority: consema-rs/consema-conformance/src/hcl_v1.rs (the per-case
+// Data authority: https://github.com/consema/consema-rs/blob/main/consema-conformance/src/hcl_v1.rs (the per-case
 // dispatch is transcribed from the Rust handlers); the vector file itself
 // drives every input and expectation (conformance/README.md rules 3-4).
 //
@@ -78,6 +78,7 @@ import consema.protocol.QueryDomain
 import consema.protocol.QueryExpression
 import consema.protocol.QueryFailureException
 import consema.protocol.QuerySelection
+import java.math.BigDecimal
 import java.math.BigInteger
 
 /** Runs the `consema.hcl.conformance@1` suite. */
@@ -223,16 +224,15 @@ private fun expectedF64(value: PortableValue?): Double? =
     }
 
 /** Converts one exact decimal to its double value; null when the coefficient
- * or exponent exceeds the exact Long range. */
+ * or exponent exceeds the exact Long range. Single correctly-rounded
+ * conversion (BigDecimal → Double, IEEE 754), with the Rust reference
+ * implementation's ±308 exponent clamp semantics (hcl_v1.rs decimal_to_f64
+ * clamps to 308 and always returns a value). */
 private fun decimalToF64(decimal: PvDecimal): Double? {
     val coefficient = runCatching { decimal.coefficient.toLong() }.getOrNull() ?: return null
     val exponent = runCatching { decimal.exponent.toLong() }.getOrNull() ?: return null
-    var value = coefficient.toDouble()
-    when {
-        exponent > 0 -> value *= Math.pow(10.0, exponent.toDouble().coerceAtMost(308.0))
-        exponent < 0 -> value /= Math.pow(10.0, (-exponent).toDouble().coerceAtMost(308.0))
-    }
-    return value
+    val clamped = exponent.coerceIn(-308, 308)
+    return BigDecimal(coefficient).scaleByPowerOfTen(clamped.toInt()).toDouble()
 }
 
 /** Exact bit equality of two doubles; every published numeric fact is an

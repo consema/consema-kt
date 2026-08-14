@@ -2,7 +2,7 @@
 //
 // Data authority: RFC 0015 §3.2 (https://github.com/consema/consema/blob/main/docs/rfcs/0015-cli-machine-protocol-and-
 // batch-apply-v1.md) and RFC 0016 §4.2; the byte-exact reference is the
-// Rust transport (consema-rs/consema-protocol/src/value_transport.rs), pinned
+// Rust transport (https://github.com/consema/consema-rs/blob/main/consema-protocol/src/value_transport.rs), pinned
 // by the shared conformance vectors (protocol-v1.json). The numberToken /
 // unicodeEscape rules are transcribed from the Rust parser
 // (value_transport.rs:26-75).
@@ -410,7 +410,7 @@ private class DecodeState(val limits: ProtocolLimits) {
 /**
  * Encodes a PortableValue as canonical `core.portable-value-json@1` bytes,
  * byte-identical to the Rust encoder
- * (consema-rs/consema-protocol/src/value_transport.rs:12-23).
+ * (https://github.com/consema/consema-rs/blob/main/consema-protocol/src/value_transport.rs:12-23).
  */
 fun encodeJson(value: PortableValue, limits: ProtocolLimits): ByteArray {
     val encoder = JsonEncoder(limits)
@@ -1099,7 +1099,7 @@ private fun jsonParseI32(node: JsonNode, path: String, limits: ProtocolLimits): 
 
 /**
  * Encodes a PortableValue as canonical PVCE/1 under protocol limits
- * (consema-rs/consema-protocol/src/value_transport.rs:78-89). PVCE/1 codec
+ * (https://github.com/consema/consema-rs/blob/main/consema-protocol/src/value_transport.rs:78-89). PVCE/1 codec
  * failures map to the protocol registry: resource limits surface as
  * RESOURCE_LIMIT, everything else as INVALID_PVCE.
  */
@@ -1122,7 +1122,7 @@ fun encodePvce(value: PortableValue, limits: ProtocolLimits): ByteArray {
 }
 
 /** Strictly decodes canonical PVCE/1 under protocol limits
- * (consema-rs/consema-protocol/src/value_transport.rs:92-112). Records outside
+ * (https://github.com/consema/consema-rs/blob/main/consema-protocol/src/value_transport.rs:92-112). Records outside
  * the closed fifteen-kind model (only the extended 0x7f record) fail as
  * INVALID_PVCE. */
 fun decodePvce(bytes: ByteArray, limits: ProtocolLimits): PortableValue {

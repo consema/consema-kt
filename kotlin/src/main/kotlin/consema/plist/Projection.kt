@@ -20,7 +20,7 @@
 //     structural-edit-v1.md:171-218): the completion algebra and the
 //     provenance direction (portable locations to source origins).
 //   - conformance/vectors/plist-v1.json (plist.projection.*) pins the
-//     per-case outcomes; consema-rs/consema-plist/src/projection.rs is the
+//     per-case outcomes; https://github.com/consema/consema-rs/blob/main/consema-plist/src/projection.rs is the
 //     byte-arbitration authority (targets projection.rs:55-90, request
 //     projection.rs:86-162, value-tree encoding projection.rs:572-667,
 //     require-object projection.rs:671-830, failure codes projection.rs:

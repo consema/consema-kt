@@ -5,19 +5,19 @@
 //     publishes exactly three independent profiles `ini.portable@1`,
 //     `ini.windows@1`, `ini.python-configparser@1`; the caller selects one
 //     profile before formation; there is no auto-detection.
-//   - RFC 0009 §8 (https://github.com/consema/consema/blob/main/docs/rfcs/0009-...md:254-283): the lossless Document
+//   - RFC 0009 §8 (https://github.com/consema/consema/blob/main/docs/rfcs/0009-ini-family-profiles-v1.md:254-283): the lossless Document
 //     retains value states Missing | Empty | Present, quote facts, and
 //     duplicate/case-collision groups; the snapshot-bound handles are named
 //     IniDocument / IniPhysicalLine / IniLogicalLine / IniSection /
 //     IniDefaultSection / IniEntry / IniErrorLine.
 //   - conformance/vectors/ini-v1.json pins the profile spellings and the
 //     syntax-kind names the vectors assert (case.formation.*, query.*).
-//   - consema-rs/consema-ini/src/lib.rs:35-56 (IniProfile and its ProfileId),
+//   - https://github.com/consema/consema-rs/blob/main/consema-ini/src/lib.rs:35-56 (IniProfile and its ProfileId),
 //     lib.rs:121-195 (IniSyntaxKind and the exact as_str names), lib.rs:197-
 //     228 (IniValueState, IniQuoteStyle, IniLogicalLineKind), lib.rs:58-65
-//     (IniEncodingSelection). consema-rs/consema-ini/src/parser.rs:37-59 pins the
+//     (IniEncodingSelection). https://github.com/consema/consema-rs/blob/main/consema-ini/src/parser.rs:37-59 pins the
 //     encoding-request construction.
-//   - RFC 0009 §3.2 (https://github.com/consema/consema/blob/main/docs/rfcs/0009-...md:83-104) pins the mandatory v1
+//   - RFC 0009 §3.2 (https://github.com/consema/consema/blob/main/docs/rfcs/0009-ini-family-profiles-v1.md:83-104) pins the mandatory v1
 //     Windows code-page set: 874, 932, 936, 949, 950, 1250 through 1258, and
 //     65001; no-BOM bytes never imply the machine's active code page.
 //   - consema-go/go/ini/profile.go and consema-go/go/ini/parser.go are cross-references only.
@@ -185,9 +185,9 @@ sealed class IniEncodingSelection {
  *
  * The consema.document v1 `SourceEncoding` cannot express Windows code
  * pages (the source-v2 extension belongs to the L2 properties milestone,
- * kotlin/.../document/Encoding.kt:18-25), so the INI family owns its
+ * kotlin/src/main/kotlin/consema/document/Encoding.kt:18-25), so the INI family owns its
  * encoding vocabulary here and decodes code pages itself
- * (kotlin/.../ini/Source.kt).
+ * (kotlin/src/main/kotlin/consema/ini/Source.kt).
  */
 sealed class IniSourceEncoding {
     /** Unicode UTF-8. */

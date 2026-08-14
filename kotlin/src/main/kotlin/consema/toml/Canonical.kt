@@ -1,10 +1,10 @@
 // The frozen canonical TOML 1.0 scalar spellings.
 //
 // Data authority:
-//   - consema-rs/consema-toml/src/edit.rs:1516-1636 (canonical_string,
+//   - https://github.com/consema/consema-rs/blob/main/consema-toml/src/edit.rs:1516-1636 (canonical_string,
 //     canonical_float, canonical_date, canonical_time, canonical_local_
 //     datetime, canonical_offset_datetime, exact_nanoseconds) and
-//     consema-rs/consema-toml/src/materialization.rs:353-407 (write_string,
+//     https://github.com/consema/consema-rs/blob/main/consema-toml/src/materialization.rs:353-407 (write_string,
 //     write_float, write_date, write_time) pin the deterministic canonical
 //     representations used by both materialization and every structural
 //     edit insertion.

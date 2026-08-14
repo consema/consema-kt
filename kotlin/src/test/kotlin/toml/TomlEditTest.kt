@@ -6,7 +6,8 @@
 // toml-conflict-atomic, toml-dry-run-proof-patch, toml-structural-matrix,
 // toml-conflict-matrix), plus the Rust crate edit tests
 // (consema-toml/src/edit.rs:1653-2156). The L5 conformance runner executes
-// the shared vectors directly; these tests are the L1 intent documents.
+// the shared vectors directly; these unit tests pin the golden
+// transcriptions in the committed CI.
 
 package toml
 

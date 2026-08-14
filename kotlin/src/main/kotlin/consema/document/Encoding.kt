@@ -11,13 +11,13 @@
 //   - conformance/vectors/source-v1.json cases source.encoding.* (lines
 //     24-82) pin the wire spellings ("utf-8", "utf-16le", "utf-16be",
 //     "latin-1", "binary") and the rejection codes.
-//   - consema-rs/consema-document/src/source.rs:121-409 pins the shapes and the
+//   - https://github.com/consema/consema-rs/blob/main/consema-document/src/source.rs:121-409 pins the shapes and the
 //     resolution/decoding rules; consema-go/go/document/encoding.go is a cross-reference
 //     only.
 //
 // Source contract v2 (0.8.0, the java-properties family) extends this set
 // with WindowsCodePage and BomPolicy::TreatAsContent
-// (consema-rs/consema-protocol/src/error_registry.rs:967-977 registers
+// (https://github.com/consema/consema-rs/blob/main/consema-protocol/src/error_registry.rs:967-977 registers
 // core.source.code-page-required@1 / core.source.unsupported-code-page@1).
 // The WindowsCodePage extension ships in the ini family
 // (consema/ini/Profile.kt IniWindowsCodePage) and is not part of this v1

@@ -19,7 +19,7 @@
 //     `hcl.tfvars@1` block insertion, unrepresentable values, limit
 //     failure, and reparse failure; success returns the new Document,
 //     ChangeSet, `UntouchedByteProof`, and a replayable `SourcePatch`.
-//   - consema-rs/consema-hcl/src/edit.rs pins the operation shapes (edit.rs:93-
+//   - https://github.com/consema/consema-rs/blob/main/consema-hcl/src/edit.rs pins the operation shapes (edit.rs:93-
 //     264: BodyPathStep, BodyPath, NodeRef, BodyPlacement, EditValue,
 //     EditKey), the failure codes (edit.rs:599-612: core.edit.wrong-
 //     snapshot@1, core.edit.wrong-role@1, core.edit.incomplete-target@1,

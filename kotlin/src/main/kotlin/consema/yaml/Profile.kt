@@ -12,7 +12,7 @@
 //   - conformance/vectors/yaml-v1.json pins the profile spellings (line 3)
 //     and the syntax kinds the vectors assert (syntax.styles-and-trivia,
 //     yaml-v1.json:31-34).
-//   - consema-rs/consema-yaml/src/lib.rs:54-116 pins YamlProfile and the exact
+//   - https://github.com/consema/consema-rs/blob/main/consema-yaml/src/lib.rs:54-116 pins YamlProfile and the exact
 //     YamlSyntaxKind spellings (as_str lib.rs:167-198, from_name lib.rs:
 //     200-231); lib.rs:241-257 pins the profile ids and accepted %YAML
 //     versions. consema-go/go/yaml/profile.go is a cross-reference only.

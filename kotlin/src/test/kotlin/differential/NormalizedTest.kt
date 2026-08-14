@@ -14,8 +14,10 @@
 // normalized results are compared field by field, and every divergence is
 // reported as case id + field + both values.
 //
-// The harness is bidirectional (roadmap §16.6 line 1548): the test also
-// emits the Kotlin-side evidence files for the same input set (one
+// The harness is bidirectional (roadmap §16.6「0.19.0：双语言一致性与产品
+// Beta」— the bidirectional differential-runs hard gate, extended to all
+// five languages): the test also emits the Kotlin-side evidence files for
+// the same input set (one
 // `<case-id>.txt` per case, the same line-oriented key=value format the
 // forward direction reads) into CONSEMA_DIFFERENTIAL_NORMALIZED_KT_DIR, and
 // the Rust example's consume mode compares them with its own results.

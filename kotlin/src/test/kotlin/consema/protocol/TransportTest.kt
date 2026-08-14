@@ -1,9 +1,9 @@
-// Protocol transport and CLI-record tests — intent documents.
+// Protocol transport and CLI-record tests.
 //
 // The canonical JSON transport follows RFC 0015 §3.2 / RFC 0016 §4.2 (the
 // shared protocol-v1.json vectors exercise it); the CLI record shapes follow
-// RFC 0015 §4/§8/§9. These tests run once the toolchain is ready (START
-// GATE).
+// RFC 0015 §4/§8/§9. These tests run in the committed CI (kotlin-gates,
+// gradlew test).
 
 package consema.protocol
 

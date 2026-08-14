@@ -6,7 +6,7 @@
 //     formation is the same Complete | Recovered algebra as the existing JSON
 //     family parser; source/encoding and configured resource failures are
 //     fatal; recovered syntax never turns into available native semantics.
-//   - consema-rs/consema-json/src/lib.rs:170-286 (Document), lib.rs:288-341
+//   - https://github.com/consema/consema-rs/blob/main/consema-json/src/lib.rs:170-286 (Document), lib.rs:288-341
 //     (SemanticAvailability / SemanticUnavailable / JsonValueKind),
 //     lib.rs:342-610 (JsonValue / JsonObjectMember / JsonArrayElement),
 //     lib.rs:623-674 (entities). consema-go/go/json/document.go is a cross-reference
@@ -17,7 +17,7 @@
 // of the Go handle structs; entity storage is a private sealed hierarchy and
 // `when` over it is exhaustive. The document keeps its own
 // consema.document.DocumentAuthority (module-internal, shared across family
-// packages per kotlin/.../document/Location.kt:17-21).
+// packages per kotlin/src/main/kotlin/consema/document/Location.kt:17-21).
 
 package consema.json
 

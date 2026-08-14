@@ -7,8 +7,12 @@ build/
 # Provisioned conformance data: the single authority is the consema spec
 # repository (CI provisions conformance/ + docs/fc-manifest-0.13.0.json into
 # the workspace root); a committed copy here would fork the authority.
-conformance/
-docs/
+# Anchored at the repository root (/conformance/, /docs/...): the provisioned
+# data directory only. kotlin/src/main/kotlin/consema/conformance/ (source)
+# must stay trackable — an unanchored pattern would silently ignore new
+# runner source files.
+/conformance/
+/docs/fc-manifest-0.13.0.json
 
 # IDE / OS artifacts
 .idea/

@@ -10,7 +10,7 @@
 //     ordered report; a dry-run plan is not authority to write a file and is
 //     never applied without rechecking base digest and every original-byte
 //     precondition.
-//   - consema-rs/consema-document/src/edit_plan.rs:1-273 pins the shapes and
+//   - https://github.com/consema/consema-rs/blob/main/consema-document/src/edit_plan.rs:1-273 pins the shapes and
 //     the validation bounds (source_id non-empty and <= 1024 characters;
 //     summary argument names lowercase/digit/underscore <= 64, values
 //     non-empty <= 1024, at most 64 arguments; operation metadata
@@ -19,7 +19,7 @@
 //
 // The operation IDs referenced by [EditOperationSummary] are the frozen
 // format operation registrations of RFC 0004 §10 (json.edit.*@1,
-// toml.edit.*@1, https://github.com/consema/consema/blob/main/docs/rfcs/0004-...md:247-266); the full
+// toml.edit.*@1, https://github.com/consema/consema/blob/main/docs/rfcs/0004-materialization-conversion-and-structural-edit-v1.md:247-266); the full
 // FormatOperationRegistry is not shipped in Kotlin (recorded gap, six-repo
 // audit G090; the facade publishes per-profile operation registries,
 // CapabilityParity.kt).

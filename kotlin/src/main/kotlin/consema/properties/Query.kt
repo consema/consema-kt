@@ -14,20 +14,20 @@
 //   - conformance/vectors/java-properties-v1.json pins the match order,
 //     duplicate/escape counts, UTF16BE hex keys, ordinals, and the
 //     cancellation/limit outcomes.
-//   - consema-rs/consema-properties/src/query.rs is the byte-arbitration
+//   - https://github.com/consema/consema-rs/blob/main/consema-properties/src/query.rs is the byte-arbitration
 //     authority (execution query.rs:123-225, operators query.rs:398-607,
 //     source order query.rs:609-634, text/boundary helpers query.rs:636-673);
 //     consema-core/src/query.rs:2967-2993 pins QueryLimits defaults
 //     (max_steps 100_000, max_results 100_000) and the CancellationToken
 //     shape.
 //   - The operator argument schemas and the UTF16BE/1 validation live in the
-//     protocol package (kotlin/.../protocol/QueryValidate.kt:139-169,
+//     protocol package (kotlin/src/main/kotlin/consema/protocol/QueryValidate.kt:139-169,
 //     213-228, 801-816); execution here consumes only validated operators.
 //
 // Kotlin-idiomatic design: execution throws the protocol package's typed
 // [consema.protocol.QueryFailureException] carrying the registered code; the
 // cursor terminal contract (RFC 0003 §9) is a synchronous complete result
-// list here (the JSON family precedent, kotlin/.../json/Query.kt:21-25),
+// list here (the JSON family precedent, kotlin/src/main/kotlin/consema/json/Query.kt:21-25),
 // with the terminal state always Completed after a successful execution and
 // cancellation surfacing as a CANCELLED failure.
 

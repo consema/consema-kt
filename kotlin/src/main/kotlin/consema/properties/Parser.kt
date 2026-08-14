@@ -10,7 +10,7 @@
 //     records and never publish a partial property.
 //   - conformance/vectors/java-properties-v1.json pins the per-case
 //     formations, counts, hex values, statuses, and codes.
-//   - consema-rs/consema-properties/src/parser.rs is the byte-arbitration
+//   - https://github.com/consema/consema-rs/blob/main/consema-properties/src/parser.rs is the byte-arbitration
 //     authority (atoms parser.rs:93-99, natural-line scan parser.rs:230-298,
 //     logical-line assembly parser.rs:352-469, key/split parser.rs:471-507,
 //     escape decoding parser.rs:909-996, recovery parser.rs:626-666,

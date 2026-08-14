@@ -21,17 +21,19 @@
 //     ChangeSet, UntouchedByteProof, and replayable SourcePatch.
 //   - conformance/vectors/ini-v1.json (edit.all-eight-operations,
 //     edit.dry-run-patch-proof-and-atomic-failure) pins the golden output
-//     bytes and the wrong-snapshot code; consema-rs/consema-ini/src/edit.rs is
+//     bytes and the wrong-snapshot code; https://github.com/consema/consema-rs/blob/main/consema-ini/src/edit.rs is
 //     the byte-arbitration authority (commit edit.rs:305-553, dry-run
 //     edit.rs:556-570, preparation edit.rs:572-861, dependencies edit.rs:
 //     863-920, names/collisions edit.rs:950-1069, canonical entry text
 //     edit.rs:1101-1167, semantic value styles edit.rs:1228-1430,
 //     ownership edit.rs:1445-1475, failure codes edit.rs:1754-1779).
-//   - Kotlin document owns SourcePatch (kotlin/.../document/Patch.kt:147-296)
-//     and UntouchedByteProof (kotlin/.../document/UntouchedProof.kt). The
-//     ChangeSet is not shipped in the Kotlin INI family (recorded gap,
-//     six-repo audit G090; document/Patch.kt:31-33); the commit carries
-//     the ordered edit diagnostics instead.
+//   - Kotlin document owns SourcePatch
+//     (kotlin/src/main/kotlin/consema/document/Patch.kt:147-296) and
+//     UntouchedByteProof (kotlin/src/main/kotlin/consema/document/
+//     UntouchedProof.kt). The ChangeSet is not shipped in the Kotlin INI
+//     family (recorded gap, six-repo audit G090;
+//     kotlin/src/main/kotlin/consema/document/Patch.kt:31-33); the commit
+//     carries the ordered edit diagnostics instead.
 //
 // Kotlin-idiomatic design: failures are a sealed hierarchy whose [name] is
 // the exact Rust variant spelling and whose [diagnosticCode] is the frozen
@@ -251,8 +253,10 @@ class EditTransactionBuilder internal constructor(private val base: SnapshotIden
  * the Kotlin INI family (recorded gap, six-repo audit G090); the commit
  * carries the ordered edit diagnostics instead. For
  * base documents whose selected encoding is a Windows code page, the
- * document-contract artifacts are unavailable until the source-v2 extension
- * (kotlin/.../document/Encoding.kt:18-25) and are null.
+ * document-contract artifacts are null: the WindowsCodePage extension
+ * lives on the ini family surface, not on the document v1 source contract
+ * (kotlin/src/main/kotlin/consema/document/Encoding.kt:18-25), so no v1
+ * snapshot exists to build SourcePatch / UntouchedByteProof from.
  */
 class EditCommit(
     /** New immutable document. */
@@ -544,7 +548,7 @@ private data class SourceEditFacts(val edit: PreparedEdit, val newSpan: Span)
  * (edit.rs:556-570; RFC 0004 §14). Dry-run and commit produce the same
  * replacement set and target digest (RFC 0004 §20). Code-page documents
  * cannot produce the transferable plan until the document source-v2
- * extension lands (kotlin/.../document/Encoding.kt:18-25).
+ * extension lands (kotlin/src/main/kotlin/consema/document/Encoding.kt:18-25).
  */
 fun IniDocument.dryRun(
     transaction: EditTransaction,

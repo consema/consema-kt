@@ -4,7 +4,7 @@
 // Each test transcribes one vector case (input.source / expected.*) VERBATIM
 // from conformance/vectors/java-properties-v1.json and asserts the
 // language-neutral facts the Rust/Go differential runners assert
-// (consema-rs/consema-conformance/src/java_properties_v1.rs). The case id is
+// (https://github.com/consema/consema-rs/blob/main/consema-conformance/src/java_properties_v1.rs). The case id is
 // cited on every test.
 //
 // This file runs in the verified toolchain gate (kotlin-gates gradlew

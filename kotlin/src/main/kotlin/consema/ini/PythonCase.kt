@@ -7,7 +7,7 @@
 //     Rust compiler's Unicode tables; original option spelling is retained.
 //   - conformance/vectors/ini-v1.json formation.python-unicode16-optionxform
 //     pins the U+0130 -> "i" + U+0307 case-expansion duplicate fact.
-//   - consema-rs/consema-ini/src/python_case.rs:201-232 pins the mapping rule:
+//   - https://github.com/consema/consema-rs/blob/main/consema-ini/src/python_case.rs:201-232 pins the mapping rule:
 //     a per-scalar simple lowercase mapping with the single special
 //     expansion U+0130 -> U+0069 U+0307; the pinned tables are Unicode 16.0
 //     (python_case.rs:5-199).

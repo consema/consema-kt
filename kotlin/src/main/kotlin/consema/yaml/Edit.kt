@@ -20,7 +20,7 @@
 //   - conformance/vectors/yaml-v1.json pins the golden outputs
 //     (edit.scalar-atomic, edit.anchor-rename, edit.structural-insert,
 //     edit.anchor-dependency at lines 106-124).
-//   - consema-rs/consema-yaml/src/edit.rs is the byte-arbitration authority
+//   - https://github.com/consema/consema-rs/blob/main/consema-yaml/src/edit.rs is the byte-arbitration authority
 //     (commit edit.rs:401-551, dry-run edit.rs:554-568, prepare edit.rs:
 //     570-1344, anchor rules edit.rs:1346-1442, validation edit.rs:
 //     1444-2014, candidate model edit.rs:2017-2324, literal preservation

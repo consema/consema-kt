@@ -16,21 +16,21 @@
 //     value; shared object identity from the binary object table is
 //     preserved (one source object referenced by several containers is one
 //     native node with multiple owners).
-//   - RFC 0013 §3 (https://github.com/consema/consema/blob/main/docs/rfcs/0013-...md:90-124): formation is Complete or
+//   - RFC 0013 §3 (https://github.com/consema/consema/blob/main/docs/rfcs/0013-plist-family-profiles-v1.md:90-124): formation is Complete or
 //     Recovered; a Recovered Document retains the immutable source,
 //     exhaustive piece coverage, ordered diagnostics, and every independently
 //     proven construct; recovery never invents unproven native semantics.
 //   - RFC 0013 §8.3 and §5 (binary structure facts: object table, offset
-//     table, references, trailer); consema-rs/consema-plist/src/parser_binary.rs:
+//     table, references, trailer); https://github.com/consema/consema-rs/blob/main/consema-plist/src/parser_binary.rs:
 //     53-172 pins BinaryObjectFact/BinaryOffsetFact/BinaryObjectRefFact/
 //     BinaryTrailerFacts and native.rs:828-864 the arena document.
-//   - consema-rs/consema-plist/src/native.rs:39-140 (PlistString/PlistKey),
+//   - https://github.com/consema/consema-rs/blob/main/consema-plist/src/native.rs:39-140 (PlistString/PlistKey),
 //     native.rs:201-423 (PlistInteger/PlistReal/PlistBoolean/PlistDate/
 //     PlistData/PlistUid) pins the value semantics; consema-go/go/plist is a
 //     cross-reference only.
 //
 // Kotlin-idiomatic design (NOT a translation): the JSON-family precedent
-// (kotlin/.../json/Document.kt) of immutable handle classes carrying
+// (kotlin/src/main/kotlin/consema/json/Document.kt) of immutable handle classes carrying
 // (document, entity index) is reused; the native value semantics are a
 // sealed class so exhaustive `when` over them can never meet an unknown
 // kind; entity storage is a private sealed hierarchy shared by both

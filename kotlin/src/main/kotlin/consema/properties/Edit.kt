@@ -26,12 +26,12 @@
 //   - conformance/vectors/java-properties-v1.json pins the golden outputs
 //     and conflict codes (edit.all-five-operations, lines 105-109;
 //     edit.dry-run-patch-proof-conflict-atomicity, lines 110-114).
-//   - consema-rs/consema-properties/src/edit.rs is the byte-arbitration
+//   - https://github.com/consema/consema-rs/blob/main/consema-properties/src/edit.rs is the byte-arbitration
 //     authority (commit edit.rs:270-442, dry-run edit.rs:444-459, ownership
 //     edit.rs:461-605, canonical escaping edit.rs:925-1036, expected-state
 //     verification edit.rs:794-833, mappings edit.rs:894-923).
 //   - The shared ChangeSet shapes live in the Rust consema-document layer
-//     (consema-rs/consema-document/src/lib.rs:800-899: SourceEdit, NodeMapping,
+//     (https://github.com/consema/consema-rs/blob/main/consema-document/src/lib.rs:800-899: SourceEdit, NodeMapping,
 //     NodeMappingStatus, ChangeSet); the Kotlin document layer does not own
 //     ChangeSet — this package ships the same immutable records locally
 //     (constructed at commit, EditCommit.changeSet), and a later promotion

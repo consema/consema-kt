@@ -13,9 +13,9 @@
 //     alias occurrences with exact names and source spans, arbitrary keys,
 //     duplicate source associations, compact notation, and exhaustive
 //     non-overlapping raw-byte coverage.
-//   - consema-rs/consema-yaml/src/lib.rs:322-787 pins the public handle surface
+//   - https://github.com/consema/consema-rs/blob/main/consema-yaml/src/lib.rs:322-787 pins the public handle surface
 //     (stream_node_ref, document(ordinal), alias_count, node anchors/spans,
-//     sequence/mapping associations); consema-rs/consema-yaml/src/native.rs:33-94
+//     sequence/mapping associations); https://github.com/consema/consema-rs/blob/main/consema-yaml/src/native.rs:33-94
 //     pins the internal node/alias/association storage and native.rs:111-508
 //     pins the composer; consema-go/go/yaml/document.go is a cross-reference only.
 //

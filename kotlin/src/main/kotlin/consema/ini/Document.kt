@@ -9,7 +9,7 @@
 //     coverage, ordered diagnostics, and every independently proven section
 //     or entry; syntax and native queries may inspect proven records and
 //     distinguish them from error regions.
-//   - RFC 0009 §8 (https://github.com/consema/consema/blob/main/docs/rfcs/0009-...md:254-283): the immutable INI Document
+//   - RFC 0009 §8 (https://github.com/consema/consema/blob/main/docs/rfcs/0009-ini-family-profiles-v1.md:254-283): the immutable INI Document
 //     retains ordered physical lines with exact raw/decoded ranges, logical
 //     lines with constituent physical-line identities, BOM/newline/quote/
 //     comment facts, section/entry identities with original and comparison
@@ -17,7 +17,7 @@
 //     duplicate groups without collapsing, error-line identities, and
 //     exhaustive non-overlapping syntax pieces; all handles are
 //     snapshot-bound NodeRefs with the INI roles.
-//   - consema-rs/consema-ini/src/lib.rs:230-506 pins the handle shapes (node,
+//   - https://github.com/consema/consema-rs/blob/main/consema-ini/src/lib.rs:230-506 pins the handle shapes (node,
 //     span, content_span, line_break_span, name_span, key_span, value_span,
 //     comparison names, quote style, duplicate group, error code) and the
 //     resolver behavior lib.rs:605-660. consema-go/go/ini/document.go is a
@@ -28,7 +28,7 @@
 // of the Go handle structs — and `when` over the closed kinds is exhaustive.
 // The document keeps its own consema.document.DocumentAuthority
 // (module-internal, shared across family packages per
-// kotlin/.../document/Location.kt:17-21).
+// kotlin/src/main/kotlin/consema/document/Location.kt:17-21).
 
 package consema.ini
 

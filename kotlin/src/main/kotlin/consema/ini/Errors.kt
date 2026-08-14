@@ -2,14 +2,14 @@
 // diagnostic factory.
 //
 // Data authority:
-//   - consema-rs/consema-document/src/lib.rs:643-790 pins FatalFormationFailure
+//   - https://github.com/consema/consema-rs/blob/main/consema-document/src/lib.rs:643-790 pins FatalFormationFailure
 //     and its code mapping: resource limits use "core.parse.resource-limit@1"
 //     (lib.rs:771-776), source construction failures map through
 //     FatalFormationFailure::source_error (lib.rs:676-707) to
 //     core.source.invalid-utf8@1 / invalid-sequence@1 / encoding-conflict@1 /
 //     unsupported-bom@1 / resource-limit@1; the INI profile-encoding failure
 //     is the frozen "ini.profile.encoding@1" (parser.rs:96-104).
-//   - consema-rs/consema-ini/src/parser.rs:1158-1195 pins the diagnostic sink:
+//   - https://github.com/consema/consema-rs/blob/main/consema-ini/src/parser.rs:1158-1195 pins the diagnostic sink:
 //     occurrence ordinals, Error severity for recovery, Warning otherwise,
 //     and the "diagnostics" limit that fails the whole parse fatally
 //     (parser.rs:1166-1170); parser.rs:205 sorts diagnostics
@@ -17,7 +17,7 @@
 //   - RFC 0016 §6 (https://github.com/consema/consema/blob/main/docs/rfcs/0016-go-api-mapping-v1.md:194-200): SDK errors
 //     carry the stable registered code; error text is human presentation only.
 //   - The registered ini-family codes are transcribed in
-//     kotlin/.../protocol/ErrorRegistry.kt:331-350 (v7 registry).
+//     kotlin/src/main/kotlin/consema/protocol/ErrorRegistry.kt:331-350 (v7 registry).
 //
 // Kotlin-idiomatic design: fatal formation failure is a typed exception
 // carrying the frozen registered code (the established consema.core /
@@ -95,7 +95,7 @@ class IniAccessException(val kind: IniAccessErrorKind) :
  * Builds one snapshot-bound diagnostic in the `core.diagnostic@1` shape.
  * The primary source location uses the process-local snapshot identity as
  * the caller-stable source ID, mirroring the JSON family factory
- * (kotlin/.../json/Errors.kt:102-130).
+ * (kotlin/src/main/kotlin/consema/json/Errors.kt:102-130).
  */
 internal fun sourceDiagnostic(
     authority: DocumentAuthority,

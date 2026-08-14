@@ -9,7 +9,7 @@
 //   - RFC 0001 §3: the frozen formation order (max_source_bytes, UTF-8
 //     validation, TOML syntax, token/node/depth limits) and the frozen
 //     failure codes (core.parse.resource-limit@1, toml.parse.syntax@1).
-//   - consema-rs/consema-toml/src/lib.rs:34-39 (TomlProfile), :114-119
+//   - https://github.com/consema/consema-rs/blob/main/consema-toml/src/lib.rs:34-39 (TomlProfile), :114-119
 //     (TomlProfile::id), :121-128 (parse), :130-259 (Document shape and
 //     accessors), :272-349 (TomlItemKind, TomlDate/TomlTime/TomlOffset/
 //     TomlDateTime), :351-575 (TomlItem/TomlEntry/TomlArrayElement

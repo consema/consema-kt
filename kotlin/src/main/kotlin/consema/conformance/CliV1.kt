@@ -1,6 +1,6 @@
 // The `consema.cli.conformance@1` suite runner (conformance/vectors/cli-v1.json).
 //
-// Data authority: consema-rs/consema-conformance/src/cli_v1.rs (the per-case
+// Data authority: https://github.com/consema/consema-rs/blob/main/consema-conformance/src/cli_v1.rs (the per-case
 // dispatch is transcribed from the Rust handlers; the Rust runner is the
 // dispatch authority for every cli case); the vector file itself drives every
 // input and expectation (conformance/README.md rules 3-4). The protocol

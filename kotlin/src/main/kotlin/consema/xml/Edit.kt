@@ -16,7 +16,7 @@
 //     derives an UntouchedByteProof, and emits a replayable SourcePatch;
 //     dry-run and commit have identical replacement sets and target digest.
 //     XML ReplaceText excludes CDATA: the target role is RoleXmlText only.
-//   - consema-rs/consema-xml/src/edit.rs is the byte-arbitration authority:
+//   - https://github.com/consema/consema-rs/blob/main/consema-xml/src/edit.rs is the byte-arbitration authority:
 //     NameFacts (edit.rs:58-89), placements (edit.rs:91-111), the operation
 //     enum (edit.rs:113-176), transaction/builder (edit.rs:178-304), the
 //     commit algebra and EditFailure codes (edit.rs:306-595), dependency
@@ -29,15 +29,15 @@
 //     (EditPlan.kt:123-232). ChangeSet is not shipped in the Kotlin XML
 //     family (recorded gap, six-repo audit G090); the commit carries the
 //     ordered edit diagnostics instead (the json family precedent,
-//     kotlin/.../json/Edit.kt:244-255).
+//     kotlin/src/main/kotlin/consema/json/Edit.kt:244-255).
 //   - conformance/vectors/xml-1-0-safe-v1.json cases xml.edit.* pin the
 //     render outcomes; the conformance runner resolves name/ordinal
-//     selectors to NodeRefs (consema-rs/consema-conformance/src/xml_v1.rs:
+//     selectors to NodeRefs (https://github.com/consema/consema-rs/blob/main/consema-conformance/src/xml_v1.rs:
 //     581-813).
 //
 // Kotlin-idiomatic design: operations are immutable data classes; failures
 // are a sealed hierarchy carrying the language-neutral name and the frozen
-// core.edit.* registered code (RFC 0004 §17, https://github.com/consema/consema/blob/main/docs/rfcs/0004-...md:395-411);
+// core.edit.* registered code (RFC 0004 §17, https://github.com/consema/consema/blob/main/docs/rfcs/0004-materialization-conversion-and-structural-edit-v1.md:395-411);
 // commit is atomic — on failure the base document remains unchanged.
 
 package consema.xml
@@ -287,7 +287,7 @@ class EditTransactionBuilder internal constructor(private val base: SnapshotIden
 /** Atomic edit success (edit.rs:306-317). ChangeSet is not shipped in the
  * Kotlin XML family (recorded gap, six-repo audit G090); the commit
  * carries the ordered edit diagnostics instead (the json family precedent,
- * kotlin/.../json/Edit.kt:244-255). */
+ * kotlin/src/main/kotlin/consema/json/Edit.kt:244-255). */
 class EditCommit(
     /** New immutable document. */
     val document: Document,
@@ -396,7 +396,7 @@ private enum class MappingPlan {
 }
 
 /** One source ownership interval helper (the json family precedent,
- * kotlin/.../json/Edit.kt:339-344). */
+ * kotlin/src/main/kotlin/consema/json/Edit.kt:339-344). */
 private data class SourceEdit(
     val oldSpan: Span,
     val newSpan: Span,

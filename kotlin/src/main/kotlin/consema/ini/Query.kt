@@ -13,13 +13,13 @@
 //     cancellation, and terminal-state rules apply.
 //   - conformance/vectors/ini-v1.json (query.*) pins the match order, the
 //     duplicate-group facts, the syntax-kind ordinals, and the
-//     resource-limit behavior; consema-rs/consema-ini/src/query.rs is the
+//     resource-limit behavior; https://github.com/consema/consema-rs/blob/main/consema-ini/src/query.rs is the
 //     byte-arbitration authority (execution query.rs:117-218, operators
 //     query.rs:421-625, source order query.rs:627-659, decoded text
 //     query.rs:661-676); consema-core/src/query.rs:2967-2993 pins QueryLimits
 //     defaults and the CancellationToken shape.
 //   - The operator table and argument vocabularies live in the protocol
-//     package (kotlin/.../protocol/QueryValidate.kt:108-137, 721-730,
+//     package (kotlin/src/main/kotlin/consema/protocol/QueryValidate.kt:108-137, 721-730,
 //     827-846, 929-935) and validate INI queries before execution.
 //
 // Kotlin-idiomatic design: execution throws the protocol package's typed

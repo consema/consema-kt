@@ -1,16 +1,19 @@
 // Registered-payload validation dispatch.
 //
-// Data authority: consema-rs/consema-protocol/src/payload.rs — NewProtocolMessage
+// Data authority: https://github.com/consema/consema-rs/blob/main/consema-protocol/src/payload.rs — NewProtocolMessage
 // dispatches every registered contract to its full record decoder. This
-// package implements those record types in stages (L0): core.cli-output@1,
-// core.batch-plan@1, core.batch-result@1, core.diagnostic@1,
-// core.query-definition@1, core.capability-declaration@1,
-// core.profile-descriptor@1, core.error-code-registry@1, and
-// core.registry-manifest@1 are validated in full here; the remaining
-// contracts are validated to the schema-discriminator level until their
-// owning milestone ships the record type (documented reachable-code
-// difference; the shared vectors exercise only the implemented records).
-// consema-go/go/protocol/payload.go is a cross-reference.
+// package implements the record types whose full decoders are listed in
+// the dispatch below (core.cli-output@1, core.batch-plan@1,
+// core.batch-result@1, core.diagnostic@1, core.query-definition@1,
+// core.capability-declaration@1, core.profile-descriptor@1,
+// core.error-code-registry@1, core.registry-manifest@1, and the graph/
+// source/query-result records); the remaining registered contracts are
+// validated to the schema-discriminator level — no full record decoder is
+// shipped for them (recorded reachable-code difference; the shared vectors
+// exercise only the implemented records). The differential exchange
+// package implements the full decoders of the exchange inventory
+// (consema.differential.Exchange.kt). consema-go/go/protocol/payload.go is
+// a cross-reference.
 
 package consema.protocol
 
@@ -52,8 +55,9 @@ internal fun validateRegisteredPayload(
         "core.yaml-query-result@1" -> YamlQueryResultMessage.fromValue(payload)
         else -> {
             // The remaining registered contracts validate at the envelope
-            // level until their owning milestone ships the record type
-            // (ProtocolMessage.of).
+            // level — no full record decoder is shipped for them (recorded
+            // gap; the differential exchange package implements the
+            // exchange-inventory decoders).
         }
     }
 }

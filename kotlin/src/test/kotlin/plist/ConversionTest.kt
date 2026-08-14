@@ -6,7 +6,7 @@
 //   - RFC 0013 §7 (https://github.com/consema/consema/blob/main/docs/rfcs/0013-plist-family-profiles-v1.md:512-538):
 //     conversion is exact when every native fact is expressible in the
 //     target representation and fails atomically otherwise.
-//   - consema-rs/consema-plist/src/document.rs:494-551 (XML -> binary writer)
+//   - https://github.com/consema/consema-rs/blob/main/consema-plist/src/document.rs:494-551 (XML -> binary writer)
 //     and document.rs:559-593 (binary -> XML writer) pin the canonical
 //     outputs; consema-go/go/plist is a cross-reference only.
 //   - conformance/vectors/plist-v1.json cases plist.conversion.* pin the

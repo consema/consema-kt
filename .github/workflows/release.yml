@@ -6,8 +6,19 @@
 # c60d31a/b640af6) drives the CI gates, Dependabot resolution, and this
 # publish path: `gradlew publish` downloads the distribution through the
 # wrapper, whose pinned distributionSha256Sum (kotlin/gradle/wrapper/
-# gradle-wrapper.properties) verifies the downloaded bytes — no unverified
-# Gradle download can influence a published artifact.
+# gradle-wrapper.properties) verifies the downloaded bytes. That download
+# verification covers the Gradle distribution only: build-time plugin and
+# dependency resolution is NOT checksum-verified (the standing
+# runtimeClasspath audit is .github/workflows/audit.yml).
+#
+# Release-path test gate (adversarial audit G45, 2026-08-14): `gradlew
+# test` runs ConformanceRunnerTest and FixtureRoundTripTest, which resolve
+# conformance/* and docs/fc-manifest-0.13.0.json by repository-relative
+# path from CONSEMA_REPO — without the provisioned data those tests fail
+# at construction. Like the CI workflows, this job checks out
+# consema/consema (pinned to 096e5f8, the cfd6e296 519-case conformance
+# snapshot) and copies the conformance data into the workspace root before
+# testing (multi-repo checkout + provision pattern, ci-kotlin.yml).
 #
 # REQUIRED user configuration before the first tag push (the workflow is
 # complete but will fail without these; they are deliberately NOT
@@ -38,6 +49,23 @@ jobs:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
           persist-credentials: false
+      # Release guard (G71, 2026-08-14; same gate shape as the
+      # consema-go/consema-rs/consema-py release.yml verify steps): the tag
+      # must point at a commit on origin/main — a tag pushed from a stale or
+      # divergent commit must not publish old code. The workflow runs after
+      # the push, when origin/main may already have advanced past the tag's
+      # commit, so a realtime HEAD comparison would fail a legitimately
+      # pushed tag; ancestry is used instead (git merge-base --is-ancestor).
+      - name: verify tag points at a commit on main
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin main --quiet
+          if ! git merge-base --is-ancestor "$GITHUB_SHA" FETCH_HEAD; then
+            echo "::error::tag $GITHUB_REF_NAME does not point at a commit on origin/main"
+            exit 1
+          fi
+          echo "tag $GITHUB_REF_NAME points at a commit on origin/main"
       # Release guard (rc 前六角色审计 P1, 2026-08-12): the tag minus the
       # leading v must equal the rootProject version, otherwise a mismatched
       # tag could publish the wrong version to Maven Central.
@@ -60,12 +88,44 @@ jobs:
         with:
           distribution: temurin
           java-version: '17'
+      # Gradle wrapper jar integrity (G87, 2026-08-14): the committed
+      # kotlin/gradle/wrapper/gradle-wrapper.jar is a binary with no
+      # in-repo integrity anchor — wrapper-validation-action compares it
+      # with the official distribution before any wrapper step runs.
+      - name: validate the committed Gradle wrapper jar (official distribution)
+        uses: gradle/wrapper-validation-action@f9c9c575b8b21b6485636a91ffecd10e558c62f6 # v3.5.0
       # No Gradle caching on this tag-triggered publishing workflow: a
       # poisoned cache entry must never influence a published artifact
       # (zizmor cache-poisoning). The wrapper's pinned distributionSha256Sum
       # verifies the distribution download itself.
-      - name: gradlew test (release-path test gate)
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
+          repository: consema/consema
+          ref: 096e5f840ecc714912db779706fd881405b92308 # cfd6e296 519-case conformance data pin
+          path: consema-repo
+      - name: provision conformance data from the consema spec repository
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $source = Join-Path $env:GITHUB_WORKSPACE 'consema-repo\conformance'
+          $target = Join-Path $env:GITHUB_WORKSPACE 'conformance'
+          if (-not (Test-Path -LiteralPath $source)) {
+            throw "conformance data not found in the consema checkout: $source"
+          }
+          Copy-Item -LiteralPath $source -Destination $target -Recurse -Force
+          New-Item -ItemType Directory -Force (Join-Path $env:GITHUB_WORKSPACE 'docs') | Out-Null
+          $manifest = Join-Path $env:GITHUB_WORKSPACE 'consema-repo\docs\fc-manifest-0.13.0.json'
+          if (-not (Test-Path -LiteralPath $manifest)) {
+            throw "fc-manifest not found in the consema checkout: $manifest"
+          }
+          Copy-Item -LiteralPath $manifest -Destination (Join-Path $env:GITHUB_WORKSPACE 'docs\fc-manifest-0.13.0.json') -Force
+          $count = @(Get-ChildItem -LiteralPath $target -Recurse -File).Count
+          Write-Output "provisioned conformance/: $count files + docs/fc-manifest-0.13.0.json"
+      - name: gradlew test (release-path test gate, provisioned conformance data)
         working-directory: kotlin
+        env:
+          CONSEMA_REPO: ${{ github.workspace }}
         run: bash gradlew test --no-daemon
       - name: gradlew publish (portal deploy, signed artifacts)
         working-directory: kotlin

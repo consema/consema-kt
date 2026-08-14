@@ -8,7 +8,7 @@
 //     resource bounds.
 //   - conformance/vectors/json-family-v2.json pins the profile spellings and
 //     the syntax kinds the vectors assert (syntax_contains, kind-is).
-//   - consema-rs/consema-json/src/lib.rs:36-159 pins JsonProfile and
+//   - https://github.com/consema/consema-rs/blob/main/consema-json/src/lib.rs:36-159 pins JsonProfile and
 //     JsonSyntaxKind (the exact kind names "Bom".."ErrorRegion" at
 //     lib.rs:89-108). consema-go/go/json/profile.go is a cross-reference only.
 //

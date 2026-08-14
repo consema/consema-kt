@@ -11,7 +11,7 @@
 //     (UTF-8 optional BOM; UTF-16LE/BE with a required BOM; no-BOM defaults
 //     to UTF-8; UTF-16 without a BOM is rejected; UTF-32/Latin-1/Windows
 //     code pages are explicit v1 exclusions).
-//   - consema-rs/consema-xml/src/lib.rs:54-67 (XmlProfile, id), lib.rs:69-79
+//   - https://github.com/consema/consema-rs/blob/main/consema-xml/src/lib.rs:54-67 (XmlProfile, id), lib.rs:69-79
 //     (XmlEncodingSelection), lib.rs:81-157 (XmlParseLimits and the frozen
 //     defaults), lib.rs:159-172 (entity_limits derivation). The frozen
 //     numbers are transcribed VERBATIM from lib.rs:130-156.

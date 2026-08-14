@@ -5,7 +5,7 @@
 // as an ambiguity set without collapsing), §7 (Python strict duplicates),
 // §9 (ini.duplicate-group@1 expansion); the group assignment order and the
 // duplicate-section/duplicate-entry/case-collision codes follow
-// consema-rs/consema-ini/src/parser.rs:1212-1304. The L5 conformance runner
+// https://github.com/consema/consema-rs/blob/main/consema-ini/src/parser.rs:1212-1304. The L5 conformance runner
 // executes the shared vectors directly; these tests are the L2 intent
 // documents.
 

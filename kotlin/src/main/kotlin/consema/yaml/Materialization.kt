@@ -24,7 +24,7 @@
 //     (materialization.graph-cycle-flow: "--- &g0 !!seq [!!str \"one\",
 //     *g0]\n"; materialization.value-flow: "--- !!map {? !!str \"a\" :
 //     !!seq [!!int \"1\", !!bool \"true\"]}\n").
-//   - consema-rs/consema-yaml/src/materialization.rs is the byte-arbitration
+//   - https://github.com/consema/consema-rs/blob/main/consema-yaml/src/materialization.rs is the byte-arbitration
 //     authority (graph writer materialization.rs:430-728, scalar
 //     presentation materialization.rs:719-728, quoted escaping
 //     materialization.rs:689-709, output encoding materialization.rs:

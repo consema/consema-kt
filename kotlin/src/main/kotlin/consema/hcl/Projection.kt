@@ -19,7 +19,7 @@
 //   - RFC 0014 §8.1 (:511-537): the literal-complete boundary.
 //   - RFC 0014 §6 (:395-446): structural equality, canonical decimals,
 //     exact decoded string text, ordered duplicates.
-//   - consema-rs/consema-hcl/src/projection.rs pins the record shape
+//   - https://github.com/consema/consema-rs/blob/main/consema-hcl/src/projection.rs pins the record shape
 //     (projection.rs:31-96: `{ "record": "hcl.body@1", "items": [...] }`,
 //     the typed members, the expression record
 //     `{ "record": "hcl.expression@1", "kind", "text", "fingerprint" }`,

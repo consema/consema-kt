@@ -3,7 +3,7 @@
 // Each test transcribes one vector case (input.source / expected.*) VERBATIM
 // from conformance/vectors/json-family-v2.json and asserts the language-
 // neutral facts the Rust/Go differential runners assert
-// (consema-rs/consema-conformance/src/json_family_v2.rs:344-444 for parse cases,
+// (https://github.com/consema/consema-rs/blob/main/consema-conformance/src/json_family_v2.rs:344-444 for parse cases,
 // :582-602 for materialization cases). The case id is cited on every test.
 //
 // This file runs in the verified toolchain gate (kotlin-gates gradlew

@@ -13,24 +13,37 @@ workflow 已写完整，但**凭证未配置前推送 tag 会明确失败**（po
 ## 1. 发布步骤（人执行的部分）
 
 1. **版本 bump**：改 `kotlin/build.gradle.kts` 的
-   `version = "X.Y.Z"`（rootProject version），同时改仓根 `README.md` 的
-   `Version:` 行（`check-version-consistency` 门禁强制一致）。
+   `version = "X.Y.Z"`（rootProject version）。`check-version-consistency`
+   门禁强制以下位置与 rootProject version 同步（全部是硬门禁，漏改即红）：
+   - 仓根 `README.md` 的 `Version:` 整行（精确匹配）；
+   - `README.md` 快速开始区的 Maven 坐标 `dev.consema:consema-kotlin:X.Y.Z`
+     （整词匹配）；
+   - `.github/ISSUE_TEMPLATE/bug_report.yml` 环境信息节的
+     「当前 X.Y.Z」版本注记（整词匹配）；
+   - （版本徽章是静态 shields.io 徽章，随 bump 手动更新）。
 2. **CHANGELOG 策展**：记录本版本变更；跨语言变更同步到
    consema 仓库根 `CHANGELOG.md`（真实历史记录，勿指 docs/CHANGELOG.md 勘误页）。
 3. **质量门禁全绿**：main 分支 CI `check (all gates green)` 全绿
-   （清单见各仓 ci 配置）。
+   （清单见各仓 ci 配置，含 runtimeClasspath 依赖审计 job）。
 4. **打 tag 并推送**（发布动作的唯一触发点）：
    ```bash
    git tag vX.Y.Z
    git push origin vX.Y.Z
    ```
-   发布 workflow 会先校验 tag↔版本一致（tag 去掉 `v` 前缀必须等于
-   `kotlin/build.gradle.kts` 的 rootProject version，不一致即 exit 1
-   中止），随后用 Temurin 17 + 已入库的 Gradle wrapper（gradle 8.14，
+   发布 workflow 会先跑两道守卫，全部通过才进入发布路径：
+   - **tag 必须指向 origin/main 上的 commit**（`git merge-base
+     --is-ancestor`，防止从陈旧/分叉 commit 发布旧代码）；
+   - **tag↔版本一致**：tag 去掉 `v` 前缀必须等于
+     `kotlin/build.gradle.kts` 的 rootProject version，不一致即 exit 1
+     中止。
+   随后用 Temurin 17 + 已入库的 Gradle wrapper（gradle 8.14，
    commit c60d31a/b640af6；wrapper 的 distributionSha256Sum 钉住发行版
-   下载，见 kotlin/gradle/wrapper/gradle-wrapper.properties）执行
-   `gradlew publish`（发布 job 不启用 Gradle 缓存，且先跑 `gradlew test`
-   作为发布路径测试门禁）。
+   下载，见 kotlin/gradle/wrapper/gradle-wrapper.properties；发布 job 另
+   经 wrapper-validation-action 校验已入库的 gradle-wrapper.jar）执行
+   `gradlew publish`。发布路径先跑 `gradlew test` 作为测试门禁：该 job
+   按 ci-kotlin.yml 体例多仓 checkout 规范仓并 provision conformance 数据
+   （CONSEMA_REPO 指向 workspace 根），无数据时 conformance/fixture 测试
+   必然失败——不要删掉 provision 步骤。发布 job 不启用 Gradle 缓存。
 
 ## 2. 凭证配置（用户侧一次性动作）
 
@@ -38,13 +51,16 @@ workflow 已写完整，但**凭证未配置前推送 tag 会明确失败**（po
 
 1. 注册/登录 central.sonatype.com，认领 namespace **`dev.consema`**
    （需要 GitHub 账号验证，参照门户指引）。
-2. 在门户生成 **Deploy token**（用户名 = token 名，密码 = token 值）。
+2. 在门户生成 **User Token**（用户名 = token 名，密码 = token 值）。
 3. GitHub 仓库 Settings → Secrets and variables → Actions 新建：
    - **`OSSRH_USERNAME`** = token 名
    - **`OSSRH_PASSWORD`** = token 值
 4. 首次发布在门户完成一次"验证发布"（发布一个占位/真实版本并等待
-   portal 处理完成，确认 artifact 在 Maven Central 可见），后续版本由
-   workflow 自动走 `central.sonatype.com/api/v1/publisher/deploy` 端点。
+   portal 处理完成，确认 artifact 在 Maven Central 可见）。后续版本由
+   workflow 自动走 Central Portal 的兼容 staging 端点
+   （`https://ossrh-staging-api.central.sonatype.com/service/local/staging/deploy/maven2/`，
+   build.gradle.kts publishing 块；旧的 `s01.oss.sonatype.org` 与
+   `central.sonatype.com/api/v1/publisher/deploy` 均不存在/已退役）。
 
 ### 2.2 PGP 签名密钥
 

@@ -2,13 +2,14 @@
 // families (Kotlin).
 //
 // Data authority (language-neutral sources first):
-//   - crates/consema/src/lib.rs:512-820 (Document, DocumentInner, FormatMismatch,
-//     and the typed adapters as_json/as_toml/as_yaml/as_ini/as_properties/
-//     as_xml/as_plist/as_hcl) — the common opaque facade contract; the Rust
-//     tests at lib.rs:822-1068 pin the adapter failure vocabulary.
+//   - https://github.com/consema/consema-rs/blob/main/consema/src/lib.rs:512-820 (Document, DocumentInner,
+//     FormatMismatch, and the typed adapters as_json/as_toml/as_yaml/as_ini/
+//     as_properties/as_xml/as_plist/as_hcl) — the common opaque facade
+//     contract; the Rust tests at the same file, lib.rs:822-1068, pin the
+//     adapter failure vocabulary.
 //   - RFC 0015 §6.2 (the facade surface the CLI derives every format fact
-//     from; crates/consema/src/bin/consema/registry.rs as the CLI thin
-//     enumeration over it).
+//     from; https://github.com/consema/consema-rs/blob/main/consema/src/bin/consema/registry.rs as the CLI
+//     thin enumeration over it).
 //   - https://github.com/consema/consema/blob/main/docs/multi-language-implementation-plan.md §0.3/§1 (L1 root facade
 //     "Document union/Registry/convert" — implemented in this repository;
 //     each language implements its own idiom — Kotlin sealed class, never a

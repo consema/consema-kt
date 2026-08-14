@@ -16,14 +16,14 @@
 //     documents do not project.
 //   - conformance/vectors/ini-v1.json (projection.*) pins the per-case
 //     fidelity, events, section/key order, and provenance relations;
-//     consema-rs/consema-ini/src/projection.rs is the byte-arbitration
+//     https://github.com/consema/consema-rs/blob/main/consema-ini/src/projection.rs is the byte-arbitration
 //     authority (request projection.rs:9-124, exact projection.rs:428-537,
 //     object projection.rs:546-785, selection projection.rs:787-821,
 //     comparison projection.rs:831-846, failures projection.rs:852-893).
 //   - Value paths come from the L0 core agent (consema.core.ValuePath /
 //     ValuePathSegment / AssociationLocation / AssociationRole mirroring
-//     consema-rs/consema-core/src/location.rs:1-89; the dependency is declared
-//     by kotlin/.../document/Materialization.kt:27-31).
+//     https://github.com/consema/consema-rs/blob/main/consema-core/src/location.rs:1-89; the dependency is declared
+//     by kotlin/src/main/kotlin/consema/document/Materialization.kt:27-31).
 //
 // Kotlin-idiomatic design: the completion algebra is a sealed class, so
 // exhaustive `when` over Complete/Failed can never meet an unknown outcome;

@@ -4,12 +4,12 @@
 //   - RFC 0016 §4.1 (https://github.com/consema/consema/blob/main/docs/rfcs/0016-go-api-mapping-v1.md:119-160): the
 //     language-neutral PortableValue contract is the closed fifteen-kind
 //     registry of 配置内容统一处理标准与 Rust 参考实现.md §10 and
-//     consema-rs/consema-core/src/value.rs (PortableValueKind): Null, Boolean,
+//     https://github.com/consema/consema-rs/blob/main/consema-core/src/value.rs (PortableValueKind): Null, Boolean,
 //     Integer, Decimal, BinaryFloat32, BinaryFloat64, String, Bytes, Date,
 //     Time, LocalDateTime, OffsetDateTime, Sequence, Object, EntryMapping.
 //   - conformance/vectors/v1.json (pvce.null-vector, pvce.object-vector,
 //     pvce.negative-integer-vector) pins the byte surface exercised here.
-//   - Rust consema-rs/consema-core/src/value.rs:622-652 pins the kind registry
+//   - Rust https://github.com/consema/consema-rs/blob/main/consema-core/src/value.rs:622-652 pins the kind registry
 //     order; consema-go/go/core/value.go:39-381 is a cross-reference only.
 //
 // Kotlin-idiomatic design (NOT a translation of any other language's code):
@@ -36,7 +36,7 @@ import java.math.BigInteger
  * The closed fifteen PortableValue kinds.
  *
  * The entries use the exact language-neutral spellings (RFC 0016 §4.1;
- * consema-rs/consema-core/src/value.rs:622-652). The numeric enum ordinals are
+ * https://github.com/consema/consema-rs/blob/main/consema-core/src/value.rs:622-652). The numeric enum ordinals are
  * NOT wire semantics: PVCE/1 record tags are a separate registry (see
  * Pvce.kt).
  */
@@ -234,7 +234,7 @@ class PvEntryMapping internal constructor(internal val entries: List<EntryMappin
 /**
  * Incrementally constructs an [PvEntryMapping]. Unlike the ObjectBuilder
  * there is no deduplication: arbitrary keys may repeat (the Rust
- * EntryMappingBuilder::push semantics, consema-rs/consema-core/src/value.rs:
+ * EntryMappingBuilder::push semantics, https://github.com/consema/consema-rs/blob/main/consema-core/src/value.rs:
  * 973-978).
  */
 class EntryMappingBuilder {

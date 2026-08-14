@@ -9,7 +9,7 @@
 //     deterministic recovery at markup boundaries; §6 (0012-...:228-256)
 //     text/CDATA/reference facts; §7 (0012-...:258-282) exhaustive piece
 //     coverage.
-//   - consema-rs/consema-xml/src/parser.rs is the byte-arbitration authority:
+//   - https://github.com/consema/consema-rs/blob/main/consema-xml/src/parser.rs is the byte-arbitration authority:
 //     the parse entry (parser.rs:22-46), encoding resolution (parser.rs:
 //     48-108), the token dispatch (parser.rs:287-332), the declaration
 //     handler (parser.rs:334-503), PI (parser.rs:505-579), comment
@@ -143,7 +143,7 @@ private fun validateProfileEncoding(source: SourceSnapshot, selection: XmlEncodi
 
 /** Wraps a source construction failure with the frozen code mapping of
  * FatalFormationFailure::source_error (consema-document lib.rs:676-707;
- * the json family transcription kotlin/.../json/Parser.kt:117-158). */
+ * the json family transcription kotlin/src/main/kotlin/consema/json/Parser.kt:117-158). */
 private fun wrapSourceError(error: consema.document.SourceException): XmlFormationException =
     when (error.kind) {
         consema.document.SourceErrorKind.INVALID_UTF8 ->
@@ -2135,7 +2135,7 @@ private class Parser(
      * Resolves one `&…;` reference body into a fragment (parser.rs:1557-1645).
      * Both decimal and hexadecimal character references resolve, and both
      * resolve only to legal XML 1.0 characters (RFC 0012 §6,
-     * https://github.com/consema/consema/blob/main/docs/rfcs/0012-...md:236-241; vector case
+     * https://github.com/consema/consema/blob/main/docs/rfcs/0012-xml-1.0-safe-profile-v1.md:236-241; vector case
      * xml.formation.predefined-and-character-references pins `&#65;` as
      * Complete). NOTE: the Rust parser.rs:1579-1584 expression binds the
      * is_xml_char filter to the else branch only (decimal references would

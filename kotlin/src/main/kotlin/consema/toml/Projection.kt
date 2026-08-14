@@ -10,7 +10,7 @@
 //     object association back to source NodeRef/span; leap seconds fail
 //     the whole projection with `toml.projection.unrepresentable-
 //     datetime@1`.
-//   - consema-rs/consema-toml/src/projection.rs:9-75 (ProjectionTarget,
+//   - https://github.com/consema/consema-rs/blob/main/consema-toml/src/projection.rs:9-75 (ProjectionTarget,
 //     ProjectionRequest, ProjectionLimits with the frozen defaults 1M value
 //     nodes / 100k report entries / 2M provenance entries / depth 256),
 //     :77-199 (Fidelity, ProjectedLocation, ProvenanceRelation, SourceOrigin,
@@ -398,10 +398,13 @@ internal fun projectDateTime(value: TomlDateTime): PortableValue =
                 PvLocalDateTime(date!!, time!!)
             value.date != null && value.time != null && value.offset != null -> {
                 val local = PvLocalDateTime(date!!, time!!)
-                val offsetSeconds = when (val offset = value.offset) {
+                // The branch guard already established a non-null offset
+                // (`!!` documents it), so the sealed Z/CustomMinutes when is
+                // exhaustive here (the former `null ->` arm was unreachable
+                // dead code).
+                val offsetSeconds = when (val offset = value.offset!!) {
                     TomlOffset.Z -> 0
                     is TomlOffset.CustomMinutes -> offset.minutes * 60
-                    null -> throw ProjectionException(ProjectionFailure.UnrepresentableDateTime)
                 }
                 PvOffsetDateTime.of(local, offsetSeconds)
             }

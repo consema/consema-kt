@@ -8,7 +8,7 @@ param(
 # ---------------------------------------------------------------------------
 # Cross-language PVCE/PGCE byte-parity verification — Kotlin side
 # (L5; https://github.com/consema/consema/blob/main/docs/five-language-ci-design.md §3.2; the Go
-# precedent scripts/go-verify-byte-parity.ps1).
+# precedent https://github.com/consema/consema-go/blob/main/scripts/go-verify-byte-parity.ps1).
 #
 # Pipeline (Kotlin never imports or calls Rust, RFC 0016 §1.1):
 #   1. builds the minimal Rust encoder example

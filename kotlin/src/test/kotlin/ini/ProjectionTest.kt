@@ -5,7 +5,7 @@
 // and the vector cases projection.exact-duplicate-entry-mapping,
 // projection.explicit-object-collapse, and
 // projection.fragmented-value-provenance (ini-v1.json:60-73);
-// consema-rs/consema-ini/src/projection.rs is the byte-arbitration authority.
+// https://github.com/consema/consema-rs/blob/main/consema-ini/src/projection.rs is the byte-arbitration authority.
 
 package ini
 

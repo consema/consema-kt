@@ -11,7 +11,7 @@
 //   - conformance/vectors/yaml-v1.json cases profile.yaml12-scalars (lines
 //     5-9) and profile.yaml11-scalars (lines 10-14) pin the per-profile
 //     kind/canonical facts byte-for-byte.
-//   - consema-rs/consema-yaml/src/native.rs:746-1146 is the byte-arbitration
+//   - https://github.com/consema/consema-rs/blob/main/consema-yaml/src/native.rs:746-1146 is the byte-arbitration
 //     authority for every lexical rule (parse_null/bool/integer/float,
 //     timestamp canonicalization, base64 validation); native.rs:565-716 pins
 //     resolve_scalar / resolve_explicit / resolve_implicit. consema-go/go/yaml/scalar.go

@@ -12,7 +12,7 @@
 //     round-trip contract is native-model equality across a chain of
 //     conversions with every representation change reported.
 //   - conformance/vectors/plist-v1.json (plist.conversion.*) pins the
-//     outcomes; consema-rs/consema-plist/src/document.rs:252-593 is the
+//     outcomes; https://github.com/consema/consema-rs/blob/main/consema-plist/src/document.rs:252-593 is the
 //     byte-arbitration authority (convert_to document.rs:252-289,
 //     convert_xml_to_binary document.rs:494-551, convert_binary_to_xml
 //     document.rs:559-593, analyze document.rs:619-770, the XML serializer

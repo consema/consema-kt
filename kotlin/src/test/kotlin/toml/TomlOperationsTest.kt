@@ -1,6 +1,6 @@
 // Golden transcriptions of the toml operation registry facts.
 //
-// Data authority: consema-rs/consema-toml/src/operation_registry.rs:94-119 (the
+// Data authority: https://github.com/consema/consema-rs/blob/main/consema-toml/src/operation_registry.rs:94-119 (the
 // pinned registry facts: seven operations, five Supported structural
 // operations in sorted id order) and conformance/vectors/operations-v1.json
 // operations.v1.operation-registry (lines 18-22: toml_operation_count = 7,

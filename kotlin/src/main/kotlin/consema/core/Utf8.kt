@@ -1,7 +1,7 @@
 // UTF-8 validity helpers.
 //
 // The PVCE/1 decoder must reject string bytes that are not valid UTF-8
-// (consema-rs/consema-pvce/src/lib.rs:755-759). Kotlin's String(byteArray)
+// (https://github.com/consema/consema-rs/blob/main/consema-pvce/src/lib.rs:755-759). Kotlin's String(byteArray)
 // replaces malformed sequences, so validity is checked explicitly with a
 // java.nio.charset decoder in REPORT mode (standard library only).
 

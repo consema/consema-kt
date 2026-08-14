@@ -3,7 +3,7 @@
 // Each test transcribes one vector case (input.source / input.hex /
 // expected.*) VERBATIM from conformance/vectors/plist-v1.json and asserts
 // the language-neutral facts the Rust/Go differential runners assert
-// (consema-rs/consema-conformance/src/plist_v1.rs). The case id is cited on
+// (https://github.com/consema/consema-rs/blob/main/consema-conformance/src/plist_v1.rs). The case id is cited on
 // every test.
 //
 // This file runs in the verified toolchain gate (kotlin-gates gradlew

@@ -14,14 +14,14 @@
 //     applicable); duplicate-name objects map to EntryMapping under BestExact;
 //     Infinity/NaN map to the exact frozen BinaryFloat64 bits.
 //   - conformance/vectors/json-family-v2.json (json5.projection.*) pins the
-//     per-case outcomes; consema-rs/consema-json/src/projection.rs is the
+//     per-case outcomes; https://github.com/consema/consema-rs/blob/main/consema-json/src/projection.rs is the
 //     byte-arbitration authority (targets projection.rs:13-24, request
 //     projection.rs:52-168, failure codes projection.rs:754-765, selection
 //     projection.rs:691-726).
 //   - Value paths come from the L0 core agent (consema.core.ValuePath /
 //     ValuePathSegment / AssociationLocation / AssociationRole mirroring
-//     consema-rs/consema-core/src/location.rs:1-89; the dependency is declared by
-//     kotlin/.../document/Materialization.kt:27-31).
+//     https://github.com/consema/consema-rs/blob/main/consema-core/src/location.rs:1-89; the dependency is declared by
+//     kotlin/src/main/kotlin/consema/document/Materialization.kt:27-31).
 //
 // Kotlin-idiomatic design: the completion algebra is a sealed class, so
 // exhaustive `when` over Complete/Failed can never meet an unknown outcome;

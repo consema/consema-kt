@@ -12,7 +12,7 @@
 //   - conformance/vectors/ini-v1.json pins the formation outcomes and the
 //     diagnostic codes case by case (formation.*, resource.formation-limit-
 //     matrix).
-//   - consema-rs/consema-ini/src/parser.rs is the byte-arbitration authority
+//   - https://github.com/consema/consema-rs/blob/main/consema-ini/src/parser.rs is the byte-arbitration authority
 //     (physical-line scan parser.rs:228-301, per-line parse parser.rs:303-
 //     578, continuation parser.rs:580-747, records parser.rs:749-867,
 //     recovery parser.rs:869-905, pieces parser.rs:907-1125, duplicate

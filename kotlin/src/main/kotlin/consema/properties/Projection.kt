@@ -15,15 +15,15 @@
 //   - conformance/vectors/java-properties-v1.json pins the fidelity, event
 //     counts, first/last entry facts, provenance relations, and failure
 //     codes (projection.* cases, lines 74-89).
-//   - consema-rs/consema-properties/src/projection.rs is the byte-arbitration
+//   - https://github.com/consema/consema-rs/blob/main/consema-properties/src/projection.rs is the byte-arbitration
 //     authority (targets projection.rs:9-27, request projection.rs:29-82,
 //     limits projection.rs:84-106, failure codes projection.rs:741-752,
 //     exact projection.rs:430-497, object projection.rs:499-648).
 //     consema-go/go/properties/projection.go is a cross-reference only.
 //   - Value paths come from the L0 core agent (consema.core.ValuePath /
 //     ValuePathSegment / AssociationLocation / AssociationRole mirroring
-//     consema-rs/consema-core/src/location.rs:1-89), the same dependency the
-//     JSON family declares (kotlin/.../json/Projection.kt:21-24).
+//     https://github.com/consema/consema-rs/blob/main/consema-core/src/location.rs:1-89), the same dependency the
+//     JSON family declares (kotlin/src/main/kotlin/consema/json/Projection.kt:21-24).
 //
 // Kotlin-idiomatic design: the completion algebra is a sealed class, so
 // exhaustive `when` over Complete/Failed can never meet an unknown outcome;

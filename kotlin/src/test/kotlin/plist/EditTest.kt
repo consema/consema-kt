@@ -7,7 +7,7 @@
 //     (plist-v1.json:257-325), plist.edit.binary-structural (plist-v1.json:
 //     327-361), plist.edit.conflicts (plist-v1.json:363-407) pin the
 //     outcomes.
-//   - consema-rs/consema-plist/src/edit.rs is the byte authority: the fold rule
+//   - https://github.com/consema/consema-rs/blob/main/consema-plist/src/edit.rs is the byte authority: the fold rule
 //     (edit.rs:668-728 record_edit) folds a later operation whose span lies
 //     inside an earlier replacement and merges containing base spans at
 //     commit (edit.rs:1947-1979); two zero-width insertions at one base

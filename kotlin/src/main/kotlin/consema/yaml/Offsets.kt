@@ -1,12 +1,12 @@
 // One-pass decoded-scalar to raw-byte offset resolution.
 //
-// Data authority: consema-rs/consema-yaml/src/offsets.rs:1-80 pins the single
+// Data authority: https://github.com/consema/consema-rs/blob/main/consema-yaml/src/offsets.rs:1-80 pins the single
 // forward walk that resolves every lexeme and node boundary in non-decreasing
 // order (constant-width per-scalar raw advances for the only encodings the
 // YAML parse can select: UTF-8 and BOM-detected UTF-16). Lookups may be
 // repeated and need not be sorted; a lookup behind the cursor restarts the
 // walk. The Kotlin SourceSnapshot boundary index
-// (kotlin/.../document/Source.kt:244-296) resolves any single boundary, but
+// (kotlin/src/main/kotlin/consema/document/Source.kt:244-296) resolves any single boundary, but
 // the YAML pipeline resolves O(pieces + nodes) boundaries, so the shared
 // walk keeps the parse linear.
 //

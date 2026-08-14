@@ -4,7 +4,7 @@
 // Authority: RFC 0009 §11 (https://github.com/consema/consema/blob/main/docs/rfcs/0009-ini-family-profiles-v1.md:387-
 // 435), the vector cases materialization.all-canonical-styles and
 // materialization.atomic-failures-and-limits (ini-v1.json:75-86), and
-// consema-rs/consema-ini/src/materialization.rs (the byte-arbitration
+// https://github.com/consema/consema-rs/blob/main/consema-ini/src/materialization.rs (the byte-arbitration
 // authority).
 
 package ini

@@ -7,7 +7,7 @@
 //     xml.edit.remove-attribute@1, xml.edit.rename-attribute@1,
 //     xml.edit.set-attribute-value@1, xml.edit.insert-element@1,
 //     xml.edit.remove-element@1, xml.edit.rename-element@1.
-//   - consema-rs/consema-xml/src/operation_registry.rs:16-93 is the exact
+//   - https://github.com/consema/consema-rs/blob/main/consema-xml/src/operation_registry.rs:16-93 is the exact
 //     byte-arbitration source of the eight descriptor records (ids, target
 //     roles, argument names/kinds, support classes); the frozen surface test
 //     (operation_registry.rs:95-125) pins the exact eight-operation surface
@@ -18,7 +18,7 @@
 // Kotlin-idiomatic design: the registry is an immutable list of descriptor
 // data classes per profile; argument kinds use the language-neutral
 // spellings of the Rust OperationArgumentKind (String, Placement), matching
-// the json family registry (kotlin/.../json/OperationRegistry.kt:28-44).
+// the json family registry (kotlin/src/main/kotlin/consema/json/OperationRegistry.kt:28-44).
 
 package consema.xml
 

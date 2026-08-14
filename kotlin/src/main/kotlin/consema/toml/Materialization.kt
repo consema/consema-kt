@@ -12,7 +12,7 @@
 //     satisfy TOML precision/offset constraints exactly), the completion
 //     algebra (Complete | Failed with no partial bytes), and the
 //     provenance directions.
-//   - consema-rs/consema-toml/src/materialization.rs:19-34 (materialize), :53-99
+//   - https://github.com/consema/consema-rs/blob/main/consema-toml/src/materialization.rs:19-34 (materialize), :53-99
 //     (materialize_complete and requested_contract), :101-176 (PreparedRoot
 //     and the explicit UniqueStringEntriesToObject conversion with the
 //     core.materialization.mapping-transformed@1 event), :178-186 (the

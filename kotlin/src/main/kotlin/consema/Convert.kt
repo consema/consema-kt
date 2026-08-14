@@ -2,7 +2,7 @@
 // composition (Kotlin).
 //
 // Data authority (language-neutral sources first):
-//   - crates/consema/src/conversion.rs:1-989 (the audited composition:
+//   - https://github.com/consema/consema-rs/blob/main/consema/src/conversion.rs:1-989 (the audited composition:
 //     every convert_* function composes one format-owned projection and the
 //     requested target materializer, retaining the intermediate portable
 //     value, both provenance directions, and the two-stage report; the

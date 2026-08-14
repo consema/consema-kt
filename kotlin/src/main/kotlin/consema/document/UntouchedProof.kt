@@ -9,7 +9,7 @@
 //     equal length and equal bytes, region order is monotonic, and base and
 //     target digests match the proof. The proof asserts only that bytes
 //     outside planned replacements are identical.
-//   - consema-rs/consema-document/src/untouched_proof.rs:1-317 pins the shapes
+//   - https://github.com/consema/consema-rs/blob/main/consema-document/src/untouched_proof.rs:1-317 pins the shapes
 //     and validation rules; consema-go/go/document/untouched.go is a cross-reference
 //     only.
 

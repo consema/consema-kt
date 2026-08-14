@@ -15,7 +15,7 @@
 //   - yaml/*.yaml — the real-project fixtures (kubernetes-workload with
 //     two documents, anchor-heavy with five aliases).
 //
-// Facts (counts) mirror consema-rs/consema-conformance/tests/
+// Facts (counts) mirror https://github.com/consema/consema-rs/blob/main/consema-conformance/tests/
 // line_format_fixtures.rs:48-179 and yaml_fixtures.rs:22-51. The fixture
 // directory resolves through the same repository-relative rule as the
 // runner (CONSEMA_REPO or an ancestor carrying conformance/vectors +
@@ -42,7 +42,6 @@ import consema.properties.parseReader
 import consema.yaml.YamlProfile
 import consema.yaml.parse as parseYaml
 import java.io.File
-import org.junit.jupiter.api.Assumptions.assumeTrue
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -51,11 +50,36 @@ class FixtureRoundTripTest {
 
     private val fixtures = File(resolveRepoRoot(), "conformance/fixtures")
 
+    /** The frozen fixture inventory of this gate: every file the tests
+     * consume, asserted present at construction (a missing or renamed
+     * fixture fails the gate instead of silently skipping — the same exact
+     * discipline as the differential case-count guards and the runner's
+     * 519-case hard pin; a partially provisioned tree must never go green).
+     */
+    private val REQUIRED_FIXTURES: List<String> = listOf(
+        "ini/windows-cp1252.ini.hex",
+        "ini/legacy-mixed-newline.ini.hex",
+        "properties/utf16-edge.properties",
+        "properties/latin1-resource.properties.hex",
+        "yaml/kubernetes-workload.yaml",
+        "yaml/github-actions-ci.yaml",
+        "yaml/compose-services.yaml",
+        "yaml/anchor-heavy.yaml",
+    )
+
+    init {
+        for (relative in REQUIRED_FIXTURES) {
+            check(File(fixtures, relative).isFile) {
+                "shared fixture missing: $relative (the fixture set must be provisioned whole)"
+            }
+        }
+    }
+
     /** The canonical byte container: `.hex` files are lowercase-hex text
      * (see the fixtures README); the gate decodes them before parsing. */
     private fun fixtureBytes(relative: String): ByteArray {
         val path = File(fixtures, relative)
-        assumeTrue(path.isFile, "shared fixture not available: $relative")
+        check(path.isFile) { "shared fixture not available: $relative (the fixture set must be provisioned whole)" }
         val raw = path.readBytes()
         if (!relative.endsWith(".hex")) {
             return raw

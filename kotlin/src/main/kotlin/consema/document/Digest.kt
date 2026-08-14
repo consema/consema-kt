@@ -8,7 +8,7 @@
 //     hexadecimal characters.
 //   - conformance/vectors/source-v1.json:6-16 (cases source.digest.sha256-
 //     empty and source.digest.sha256-abc) pins the golden hex values.
-//   - consema-rs/consema-document/src/source.rs:15-54 (ContentDigest) and
+//   - https://github.com/consema/consema-rs/blob/main/consema-document/src/source.rs:15-54 (ContentDigest) and
 //     lib.rs:39-51 (SnapshotIdentity) pin the shapes; consema-go/go/document/digest.go
 //     is a cross-reference only.
 //

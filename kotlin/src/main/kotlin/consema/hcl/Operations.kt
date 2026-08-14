@@ -1,7 +1,7 @@
 // The frozen HCL format operation registry (RFC 0014 §10, RFC 0004 §10).
 //
 // Data authority:
-//   - consema-rs/consema-hcl/src/operation_registry.rs:16-99 pins every id,
+//   - https://github.com/consema/consema-rs/blob/main/consema-hcl/src/operation_registry.rs:16-99 pins every id,
 //     target role, argument, and support classification: `hcl.native@1`
 //     publishes all six structural operations
 //     (operation_registry.rs:105-127: hcl.edit.insert-attribute@1,
@@ -15,11 +15,11 @@
 //     the registry discipline.
 //   - consema-go/go/hcl is a cross-reference only.
 //
-// Kotlin-idiomatic design: the full FormatOperationRegistry type belongs to
-// the L4 structural-edit milestone (document/EditPlan.kt:22-23); this L3
-// surface exposes the frozen descriptors as immutable data so the L4
-// registry can adopt them unchanged, mirroring the toml/json family
-// registries.
+// Kotlin-idiomatic design: the full FormatOperationRegistry type is not
+// shipped in Kotlin (recorded gap, six-repo audit G090;
+// document/EditPlan.kt:22-23); this surface exposes the frozen descriptors
+// as immutable data the facade's per-profile operation registries consume,
+// mirroring the toml/json family registries.
 
 package consema.hcl
 

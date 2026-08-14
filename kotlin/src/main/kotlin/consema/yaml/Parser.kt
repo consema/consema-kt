@@ -12,10 +12,10 @@
 //     identity when a node starts, register an anchor before descending,
 //     resolve an alias to the most recent preceding anchor, never expand
 //     aliases, permit backward self/mutual cycles.
-//   - consema-rs/consema-yaml/src/lib.rs:259-320 (parse entry), lib.rs:789-858
+//   - https://github.com/consema/consema-rs/blob/main/consema-yaml/src/lib.rs:259-320 (parse entry), lib.rs:789-858
 //     (version-directive validation and backend failure mapping),
-//     consema-rs/consema-yaml/src/backend.rs:71-176 (event surface, depth and
-//     event limits), consema-rs/consema-yaml/src/native.rs:111-508 (composition)
+//     https://github.com/consema/consema-rs/blob/main/consema-yaml/src/backend.rs:71-176 (event surface, depth and
+//     event limits), https://github.com/consema/consema-rs/blob/main/consema-yaml/src/native.rs:111-508 (composition)
 //     and native.rs:510-539 (the empty-plain-scalar placeholder rewrite)
 //     are the byte-arbitration authority for every event shape, span
 //     convention, and failure code; consema-go/go/yaml/parser.go is a cross-reference

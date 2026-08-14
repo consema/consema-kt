@@ -16,13 +16,13 @@
 //     invalid byte sequences rejected, the chosen code page and BOM facts
 //     observable); python accepts any complete text source when the caller
 //     or a BOM selected the encoding unambiguously.
-//   - consema-rs/consema-ini/src/parser.rs:37-104 pins encoding_request and
+//   - https://github.com/consema/consema-rs/blob/main/consema-ini/src/parser.rs:37-104 pins encoding_request and
 //     validate_profile_encoding (the ini.profile.encoding@1 failure);
-//     consema-rs/consema-document/src/source.rs:1016-1067 pins the checkpointed
+//     https://github.com/consema/consema-rs/blob/main/consema-document/src/source.rs:1016-1067 pins the checkpointed
 //     boundary index and the per-scalar RawBoundaryStep array used for
 //     variable-width code pages (source.rs:966-1014).
 //   - The JDK charset tables approximate the encoding_rs tables the Rust
-//     decoder pins (consema-rs/consema-ini/src/materialization.rs:831-850):
+//     decoder pins (https://github.com/consema/consema-rs/blob/main/consema-ini/src/materialization.rs:831-850):
 //     874/1250-1258 -> windows-874/windows-125x, 932 -> windows-31j,
 //     936 -> GBK, 949 -> EUC-KR, 950 -> Big5, 65001 -> UTF-8. DBCS edge
 //     mappings need differential verification (盲写纪律: no gates claimed).
@@ -62,7 +62,7 @@ private const val CHECKPOINT_STRIDE = 256
  * Stable INI source-construction failure (the source-error surface of
  * FatalFormationFailure, source.rs:669-725). The [kind] reuses the document
  * package's closed kind set so the code mapping stays byte-identical
- * (kotlin/.../document/Source.kt:44-67).
+ * (kotlin/src/main/kotlin/consema/document/Source.kt:44-67).
  */
 class IniSourceException(
     val kind: SourceErrorKind,
@@ -146,7 +146,7 @@ class IniSource private constructor(
     private val index: BoundaryIndex,
     /** The document-contract snapshot when the selected encoding is in the
      * v1 set (source-v1 encodings); null for Windows code pages, which the
-     * document v2 extension will add (kotlin/.../document/Encoding.kt:18-25). */
+     * document v2 extension will add (kotlin/src/main/kotlin/consema/document/Encoding.kt:18-25). */
     internal val v1Snapshot: SourceSnapshot?,
 ) {
     companion object {
@@ -828,9 +828,9 @@ internal fun checkedAdd(left: Int, right: Int): Int =
 /**
  * Reconstructs the document-contract snapshot for v1-representable
  * encodings so the edit layer can derive SourcePatch and UntouchedByteProof
- * through the shared contract (kotlin/.../document/Patch.kt); returns null
+ * through the shared contract (kotlin/src/main/kotlin/consema/document/Patch.kt); returns null
  * for Windows code pages (document source-v2 gap,
- * kotlin/.../document/Encoding.kt:18-25).
+ * kotlin/src/main/kotlin/consema/document/Encoding.kt:18-25).
  */
 private fun documentSnapshot(bytes: ByteArray, facts: IniEncodingFacts): SourceSnapshot? {
     val override = facts.callerOverride

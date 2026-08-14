@@ -2,7 +2,7 @@
 // canonical decimals, structural fingerprints, and the literal-complete
 // boundary (RFC 0014 §4.3-§4.6, §6, §8.1).
 //
-// Data authority: consema-rs/consema-hcl/src/expression.rs (kind names
+// Data authority: https://github.com/consema/consema-rs/blob/main/consema-hcl/src/expression.rs (kind names
 // :564-650, operators :856-956, canonical_decimal :737-851) and the
 // hcl-v1.json projection/query cases pinning the spellings
 // (`hcl.expression-kind-is@1` argument "number"; the kind family spellings

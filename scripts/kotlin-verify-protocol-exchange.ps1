@@ -8,7 +8,7 @@ param(
 # ---------------------------------------------------------------------------
 # Cross-language protocol exchange verification — Kotlin side
 # (L5; https://github.com/consema/consema/blob/main/docs/five-language-ci-design.md §3.4; the Go
-# precedent scripts/go-verify-protocol-exchange.ps1).
+# precedent https://github.com/consema/consema-go/blob/main/scripts/go-verify-protocol-exchange.ps1).
 #
 # Bidirectional pipeline (Kotlin never imports or calls Rust, RFC 0016 §1.1):
 #   1. builds the minimal Rust example

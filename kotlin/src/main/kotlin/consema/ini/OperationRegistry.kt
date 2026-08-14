@@ -11,7 +11,7 @@
 //     independently typed INI operations: the eight ini.edit.*@1 names.
 //   - conformance/vectors/ini-v1.json registry.frozen-eight-operation-
 //     surface pins the eight ids and the six direct structural operations;
-//     consema-rs/consema-ini/src/operation_registry.rs:16-80 is the exact
+//     https://github.com/consema/consema-rs/blob/main/consema-ini/src/operation_registry.rs:16-80 is the exact
 //     byte-arbitration source of the descriptor records and the support
 //     classes (operation_registry.rs:105-136).
 //
@@ -19,7 +19,7 @@
 // data classes per profile; argument kinds use the language-neutral
 // spellings of the Rust OperationArgumentKind; target-role strings carry
 // the `@1` version suffix, the established Kotlin family convention
-// (kotlin/.../json/OperationRegistry.kt:56-66).
+// (kotlin/src/main/kotlin/consema/json/OperationRegistry.kt:56-66).
 
 package consema.ini
 

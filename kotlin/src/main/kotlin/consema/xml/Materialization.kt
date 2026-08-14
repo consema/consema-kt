@@ -16,20 +16,20 @@
 //     Document and no partial output bytes.
 //   - conformance/vectors/xml-1-0-safe-v1.json cases xml.materialization.*
 //     pin the render bytes and the `"invalid-record"` failure spelling.
-//   - consema-rs/consema-xml/src/materialization.rs is the byte-arbitration
+//   - https://github.com/consema/consema-rs/blob/main/consema-xml/src/materialization.rs is the byte-arbitration
 //     authority: entry (materialization.rs:36-88), request validation
 //     (materialization.rs:90-107), reparse limits (materialization.rs:
 //     109-140), encoding (materialization.rs:142-172), record validation
 //     (materialization.rs:174-500), the prefix table (materialization.rs:
 //     502-526), the writer (materialization.rs:565-900), and the closure
 //     verification (materialization.rs:902-1100).
-//   - RFC 0004 §3/§7 (https://github.com/consema/consema/blob/main/docs/rfcs/0004-...md:57-84, 171-186) pins the common
+//   - RFC 0004 §3/§7 (https://github.com/consema/consema/blob/main/docs/rfcs/0004-materialization-conversion-and-structural-edit-v1.md:57-84, 171-186) pins the common
 //     MaterializationRequest and the completion algebra; the Kotlin common
 //     contracts live in consema.document (Materialization.kt).
 //
 // The failure spellings used by the vectors are the stable
 // `materialization_failure_code` mapping of the conformance runner
-// (consema-rs/consema-conformance/src/xml_v1.rs:855-871): `"invalid-record"`
+// (https://github.com/consema/consema-rs/blob/main/consema-conformance/src/xml_v1.rs:855-871): `"invalid-record"`
 // for InvalidRequest, plus unsupported-profile / unsupported-style /
 // unsupported-encoding / unsupported-newline / unrepresentable /
 // resource-limit / formation-failed.

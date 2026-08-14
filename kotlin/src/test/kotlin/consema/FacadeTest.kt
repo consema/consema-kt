@@ -1,12 +1,12 @@
 // The L4 root facade tests: Registry, Document union, and Convert.
 //
-// Data authority: crates/consema/src/lib.rs:317-1068 (the Rust facade's
+// Data authority: https://github.com/consema/consema-rs/blob/main/consema/src/lib.rs:317-1068 (the Rust facade's
 // own test suite this file mirrors: registry_lists_eight_families_and_
 // sixteen_profiles, registry_query_domains_are_sorted_and_unique,
 // registry_parse_document_round_trips_every_profile,
 // registry_family_ids_match_parsed_backend_documents,
 // common_document_facade_is_opaque_and_typed, facade_exposes_all_format_
-// implementations) and crates/consema/src/conversion.rs tests
+// implementations) and https://github.com/consema/consema-rs/blob/main/consema/src/conversion.rs tests
 // (json_to_toml_keeps_both_stages_and_exact_target_closure,
 // toml_to_json_is_exact_and_materialization_failure_has_no_document,
 // json_cannot_materialize_into_record_formats, plist_value_tree_record_is_

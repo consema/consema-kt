@@ -7,7 +7,7 @@
 //     opens another entity, file, URI, network connection, registry,
 //     classpath, or catalog (RFC 0012 §1).
 //   - The recovered codes are the frozen xml.* codes of
-//     consema-rs/consema-xml/src/parser.rs (each cited in the test).
+//     https://github.com/consema/consema-rs/blob/main/consema-xml/src/parser.rs (each cited in the test).
 //   - conformance/vectors/xml-1-0-safe-v1.json cases xml.formation.* and
 //     xml.limit.* pin the status and diagnostic outcomes.
 

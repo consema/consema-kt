@@ -10,7 +10,7 @@
 //   - conformance/vectors/java-properties-v1.json resource.formation-limit-
 //     matrix (lines 115-140) and resource.projection-limit-matrix
 //     (lines 141-145) pin every limit name and the fatal/no-partial outcome.
-//   - consema-rs/consema-properties/src/lib.rs:62-122 (PropertiesParseLimits and
+//   - https://github.com/consema/consema-rs/blob/main/consema-properties/src/lib.rs:62-122 (PropertiesParseLimits and
 //     the frozen defaults) and projection.rs:84-106 (ProjectionLimits and the
 //     frozen defaults) are the byte-arbitration authorities.
 //     consema-go/go/properties is a cross-reference only.

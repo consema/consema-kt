@@ -7,7 +7,7 @@
 // projection.graph-provenance, graph.shared-cycle, resource.graph-provenance
 // (conformance/vectors/yaml-v1.json:45-49, 70-94, 130-134). The PGCE golden
 // hex of graph.shared-cycle is the byte authority
-// (consema-rs/consema-graph/src/pgce.rs; transcribed into the Kotlin graph
+// (https://github.com/consema/consema-rs/blob/main/consema-graph/src/pgce.rs; transcribed into the Kotlin graph
 // PgceGoldenTest.kt).
 //
 // This file runs in the verified toolchain gate (kotlin-gates gradlew

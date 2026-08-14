@@ -8,7 +8,7 @@
 //   - RFC 0010 §13 (https://github.com/consema/consema/blob/main/docs/rfcs/0010-java-properties-profiles-v1.md:383-394):
 //     both Profiles publish the same five independently validated
 //     operations.
-//   - consema-rs/consema-properties/src/operation_registry.rs:16-48 is the exact
+//   - https://github.com/consema/consema-rs/blob/main/consema-properties/src/operation_registry.rs:16-48 is the exact
 //     byte-arbitration source of the five descriptor records (ids, target
 //     roles, argument names/kinds, support classes); the frozen surface test
 //     (operation_registry.rs:67-95) pins the five Supported operations for
@@ -19,7 +19,7 @@
 // Kotlin-idiomatic design: the registry is an immutable list of descriptor
 // data classes per profile; argument kinds use the language-neutral
 // spellings of the Rust OperationArgumentKind (PortableValue, Placement,
-// ExactBytes) — the JSON family precedent (kotlin/.../json/
+// ExactBytes) — the JSON family precedent (kotlin/src/main/kotlin/consema/json/
 // OperationRegistry.kt:19-22).
 
 package consema.properties

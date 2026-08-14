@@ -7,7 +7,7 @@
 // report; a dry-run plan is not authority to write a file and is never
 // applied without rechecking base digest and every original-byte
 // precondition. The validation bounds and the operation-metadata
-// cross-check follow consema-rs/consema-document/src/edit_plan.rs:13-127
+// cross-check follow https://github.com/consema/consema-rs/blob/main/consema-document/src/edit_plan.rs:13-127
 // (test data adapted from edit_plan.rs:235-272).
 
 package document

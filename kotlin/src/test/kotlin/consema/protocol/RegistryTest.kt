@@ -1,11 +1,11 @@
-// Registry pinning tests — intent documents.
+// Registry pinning tests.
 //
 // The frozen counts and sortedness are transcribed from
-// consema-rs/consema-protocol/src/contract.rs (CONTRACTS_V1..V7 at contract.rs:
-// 71/90/111/142/178/225) and consema-rs/consema-protocol/src/error_registry.rs
+// https://github.com/consema/consema-rs/blob/main/consema-protocol/src/contract.rs (CONTRACTS_V1..V7 at contract.rs:
+// 71/90/111/142/178/225) and https://github.com/consema/consema-rs/blob/main/consema-protocol/src/error_registry.rs
 // (ERROR_CODES_V1..V7; the typed arrays at error_registry.rs:412/617/662/
 // 935/1172/1339): 16/18/25/25/30/38/41 contracts and 55/62/90/92/132/166/187
-// codes. These tests run once the toolchain is ready (START GATE).
+// codes. These tests run in the committed CI (kotlin-gates, gradlew test).
 
 package consema.protocol
 

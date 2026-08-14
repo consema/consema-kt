@@ -1,7 +1,7 @@
 // The frozen TOML format operation registry.
 //
 // Data authority:
-//   - consema-rs/consema-toml/src/operation_registry.rs:16-74 (descriptors) and
+//   - https://github.com/consema/consema-rs/blob/main/consema-toml/src/operation_registry.rs:16-74 (descriptors) and
 //     :94-119 (the pinned registry facts: exactly seven operations, five
 //     Supported structural operations in sorted id order, two
 //     ExistingTypedCapability scalar replacements) pin every id, target
@@ -13,10 +13,10 @@
 //     registry (lines 18-22) pins toml_operation_count = 7 and
 //     required_toml = "toml.edit.insert-entry@1".
 //
-// Kotlin-idiomatic design: the full FormatOperationRegistry type belongs
-// to the L4 structural-edit milestone (document/EditPlan.kt:22-23); this
-// L1 surface exposes the frozen descriptors as immutable data so the L4
-// registry can adopt them unchanged.
+// Kotlin-idiomatic design: the full FormatOperationRegistry type is not
+// shipped in Kotlin (recorded gap, six-repo audit G090;
+// document/EditPlan.kt:22-23); this surface exposes the frozen descriptors
+// as immutable data the facade's per-profile operation registries consume.
 
 package consema.toml
 

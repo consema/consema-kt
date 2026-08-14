@@ -7,7 +7,7 @@
 //
 // Data authority: https://github.com/consema/consema/blob/main/docs/five-language-ci-design.md §2 (each runner owns its
 // CLI form; the Go CLI cmd/consema-conformance is the cross-reference
-// shape); conformance/README.md:81-82 (every suite must validate its case
+// shape); conformance/README.md 规则 4 (every suite must validate its case
 // count).
 //
 // Usage:
@@ -60,14 +60,26 @@ fun runAllAndPrint(repoRoot: String): RunReport {
     return report
 }
 
-/** The conformance CLI entry: per-suite pass/fail, exit class per
- * RFC 0015 §5.1 — 0 (success) or 2 (data: a non-conformant run means the
- * input data failed, never an internal error). */
+/** The conformance CLI entry: per-suite pass/fail. Exit classes per
+ * RFC 0015 §5.1 (six classes, codes 0-5; the frozen taxonomy lives in
+ * consema.protocol.ExitClass): 0 (success) on a conformant run, 2 (data:
+ * a non-conformant run means the input data failed). The repository-root
+ * resolution failure exits 4 (precondition: the required CONSEMA_REPO or
+ * provisioned-tree precondition was not met) instead of an uncaught-
+ * exception exit-1 stack — an internal-error-looking exit is never
+ * produced on a documented failure path. */
 fun main(args: Array<String>) {
     val repoRoot = if (args.isNotEmpty()) {
         args[0]
     } else {
-        resolveRepoRoot()
+        try {
+            resolveRepoRoot()
+        } catch (e: IllegalStateException) {
+            System.err.println(
+                "consema-conformance: repository root not found - set CONSEMA_REPO or run inside a provisioned checkout",
+            )
+            exitProcess(4)
+        }
     }
     val report = runAllAndPrint(repoRoot)
     exitProcess(if (report.conformant()) 0 else 2)

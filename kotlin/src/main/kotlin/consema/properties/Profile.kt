@@ -8,7 +8,7 @@
 //   - conformance/vectors/java-properties-v1.json pins the profile spellings
 //     (line 3) and the syntax-kind vocabulary of the lossless syntax query
 //     domain (the syntax_kinds / syntax_contains facts of the query cases).
-//   - consema-rs/consema-properties/src/lib.rs:33-50 (PropertiesProfile),
+//   - https://github.com/consema/consema-rs/blob/main/consema-properties/src/lib.rs:33-50 (PropertiesProfile),
 //     lib.rs:208-235 (PropertiesSyntaxKind), lib.rs:276-285
 //     (PropertiesValueState), lib.rs:287-295 (PropertiesLogicalLineKind),
 //     lib.rs:296-307 (PropertiesEscapeKind). consema-go/go/properties is a

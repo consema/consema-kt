@@ -8,7 +8,7 @@ param(
 # ---------------------------------------------------------------------------
 # Cross-language normalized-result differential verification — Kotlin side
 # (L5; https://github.com/consema/consema/blob/main/docs/five-language-ci-design.md §3.3; the Go
-# precedent scripts/go-verify-normalized-differential.ps1).
+# precedent https://github.com/consema/consema-go/blob/main/scripts/go-verify-normalized-differential.ps1).
 #
 # Bidirectional pipeline (Kotlin never imports or calls Rust, RFC 0016 §1.1):
 #   1. builds the minimal Rust evidence example

@@ -16,8 +16,8 @@
 //     anything (hard gate 1).
 //   - conformance/vectors/hcl-v1.json hcl.query.* cases pin the match
 //     facts (kind, text, literal, value, ordinal) and the failure codes.
-//   - consema-rs/consema-hcl/src/query.rs pins the operator semantics;
-//     kotlin/.../protocol/QueryValidate.kt pins the validated operator
+//   - https://github.com/consema/consema-rs/blob/main/consema-hcl/src/query.rs pins the operator semantics;
+//     kotlin/src/main/kotlin/consema/protocol/QueryValidate.kt pins the validated operator
 //     table (QueryValidate.kt:377-425) and role typing
 //     (QueryValidate.kt:578-628); the frozen roles are the Hcl* spellings
 //     of protocol/Query.kt:89-96.

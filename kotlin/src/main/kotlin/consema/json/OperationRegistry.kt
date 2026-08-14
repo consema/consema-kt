@@ -9,7 +9,7 @@
 //   - RFC 0005 §10 (https://github.com/consema/consema/blob/main/docs/rfcs/0005-json-family-production-v1.md:220-241):
 //     json.edit.move-member@1 raises the JSON format-operation registry to
 //     eight records for every JSON-family profile.
-//   - consema-rs/consema-json/src/operation_registry.rs:16-80 is the exact
+//   - https://github.com/consema/consema-rs/blob/main/consema-json/src/operation_registry.rs:16-80 is the exact
 //     byte-arbitration source of the eight descriptor records (ids, target
 //     roles, argument names/kinds, support classes); the frozen surface test
 //     (operation_registry.rs:104-129) pins the six Supported operations and

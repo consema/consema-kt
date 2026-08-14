@@ -4,7 +4,8 @@
 // each test) and RFC 0001 §2-§3; the Rust crate tests
 // (consema-toml/src/lib.rs:670-843) pin the additional snapshot/role and
 // syntax-kind facts. The L5 conformance runner executes the shared vectors
-// directly; these tests are the L1 intent documents.
+// directly; these unit tests pin the golden transcriptions in the
+// committed CI.
 
 package toml
 

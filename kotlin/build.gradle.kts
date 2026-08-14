@@ -1,4 +1,4 @@
-// Consema Kotlin implementation — L0 scaffold.
+// Consema Kotlin implementation.
 // Authority: https://github.com/consema/consema/blob/main/docs/multi-language-implementation-plan.md §0.2/§1: Kotlin 2.2.0
 // on JVM 17, single module, zero third-party runtime dependencies (the
 // runtime classpath carries only kotlin-stdlib + its transitive
@@ -54,17 +54,38 @@ kover {
     }
 }
 
+// Maven Central publishing artifacts: sources jar (the Kotlin sources) and
+// javadoc jar (empty — no dokka wiring; see the publication block).
+val sourcesJar by tasks.registering(Jar::class) {
+    archiveClassifier.set("sources")
+    from(sourceSets.main.get().allSource)
+}
+
+val javadocJar by tasks.registering(Jar::class) {
+    archiveClassifier.set("javadoc")
+    // The Kotlin-only module has no Java sources, so the java plugin's
+    // javadoc task produces an empty output; the jar satisfies the portal's
+    // javadoc-artifact requirement.
+    from(tasks.named("javadoc"))
+}
+
 // Maven Central publishing (top-tier bar; credentials are user-side actions,
-// see RELEASING.md §2). Publishing target: the Sonatype Central Portal
-// (central.sonatype.com, the 2025+ publishing path) — deploy endpoint with
-// HTTP Basic auth (username = portal token name, password = token value);
-// staging is handled by the portal. The legacy s01.oss.sonatype.org
-// staging workflow is deliberately not wired (new projects no longer get
-// legacy staging).
+// see RELEASING.md §2). Publishing target: the Sonatype Central Portal via
+// its compatibility staging endpoint
+// (https://ossrh-staging-api.central.sonatype.com/service/local/staging/
+// deploy/maven2/ — the portal's replacement for the retired OSSRH staging
+// URLs, which the maven-publish file-by-file flow still speaks) with HTTP
+// Basic auth (username = portal user-token name, password = token value);
+// staging/publishing is handled by the portal.
 publishing {
     publications {
         create<MavenPublication>("maven") {
             from(components["java"])
+            // Maven Central requires sources and javadoc jars beside the
+            // main artifact (portal validation; the javadoc jar is empty for
+            // this Kotlin-only module — no dokka wiring, recorded gap).
+            artifact(sourcesJar)
+            artifact(javadocJar)
             pom {
                 name.set("Consema Kotlin SDK")
                 description.set("Kotlin implementation of the language-neutral Consema configuration-processing contracts (RFC 0016; https://github.com/consema/consema/blob/main/docs/multi-language-implementation-plan.md)")
@@ -94,7 +115,11 @@ publishing {
     repositories {
         maven {
             name = "central"
-            url = uri("https://central.sonatype.com/api/v1/publisher/deploy")
+            // The Central Portal's compatibility staging endpoint (the
+            // replacement for the retired s01.oss.sonatype.org staging URL;
+            // the portal processes the uploaded component and publishes it
+            // to Maven Central).
+            url = uri("https://ossrh-staging-api.central.sonatype.com/service/local/staging/deploy/maven2/")
             credentials {
                 username = providers.environmentVariable("OSSRH_USERNAME").orElse("").get()
                 password = providers.environmentVariable("OSSRH_PASSWORD").orElse("").get()

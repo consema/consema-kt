@@ -1,7 +1,7 @@
 // The `consema.syntax-query.conformance@1` suite runner
 // (conformance/vectors/syntax-query-v1.json).
 //
-// Data authority: consema-rs/consema-conformance/src/syntax_query_v1.rs (the
+// Data authority: https://github.com/consema/consema-rs/blob/main/consema-conformance/src/syntax_query_v1.rs (the
 // per-case dispatch by prefix and the per-case handlers are transcribed from
 // the Rust runner: the definition builder at syntax_query_v1.rs:186-269, the
 // match comparison at syntax_query_v1.rs:271-312, the failure-code comparison

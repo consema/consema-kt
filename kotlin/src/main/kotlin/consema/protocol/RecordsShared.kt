@@ -2,10 +2,10 @@
 // terminal and the external match locator helpers.
 //
 // Data authority (language-neutral sources first):
-//   - consema-rs/consema-protocol/src/execution.rs:40-187 (Completion: the
+//   - https://github.com/consema/consema-rs/blob/main/consema-protocol/src/execution.rs:40-187 (Completion: the
 //     status-specific invariant table and the fixed core.completion@1 wire
 //     form).
-//   - consema-rs/consema-protocol/src/query.rs:449-598 (the semantic-model v5/v6
+//   - https://github.com/consema/consema-rs/blob/main/consema-protocol/src/query.rs:449-598 (the semantic-model v5/v6
 //     query result records all carry one Completion) and line_query.rs /
 //     yaml_query.rs / graph_query.rs (the locator identities).
 //   - conformance/vectors/semantic-model-v5.json and semantic-model-v6.json

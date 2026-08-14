@@ -1,6 +1,6 @@
 // Frozen limit defaults tests.
 //
-// Data authority: consema-rs/consema-document/src/lib.rs:614-639 (ParseLimits),
+// Data authority: https://github.com/consema/consema-rs/blob/main/consema-document/src/lib.rs:614-639 (ParseLimits),
 // materialization.rs:80-105 (MaterializationLimits), source.rs:381-409
 // (SourceLimits), source_patch.rs:8-27 (SourcePatchLimits); cross-checked
 // against consema-go/go/document/limits.go:4-58 and consema-go/go/document/source.go:27-43

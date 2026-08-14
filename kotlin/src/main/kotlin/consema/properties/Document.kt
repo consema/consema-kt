@@ -11,15 +11,15 @@
 //     the immutable Document retains exact terminators, continuation
 //     markers, escape identity/spelling/output ranges, and exhaustive
 //     non-overlapping syntax coverage.
-//   - consema-rs/consema-properties/src/lib.rs:309-589 (the entity shapes and
+//   - https://github.com/consema/consema-rs/blob/main/consema-properties/src/lib.rs:309-589 (the entity shapes and
 //     accessors) and lib.rs:590-775 (Document) are the byte-arbitration
 //     authority. consema-go/go/properties/document.go is a cross-reference only.
-//   - The node roles are pinned in kotlin/.../document/Location.kt:119-141
+//   - The node roles are pinned in kotlin/src/main/kotlin/consema/document/Location.kt:119-141
 //     (PropertiesDocument .. PropertiesSyntaxPiece).
 //
 // Kotlin-idiomatic design (NOT a translation): the Rust borrowed handles are
 // immutable handle classes carrying (document, index) — the same idiom as
-// the JSON family (kotlin/.../json/Document.kt:15-19); entity storage is
+// the JSON family (kotlin/src/main/kotlin/consema/json/Document.kt:15-19); entity storage is
 // typed lists per role and `internal` accessors are module-visible so
 // query/projection/materialization/edit in this package share one truth.
 

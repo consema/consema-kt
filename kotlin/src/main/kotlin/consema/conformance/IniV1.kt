@@ -1,7 +1,7 @@
 // The `consema.ini.conformance@1` suite runner
 // (conformance/vectors/ini-v1.json).
 //
-// Data authority: consema-rs/consema-conformance/src/ini_v1.rs (the per-case
+// Data authority: https://github.com/consema/consema-rs/blob/main/consema-conformance/src/ini_v1.rs (the per-case
 // dispatch and every fact are transcribed from the Rust handlers; the
 // capability mapping at ini_v1.rs:112-126 and the case table at
 // ini_v1.rs:130-152); the vector file itself drives every input and

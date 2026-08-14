@@ -1,7 +1,7 @@
 // The CLI machine-protocol payloads of RFC 0015 §4/§8/§9.
 //
 // Data authority: RFC 0015 (https://github.com/consema/consema/blob/main/docs/rfcs/0015-cli-machine-protocol-and-batch-
-// apply-v1.md) and consema-rs/consema-protocol/src/cli.rs (the command set at
+// apply-v1.md) and https://github.com/consema/consema-rs/blob/main/consema-protocol/src/cli.rs (the command set at
 // cli.rs:92-115, the envelope at cli.rs:149-364, the batch-plan manifest at
 // cli.rs:366-641, the batch-result manifest at cli.rs:643-822, the SemVer
 // shape at cli.rs:870-929). Every decoder re-validates the cross constraints

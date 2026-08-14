@@ -11,7 +11,7 @@
 //     All size arithmetic is checked before allocation, and limit failure
 //     never masquerades as an empty body, truncated expression, shortened
 //     query, partial target, or successful edit (hard gate 4).
-//   - consema-rs/consema-hcl/src/lib.rs:166-273 pins the exact field set and the
+//   - https://github.com/consema/consema-rs/blob/main/consema-hcl/src/lib.rs:166-273 pins the exact field set and the
 //     frozen R-3 defaults (lib.rs:236-273: 64 MiB source, 128 body depth,
 //     24 expression depth, 256 template depth, ...); the conformance vectors
 //     hcl.limit.* pin the frozen limit-code spellings

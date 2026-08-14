@@ -2,7 +2,7 @@
 //
 // Data authority: RFC 0016 §6 (https://github.com/consema/consema/blob/main/docs/rfcs/0016-go-api-mapping-v1.md:194-):
 // "unknown code or category contradiction is a protocol error"; the record
-// shape follows consema-rs/consema-protocol/src/diagnostic.rs (construction
+// shape follows https://github.com/consema/consema-rs/blob/main/consema-protocol/src/diagnostic.rs (construction
 // validation at diagnostic.rs:336-351). Construction validates the code
 // against the frozen error registry and the category against the registry
 // record. consema-go/go/protocol/diagnostic.go is a cross-reference.

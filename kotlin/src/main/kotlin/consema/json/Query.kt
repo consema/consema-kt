@@ -13,7 +13,7 @@
 //     before the first match.
 //   - conformance/vectors/syntax-query-v1.json (json cases, lines 5-52) and
 //     json-family-v2.json (json5.query.*) pin the match order/ordinal/text
-//     facts; consema-rs/consema-json/src/query.rs is the byte-arbitration
+//     facts; https://github.com/consema/consema-rs/blob/main/consema-json/src/query.rs is the byte-arbitration
 //     authority (execution query.rs:91-305, operators query.rs:307-477,
 //     selection query.rs:479-496); consema-core/src/query.rs:2967-2993 pins
 //     QueryLimits defaults (max_steps 100_000, max_results 100_000) and the

@@ -20,15 +20,15 @@
 //     (projection.sharing-policy, projection.cycle, projection.tag-policy,
 //     projection.mapping-policy, projection.graph-provenance,
 //     resource.graph-provenance, graph.shared-cycle).
-//   - consema-rs/consema-yaml/src/native.rs:143-196 (graph projection with
-//     canonical ids) and consema-rs/consema-yaml/src/projection.rs are the
+//   - https://github.com/consema/consema-rs/blob/main/consema-yaml/src/native.rs:143-196 (graph projection with
+//     canonical ids) and https://github.com/consema/consema-rs/blob/main/consema-yaml/src/projection.rs are the
 //     byte-arbitration authorities (requests projection.rs:35-332, failure
 //     codes projection.rs:172-183 and 478-520, graph provenance
 //     projection.rs:605-754, value projection projection.rs:756-1147).
 //   - Value paths come from the L0 core agent (consema.core.ValuePath /
 //     ValuePathSegment / AssociationLocation / AssociationRole mirroring
-//     consema-rs/consema-core/src/location.rs:1-89; the dependency is declared
-//     by kotlin/.../document/Materialization.kt:27-31).
+//     https://github.com/consema/consema-rs/blob/main/consema-core/src/location.rs:1-89; the dependency is declared
+//     by kotlin/src/main/kotlin/consema/document/Materialization.kt:27-31).
 //
 // Kotlin-idiomatic design: the completion algebra is a sealed class, so
 // exhaustive `when` over Complete/Failed can never meet an unknown outcome;
