@@ -86,8 +86,11 @@ jobs:
       # wrapper. The Kotlin Gradle plugin adds kotlin-stdlib (2.2.0, with
       # its transitive org.jetbrains:annotations) to runtimeClasspath by
       # default — the language runtime, not a dependency — so the assertion
-      # allows exactly the org.jetbrains.kotlin / org.jetbrains groups (and
-      # the self-reference line) and fails on any other group.
+      # allows exactly the resolved coordinates (W3-26, 2026-08-14:
+      # org.jetbrains.kotlin:kotlin-stdlib + org.jetbrains:annotations, the
+      # same coordinate pin as the ci-kotlin.yml runtime-classpath-audit
+      # job) and fails on any other artifact, including stray
+      # JetBrains-group artifacts (e.g. kotlin-reflect).
       - name: gradlew dependencies --configuration runtimeClasspath (test-only deps — runtime classpath = Kotlin platform only)
         shell: pwsh
         working-directory: kotlin
@@ -95,14 +98,14 @@ jobs:
           $ErrorActionPreference = 'Stop'
           $output = .\gradlew.bat dependencies --configuration runtimeClasspath
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-          $allowed = @('org.jetbrains.kotlin', 'org.jetbrains', 'project')
+          $allowed = @('org.jetbrains.kotlin:kotlin-stdlib', 'org.jetbrains:annotations')
           $violations = @()
           foreach ($line in $output) {
             # Match top-level and nested tree lines (nested entries are
             # prefixed with '|     ' continuation markers).
-            if ($line -match '^\s*(?:\|\s+)*[+\\]---\s+([^:\s]+):') {
-              $group = $Matches[1]
-              if ($allowed -notcontains $group) { $violations += $line }
+            if ($line -match '^\s*(?:\|\s+)*[+\\]---\s+([^:\s]+):([^:\s]+):') {
+              $coordinate = "$($Matches[1]):$($Matches[2])"
+              if ($allowed -notcontains $coordinate) { $violations += $line }
             }
           }
           if ($violations.Count -gt 0) {

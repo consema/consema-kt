@@ -904,9 +904,11 @@ jobs:
   # ci-kotlin.yml cannot express — the aggregate check's needs must name
   # jobs inside this workflow. The runtime classpath carries only the Kotlin
   # platform (kotlin-stdlib + its transitive org.jetbrains:annotations), so
-  # the assertion allows exactly those groups. This job is a runtimeClasspath
-  # group assertion, not a CVE-database scan — the audit.yml header documents
-  # that standing gap.
+  # the assertion allows exactly those coordinates (W3-26, 2026-08-14:
+  # measured resolution is org.jetbrains.kotlin:kotlin-stdlib:2.2.0 and
+  # org.jetbrains:annotations:13.0). This job is a runtimeClasspath
+  # coordinate assertion, not a CVE-database scan — the audit.yml header
+  # documents that standing gap.
   runtime-classpath-audit:
     name: runtimeClasspath audit (gradlew dependencies, zero runtime deps)
     runs-on: windows-latest
@@ -962,12 +964,17 @@ jobs:
           $ErrorActionPreference = 'Stop'
           $output = .\gradlew.bat dependencies --configuration runtimeClasspath
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-          $allowed = @('org.jetbrains.kotlin', 'org.jetbrains', 'project')
+          # W3-26 (2026-08-14): the allow list pins the exact resolved
+          # coordinates (group:artifact), not whole groups — a stray
+          # JetBrains-group artifact (e.g. kotlin-reflect) must fail too.
+          # Measured resolution (gradle 8.14 + Kotlin plugin 2.2.0):
+          # org.jetbrains.kotlin:kotlin-stdlib -> org.jetbrains:annotations.
+          $allowed = @('org.jetbrains.kotlin:kotlin-stdlib', 'org.jetbrains:annotations')
           $violations = @()
           foreach ($line in $output) {
-            if ($line -match '^\s*(?:\|\s+)*[+\\]---\s+([^:\s]+):') {
-              $group = $Matches[1]
-              if ($allowed -notcontains $group) { $violations += $line }
+            if ($line -match '^\s*(?:\|\s+)*[+\\]---\s+([^:\s]+):([^:\s]+):') {
+              $coordinate = "$($Matches[1]):$($Matches[2])"
+              if ($allowed -notcontains $coordinate) { $violations += $line }
             }
           }
           if ($violations.Count -gt 0) {
