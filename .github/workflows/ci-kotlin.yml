@@ -48,9 +48,10 @@
 # c60d31a), so kotlin-gates enforces the kover 0.9.9 line-coverage threshold
 # (koverVerify, 60% minimum — the build.gradle.kts kover block; report tasks
 # koverHtmlReport/koverXmlReport). The Knit-style doc-example gate landed
-# with the examples job (2026-08-13): the README ```kotlin fence must equal
-# kotlin/examples/Quickstart.kt after Trim and the header/package-line strip
-# — the ```text command block is NOT part of the comparison surface.
+# with the examples job (2026-08-13): the gate compares the Trimmed core
+# code — the README ```kotlin fence must equal kotlin/examples/Quickstart.kt
+# after Trim and the header/package-line strip. The ```text command block is
+# NOT protected by the gate (manual sync; W3-42/R14, 2026-08-14).
 #
 # This repository carries the Kotlin implementation only, so the three
 # conformance/differential jobs use the multi-repo checkout mode: they

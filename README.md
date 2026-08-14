@@ -24,7 +24,7 @@ kotlinc -J-Xmx2g -jvm-target 17 -d out src/main/kotlin quickstart.kt
 java -cp "out;<kotlinc>\lib\kotlin-stdlib.jar" QuickstartKt
 ```
 
-（上面的命令块不是 CI 栅栏比对对象——examples job 只比对下方 ```kotlin 栅栏与入库文件；命令块按需保持最新。）
+（上面的命令块不受门禁保护——examples job 只比对下方 ```kotlin 栅栏与入库文件的 Trim 后核心代码（剥离头部注释/package 行）；命令块为人工同步，按需保持最新。）
 
 注：kotlinc 2.2.0 启动器默认堆为 512 MiB，对 163 个主源文件的 K2 编译会在
 IR 阶段耗尽堆——必须加 `-J-Xmx2g`（与 CI 直驱路径的内存档位一致，见
