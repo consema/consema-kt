@@ -16,8 +16,9 @@
 # conformance/* and docs/fc-manifest-0.13.0.json by repository-relative
 # path from CONSEMA_REPO — without the provisioned data those tests fail
 # at construction. Like the CI workflows, this job checks out
-# consema/consema (pinned to 9aa6597, the 2026-08-15 wave-4 R5 unified
-# provision pin carrying the cfd6e296 519-case conformance snapshot) and
+# consema/consema (pinned to ccc9943, the 2026-08-15 wave-4 R5 unified
+# provision pin re-anchored by F2, carrying the cfd6e296 519-case
+# conformance snapshot) and
 # copies the conformance data into the workspace root before
 # testing (multi-repo checkout + provision pattern, ci-kotlin.yml).
 #
@@ -115,7 +116,7 @@ jobs:
         with:
           persist-credentials: false
           repository: consema/consema
-          ref: 9aa65976d51d27f93afcffca957475368a69e93b # wave-4 unified provision pin (mother-repo HEAD; fc-manifest sha256 3fdf9a77)
+          ref: ccc99430a6e3003bc1b0830d81cbad245323f0a4 # wave-4 R5 unified provision pin, F2 re-anchored to mother-repo HEAD (fc-manifest sha256 5cb4ab51)
           path: consema-repo
       - name: provision conformance data from the consema spec repository
         shell: pwsh
@@ -135,9 +136,9 @@ jobs:
           }
           Copy-Item -LiteralPath $manifest -Destination (Join-Path $env:GITHUB_WORKSPACE 'docs\fc-manifest-0.13.0.json') -Force
           # Wave-4 R5 manifest sha256 assertion (unified provision pin
-          # 9aa6597): the pinned checkout must carry exactly the digest
+          # ccc9943): the pinned checkout must carry exactly the digest
           # recorded at the pin — silent manifest drift fails the job.
-          $expectedDigest = '3fdf9a77323705dfaf24e8f3a822b9217da20dd243e668165f4d06a9ea64676d'
+          $expectedDigest = '5cb4ab518cc3b3e1754a07f21953693b4b9ec113443d44c6ed8a6d4fa8faa6f8'
           $actualDigest = (Get-FileHash -Algorithm SHA256 -LiteralPath (Join-Path $env:GITHUB_WORKSPACE 'docs\fc-manifest-0.13.0.json')).Hash.ToLowerInvariant()
           if ($actualDigest -ne $expectedDigest) {
             throw "fc-manifest sha256 mismatch after provision: expected $expectedDigest, got $actualDigest"
