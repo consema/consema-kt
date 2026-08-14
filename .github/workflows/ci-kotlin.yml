@@ -49,8 +49,11 @@
 # (koverVerify, 60% minimum — the build.gradle.kts kover block; report tasks
 # koverHtmlReport/koverXmlReport). The Knit-style doc-example gate landed
 # with the examples job (2026-08-13): the gate compares the Trimmed core
-# code — the README ```kotlin fence must equal kotlin/examples/Quickstart.kt
-# after Trim and the header/package-line strip. The ```text command block is
+# code — exactly one README ```kotlin fence must equal
+# kotlin/examples/Quickstart.kt after Trim and the header/package-line strip
+# (the fence is located by content, not by position — wave-4 R6/GW4-28
+# hardening: a new fence inserted earlier must not silently switch the
+# comparison target). The ```text command block is
 # NOT protected by the gate (manual sync; W3-42/R14, 2026-08-14).
 #
 # This repository carries the Kotlin implementation only, so the three
@@ -184,7 +187,11 @@ jobs:
       # re-unpacks through Gradle's own distributionSha256Sum path. The
       # dists probe prefers the setup-gradle GRADLE_USER_HOME (D:\a\.gradle
       # on hosted Windows runners) and falls back to the default user home
-      # (%USERPROFILE%\.gradle on Windows, $HOME/.gradle on Linux).
+      # (%USERPROFILE%\.gradle on Windows, $HOME/.gradle on Linux). The zip
+      # file name is derived from the wrapper's distributionUrl (GW4-08,
+      # 2026-08-15) — Dependabot tracks gradle-wrapper updates, so a
+      # version bump must not leave a hardcoded 'gradle-8.14-bin.zip'
+      # filter searching for the old name.
       - name: verify cached gradle distribution (restored zip sha256 vs pinned sum, drop .ok markers)
         shell: pwsh
         run: |
@@ -194,6 +201,11 @@ jobs:
           if (-not $sum) {
             throw 'distributionSha256Sum not found in gradle-wrapper.properties'
           }
+          $url = [regex]::Match($props, 'distributionUrl=(\S+)').Groups[1].Value
+          if (-not $url) {
+            throw 'distributionUrl not found in gradle-wrapper.properties'
+          }
+          $zipName = [System.IO.Path]::GetFileName($url)
           $dists = if ($env:GRADLE_USER_HOME -and (Test-Path -LiteralPath $env:GRADLE_USER_HOME)) {
             Join-Path $env:GRADLE_USER_HOME 'wrapper\dists'
           } elseif ($env:USERPROFILE) {
@@ -201,7 +213,7 @@ jobs:
           } else {
             Join-Path $env:HOME '.gradle\wrapper\dists'
           }
-          $zip = Get-ChildItem -Path $dists -Recurse -Filter 'gradle-8.14-bin.zip' -ErrorAction SilentlyContinue | Select-Object -First 1
+          $zip = Get-ChildItem -Path $dists -Recurse -Filter $zipName -ErrorAction SilentlyContinue | Select-Object -First 1
           if ($zip) {
             $actual = (Get-FileHash -Algorithm SHA256 -LiteralPath $zip.FullName).Hash
             if ($actual -ne $sum) {
@@ -221,7 +233,18 @@ jobs:
       # workspace root (Runner.kt resolveRepoRoot, CONSEMA_REPO first). The
       # differential tests without their golden env vars print a documented
       # [SKIP] line and pass (§0.2 skip discipline; the verify scripts are
-      # what assert RUN not SKIP).
+      # what assert RUN not SKIP). Wave-4 R47 skip bound: the gradle test
+      # run must not silently grow its skipped set — exactly the three
+      # env-gated differential legs print a [SKIP] marker here (no
+      # CONSEMA_DIFFERENTIAL_* / CONSEMA_EXCHANGE_* env vars are set in
+      # this job; measured 2026-08-15: ByteParityTest.differentialByteParity,
+      # NormalizedTest.differentialNormalized and
+      # ExchangeTest.protocolExchange — NormalizedTest.emitFormatConsistency
+      # emits into a temp dir and never skips), so the [SKIP] marker count
+      # in the JUnit XML system-out is asserted <= 3. The markers are
+      # printed stdout, not JUnit assumptions — the XML `skipped` attribute
+      # stays 0; gradle aggregates system-out per suite (not per testcase),
+      # so the bound is on marker occurrences.
       - name: run unit tests + kover 60% coverage gate
         shell: pwsh
         working-directory: kotlin
@@ -231,6 +254,24 @@ jobs:
           $ErrorActionPreference = 'Stop'
           .\gradlew.bat test koverVerify
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          # Wave-4 R47: assert the documented skip upper bound from the
+          # JUnit XML results (gradle test output does not surface the
+          # tests' [SKIP] stdout lines; the XML skipped attribute counts
+          # JUnit assumptions only, and the env-gated legs pass with a
+          # printed marker instead).
+          $skipBound = 3
+          $resultDir = Join-Path $env:GITHUB_WORKSPACE 'kotlin\build\test-results\test'
+          if (-not (Test-Path -LiteralPath $resultDir)) {
+            throw "gradle test results not found: $resultDir"
+          }
+          $skipped = 0
+          Get-ChildItem -LiteralPath $resultDir -Filter '*.xml' | ForEach-Object {
+            $skipped += ([regex]::Matches((Get-Content -LiteralPath $_.FullName -Raw), '\[SKIP\]')).Count
+          }
+          if ($skipped -gt $skipBound) {
+            throw "unexpectedly many [SKIP] markers: $skipped (at most $skipBound env-gated differential legs may print a marker — a new silent skip must not grow this set)"
+          }
+          Write-Output "skipped [SKIP] markers: $skipped (<= $skipBound env-gated differential legs)"
       # Test-only-dependency policy (§1.3): the build.gradle.kts
       # dependencies block keeps every declared configuration test-scoped —
       # the runtime classpath carries only the Kotlin platform
@@ -238,12 +279,16 @@ jobs:
       # transitive org.jetbrains:annotations). Asserted at the source level
       # (evaluating configurations.runtimeClasspath would resolve the entire
       # dependency graph; the source-level tripwire is the documented check).
+      # The tripwire regex matches the configuration keyword wherever the
+      # declaration starts (after `{`, `;`, `,` or line start), so a
+      # single-line `dependencies { implementation("x") }` form cannot
+      # bypass it (wave-4 D6-08 family: same shape in audit.yml).
       - name: test-only-dependencies assertion (build.gradle.kts runtime-scoped declarations)
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
           $buildFile = Get-Content (Join-Path $env:GITHUB_WORKSPACE 'kotlin\build.gradle.kts') -Raw
-          if ($buildFile -match '(?m)^\s*(implementation|api|compileOnly|runtimeOnly)\s*(/\*.*?\*/)?\s*[("]') {
+          if ($buildFile -match '(?m)(?:^|[;{,])[ \t]*(implementation|api|compileOnly|runtimeOnly)\s*(/\*.*?\*/)?\s*[("]') {
             throw 'build.gradle.kts must keep every declared configuration test-scoped (runtime-scoped dependency found)'
           }
           if ($buildFile -notmatch '(?m)^\s*testImplementation\s*\(' -or $buildFile -notmatch '(?m)^\s*testRuntimeOnly\s*\(') {
@@ -431,8 +476,13 @@ jobs:
           Write-Output "main sources compiled into $mainOut"
       # Compiles the runner test (ConformanceRunnerTest.kt — the digest and
       # 18/519 hard pins) together with a temp main() test runner, the
-      # pattern of scripts/kotlin-verify-byte-parity.ps1 (kotlin.test shim
-      # not needed: the runner drives the @Test methods directly).
+      # pattern of scripts/kotlin-verify-byte-parity.ps1 (the committed
+      # kotlin/verify/TestShim.kt shim was removed 2026-08-13 — the runner
+      # drives the @Test methods directly). Wave-4 R52: the runner
+      # discovers the @Test methods reflectively (annotation qualified name,
+      # no junit jar needed at runtime) instead of a hand-maintained
+      # mapOf list — a new @Test on ConformanceRunnerTest runs
+      # automatically and can never silently stay off the execution face.
       - name: compile the conformance runner test + temp main() runner (K2JVMCompiler)
         shell: pwsh
         run: |
@@ -470,14 +520,25 @@ jobs:
                       e.printStackTrace()
                   }
               }
-              val tests = mapOf(
-                  "ConformanceRunnerTest.aggregateDigestMatchesTheManifest" to { ConformanceRunnerTest().aggregateDigestMatchesTheManifest() },
-                  "ConformanceRunnerTest.allEighteenSuitesPassFiveHundredNineteenCases" to { ConformanceRunnerTest().allEighteenSuitesPassFiveHundredNineteenCases() },
-                  "ConformanceRunnerTest.everySuiteAssertsItsFrozenCaseCount" to { ConformanceRunnerTest().everySuiteAssertsItsFrozenCaseCount() },
-              )
+              // Generative @Test discovery (wave-4 R52): every method of
+              // ConformanceRunnerTest annotated org.junit.jupiter.api.Test
+              // (the kotlin.test.Test typealias target) is executed — a
+              // hand-maintained name list could silently drift from the
+              // compiled test set. The annotation is matched by qualified
+              // name so no junit jar is required on the runtime classpath.
+              val tests = ConformanceRunnerTest::class.java.declaredMethods
+                  .filter { m -> m.annotations.any { it.annotationClass.qualifiedName == "org.junit.jupiter.api.Test" } }
+                  .sortedBy { it.name }
+                  .map { m -> "ConformanceRunnerTest.${m.name}" to { m.invoke(ConformanceRunnerTest()); Unit } }
+                  .toMap()
               for (arg in args) {
                   val block = tests[arg] ?: error("unknown test $arg")
                   run(arg, block)
+              }
+              if (args.isEmpty()) {
+                  for ((name, block) in tests) {
+                      run(name, block)
+                  }
               }
               println("tests: $runs run, $failures failed")
               if (runs == 0) {
@@ -512,13 +573,28 @@ jobs:
           $kotlinTestJar = Join-Path $kotlinc 'lib\kotlin-test.jar'
           $stdlib = Join-Path $kotlinc 'lib\kotlin-stdlib.jar'
           $env:CONSEMA_REPO = $env:GITHUB_WORKSPACE
-          $runCp = "$mainOut;$runnerOut;$stdlib;$kotlinTestJar"
-          & $java -Xmx2g -cp $runCp consema.conformance.ConformanceTestRunnerKt 'ConformanceRunnerTest.aggregateDigestMatchesTheManifest' 'ConformanceRunnerTest.allEighteenSuitesPassFiveHundredNineteenCases' 'ConformanceRunnerTest.everySuiteAssertsItsFrozenCaseCount'
+          # R52: no test-name arguments — the runner discovers every @Test
+          # method of ConformanceRunnerTest itself. The runtime classpath
+          # carries the junit-jupiter-api jar (sha256-verified in the
+          # provision step above) because reflective annotation discovery
+          # needs org.junit.jupiter.api.Test loadable at runtime — without
+          # it the JVM silently drops the annotation and zero tests are
+          # discovered (the runner then refuses to pass: "no tests ran").
+          $junitJar = Join-Path $env:GITHUB_WORKSPACE 'kotlin\build\verify\lib\junit-jupiter-api-5.10.2.jar'
+          if (-not (Test-Path -LiteralPath $junitJar)) {
+            throw "junit-jupiter-api jar not found: $junitJar"
+          }
+          $runCp = "$mainOut;$runnerOut;$stdlib;$kotlinTestJar;$junitJar"
+          & $java -Xmx2g -cp $runCp consema.conformance.ConformanceTestRunnerKt
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
       # CLI smoke gate (six-repo audit G158): the runner CLI (Cli.kt main)
       # was shipped but had no executor — run it here and require exit 0
-      # (RFC 0015 §5.1 success class; a conformant run must exit 0).
-      - name: smoke-run the conformance CLI (Cli.kt main, must exit 0)
+      # (RFC 0015 §5.1 success class; a conformant run must exit 0). Wave-4
+      # R47 output evidence: exit 0 alone would not prove the suites were
+      # actually run (a main() that returned without executing runAll could
+      # still exit 0), so the captured output must contain the 18 per-suite
+      # report lines and the aggregate digest line.
+      - name: smoke-run the conformance CLI (Cli.kt main, 18 suite reports + digest line, exit 0)
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
@@ -528,9 +604,17 @@ jobs:
           $mainOut = Join-Path $work 'main'
           $stdlib = Join-Path $kotlinc 'lib\kotlin-stdlib.jar'
           $env:CONSEMA_REPO = $env:GITHUB_WORKSPACE
-          & $java -Xmx2g -cp "$mainOut;$stdlib" consema.conformance.CliKt
+          $output = & $java -Xmx2g -cp "$mainOut;$stdlib" consema.conformance.CliKt 2>&1
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-          Write-Output 'conformance CLI exited 0 on the provisioned data'
+          $suiteReports = @($output | Where-Object { $_ -match '^(PASS|FAIL) ' })
+          if ($suiteReports.Count -ne 18) {
+            throw "conformance CLI must print 18 per-suite report lines (got $($suiteReports.Count))"
+          }
+          $digestLines = @($output | Where-Object { $_ -match '^digest: OK ' })
+          if ($digestLines.Count -ne 1) {
+            throw "conformance CLI must print exactly one 'digest: OK' line (got $($digestLines.Count))"
+          }
+          Write-Output "conformance CLI smoke: 18 per-suite reports + digest line ($($digestLines[0]))"
 
   kotlin-differential:
     name: kotlin differential vs Rust (byte parity + normalized + protocol exchange)
@@ -678,10 +762,15 @@ jobs:
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
   # Version-consistency gate (tokio check-readme pattern): the README
-  # "Version:" line must equal the kotlin/build.gradle.kts rootProject
-  # version, so a version bump that forgets the README fails CI.
+  # "Version:" line, the README quick-start Maven coordinates
+  # (dev.consema:consema-kotlin:<version>), the bug-report template's
+  # "当前 <version>" note and the toml/TestFixtures.kt workspace-package
+  # version literal must all equal the kotlin/build.gradle.kts rootProject
+  # version, so a version bump that forgets any of them fails CI
+  # (wave-4 R36/GW4-30: the job name and this note describe the full
+  # assertion surface, not just the README line).
   check-version-consistency:
-    name: check README version vs build.gradle.kts (version consistency)
+    name: check version consistency (README line + Maven coordinates + bug-report template + test fixture)
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
@@ -705,30 +794,63 @@ jobs:
             exit 1
           }
           echo "README version consistent with build.gradle.kts: $version"
-      # Extended coverage (six-repo audit G127): the README Maven coordinates
-      # (快速开始, dev.consema:consema-kotlin:<version>) and the bug-report
-      # template's version note must ride the same train bump. Whole-token
-      # match (G74, 2026-08-14): a substring match would let the rc->GA
-      # direction through ('dev.consema:consema-kotlin:1.0.0-rc.1' contains
+      # Extended coverage (six-repo audit G127; wave-4 R36/GW4-05): the
+      # README Maven coordinates (快速开始, dev.consema:consema-kotlin:
+      # <version>), the bug-report template's version note and the
+      # toml/TestFixtures.kt workspace-package version literal must ride
+      # the same train bump. Whole-token match (G74, 2026-08-14): a
+      # substring match would let the rc->GA direction through
+      # ('dev.consema:consema-kotlin:1.0.0-rc.1' contains
       # 'dev.consema:consema-kotlin:1.0.0' as a prefix), so every occurrence
-      # is extracted to its natural token end and compared exactly.
+      # is extracted to its natural token end and compared exactly. Each
+      # location is ALSO asserted to exist (grep -q): a one-way gate that
+      # only compares found occurrences would go green when the whole
+      # location was deleted — the invariants must hold in both directions.
       - name: assert README Maven coordinates and bug-report template version match
         shell: bash
         run: |
           set -euo pipefail
           version=$(grep -m1 '^version' kotlin/build.gradle.kts | sed -E 's/^version[[:space:]]*=[[:space:]]*"([^"]+)".*/\1/')
+          grep -qF 'dev.consema:consema-kotlin:' README.md || {
+            echo "::error::README.md quick-start Maven coordinates are missing (must pin dev.consema:consema-kotlin:$version)"
+            exit 1
+          }
           stale=$(grep -oE 'dev\.consema:consema-kotlin:[0-9][^`"()）]*' README.md | grep -vxF "dev.consema:consema-kotlin:$version" || true)
           if [ -n "$stale" ]; then
             echo "::error::README.md quick-start Maven coordinates do not pin dev.consema:consema-kotlin:$version (found: $stale)"
             exit 1
           fi
           echo "README Maven coordinates match: dev.consema:consema-kotlin:$version"
+          grep -qF '当前 ' .github/ISSUE_TEMPLATE/bug_report.yml || {
+            echo "::error::.github/ISSUE_TEMPLATE/bug_report.yml version note ('当前 <version>') is missing"
+            exit 1
+          }
           stale=$(grep -oE '当前 [0-9][^）]*' .github/ISSUE_TEMPLATE/bug_report.yml | grep -vxF "当前 $version" || true)
           if [ -n "$stale" ]; then
             echo "::error::.github/ISSUE_TEMPLATE/bug_report.yml does not note '当前 $version' (must match the train bump; found: $stale)"
             exit 1
           fi
           echo "bug-report template version matches: $version"
+      # Test-fixture version literal (wave-4 R36): the
+      # kotlin/src/test/kotlin/toml/TestFixtures.kt workspace-package
+      # fixture carries `version = "<rootProject version>"` — it must ride
+      # the same train bump (existence + exact match; the trailing quote
+      # makes the match rc->GA safe, see the Maven-coordinate note above).
+      - name: assert toml/TestFixtures.kt workspace-package version literal matches
+        shell: bash
+        run: |
+          set -euo pipefail
+          version=$(grep -m1 '^version' kotlin/build.gradle.kts | sed -E 's/^version[[:space:]]*=[[:space:]]*"([^"]+)".*/\1/')
+          fixture=kotlin/src/test/kotlin/toml/TestFixtures.kt
+          grep -qF 'version = "' "$fixture" || {
+            echo "::error::$fixture workspace-package version literal is missing"
+            exit 1
+          }
+          grep -qF "version = \"$version\"" "$fixture" || {
+            echo "::error::$fixture does not pin 'version = \"$version\"' (must match the train bump)"
+            exit 1
+          }
+          echo "toml/TestFixtures.kt version literal matches: $version"
 
   # SDK examples gate: kotlin/examples/SdkChain.kt (the committed
   # five-language SDK chain example — parse -> native query -> best-exact
@@ -737,9 +859,12 @@ jobs:
   # https://github.com/consema/consema/blob/main/docs/cookbook.md) and kotlin/examples/Quickstart.kt (the root README
   # "快速开始" snippet as a committed example — parse -> query -> edit ->
   # render). kotlinc compiles the main sources and the examples together
-  # (the kotlin-gates K2JVMCompiler pattern), and both examples are actually
-  # run with java. The examples are pure SDK chains (no conformance data),
-  # so no multi-repo checkout or provision step is needed.
+  # (the direct-K2JVMCompiler pattern of kotlin-conformance /
+  # kotlin-differential — kotlin-gates runs the unit suite through the
+  # Gradle wrapper since b640af6, wave-4 D6-13 wording), and both examples
+  # are actually run with java. The examples are pure SDK chains (no
+  # conformance data), so no multi-repo checkout or provision step is
+  # needed.
   examples:
     name: examples (kotlinc + run SdkChain.kt / Quickstart.kt)
     runs-on: windows-latest
@@ -809,26 +934,32 @@ jobs:
       # README ```kotlin fence must equal the committed examples/Quickstart.kt
       # code body (after the file's header comment and package line), so the
       # "粘贴版与入库版必须保持一致" claim is enforced, not asserted.
+      # Wave-4 R6/#12: the fence is located by content, not by position —
+      # every ```kotlin fence in the README is compared against the file
+      # body and exactly one must match, so a new fence inserted earlier in
+      # the README can never silently switch the comparison target.
       - name: README quick-start fence must match kotlin/examples/Quickstart.kt
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
           $readme = Get-Content (Join-Path $env:GITHUB_WORKSPACE 'README.md') -Raw
-          $m = [regex]::Match($readme, '(?s)```kotlin\r?\n(.*?)\r?\n```')
-          if (-not $m.Success) {
-            throw 'README.md quick-start fence (```kotlin ... ```) not found'
-          }
-          $fence = ($m.Groups[1].Value -replace "`r", '').Trim()
           $file = Get-Content (Join-Path $env:GITHUB_WORKSPACE 'kotlin/examples/Quickstart.kt') -Raw
           $normalized = ($file -replace "`r", '') -split '(?m)^package consema\.examples\r?\n', 2
           if ($normalized.Count -ne 2) {
             throw 'kotlin/examples/Quickstart.kt must declare package consema.examples'
           }
           $body = $normalized[1].Trim()
-          if ($fence -ne $body) {
-            throw 'README quick-start fence must equal kotlin/examples/Quickstart.kt (after its header comment and package line)'
+          $matches = @()
+          foreach ($m in [regex]::Matches($readme, '(?s)```kotlin\r?\n(.*?)\r?\n```')) {
+            $fence = ($m.Groups[1].Value -replace "`r", '').Trim()
+            if ($fence -eq $body) {
+              $matches += $fence
+            }
           }
-          Write-Output 'README quick-start fence matches kotlin/examples/Quickstart.kt'
+          if ($matches.Count -ne 1) {
+            throw "README.md must contain exactly one ```kotlin fence equal to kotlin/examples/Quickstart.kt (after its header comment and package line) — found $($matches.Count) matching fence(s)"
+          }
+          Write-Output 'README quick-start fence matches kotlin/examples/Quickstart.kt (located by content)'
       # Compiles every main source into one module (internal visibility),
       # then compiles the examples against it and runs both with java.
       - name: compile main sources + examples (K2JVMCompiler) and run
@@ -894,7 +1025,8 @@ jobs:
       # (%USERPROFILE%\.gradle on Windows, $HOME/.gradle on Linux). The .ok
       # marker deletion (Ruling R9, 2026-08-14)
       # forces the next gradlew run to re-verify the zip and re-unpack
-      # through Gradle's own distributionSha256Sum path.
+      # through Gradle's own distributionSha256Sum path. The zip file name
+      # is derived from the wrapper's distributionUrl (GW4-08, 2026-08-15).
       - name: verify cached gradle distribution (restored zip sha256 vs pinned sum, drop .ok markers)
         shell: pwsh
         run: |
@@ -904,6 +1036,11 @@ jobs:
           if (-not $sum) {
             throw 'distributionSha256Sum not found in gradle-wrapper.properties'
           }
+          $url = [regex]::Match($props, 'distributionUrl=(\S+)').Groups[1].Value
+          if (-not $url) {
+            throw 'distributionUrl not found in gradle-wrapper.properties'
+          }
+          $zipName = [System.IO.Path]::GetFileName($url)
           $dists = if ($env:GRADLE_USER_HOME -and (Test-Path -LiteralPath $env:GRADLE_USER_HOME)) {
             Join-Path $env:GRADLE_USER_HOME 'wrapper\dists'
           } elseif ($env:USERPROFILE) {
@@ -911,7 +1048,7 @@ jobs:
           } else {
             Join-Path $env:HOME '.gradle\wrapper\dists'
           }
-          $zip = Get-ChildItem -Path $dists -Recurse -Filter 'gradle-8.14-bin.zip' -ErrorAction SilentlyContinue | Select-Object -First 1
+          $zip = Get-ChildItem -Path $dists -Recurse -Filter $zipName -ErrorAction SilentlyContinue | Select-Object -First 1
           if ($zip) {
             $actual = (Get-FileHash -Algorithm SHA256 -LiteralPath $zip.FullName).Hash
             if ($actual -ne $sum) {
@@ -945,17 +1082,22 @@ jobs:
 
   # Dependency audit (runtimeClasspath), the standing security gate in the
   # aggregate check (G103, 2026-08-14; rs/go/ts/py shape). Identical to the
-  # audit.yml runtime-classpath job, which adds the daily cron that
-  # ci-kotlin.yml cannot express — the aggregate check's needs must name
-  # jobs inside this workflow. The runtime classpath carries only the Kotlin
-  # platform (kotlin-stdlib + its transitive org.jetbrains:annotations), so
-  # the assertion allows exactly those coordinates (W3-26, 2026-08-14:
-  # measured resolution is org.jetbrains.kotlin:kotlin-stdlib:2.2.0 and
-  # org.jetbrains:annotations:13.0). This job is a runtimeClasspath
-  # coordinate assertion, not a CVE-database scan — the audit.yml header
-  # documents that standing gap.
+  # audit.yml runtime-classpath-audit job, which owns the daily cron (G099,
+  # 2026-08-15: "a schedule ci-kotlin.yml cannot express" was a false causal
+  # claim — any workflow may declare schedule beside push/pull_request; the
+  # cron stays in audit.yml as the standing audit track) — the aggregate
+  # check's needs must name jobs inside this workflow. The runtime
+  # classpath carries only the Kotlin platform (kotlin-stdlib + its
+  # transitive org.jetbrains:annotations), so the assertion allows exactly
+  # those coordinates (W3-26, 2026-08-14: measured resolution is
+  # org.jetbrains.kotlin:kotlin-stdlib:2.2.0 and org.jetbrains:annotations:
+  # 13.0) and additionally requires kotlin-stdlib to be present in the
+  # resolved tree (wave-4 R47: a positive lower-bound assertion — an empty
+  # or misconfigured resolution must fail, not silently pass). This job is
+  # a runtimeClasspath coordinate assertion, not a CVE-database scan — the
+  # audit.yml header documents that standing gap.
   runtime-classpath-audit:
-    name: runtimeClasspath audit (gradlew dependencies, zero runtime deps)
+    name: 'runtimeClasspath audit (gradlew dependencies, zero third-party runtime deps — allow-list: kotlin-stdlib + annotations)'
     runs-on: windows-latest
     timeout-minutes: 30
     steps:
@@ -982,7 +1124,11 @@ jobs:
       # re-unpack through Gradle's own distributionSha256Sum path. The dists
       # probe prefers the setup-gradle GRADLE_USER_HOME (D:\a\.gradle on
       # hosted Windows runners) and falls back to the default user home
-      # (%USERPROFILE%\.gradle on Windows, $HOME/.gradle on Linux).
+      # (%USERPROFILE%\.gradle on Windows, $HOME/.gradle on Linux). The zip
+      # file name is derived from the wrapper's distributionUrl (GW4-08,
+      # 2026-08-15) — Dependabot tracks gradle-wrapper updates, so a
+      # version bump must not leave a hardcoded filter searching for the
+      # old name.
       - name: verify cached gradle distribution (restored zip sha256 vs pinned sum, drop .ok markers)
         shell: pwsh
         run: |
@@ -992,6 +1138,11 @@ jobs:
           if (-not $sum) {
             throw 'distributionSha256Sum not found in gradle-wrapper.properties'
           }
+          $url = [regex]::Match($props, 'distributionUrl=(\S+)').Groups[1].Value
+          if (-not $url) {
+            throw 'distributionUrl not found in gradle-wrapper.properties'
+          }
+          $zipName = [System.IO.Path]::GetFileName($url)
           $dists = if ($env:GRADLE_USER_HOME -and (Test-Path -LiteralPath $env:GRADLE_USER_HOME)) {
             Join-Path $env:GRADLE_USER_HOME 'wrapper\dists'
           } elseif ($env:USERPROFILE) {
@@ -999,7 +1150,7 @@ jobs:
           } else {
             Join-Path $env:HOME '.gradle\wrapper\dists'
           }
-          $zip = Get-ChildItem -Path $dists -Recurse -Filter 'gradle-8.14-bin.zip' -ErrorAction SilentlyContinue | Select-Object -First 1
+          $zip = Get-ChildItem -Path $dists -Recurse -Filter $zipName -ErrorAction SilentlyContinue | Select-Object -First 1
           if ($zip) {
             $actual = (Get-FileHash -Algorithm SHA256 -LiteralPath $zip.FullName).Hash
             if ($actual -ne $sum) {
@@ -1025,16 +1176,26 @@ jobs:
           # org.jetbrains.kotlin:kotlin-stdlib -> org.jetbrains:annotations.
           $allowed = @('org.jetbrains.kotlin:kotlin-stdlib', 'org.jetbrains:annotations')
           $violations = @()
+          $stdlibFound = $false
           foreach ($line in $output) {
             if ($line -match '^\s*(?:\|\s+)*[+\\]---\s+([^:\s]+):([^:\s]+):') {
               $coordinate = "$($Matches[1]):$($Matches[2])"
               if ($allowed -notcontains $coordinate) { $violations += $line }
+              if ($coordinate -eq 'org.jetbrains.kotlin:kotlin-stdlib') { $stdlibFound = $true }
             }
           }
           if ($violations.Count -gt 0) {
             throw "runtimeClasspath resolved third-party dependencies (test-only-dependency policy violated):`n" + ($violations -join "`n")
           }
-          Write-Output 'runtimeClasspath: only the Kotlin platform (kotlin-stdlib) — every declared configuration is test-scoped (test-only deps)'
+          # Wave-4 R47 lower bound: the guard's baseline invariant is
+          # "runtime classpath = Kotlin platform only" — if the resolution
+          # came back empty (plugin failure, broken configuration) the
+          # violations scan alone would be green. kotlin-stdlib must be
+          # present in the resolved tree.
+          if (-not $stdlibFound) {
+            throw 'runtimeClasspath did not resolve org.jetbrains.kotlin:kotlin-stdlib (empty or misconfigured dependency graph — the Kotlin platform baseline is missing)'
+          }
+          Write-Output 'runtimeClasspath: only the Kotlin platform (kotlin-stdlib present, no third-party group) — every declared configuration is test-scoped (test-only deps)'
 
   # Alls-green aggregate gate (tokio/pydantic pattern): `check (all gates
   # green)` is the SINGLE required check for branch protection on this

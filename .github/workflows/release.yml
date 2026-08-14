@@ -64,16 +64,21 @@ jobs:
       # the push, when origin/main may already have advanced past the tag's
       # commit, so a realtime HEAD comparison would fail a legitimately
       # pushed tag; ancestry is used instead (git merge-base --is-ancestor).
+      # The GITHUB_SHA of a tag-push event is the tag object id; ^{commit}
+      # peels annotated tags to the commit they point at (a no-op for
+      # lightweight tags and plain commits), so both tag forms are accepted
+      # (wave-4 R7; locally rehearsed: tip/ancestor pass, off-main fails).
       - name: verify tag points at a commit on main
         shell: bash
         run: |
           set -euo pipefail
           git fetch origin main --quiet
-          if ! git merge-base --is-ancestor "$GITHUB_SHA" FETCH_HEAD; then
-            echo "::error::tag $GITHUB_REF_NAME does not point at a commit on origin/main"
+          peeled="${GITHUB_SHA}^{commit}"
+          if ! git merge-base --is-ancestor "$peeled" FETCH_HEAD; then
+            echo "::error::tag $GITHUB_REF_NAME does not point at a commit on origin/main (peeled ${GITHUB_SHA}^{commit})"
             exit 1
           fi
-          echo "tag $GITHUB_REF_NAME points at a commit on origin/main"
+          echo "tag $GITHUB_REF_NAME (peeled $peeled) points at a commit on origin/main"
       # Release guard (rc 前六角色审计 P1, 2026-08-12): the tag minus the
       # leading v must equal the rootProject version, otherwise a mismatched
       # tag could publish the wrong version to Maven Central.
@@ -140,10 +145,14 @@ jobs:
           $count = @(Get-ChildItem -LiteralPath $target -Recurse -File).Count
           Write-Output "provisioned conformance/: $count files + docs/fc-manifest-0.13.0.json"
       # Release-path test gate: the differential legs without their golden
-      # env vars (no CONSEMA_DIFFERENTIAL_* / CONSEMA_EXCHANGE_* here) print
-      # a documented [SKIP] and pass (§0.2 skip discipline) — wave-4 R47
-      # asserts the skip upper bound from the JUnit XML results, so a new
-      # silent skip cannot grow the set at release time.
+      # env vars (no CONSEMA_DIFFERENTIAL_* / CONSEMA_EXCHANGE_* here)
+      # print a documented [SKIP] and pass (§0.2 skip discipline) — wave-4
+      # R47 asserts the skip upper bound from the JUnit XML results, so a
+      # new silent skip cannot grow the set at release time. Measured
+      # 2026-08-15: exactly the three env-gated differential legs print a
+      # marker (differentialByteParity / differentialNormalized /
+      # protocolExchange; gradle aggregates system-out per suite, so the
+      # bound is on [SKIP] marker occurrences in the XML).
       - name: gradlew test (release-path test gate, provisioned conformance data)
         working-directory: kotlin
         env:
@@ -151,12 +160,18 @@ jobs:
         run: |
           set -euo pipefail
           bash gradlew test --no-daemon
-          skipped=$(find kotlin/build/test-results/test -name '*.xml' -exec grep -ho 'skipped="[0-9]*"' {} + 2>/dev/null | sed -E 's/skipped="([0-9]+)"/\1/' | awk '{s+=$1} END {print s+0}')
-          if [ "$skipped" -gt 4 ]; then
-            echo "::error::unexpectedly many skipped tests: $skipped (at most 4 documented env-gated differential legs may skip — a new silent skip must not grow this set)"
+          skipped=$(python3 -c '
+          import glob, re
+          n = 0
+          for f in glob.glob("kotlin/build/test-results/test/TEST-*.xml"):
+              n += len(re.findall(r"\[SKIP\]", open(f, encoding="utf-8").read()))
+          print(n)
+          ')
+          if [ "$skipped" -gt 3 ]; then
+            echo "::error::unexpectedly many [SKIP] markers: $skipped (at most 3 env-gated differential legs may print a marker — a new silent skip must not grow this set)"
             exit 1
           fi
-          echo "skipped tests: $skipped (<= 4 documented env-gated differential legs)"
+          echo "skipped [SKIP] markers: $skipped (<= 3 env-gated differential legs)"
       - name: gradlew publish (portal deploy, signed artifacts)
         working-directory: kotlin
         env:

@@ -59,8 +59,12 @@ permissions:
   contents: read
 
 jobs:
-  runtime-classpath:
-    name: runtimeClasspath audit (gradlew dependencies, zero runtime deps)
+  runtime-classpath-audit:
+    # Job id = the ci-kotlin.yml anchor name (wave-4 R50/D6-24): the
+    # five-language-ci-design.md §7.1/§10 and kt README refer to the
+    # runtimeClasspath audit by "runtime-classpath-audit" — audit.yml used
+    # a divergent id, so the documented anchor could not be found here.
+    name: 'runtimeClasspath audit (gradlew dependencies, zero third-party runtime deps — allow-list: kotlin-stdlib + annotations)'
     runs-on: windows-latest
     timeout-minutes: 30
     steps:
@@ -82,6 +86,50 @@ jobs:
       # kotlin-gates job.
       - name: cache gradle user home (wrapper dist + dependency caches)
         uses: gradle/actions/setup-gradle@ed408507eac070d1f99cc633dbcf757c94c7933a # v4.4.3
+      # Cache-restore integrity (wave-4 R21/D6-07): the cron track must run
+      # the same "verify cached gradle distribution" step as the ci-kotlin
+      # wrapper jobs — a cache-restored distribution skips Gradle's own
+      # download-time distributionSha256Sum check, and the cron track is
+      # the standing supply-chain gate, so the restored zip is re-verified
+      # here and every dists/<hash>/<zip>.ok marker is dropped (Ruling R9)
+      # so the next gradlew run re-verifies and re-unpacks through Gradle's
+      # own path. The zip file name is derived from the wrapper's
+      # distributionUrl (GW4-08, 2026-08-15) — Dependabot tracks
+      # gradle-wrapper updates, so a version bump must not leave a
+      # hardcoded filter searching for the old name.
+      - name: verify cached gradle distribution (restored zip sha256 vs pinned sum, drop .ok markers)
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $props = Get-Content (Join-Path $env:GITHUB_WORKSPACE 'kotlin\gradle\wrapper\gradle-wrapper.properties') -Raw
+          $sum = [regex]::Match($props, 'distributionSha256Sum=([0-9a-fA-F]+)').Groups[1].Value
+          if (-not $sum) {
+            throw 'distributionSha256Sum not found in gradle-wrapper.properties'
+          }
+          $url = [regex]::Match($props, 'distributionUrl=(\S+)').Groups[1].Value
+          if (-not $url) {
+            throw 'distributionUrl not found in gradle-wrapper.properties'
+          }
+          $zipName = [System.IO.Path]::GetFileName($url)
+          $dists = if ($env:GRADLE_USER_HOME -and (Test-Path -LiteralPath $env:GRADLE_USER_HOME)) {
+            Join-Path $env:GRADLE_USER_HOME 'wrapper\dists'
+          } elseif ($env:USERPROFILE) {
+            Join-Path $env:USERPROFILE '.gradle\wrapper\dists'
+          } else {
+            Join-Path $env:HOME '.gradle\wrapper\dists'
+          }
+          $zip = Get-ChildItem -Path $dists -Recurse -Filter $zipName -ErrorAction SilentlyContinue | Select-Object -First 1
+          if ($zip) {
+            $actual = (Get-FileHash -Algorithm SHA256 -LiteralPath $zip.FullName).Hash
+            if ($actual -ne $sum) {
+              throw "cached gradle distribution sha256 mismatch (got $actual, want $sum)"
+            }
+            Write-Output "cached gradle distribution verified: $($zip.FullName)"
+          } else {
+            Write-Output 'no cached gradle distribution zip — the wrapper will download it (download-time sha256 check applies)'
+          }
+          Get-ChildItem -Path $dists -Recurse -Filter '*.ok' -ErrorAction SilentlyContinue | Remove-Item -Force
+          Write-Output 'dropped gradle wrapper dists *.ok markers — gradlew re-verifies the distribution (distributionSha256Sum)'
       # Evaluates the actual runtime classpath through the committed
       # wrapper. The Kotlin Gradle plugin adds kotlin-stdlib (2.2.0, with
       # its transitive org.jetbrains:annotations) to runtimeClasspath by
@@ -90,7 +138,10 @@ jobs:
       # org.jetbrains.kotlin:kotlin-stdlib + org.jetbrains:annotations, the
       # same coordinate pin as the ci-kotlin.yml runtime-classpath-audit
       # job) and fails on any other artifact, including stray
-      # JetBrains-group artifacts (e.g. kotlin-reflect).
+      # JetBrains-group artifacts (e.g. kotlin-reflect). The baseline
+      # invariant is additionally asserted positively (wave-4 R47):
+      # kotlin-stdlib must be present in the resolved tree — an empty or
+      # misconfigured resolution must fail, not silently pass.
       - name: gradlew dependencies --configuration runtimeClasspath (test-only deps — runtime classpath = Kotlin platform only)
         shell: pwsh
         working-directory: kotlin
@@ -100,29 +151,38 @@ jobs:
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           $allowed = @('org.jetbrains.kotlin:kotlin-stdlib', 'org.jetbrains:annotations')
           $violations = @()
+          $stdlibFound = $false
           foreach ($line in $output) {
             # Match top-level and nested tree lines (nested entries are
             # prefixed with '|     ' continuation markers).
             if ($line -match '^\s*(?:\|\s+)*[+\\]---\s+([^:\s]+):([^:\s]+):') {
               $coordinate = "$($Matches[1]):$($Matches[2])"
               if ($allowed -notcontains $coordinate) { $violations += $line }
+              if ($coordinate -eq 'org.jetbrains.kotlin:kotlin-stdlib') { $stdlibFound = $true }
             }
           }
           if ($violations.Count -gt 0) {
             throw "runtimeClasspath resolved third-party dependencies (test-only-dependency policy violated):`n" + ($violations -join "`n")
           }
-          Write-Output 'runtimeClasspath: only the Kotlin platform (kotlin-stdlib) — every declared configuration is test-scoped (test-only deps)'
+          if (-not $stdlibFound) {
+            throw 'runtimeClasspath did not resolve org.jetbrains.kotlin:kotlin-stdlib (empty or misconfigured dependency graph — the Kotlin platform baseline is missing)'
+          }
+          Write-Output 'runtimeClasspath: only the Kotlin platform (kotlin-stdlib present, no third-party group) — every declared configuration is test-scoped (test-only deps)'
       # Source-level tripwire, kept as the documented check: build.gradle.kts
       # must keep every declared configuration test-scoped (evaluating
       # configurations.runtimeClasspath would resolve the entire dependency
       # graph; the source-level tripwire is the standing gate, identical to
-      # the ci-kotlin.yml kotlin-gates job).
+      # the ci-kotlin.yml kotlin-gates job). The regex matches the
+      # configuration keyword wherever the declaration starts (after `{`,
+      # `;`, `,` or line start), so a single-line
+      # `dependencies { implementation("x") }` form cannot bypass it
+      # (wave-4 D6-08 family: same shape as ci-kotlin.yml).
       - name: test-only-dependencies source-level assertion (build.gradle.kts runtime-scoped declarations)
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
           $buildFile = Get-Content (Join-Path $env:GITHUB_WORKSPACE 'kotlin\build.gradle.kts') -Raw
-          if ($buildFile -match '(?m)^\s*(implementation|api|compileOnly|runtimeOnly)\s*(/\*.*?\*/)?\s*[("]') {
+          if ($buildFile -match '(?m)(?:^|[;{,])[ \t]*(implementation|api|compileOnly|runtimeOnly)\s*(/\*.*?\*/)?\s*[("]') {
             throw 'build.gradle.kts must keep every declared configuration test-scoped (runtime-scoped dependency found)'
           }
           if ($buildFile -notmatch '(?m)^\s*testImplementation\s*\(' -or $buildFile -notmatch '(?m)^\s*testRuntimeOnly\s*\(') {
