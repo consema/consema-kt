@@ -27,7 +27,10 @@ param(
 #      bytes are byte-equal, the Rust bytes decode under the Kotlin typed
 #      record codec to equivalent records and re-encode byte-identically,
 #      rejection cases reject with the same registered code, and the
-#      Kotlin-side encoder files are emitted into CONSEMA_EXCHANGE_KT_DIR;
+#      Kotlin-side encoder files are emitted into CONSEMA_EXCHANGE_KOTLIN_DIR
+#      (the language-suffixed name per five-language-ci-design.md §3.4/§7.2;
+#      wave-4 R50 renamed it from the old CONSEMA_EXCHANGE_KT_DIR — the test
+#      sources read the _KOTLIN_DIR name, see ExchangeTest.kt);
 #   4. reverse direction: runs the Rust example's --verify mode over the
 #      Kotlin encoder files (Kotlin encode -> Rust decode).
 #
@@ -218,7 +221,7 @@ if ($actualJunitSha256 -ne $expectedJunitSha256) {
 
 $env:CONSEMA_REPO = $workspaceRoot
 $env:CONSEMA_EXCHANGE_RUST_DIR = $OutDir
-$env:CONSEMA_EXCHANGE_KT_DIR = $ktOutDir
+$env:CONSEMA_EXCHANGE_KOTLIN_DIR = $ktOutDir
 $previousEap = $ErrorActionPreference
 $ErrorActionPreference = 'Continue'
 
@@ -231,9 +234,14 @@ if ($compileCode -ne 0) {
     exit $compileCode
 }
 
-# 2. the temp main() test runner (the kotlin-test shim pattern: the runner
-# drives the @Test methods directly, so no JUnit platform is needed at
-# runtime; kotlin-test.jar only).
+# 2. the temp main() test runner (the committed kotlin/verify/TestShim.kt
+# shim was removed 2026-08-13 — its dead `package kotlin.test` annotation
+# class would clash with kotlin-test.jar; the runner drives the @Test
+# methods directly, so no JUnit platform is needed at runtime,
+# kotlin-test.jar only). Wave-4 R52: the runner discovers the @Test
+# methods reflectively (annotation qualified name) instead of a
+# hand-maintained name list — a new @Test on ExchangeTest runs
+# automatically and can never silently stay off the execution face.
 $runnerSource = Join-Path $workDir 'TestRunner.kt'
 @'
 package differential
@@ -254,13 +262,19 @@ fun main(args: Array<String>) {
             e.printStackTrace()
         }
     }
-    val tests = mapOf(
-        "ExchangeTest.caseFileIntegrity" to { ExchangeTest().caseFileIntegrity() },
-        "ExchangeTest.protocolExchange" to { ExchangeTest().protocolExchange() },
-    )
+    val tests = ExchangeTest::class.java.declaredMethods
+        .filter { m -> m.annotations.any { it.annotationClass.qualifiedName == "org.junit.jupiter.api.Test" } }
+        .sortedBy { it.name }
+        .map { m -> "ExchangeTest.${m.name}" to { m.invoke(ExchangeTest()); Unit } }
+        .toMap()
     for (arg in args) {
         val block = tests[arg] ?: error("unknown test $arg")
         run(arg, block)
+    }
+    if (args.isEmpty()) {
+        for ((name, block) in tests) {
+            run(name, block)
+        }
     }
     println("tests: $runs run, $failures failed")
     if (runs == 0) {
@@ -281,14 +295,19 @@ if ($compileCode -ne 0) {
     exit $compileCode
 }
 
-# 3. run (kotlin-test.jar only at runtime, the documented shim pattern).
+# 3. run (kotlin-test.jar at runtime; the junit-jupiter-api jar rides the
+# runtime classpath because R52's reflective @Test discovery needs
+# org.junit.jupiter.api.Test loadable — without it the JVM silently drops
+# the annotation and zero tests are discovered, and the runner's
+# "no tests ran" guard then fails the run loudly).
 $stdoutFile = Join-Path $workDir 'test.stdout.txt'
 $stderrFile = Join-Path $workDir 'test.stderr.txt'
-$runtimeClasspath = "$mainOut;$runnerOut;$kotlinc\lib\kotlin-stdlib.jar;$kotlinTestJar"
+$runtimeClasspath = "$mainOut;$runnerOut;$kotlinc\lib\kotlin-stdlib.jar;$kotlinTestJar;$junitJar"
 Push-Location $workspaceRoot
 try {
+    # R52: no test-name arguments — the runner discovers every @Test method
+    # of ExchangeTest itself.
     & $java -Xmx2g -cp $runtimeClasspath differential.TestRunnerKt `
-        'ExchangeTest.caseFileIntegrity' 'ExchangeTest.protocolExchange' `
         1> $stdoutFile 2> $stderrFile
     $testCode = $LASTEXITCODE
 }
@@ -302,13 +321,15 @@ if (Test-Path $stderrFile) {
 }
 
 # The exchange test must have RUN (not skipped) and passed; the Kotlin
-# emitter must have RUN too.
+# emitter must have RUN too. The env-var name in the skip message matches
+# either the current _KOTLIN_DIR or the pre-R50 _KT_DIR spelling (both
+# spellings appear in git history / local worktrees).
 $output = Get-Content $stdoutFile -Raw
 if ($output -match 'CONSEMA_EXCHANGE_RUST_DIR is not set') {
     Write-Error 'the exchange test skipped: the Rust exchange directory was not provisioned'
     exit 1
 }
-if ($output -match 'CONSEMA_EXCHANGE_KT_DIR is not set') {
+if ($output -match 'CONSEMA_EXCHANGE_(KT|KOTLIN)_DIR is not set') {
     Write-Error 'the Kotlin encoder emitter skipped: the Kotlin exchange directory was not provisioned'
     exit 1
 }

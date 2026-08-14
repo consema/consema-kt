@@ -218,9 +218,14 @@ if ($compileCode -ne 0) {
     exit $compileCode
 }
 
-# 2. the temp main() test runner (the kotlin-test shim pattern: the runner
-# drives the @Test methods directly, so no JUnit platform is needed at
-# runtime; kotlin-test.jar only).
+# 2. the temp main() test runner (the committed kotlin/verify/TestShim.kt
+# shim was removed 2026-08-13 — its dead `package kotlin.test` annotation
+# class would clash with kotlin-test.jar; the runner drives the @Test
+# methods directly, so no JUnit platform is needed at runtime,
+# kotlin-test.jar only). Wave-4 R52: the runner discovers the @Test
+# methods reflectively (annotation qualified name) instead of a
+# hand-maintained name list — a new @Test on ByteParityTest runs
+# automatically and can never silently stay off the execution face.
 $runnerSource = Join-Path $workDir 'TestRunner.kt'
 @'
 package differential
@@ -241,13 +246,19 @@ fun main(args: Array<String>) {
             e.printStackTrace()
         }
     }
-    val tests = mapOf(
-        "ByteParityTest.caseFileIntegrity" to { ByteParityTest().caseFileIntegrity() },
-        "ByteParityTest.differentialByteParity" to { ByteParityTest().differentialByteParity() },
-    )
+    val tests = ByteParityTest::class.java.declaredMethods
+        .filter { m -> m.annotations.any { it.annotationClass.qualifiedName == "org.junit.jupiter.api.Test" } }
+        .sortedBy { it.name }
+        .map { m -> "ByteParityTest.${m.name}" to { m.invoke(ByteParityTest()); Unit } }
+        .toMap()
     for (arg in args) {
         val block = tests[arg] ?: error("unknown test $arg")
         run(arg, block)
+    }
+    if (args.isEmpty()) {
+        for ((name, block) in tests) {
+            run(name, block)
+        }
     }
     println("tests: $runs run, $failures failed")
     if (runs == 0) {
@@ -268,14 +279,19 @@ if ($compileCode -ne 0) {
     exit $compileCode
 }
 
-# 3. run (kotlin-test.jar only at runtime, the documented shim pattern).
+# 3. run (kotlin-test.jar at runtime; the junit-jupiter-api jar rides the
+# runtime classpath because R52's reflective @Test discovery needs
+# org.junit.jupiter.api.Test loadable — without it the JVM silently drops
+# the annotation and zero tests are discovered, and the runner's
+# "no tests ran" guard then fails the run loudly).
 $stdoutFile = Join-Path $workDir 'test.stdout.txt'
 $stderrFile = Join-Path $workDir 'test.stderr.txt'
-$runtimeClasspath = "$mainOut;$runnerOut;$kotlinc\lib\kotlin-stdlib.jar;$kotlinTestJar"
+$runtimeClasspath = "$mainOut;$runnerOut;$kotlinc\lib\kotlin-stdlib.jar;$kotlinTestJar;$junitJar"
 Push-Location $workspaceRoot
 try {
+    # R52: no test-name arguments — the runner discovers every @Test method
+    # of ByteParityTest itself.
     & $java -Xmx2g -cp $runtimeClasspath differential.TestRunnerKt `
-        'ByteParityTest.caseFileIntegrity' 'ByteParityTest.differentialByteParity' `
         1> $stdoutFile 2> $stderrFile
     $testCode = $LASTEXITCODE
 }
