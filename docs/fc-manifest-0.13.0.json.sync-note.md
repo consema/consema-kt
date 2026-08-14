@@ -12,13 +12,13 @@
 
 ## 来源与同步
 
-- source: consema@0146e6f1（母仓 HEAD，2026-08-14 同步时刻；内容 sha256 `5c263ed4…`）
-- synced: 2026-08-14（波 3 W3-04 修复，agent F3）
+- source: consema@e6d0246（母仓 HEAD，2026-08-14 重同步时刻；内容 sha256 `21141047…`）
+- synced: 2026-08-14（波 3 W3-04 修复，agent F3；W3-12/F7 重同步：母仓 f58dc1f 删注记字符串行号后副本逐字节重随）
 - 同步范围（相对旧副本 dbd8e95f… 的 123 行差异全量对齐）：
   - `digests.dependency_lock_digest`（:66-67）：Cargo.lock sha256 死钉 `0adbb56b…`（2026-08-07 旧值）→ `4ada9e74…`（2026-08-14 实测），并补齐母仓同款重算命令与旧值失效注记。
   - gates 状态对齐：security（:456）、api_product（:650）由 partial → complete（其全部子条目本就 complete/closed）；quality（:339）、Q-7（:406）、C-2（:807）、C-3（:821）保持 partial（母仓同值）。
   - `evidence_note`、conformance_suite、全部证据行号/节锚与母仓逐字节一致。
-- 同步后 sha256：`5c263ed466483ff5d316d1845b5feaff7fbf62eafc44d10f04eda804eed452ca`（与 consema@0146e6f1 的 `docs/fc-manifest-0.13.0.json` 逐字节一致）。
+- 同步后 sha256：`211410478b455ec92ee7e6ad1df8f17fa2b4258e9db6c633debb1deb0544c407`（与 consema@e6d0246 的 `docs/fc-manifest-0.13.0.json` 逐字节一致）。
 
 ## 同步 / 比对命令
 
