@@ -13,7 +13,7 @@
 ## 来源与同步
 
 - source: consema@ccc9943（母仓 HEAD，2026-08-15 波 4 R5 统一 provision 钉、F2 再锚；内容 sha256 `5cb4ab51…`）
-- synced: 2026-08-14（波 3 W3-04 修复，agent F3；W3-12/F7 重同步：母仓 f58dc1f 删注记字符串行号后副本逐字节重随）；2026-08-15 波 4 R5：source 重锚 9aa6597（母仓 70e8884 R27/R40/R38 修订 manifest：锚点、C-2 freeze、审计计数 76→83 —— 源 sha256 变为 3fdf9a77；本仓 gitignore 副本为旧内容 21141047，已按下方命令重随）；2026-08-15 波 4 补派 F2：source 再锚 ccc9943（母仓 b8bf4cb R40 把 manifest 证据中两处裸行号改为字段锚「行号可能漂移，以字段名为锚」+ ccc9943 re-vendor —— 源 sha256 变为 5cb4ab51）
+- synced: 2026-08-14（波 3 W3-04 修复，agent F3；W3-12/F7 重同步：母仓 f58dc1f 删注记字符串行号后副本逐字节重随）；2026-08-15 波 4 R5：source 重锚 9aa6597（母仓 70e8884 R27/R40/R38 修订 manifest：锚点、C-2 freeze、审计计数 76→83 —— 源 sha256 变为 3fdf9a77；本仓 gitignore 副本为旧内容 21141047，已按下方命令重随）；2026-08-15 波 4 补派 F2：source 再锚 ccc9943（母仓 b8bf4cb R40 把 manifest 证据中两处裸行号改为字段锚「行号可能漂移，以字段名为锚」+ ccc9943 re-vendor —— 源 sha256 变为 5cb4ab51）；2026-08-15 G2 复核：实测本仓副本仍为 3fdf9a77（过期），已按下方命令重随并 hash 实证 5cb4ab51
 - 同步范围（相对旧副本 dbd8e95f… 的 123 行差异全量对齐；条目一律以 gate id / JSON 路径为锚——manifest 内容每次重同步即漂移，行号引用必然失效，wave-3 锚点约定与波 4 复查）：
   - `digests.dependency_lock_digest`：Cargo.lock sha256 死钉 `0adbb56b…`（2026-08-07 旧值）→ `4ada9e74…`（2026-08-14 实测），并补齐母仓同款重算命令与旧值失效注记。
   - gates 状态对齐：`security`、`api_product` 由 partial → complete（其全部子条目本就 complete/closed）；`quality`、`Q-7`、`C-2`、`C-3` 保持 partial（母仓同值；2026-08-15 波 4 复核：现行清单中这些 id 位于 337/404/454/648/805/819 行附近，id 为锚，行号会漂移）。
