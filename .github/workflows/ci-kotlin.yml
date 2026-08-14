@@ -307,7 +307,11 @@ jobs:
           }
           # Verify the extracted compiler jar on every use — including a
           # cache-restored distribution (the cache key is a constant, so the
-          # download branch is not the only supply path).
+          # download branch is not the only supply path). Anchor scope
+          # (W3-25, 2026-08-14): this is the single-jar check — the rest of
+          # lib/ consumed from the same restored tree (kotlin-stdlib.jar on
+          # the run classpath, kotlin-test.jar / kotlin-test-junit5.jar at
+          # compile time) is covered by the download-time zip sha256 only.
           $expectedKotlincJarSha256 = 'cb2b7b0b82ad5b6ddc2e8c6c41c73e837a2b42e2abf64af64dda1b6173609790'
           $actualKotlincJarSha256 = (Get-FileHash -Algorithm SHA256 -LiteralPath $compiler.FullName).Hash
           if ($actualKotlincJarSha256 -ne $expectedKotlincJarSha256) {
@@ -593,7 +597,11 @@ jobs:
           }
           # Verify the extracted compiler jar on every use — including a
           # cache-restored distribution (the cache key is a constant, so the
-          # download branch is not the only supply path).
+          # download branch is not the only supply path). Anchor scope
+          # (W3-25, 2026-08-14): this is the single-jar check — the rest of
+          # lib/ consumed from the same restored tree (kotlin-stdlib.jar on
+          # the run classpath, kotlin-test.jar / kotlin-test-junit5.jar at
+          # compile time) is covered by the download-time zip sha256 only.
           $expectedKotlincJarSha256 = 'cb2b7b0b82ad5b6ddc2e8c6c41c73e837a2b42e2abf64af64dda1b6173609790'
           $actualKotlincJarSha256 = (Get-FileHash -Algorithm SHA256 -LiteralPath $compiler.FullName).Hash
           if ($actualKotlincJarSha256 -ne $expectedKotlincJarSha256) {
@@ -744,7 +752,11 @@ jobs:
           }
           # Verify the extracted compiler jar on every use — including a
           # cache-restored distribution (the cache key is a constant, so the
-          # download branch is not the only supply path).
+          # download branch is not the only supply path). Anchor scope
+          # (W3-25, 2026-08-14): this is the single-jar check — the rest of
+          # lib/ consumed from the same restored tree (kotlin-stdlib.jar on
+          # the run classpath, kotlin-test.jar / kotlin-test-junit5.jar at
+          # compile time) is covered by the download-time zip sha256 only.
           $expectedKotlincJarSha256 = 'cb2b7b0b82ad5b6ddc2e8c6c41c73e837a2b42e2abf64af64dda1b6173609790'
           $actualKotlincJarSha256 = (Get-FileHash -Algorithm SHA256 -LiteralPath $compiler.FullName).Hash
           if ($actualKotlincJarSha256 -ne $expectedKotlincJarSha256) {
