@@ -15,8 +15,8 @@
 // bytes decode under the Kotlin typed record codec to equivalent records and
 // re-encode byte-identically, rejection cases reject with the same
 // registered code, and the Kotlin-side encoder files are emitted into
-// CONSEMA_EXCHANGE_KT_DIR (which the Rust example's --verify mode closes
-// over).
+// CONSEMA_EXCHANGE_KOTLIN_DIR (which the Rust example's --verify mode
+// closes over; wave-4 R50 renamed from CONSEMA_EXCHANGE_KT_DIR).
 
 package differential
 
@@ -60,7 +60,10 @@ class ExchangeTest {
         }
         val rustDir = File(rustDirEnv)
         assertTrue(rustDir.isDirectory, "rust exchange directory $rustDirEnv is not a directory")
-        val ktDirEnv = System.getenv("CONSEMA_EXCHANGE_KT_DIR")
+        // wave-4 R50: the language-suffixed env-var name
+        // (five-language-ci-design.md §3.4/§7.2; renamed from
+        // CONSEMA_EXCHANGE_KT_DIR).
+        val ktDirEnv = System.getenv("CONSEMA_EXCHANGE_KOTLIN_DIR")
         val ktDir = if (ktDirEnv.isNullOrEmpty()) null else File(ktDirEnv)
         val report = runExchange(cases, rustDir, ktDir)
         for (failure in report.failures) {
@@ -76,7 +79,7 @@ class ExchangeTest {
         if (ktDir != null) {
             println("emitted the Kotlin encoder files into ${ktDir.path}")
         } else {
-            println("[SKIP] CONSEMA_EXCHANGE_KT_DIR is not set: Kotlin encoder files not emitted")
+            println("[SKIP] CONSEMA_EXCHANGE_KOTLIN_DIR is not set: Kotlin encoder files not emitted")
         }
     }
 }

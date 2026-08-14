@@ -4,29 +4,76 @@
 // mandatory behavior is Rust-only (multi-language-implementation-plan.md
 // §6 capability parity gate).
 //
+// Wave-4 R10 (2026-08-15): the five headline counts are compared against
+// the provisioned docs/fc-manifest-0.13.0.json (digests.capability_set
+// record) instead of hardcoded snapshots — a manifest record drift fails
+// the test. The manifest is provisioned data (gitignored; CI copies it
+// from the pinned consema checkout, see ci-kotlin.yml provision steps),
+// so when it is not reachable the comparison is skipped (JUnit
+// assumption) — a fresh checkout without provisioned data does not fail.
+//
 // Data authority: https://github.com/consema/consema/blob/main/docs/fc-manifest-0.13.0.json:30-34 (capability_set
 // record); https://github.com/consema/consema-rs/blob/main/consema/src/lib.rs (the Rust facade's own
 // registry tests this test mirrors); https://github.com/consema/consema-go/blob/main/go/capability_parity_test.go is a
 // cross-reference only.
+// NOTE: 行号可能漂移，以 case id 为锚（provisioned conformance/vectors 文件按 pin 复制，re-provision 后行号会变）。
 
 package consema
 
+import java.io.File
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
+import org.junit.jupiter.api.Assumptions
 
 class CapabilityParityTest {
+
+    /** The provisioned manifest file: the CONSEMA_REPO path first, then
+     * the nearest ancestor of the working directory carrying
+     * docs/fc-manifest-0.13.0.json (the Runner.resolveRepoRoot
+     * precedence), or null when not provisioned. */
+    private fun provisionedManifest(): File? {
+        System.getenv("CONSEMA_REPO")?.takeIf { it.isNotBlank() }?.let {
+            val file = File(it, "docs/fc-manifest-0.13.0.json")
+            if (file.isFile) return file
+        }
+        var directory = File(System.getProperty("user.dir"))
+        while (true) {
+            val file = File(directory, "docs/fc-manifest-0.13.0.json")
+            if (file.isFile) return file
+            val parent = directory.parentFile ?: return null
+            directory = parent
+        }
+    }
+
+    /** The five capability counts from the manifest's
+     * digests.capability_set.value sentence ("8 families / 16 profiles /
+     * 21 query domains / 16 operation registries / 187 error codes"), or
+     * null when the record is absent or unrecognized. */
+    private fun manifestCapabilityCounts(manifest: File): List<Int>? {
+        val match = Regex(
+            "(\\d+) families / (\\d+) profiles / (\\d+) query domains / " +
+                "(\\d+) operation registries / (\\d+) error codes",
+        ).find(manifest.readText()) ?: return null
+        return match.groupValues.drop(1).map { it.toInt() }
+    }
 
     @Test
     fun kotlinCapabilitySetMatchesTheManifest() {
         val parity = CapabilityParity.current()
-        // fc-manifest capability_set: 8 families / 16 profiles / 21 query
-        // domains / 16 operation registries / 187 error codes.
-        assertEquals(8, parity.families.size, "eight format families")
-        assertEquals(16, parity.profiles.size, "sixteen profiles")
-        assertEquals(21, parity.queryDomains.size, "twenty-one query domains")
-        assertEquals(16, parity.operationRegistries.size, "sixteen operation registries")
-        assertEquals(187, parity.errorCodes.size, "187 v7 error codes")
+        val counts = provisionedManifest()?.let { manifestCapabilityCounts(it) }
+        if (counts == null) {
+            Assumptions.assumeTrue(
+                false,
+                "provisioned docs/fc-manifest-0.13.0.json (digests.capability_set) not reachable — live-manifest comparison skipped",
+            )
+            return
+        }
+        assertEquals(counts[0], parity.families.size, "families match the manifest capability_set")
+        assertEquals(counts[1], parity.profiles.size, "profiles match the manifest capability_set")
+        assertEquals(counts[2], parity.queryDomains.size, "query domains match the manifest capability_set")
+        assertEquals(counts[3], parity.operationRegistries.size, "operation registries match the manifest capability_set")
+        assertEquals(counts[4], parity.errorCodes.size, "error codes match the manifest capability_set")
     }
 
     @Test

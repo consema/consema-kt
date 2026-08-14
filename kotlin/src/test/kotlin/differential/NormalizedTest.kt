@@ -19,8 +19,10 @@
 // five languages): the test also emits the Kotlin-side evidence files for
 // the same input set (one
 // `<case-id>.txt` per case, the same line-oriented key=value format the
-// forward direction reads) into CONSEMA_DIFFERENTIAL_NORMALIZED_KT_DIR, and
-// the Rust example's consume mode compares them with its own results.
+// forward direction reads) into CONSEMA_DIFFERENTIAL_NORMALIZED_KOTLIN_DIR
+// (wave-4 R50: language-suffixed name, see five-language-ci-design.md
+// §3.3/§7.2), and the Rust example's consume mode compares them with its
+// own results.
 // TestEmitFormatConsistency always runs and proves the emitted files
 // round-trip through the forward reader.
 
@@ -104,7 +106,10 @@ class NormalizedTest {
             val id = entry.name.removeSuffix(".txt")
             assertTrue(id in knownIDs, "rust evidence file ${entry.name} does not correspond to any case")
         }
-        val ktDirEnv = System.getenv("CONSEMA_DIFFERENTIAL_NORMALIZED_KT_DIR")
+        // wave-4 R50: the language-suffixed env-var name
+        // (five-language-ci-design.md §3.3/§7.2; renamed from
+        // CONSEMA_DIFFERENTIAL_NORMALIZED_KT_DIR).
+        val ktDirEnv = System.getenv("CONSEMA_DIFFERENTIAL_NORMALIZED_KOTLIN_DIR")
         val ktDir = if (ktDirEnv.isNullOrEmpty()) null else File(ktDirEnv)
 
         var passed = 0
@@ -131,7 +136,7 @@ class NormalizedTest {
             val emitted = emitFactsToDir(cases, ktDir)
             println("emitted $emitted Kotlin normalized results into ${ktDir.path}")
         } else {
-            println("[SKIP] CONSEMA_DIFFERENTIAL_NORMALIZED_KT_DIR is not set: Kotlin evidence files not emitted")
+            println("[SKIP] CONSEMA_DIFFERENTIAL_NORMALIZED_KOTLIN_DIR is not set: Kotlin evidence files not emitted")
         }
     }
 

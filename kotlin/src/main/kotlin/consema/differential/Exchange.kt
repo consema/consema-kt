@@ -18,8 +18,9 @@
 // The machine schema of the case file is the RFC 0015 protocol schema
 // discriminator (core.cli-output@1, ...); it contains no Rust type names.
 // The Kotlin side emits its own encoder bytes into
-// CONSEMA_EXCHANGE_KT_DIR (`<case-id>.json.hex` / `<case-id>.pvce.hex` /
-// `<case-id>.error.txt`), which the Rust example's --verify mode closes
+// CONSEMA_EXCHANGE_KOTLIN_DIR (`<case-id>.json.hex` /
+// `<case-id>.pvce.hex` / `<case-id>.error.txt`; wave-4 R50 renamed from
+// CONSEMA_EXCHANGE_KT_DIR), which the Rust example's --verify mode closes
 // over (Kotlin encode -> Rust decode direction).
 
 package consema.differential
