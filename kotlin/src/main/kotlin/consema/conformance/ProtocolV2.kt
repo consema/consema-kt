@@ -498,8 +498,7 @@ private fun digestFromValue(value: PortableValue, path: String): ContentDigest {
     return ContentDigest.fromBytes(bytes)
 }
 
-/** Encodes `core.source-snapshot@1` (source_snapshot_value, source.rs
- *). */
+/** Encodes `core.source-snapshot@1` (source_snapshot_value, source.rs). */
 private fun sourceSnapshotValue(snapshot: SourceSnapshot): PortableValue = PvObject(
     listOf(
         Entry("schema", PvString("core.source-snapshot@1")),

@@ -32,8 +32,7 @@
 //     kotlin/src/main/kotlin/consema/json/Edit.kt).
 //   - conformance/vectors/xml-1-0-safe-v1.json cases xml.edit.* pin the
 //     render outcomes; the conformance runner resolves name/ordinal
-//     selectors to NodeRefs (https://github.com/consema/consema-rs/blob/main/consema-conformance/src/xml_v1.rs
-//).
+//     selectors to NodeRefs (https://github.com/consema/consema-rs/blob/main/consema-conformance/src/xml_v1.rs).
 //
 // Kotlin-idiomatic design: operations are immutable data classes; failures
 // are a sealed hierarchy carrying the language-neutral name and the frozen

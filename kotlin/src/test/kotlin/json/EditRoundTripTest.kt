@@ -7,6 +7,7 @@
 // PreserveCompatible scalar literal renderings. Vector case
 // json5.edit.move-cross-object-rejected (json-family-v2.json:180-184) pins
 // the TargetNotFound failure name.
+// NOTE: 行号可能漂移，以 case id 为锚（provisioned conformance/vectors 文件按 pin 复制，re-provision 后行号会变）。
 
 package json
 

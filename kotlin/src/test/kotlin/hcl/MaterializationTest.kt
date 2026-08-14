@@ -2,6 +2,7 @@
 // hcl.materialization.* cases (:1153-1411, :1973-2045): the canonical
 // document style, the reparse closure, the unrepresentable matrix, the
 // typed-member form, and the tfvars canonical style.
+// NOTE: 行号可能漂移，以 case id 为锚（provisioned conformance/vectors 文件按 pin 复制，re-provision 后行号会变）。
 
 package hcl
 

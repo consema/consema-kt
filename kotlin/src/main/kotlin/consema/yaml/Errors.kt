@@ -9,12 +9,12 @@
 //   - The YAML-specific registered codes are frozen by
 //     https://github.com/consema/consema-rs/blob/main/consema-protocol/src/error_registry.rs (yaml.alias.*,
 //     yaml.anchor.*, yaml.edit.*, yaml.mapping.*, yaml.materialization.*,
-//     yaml.native.*, yaml.parse.syntax@1 at :850-854, yaml.profile.*,
+//     yaml.native.*, yaml.parse.syntax@1, yaml.profile.*,
 //     yaml.projection.*, yaml.scalar.*, yaml.tag.*) and transcribed in
 //     kotlin/src/main/kotlin/consema/protocol/ErrorRegistry.kt.
 //   - https://github.com/consema/consema-rs/blob/main/consema-yaml/src/lib.rs maps version-directive and
-//     backend-syntax failures (yaml.profile.version-directive@1 at
-//     lib.rs; yaml.parse.syntax@1 at lib.rs);
+//     backend-syntax failures (yaml.profile.version-directive@1,
+//     yaml.parse.syntax@1);
 //     https://github.com/consema/consema-rs/blob/main/consema-yaml/src/native.rs maps the composition
 //     failures (yaml.native.*, yaml.anchor.*, yaml.alias.*,
 //     yaml.mapping.missing-value@1, yaml.tag.kind-mismatch@1,
@@ -79,8 +79,7 @@ internal fun resourceLimit(name: String, observed: Int, limit: Int): YamlFormati
         limit = limit,
     )
 
-/** One composition failure thrown with its frozen native code (native.rs
- *). */
+/** One composition failure thrown with its frozen native code (native.rs). */
 internal fun nativeFailure(code: String): YamlFormationException =
     YamlFormationException(code, "yaml native: $code")
 

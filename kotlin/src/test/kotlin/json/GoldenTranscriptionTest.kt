@@ -9,6 +9,7 @@
 // This file runs in the verified toolchain gate (kotlin-gates gradlew
 // test / the scripts/kotlin-verify-*.ps1 direct path): the toolchain is
 // verified and this file is executed.
+// NOTE: 行号可能漂移，以 case id 为锚（provisioned conformance/vectors 文件按 pin 复制，re-provision 后行号会变）。
 
 package json
 
@@ -41,7 +42,7 @@ class GoldenTranscriptionTest {
      * Identifier. */
     @Test
     fun json5ParseFullSurface() {
-        val source = "﻿{ // lead\n" +
+        val source = "\uFEFF{ // lead\n" +
             "unquoted:'value',\\u0061:.5,hex:+0X10,trail:1.,exp:1.e+2," +
             "truth:true,nil:null,inf:-Infinity,nan:+NaN,}"
         val document = parse(source.toByteArray(Charsets.UTF_8), JsonProfile.Json5StandardV1)

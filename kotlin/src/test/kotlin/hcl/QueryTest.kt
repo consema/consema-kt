@@ -6,6 +6,7 @@
 // consema.protocol (kotlin/src/main/kotlin/consema/protocol/QueryValidate.kt); this test executes the
 // bound query against one immutable document, mirroring the conformance
 // runner (https://github.com/consema/consema-rs/blob/main/consema-conformance/src/hcl_v1.rs).
+// NOTE: 行号可能漂移，以 case id 为锚（provisioned conformance/vectors 文件按 pin 复制，re-provision 后行号会变）。
 
 package hcl
 

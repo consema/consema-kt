@@ -5,8 +5,8 @@
 // Data authority:
 //   - https://github.com/consema/consema-rs/blob/main/consema-hcl/src/lexer.rs pins the token kind set (lexer.rs
 //     245), the token-to-piece kind mapping (lexer.rs), the
-//     structural classification (lexer.rs), the main scan (lexer.rs
-// : operators, `::` as invalid-character, `_` as identifier@1,
+//     structural classification (lexer.rs), the main scan (lexer.rs:
+//     operators, `::` as invalid-character, `_` as identifier@1,
 //     BOM as byte-order-mark@1, lone CR as lone-cr@1), the number grammar
 //     (lexer.rs), the quoted-template scan (lexer.rs
 //     escapes, `$${`/`%%{` literals, unterminated-string@1 recovery to the
@@ -17,7 +17,7 @@
 //   - RFC 0014 §2 (https://github.com/consema/consema/blob/main/docs/rfcs/0014-hcl-family-profiles-v1.md) freezes
 //     the UTF-8-only source contract: newline is exactly LF or CRLF, a lone
 //     CR is Recovered, a leading BOM is Recovered.
-//   - RFC 0014 §4.1 (:147-186) freezes the identifier (UAX #31 with `-`
+//   - RFC 0014 §4.1 freezes the identifier (UAX #31 with `-`
 //     continuation; `_` is not an ID_Start), number, comment, whitespace,
 //     and traversal facts.
 //   - consema-go/go/hcl is a cross-reference only.
@@ -134,8 +134,7 @@ internal enum class HclTokenKind {
         Eof -> null
     }
 
-    /** The structural classification of this token's piece (lexer.rs
- *). */
+    /** The structural classification of this token's piece (lexer.rs). */
     fun structuralKind(): StructuralPieceKind = when (this) {
         Whitespace, LineBreak, LineComment, InlineComment ->
             StructuralPieceKind.Trivia

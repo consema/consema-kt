@@ -6,9 +6,9 @@
 //     reference, encoding record, newline/mapping/representability
 //     spellings, and the limits record; v1 encodes the encoding as a String
 //     and rejects Windows code pages).
-//   - materialization.rs (MaterializationReportMessage), 327-535
-//     (MaterializationProvenanceMapMessage), 537-600 (the failure message),
-// (MaterializationResultMessageV2 with the source-v2 outcome).
+//   - materialization.rs (MaterializationReportMessage,
+//     MaterializationProvenanceMapMessage, the failure message,
+//     MaterializationResultMessageV2 with the source-v2 outcome).
 //   - https://github.com/consema/consema-rs/blob/main/consema-protocol/src/query.rs (the ValuePath and
 //     AssociationLocation wire forms).
 //   - conformance/vectors/semantic-model-v6.json pins the round-trips and
@@ -300,11 +300,17 @@ internal fun parseLimits(value: PortableValue, path: String): MaterializationLim
         path,
     )
     return MaterializationLimits(
-        maxInputNodes = unsigned64(fields[0], "$path.max_input_nodes").toInt(),
-        maxOutputBytes = unsigned64(fields[1], "$path.max_output_bytes").toInt(),
-        maxDepth = unsigned64(fields[2], "$path.max_depth").toInt(),
-        maxReportEntries = unsigned64(fields[3], "$path.max_report_entries").toInt(),
-        maxProvenanceEntries = unsigned64(fields[4], "$path.max_provenance_entries").toInt(),
+        // Wave-4 R41: the model fields are Int (MaterializationLimits), so
+        // wire u64 values are decoded with the unsigned32 helper — a value
+        // over the 32-bit range fails with INVALID_VALUE instead of being
+        // silently truncated to the low 32 bits (2^32 → 0, 2^31 →
+        // -2147483648). The Rust reference (usize_value) keeps the full
+        // u64; Kotlin's Int fields reject what they cannot represent.
+        maxInputNodes = unsigned32(fields[0], "$path.max_input_nodes"),
+        maxOutputBytes = unsigned32(fields[1], "$path.max_output_bytes"),
+        maxDepth = unsigned32(fields[2], "$path.max_depth"),
+        maxReportEntries = unsigned32(fields[3], "$path.max_report_entries"),
+        maxProvenanceEntries = unsigned32(fields[4], "$path.max_provenance_entries"),
     )
 }
 
@@ -312,8 +318,7 @@ internal fun parseLimits(value: PortableValue, path: String): MaterializationLim
 // core.materialization-report@1 (materialization.rs).
 // ---------------------------------------------------------------------------
 
-/** Ordered `core.materialization-report@1` diagnostics (materialization.rs
- *). */
+/** Ordered `core.materialization-report@1` diagnostics (materialization.rs). */
 class MaterializationReportMessage private constructor(
     /** Ordered materialization events. */
     val events: List<Diagnostic>,
@@ -810,8 +815,7 @@ class MaterializationResultMessageV2 private constructor(
                 MaterializationOutcomeMessageV2.Failed(failure, report, analyzedInputPaths),
             )
 
-        /** Validates the outcome invariants (materialization.rs,
- *). */
+        /** Validates the outcome invariants (materialization.rs). */
         fun new(
             targetProfile: ProfileId,
             outcome: MaterializationOutcomeMessageV2,

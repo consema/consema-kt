@@ -1,8 +1,7 @@
 // The numeric PortableValue kinds: Integer, Decimal, BinaryFloat32,
 // BinaryFloat64.
 //
-// Data authority: RFC 0016 §4.1 (https://github.com/consema/consema/blob/main/docs/rfcs/0016-go-api-mapping-v1.md
-//); decimal canonicalization follows the Rust Decimal::new
+// Data authority: RFC 0016 §4.1 (https://github.com/consema/consema/blob/main/docs/rfcs/0016-go-api-mapping-v1.md); decimal canonicalization follows the Rust Decimal::new
 // normalization (https://github.com/consema/consema-rs/blob/main/consema-core/src/value.rs), cross-checked by
 // conformance/vectors/v1.json value.decimal-normalization ("1.00" equals
 // "10e-1" — i.e. 1×10^0 vs 1×10^0 after normalization).

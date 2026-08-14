@@ -7,17 +7,17 @@
 //     deterministic markup boundaries; the parser never invents a closing
 //     tag, namespace binding, attribute value, entity replacement, or second
 //     root.
-//   - RFC 0012 §5 (0012-...:168-226): the snapshot-bound native roles and
+//   - RFC 0012 §5: the snapshot-bound native roles and
 //     the namespace-aware element model (attributes and namespace
 //     declarations are ordered native associations with independent
 //     identity and source spans).
-//   - RFC 0012 §6 (0012-...:228-256): text and attribute values retain
+//   - RFC 0012 §6: text and attribute values retain
 //     ordered fragments (Literal | CharacterReference |
 //     PredefinedEntityReference | GeneralEntityReference); native Text
 //     semantic content is the concatenation of resolved fragments after XML
 //     line-end normalization; CDATA remains a distinct child occurrence;
 //     adjacent Text occurrences are not merged.
-//   - RFC 0012 §7 (0012-...:258-282): every non-empty raw byte belongs to
+//   - RFC 0012 §7: every non-empty raw byte belongs to
 //     exactly one ordered structural piece; the frozen v1 kind set.
 //   - https://github.com/consema/consema-rs/blob/main/consema-xml/src/document.rs (XmlSyntaxKind), document.rs
 // (QNameFacts), document.rs (ReferenceFragment),
@@ -29,7 +29,7 @@
 //
 // The `xml.*` diagnostic codes are registered by RFC 0012 as part of the
 // `xml.1.0-safe@1` contract and do NOT enter the consema-protocol core error
-// registry (RFC 0012 §12, 0012-...:426-433; verified: no xml.* code exists
+// registry (RFC 0012 §12; verified: no xml.* code exists
 // in https://github.com/consema/consema-rs/blob/main/consema-protocol/src/error_registry.rs or its Kotlin
 // transcription ErrorRegistry.kt), so this family carries its own
 // [XmlDiagnostic] record instead of the registry-validated protocol

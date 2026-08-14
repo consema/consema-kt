@@ -16,8 +16,8 @@
 //     ExtendedValue with one `Transformed` event per substituted
 //     expression, with value and expression provenance; a Recovered
 //     Document never projects.
-//   - RFC 0014 §8.1 (:511-537): the literal-complete boundary.
-//   - RFC 0014 §6 (:395-446): structural equality, canonical decimals,
+//   - RFC 0014 §8.1: the literal-complete boundary.
+//   - RFC 0014 §6: structural equality, canonical decimals,
 //     exact decoded string text, ordered duplicates.
 //   - https://github.com/consema/consema-rs/blob/main/consema-hcl/src/projection.rs pins the record shape
 //     (projection.rs: `{ "record": "hcl.body@1", "items": [...] }`,
@@ -52,8 +52,7 @@ import consema.document.SnapshotIdentity
 import consema.document.Span
 import java.math.BigInteger
 
-/** The versioned `hcl.body@1` record name (RFC 0014 §8.2; projection.rs
- *). */
+/** The versioned `hcl.body@1` record name (RFC 0014 §8.2; projection.rs). */
 const val HCL_BODY_RECORD: String = "hcl.body@1"
 
 /** The versioned `hcl.expression@1` record name (RFC 0014 §8.2;
@@ -75,8 +74,7 @@ enum class ProjectionTarget {
     BodyV1,
 }
 
-/** The explicit derived-expression policy (RFC 0014 §8.2; projection.rs
- *). */
+/** The explicit derived-expression policy (RFC 0014 §8.2; projection.rs). */
 enum class ExpressionPolicy {
     /** A derived expression fails the projection atomically with
      * `hcl.projection.non-literal-expression@1`. */

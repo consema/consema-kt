@@ -1,15 +1,13 @@
 // Versioned YAML native-semantic and lossless-syntax query execution.
 //
 // Data authority:
-//   - RFC 0007 §9 (https://github.com/consema/consema/blob/main/docs/rfcs/0007-yaml-family-profiles-and-safety-v1.md
-//): domains yaml.native-semantic-query@1 and
+//   - RFC 0007 §9 (https://github.com/consema/consema/blob/main/docs/rfcs/0007-yaml-family-profiles-and-safety-v1.md): domains yaml.native-semantic-query@1 and
 //     yaml.lossless-syntax-query@1; native roles Stream, Document, Node,
 //     MappingEntry, SequenceElement, AnchorDefinition, AliasOccurrence; the
 //     frozen v1 operator surface; every match carries a snapshot-bound role
 //     and exact raw span; syntax text comparison uses decoded Unicode text
 //     while retaining raw byte spans.
-//   - RFC 0003 §8 (https://github.com/consema/consema/blob/main/docs/rfcs/0003-source-syntax-query-and-patch-v1.md
-//): the standard input sequence is every lossless syntax piece
+//   - RFC 0003 §8 (https://github.com/consema/consema/blob/main/docs/rfcs/0003-source-syntax-query-and-patch-v1.md): the standard input sequence is every lossless syntax piece
 //     in raw source order; each match carries its NodeRef, raw Span,
 //     format-specific kind, and source ordinal.
 //   - conformance/vectors/yaml-v1.json pins the query facts

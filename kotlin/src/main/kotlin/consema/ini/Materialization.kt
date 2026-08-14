@@ -21,8 +21,7 @@
 //     output bytes and failure names; https://github.com/consema/consema-rs/blob/main/consema-ini/src/
 //     materialization.rs is the byte-arbitration authority (writer
 //     materialization.rs, encoding materialization.rs,
-//     closure materialization.rs, provenance materialization.rs
-//).
+//     closure materialization.rs, provenance materialization.rs).
 //   - The Kotlin document package owns the completion algebra types
 //     (kotlin/src/main/kotlin/consema/document/Materialization.kt).
 //

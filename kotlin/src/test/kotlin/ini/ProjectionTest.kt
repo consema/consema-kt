@@ -6,6 +6,7 @@
 // projection.explicit-object-collapse, and
 // projection.fragmented-value-provenance (ini-v1.json:60-73);
 // https://github.com/consema/consema-rs/blob/main/consema-ini/src/projection.rs is the byte-arbitration authority.
+// NOTE: 行号可能漂移，以 case id 为锚（provisioned conformance/vectors 文件按 pin 复制，re-provision 后行号会变）。
 
 package ini
 

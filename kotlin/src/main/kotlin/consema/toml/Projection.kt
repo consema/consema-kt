@@ -12,16 +12,16 @@
 //     datetime@1`.
 //   - https://github.com/consema/consema-rs/blob/main/consema-toml/src/projection.rs (ProjectionTarget,
 //     ProjectionRequest, ProjectionLimits with the frozen defaults 1M value
-//     nodes / 100k report entries / 2M provenance entries / depth 256),
-//     :77-199 (Fidelity, ProjectedLocation, ProvenanceRelation, SourceOrigin,
+//     nodes / 100k report entries / 2M provenance entries / depth 256,
+//     Fidelity, ProjectedLocation, ProvenanceRelation, SourceOrigin,
 //     ProvenanceEntry, ProvenanceMap, ProjectionReport, CompleteProjection,
-//     FailedProjectionAttempt, ProjectionResult, ProjectionFailure),
-//     :202-435 (Document::project and the mapping/provenance rules:
-//     object entries produce an ObjectEntry association origin for the
-//     TomlEntry and an ObjectKey association origin for the TomlKey; every
-//     item produces a Value origin).
-//   - conformance/vectors/toml-v1.json cases toml.projection.* (lines
-//): all-core-kinds (Success/Exact/Object), provenance
+//     FailedProjectionAttempt, ProjectionResult, ProjectionFailure,
+//     Document::project and the mapping/provenance rules: object entries
+//     produce an ObjectEntry association origin for the TomlEntry and an
+//     ObjectKey association origin for the TomlKey; every item produces a
+//     Value origin).
+//   - conformance/vectors/toml-v1.json cases toml.projection.*:
+//     all-core-kinds (Success/Exact/Object), provenance
 //     (all_origins_snapshot_bound, object_associations_present), and
 //     reject-leap-second (Failed, toml.projection.unrepresentable-
 //     datetime@1, no partial value).

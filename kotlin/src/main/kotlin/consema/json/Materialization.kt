@@ -268,8 +268,7 @@ private class JsonWriter(
                 )
                 code == 0x2028 || code == 0x2029 -> {
                     // Canonical JSON5 escapes the line separators; the
-                    // strict/JSONC styles emit them raw (materialization.rs
- //).
+                    // strict/JSONC styles emit them raw (materialization.rs).
                     if (style.isJson5()) {
                         output.pushBytes(
                             "\\u%04x".format(code).toByteArray(Charsets.US_ASCII),

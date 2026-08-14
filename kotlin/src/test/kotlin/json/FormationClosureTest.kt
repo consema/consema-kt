@@ -9,6 +9,7 @@
 //
 // Case ids are cited on every test; expected.diagnostic_contains codes are
 // asserted verbatim.
+// NOTE: 行号可能漂移，以 case id 为锚（provisioned conformance/vectors 文件按 pin 复制，re-provision 后行号会变）。
 
 package json
 

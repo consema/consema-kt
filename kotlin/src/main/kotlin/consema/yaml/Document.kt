@@ -3,12 +3,12 @@
 // coverage index.
 //
 // Data authority:
-//   - RFC 0007 §2 (https://github.com/consema/consema/blob/main/docs/rfcs/0007-yaml-family-profiles-and-safety-v1.md
-//): the three layers — presentation stream, serialization tree
+//   - RFC 0007 §2 (https://github.com/consema/consema/blob/main/docs/rfcs/0007-yaml-family-profiles-and-safety-v1.md):
+//     the three layers — presentation stream, serialization tree
 //     (ordered document nodes, unresolved/resolved tag facts), and
 //     representation graph (resolved tagged nodes, sharing, cycles). Anchors
 //     and aliases are NOT PortableGraph node kinds.
-//   - RFC 0007 §7 (…:168-192): the immutable YAML Document retains
+//   - RFC 0007 §7: the immutable YAML Document retains
 //     directives, markers, BOMs, comments, styles, anchor definitions and
 //     alias occurrences with exact names and source spans, arbitrary keys,
 //     duplicate source associations, compact notation, and exhaustive
@@ -92,8 +92,7 @@ internal class NativeAlias(
 )
 
 /** One composed node occurrence: its representation index, occurrence span,
- * and the alias ordinal that supplied the edge, when present (native.rs
- *). */
+ * and the alias ordinal that supplied the edge, when present (native.rs). */
 private class ComposedOccurrence(val node: Int, val span: Span, val alias: Int?)
 
 /**
@@ -381,8 +380,7 @@ class Document internal constructor(
     /** Exact immutable raw source and decoded-location facts (lib.rs). */
     fun source(): SourceSnapshot = source
 
-    /** Default rendering is byte-for-byte identical to the input (lib.rs
- *). */
+    /** Default rendering is byte-for-byte identical to the input (lib.rs). */
     fun render(): ByteArray = source.bytes()
 
     /** YAML format-family contract (lib.rs). */
@@ -395,8 +393,7 @@ class Document internal constructor(
      * (lib.rs). */
     fun formationStatus(): FormationStatus = FormationStatus.Complete
 
-    /** Complete YAML formation publishes no recovery diagnostics (lib.rs
- *). */
+    /** Complete YAML formation publishes no recovery diagnostics (lib.rs). */
     fun diagnostics(): List<consema.protocol.Diagnostic> = emptyList()
 
     /** Exhaustive token/trivia byte coverage (lib.rs). */
@@ -406,8 +403,7 @@ class Document internal constructor(
      * (lib.rs). */
     fun losslessSyntaxKinds(): List<YamlSyntaxKind> = syntaxKinds
 
-    /** Returns one independent YAML document by stream ordinal (lib.rs
- *). */
+    /** Returns one independent YAML document by stream ordinal (lib.rs). */
     fun document(ordinal: Int): YamlDocument? =
         native.documents.getOrNull(ordinal)?.let { YamlDocument(this, ordinal, it) }
 
@@ -481,8 +477,7 @@ class YamlNode internal constructor(
     /** Resolved tag identifier (lib.rs). */
     fun tag(): String = owner.native.nodes[index].tag
 
-    /** Exact anchor name on the defining occurrence, if present (lib.rs
- *). */
+    /** Exact anchor name on the defining occurrence, if present (lib.rs). */
     fun anchor(): String? = owner.native.nodes[index].anchor
 
     /** Snapshot-bound anchor-definition identity, when this node defines
@@ -492,8 +487,7 @@ class YamlNode internal constructor(
             owner.authority.nodeRef(index.toLong(), NodeRole.YamlAnchorDefinition)
         }
 
-    /** Exact raw `&name` span, when this node defines an anchor (lib.rs
- *). */
+    /** Exact raw `&name` span, when this node defines an anchor (lib.rs). */
     fun anchorSpan(): Span? = owner.native.nodes[index].anchorSpan
 
     /** Native node kind (lib.rs). */
@@ -528,11 +522,9 @@ class YamlNode internal constructor(
             ?.getOrNull(ordinal)?.let { YamlMappingEntry(owner, it) }
 }
 
-/** Native scalar facts with exact decoded and canonical content (lib.rs
- *). */
+/** Native scalar facts with exact decoded and canonical content (lib.rs). */
 class YamlScalar internal constructor(internal val scalar: NativeScalar) {
-    /** Decoded YAML scalar content before schema canonicalization (lib.rs
- *). */
+    /** Decoded YAML scalar content before schema canonicalization (lib.rs). */
     fun decoded(): String = scalar.decoded
 
     /** Profile-defined canonical scalar content (lib.rs). */
@@ -567,8 +559,7 @@ class YamlSequenceItem internal constructor(
         item.alias?.let { YamlAlias(owner, owner.native.aliases[it]) }
 }
 
-/** One ordered YAML mapping association with an arbitrary key node (lib.rs
- *). */
+/** One ordered YAML mapping association with an arbitrary key node (lib.rs). */
 class YamlMappingEntry internal constructor(
     internal val owner: Document,
     internal val entry: NativeMappingEntry,
@@ -587,13 +578,11 @@ class YamlMappingEntry internal constructor(
     /** Value node (lib.rs). */
     fun value(): YamlNode = YamlNode(owner, entry.value)
 
-    /** Alias occurrence that supplied the key edge, when present (lib.rs
- *). */
+    /** Alias occurrence that supplied the key edge, when present (lib.rs). */
     fun keyAlias(): YamlAlias? =
         entry.keyAlias?.let { YamlAlias(owner, owner.native.aliases[it]) }
 
-    /** Alias occurrence that supplied the value edge, when present (lib.rs
- *). */
+    /** Alias occurrence that supplied the value edge, when present (lib.rs). */
     fun valueAlias(): YamlAlias? =
         entry.valueAlias?.let { YamlAlias(owner, owner.native.aliases[it]) }
 }
@@ -614,7 +603,6 @@ class YamlAlias internal constructor(
     /** Exact alias name without `*` (lib.rs). */
     fun name(): String = alias.name
 
-    /** Shared target representation node; no expansion occurs (lib.rs
- *). */
+    /** Shared target representation node; no expansion occurs (lib.rs). */
     fun target(): YamlNode = YamlNode(owner, alias.target)
 }

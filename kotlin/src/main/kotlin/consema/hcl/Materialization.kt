@@ -534,8 +534,7 @@ private class RecordValidator(
             "object" -> {
                 val fields = exactFields(value, listOf("kind", "entries"), "object")
                 // The value-record spelling declares `entries` as the
-                // ordered sequence of [key, value] pairs (materialization.rs
- //); the projection's raw typed member spelling uses
+                // ordered sequence of [key, value] pairs (materialization.rs); the projection's raw typed member spelling uses
                 // an ordered EntryMapping (materialization.rs).
                 val pairs = when (val entriesValue = fields[1]) {
                     is PvEntryMapping -> entriesValue.entries().map { entry ->

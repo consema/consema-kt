@@ -411,7 +411,7 @@ class RecordsV5V6Test {
             V2EncodingRequest.new(SourceEncoding("Latin1", null)).withBomPolicy("TreatAsContent"),
             SourceLimits.default,
         )
-        assertEquals("﻿x", detected.decodedText())
+        assertEquals("\uFEFFx", detected.decodedText())
         assertEquals("ï»¿x", content.decodedText())
         assertEquals("DetectUnicode", detected.encodingFacts.bomPolicy)
         assertEquals("TreatAsContent", content.encodingFacts.bomPolicy)
@@ -535,6 +535,79 @@ class RecordsV5V6Test {
             )
         }
         assertEquals(ProtocolErrorKind.SCHEMA_MISMATCH, failure.kind)
+    }
+
+    // ------------------------------------------------------------------
+    // Wave-4 R41: wire u64 values that cannot fit the Int model fields
+    // fail with INVALID_VALUE instead of being silently truncated to the
+    // low 32 bits (2^32 -> 0, 2^31 -> -2147483648, 2^32+5 -> 5).
+    // ------------------------------------------------------------------
+
+    @Test
+    fun materializationLimitsRejectOverflowingWireValues() {
+        val request = MaterializationRequestFacts(
+            targetProfile = ProfileId("ini.windows", 1),
+            style = MaterializationStyleId("ini.windows-canonical", 1),
+            encoding = SourceEncoding("WindowsCodePage", 1252),
+            newline = "CrLf",
+            mappingPolicy = "RequireObject",
+            representability = "ExactOnly",
+            limits = consema.document.MaterializationLimits.default,
+        )
+        val payload = MaterializationRequestMessageV2.fromFacts(request).toValue() as PvObject
+        val limits = payload.get("limits") as PvObject
+        val overflowing = replaceField(
+            limits,
+            "max_input_nodes",
+            PvInteger(BigInteger("4294967296")), // 2^32: bitLength 33
+        )
+        val mutated = replaceField(payload, "limits", overflowing)
+        val failure = assertFailsWith<ProtocolException> {
+            MaterializationRequestMessageV2.fromValue(mutated)
+        }
+        assertEquals(ProtocolErrorKind.INVALID_VALUE, failure.kind)
+    }
+
+    @Test
+    fun sourcePatchV2RejectsOverflowingOffsets() {
+        val base = SourceSnapshotV2.fromRaw(
+            byteArrayOf(0x6b, 0x3d, 0x31),
+            V2EncodingRequest.new(SourceEncoding("WindowsCodePage", 1252))
+                .withBomPolicy("TreatAsContent"),
+            SourceLimits.default,
+        )
+        val patch = SourcePatchV2.create(
+            base,
+            listOf(
+                SourceReplacementV2(
+                    oldStart = 0,
+                    oldEnd = 1,
+                    original = byteArrayOf(0x6b),
+                    replacement = byteArrayOf(0x6c),
+                    redactOriginal = false,
+                    redactReplacement = false,
+                ),
+            ),
+            emptyMap(),
+            SourcePatchLimits.default,
+        )
+        val payload = SourcePatchMessageV2.fromPatch(patch).toValue() as PvObject
+        val replacements = payload.get("replacements") as PvArray
+        val first = replacements.items()[0] as PvObject
+        val overflowing = replaceField(
+            first,
+            "old_start",
+            PvInteger(BigInteger("4294967296")), // 2^32: bitLength 33
+        )
+        val mutated = replaceField(
+            payload,
+            "replacements",
+            PvArray(listOf(overflowing)),
+        )
+        val failure = assertFailsWith<ProtocolException> {
+            SourcePatchMessageV2.fromValue(mutated, SourcePatchLimits.default)
+        }
+        assertEquals(ProtocolErrorKind.INVALID_VALUE, failure.kind)
     }
 
     /** Replaces one named member of an Object value, preserving the field

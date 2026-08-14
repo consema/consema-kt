@@ -259,8 +259,7 @@ class QueryDefinition(
     }
 }
 
-/** A definition proven structurally valid for its domain (query.rs
- *). */
+/** A definition proven structurally valid for its domain (query.rs). */
 class ValidatedQuery internal constructor(
     val definition: QueryDefinition,
     val outputRole: MatchRole,

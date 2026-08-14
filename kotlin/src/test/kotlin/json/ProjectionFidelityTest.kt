@@ -1,12 +1,12 @@
 // Projection fidelity and conversion-closure tests transcribed from
 // conformance/vectors/json-family-v2.json.
 //
-// Vector case json5.projection.duplicates-nonfinite (json-family-v2.json:
-//) pins the EntryMapping result with the frozen binary bits; vector
+// Vector case json5.projection.duplicates-nonfinite (json-family-v2.json) pins the EntryMapping result with the frozen binary bits; vector
 // case json5.projection.old-target-rejected (json-family-v2.json:132-136)
 // pins target-not-applicable; vector case json5.convert.finite-to-strict
 // (json-family-v2.json:156-160) pins the dialect-conversion closure
 // (projection + materialization composition, RFC 0005 §9).
+// NOTE: 行号可能漂移，以 case id 为锚（provisioned conformance/vectors 文件按 pin 复制，re-provision 后行号会变）。
 
 package json
 

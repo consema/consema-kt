@@ -106,8 +106,7 @@ data class GraphLimits(
     companion object {
         /** The frozen defaults (1,000,000 roots, 1,000,000 nodes,
          * 2,000,000 edges, 1,000,000 container entries, 1 MiB tag,
-         * 64 MiB scalar, depth 256; https://github.com/consema/consema-rs/blob/main/consema-graph/src/lib.rs
- *). */
+         * 64 MiB scalar, depth 256; https://github.com/consema/consema-rs/blob/main/consema-graph/src/lib.rs). */
         val default = GraphLimits(
             maxRoots = 1_000_000,
             maxNodes = 1_000_000,
@@ -246,8 +245,7 @@ class Builder private constructor(private val identity: Long, private val limits
     }
 
     /** Stores one node after checking duplicate definition and the edge
-     * limit (the Rust GraphBuilder::define, https://github.com/consema/consema-rs/blob/main/consema-graph/src/lib.rs
- *). */
+     * limit (the Rust GraphBuilder::define, https://github.com/consema/consema-rs/blob/main/consema-graph/src/lib.rs). */
     private fun define(id: NodeId, node: NodeData, newEdges: Int) {
         val index = requireReserved(id)
         if (nodes[index] != null) {
@@ -312,8 +310,7 @@ class Builder private constructor(private val identity: Long, private val limits
     }
 
     /** Reports [GraphErrorKind.RESOURCE_LIMIT] when [observed] exceeds
-     * [limit] (the Rust check_limit, https://github.com/consema/consema-rs/blob/main/consema-graph/src/lib.rs
- *). */
+     * [limit] (the Rust check_limit, https://github.com/consema/consema-rs/blob/main/consema-graph/src/lib.rs). */
     private fun checkLimit(name: String, observed: Int, limit: Int) {
         if (observed > limit) {
             throw GraphException(

@@ -1,12 +1,12 @@
 // Formation status closure and structural coverage tests.
 //
-// Data authority: RFC 0016 §5.1 F10 (https://github.com/consema/consema/blob/main/docs/rfcs/0016-go-api-mapping-v1.md
-//) — FormationStatus is a closed two-value enum (Complete,
+// Data authority: RFC 0016 §5.1 F10 (https://github.com/consema/consema/blob/main/docs/rfcs/0016-go-api-mapping-v1.md) — FormationStatus is a closed two-value enum (Complete,
 // Recovered); RFC 0003 §7 — binary coverage obeys the no-gap/no-overlap/
 // final-length invariant; conformance/vectors/source-v1.json cases
 // source.binary.* (lines 102-118, capability core.source.binary-coverage@1)
 // pin the coverage semantics; https://github.com/consema/consema-rs/blob/main/consema-document/src/lib.rs
 // pins the validation outcomes.
+// NOTE: 行号可能漂移，以 case id 为锚（provisioned conformance/vectors 文件按 pin 复制，re-provision 后行号会变）。
 
 package document
 

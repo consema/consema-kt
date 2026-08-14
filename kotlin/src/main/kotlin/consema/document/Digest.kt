@@ -17,6 +17,7 @@
 // (the zero-runtime-dependency policy of https://github.com/consema/consema/blob/main/docs/multi-language-implementation-
 // plan.md §0.2 follows the go.mod zero-require precedent; JDK classes are the
 // runtime itself, exactly like Python's hashlib).
+// NOTE: 行号可能漂移，以 case id 为锚（provisioned conformance/vectors 文件按 pin 复制，re-provision 后行号会变）。
 
 package consema.document
 

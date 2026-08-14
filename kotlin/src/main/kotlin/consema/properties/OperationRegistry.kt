@@ -21,6 +21,7 @@
 // spellings of the Rust OperationArgumentKind (PortableValue, Placement,
 // ExactBytes) — the JSON family precedent (kotlin/src/main/kotlin/consema/json/
 // OperationRegistry.kt).
+// NOTE: 行号可能漂移，以 case id 为锚（provisioned conformance/vectors 文件按 pin 复制，re-provision 后行号会变）。
 
 package consema.properties
 
@@ -60,7 +61,7 @@ data class PropertiesOperationDescriptor(
  * Returns the validated operation registry for one exact Java Properties
  * profile (operation_registry.rs). Both profiles publish the same
  * frozen five-record surface (operation_registry.rs;
- * registry.frozen-five-operation-surface, java-properties-v1.json:146-150).
+ * the registry.frozen-five-operation-surface vector case).
  */
 fun formatOperationRegistry(profile: PropertiesProfile): List<PropertiesOperationDescriptor> {
     check(profile == PropertiesProfile.ReaderV1 || profile == PropertiesProfile.Latin1V1) {

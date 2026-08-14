@@ -10,7 +10,7 @@
 //     suite-count assertion is per suite).
 //   - conformance/README.md 规则 4 (every suite must validate its
 //     case count).
-//   - https://github.com/consema/consema-go/blob/main/go/conformance/conformance_test.go:106 (cross-reference: the Go
+//   - https://github.com/consema/consema-go/blob/main/go/conformance/conformance_test.go (cross-reference: the Go
 //     runner test asserts the same digest and counts).
 //
 // The vector files themselves drive every input and expectation; this test

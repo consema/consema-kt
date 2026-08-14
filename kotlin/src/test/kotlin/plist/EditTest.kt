@@ -4,8 +4,7 @@
 //
 // Data authority:
 //   - conformance/vectors/plist-v1.json cases plist.edit.xml-six-operations
-//     (plist-v1.json:257-325), plist.edit.binary-structural (plist-v1.json:
-//), plist.edit.conflicts (plist-v1.json) pin the
+//     (plist-v1.json:257-325), plist.edit.binary-structural (plist-v1.json), plist.edit.conflicts (plist-v1.json) pin the
 //     outcomes.
 //   - https://github.com/consema/consema-rs/blob/main/consema-plist/src/edit.rs is the byte authority: the fold rule
 //     (edit.rs record_edit) folds a later operation whose span lies
@@ -21,6 +20,7 @@
 // This file runs in the verified toolchain gate (kotlin-gates gradlew
 // test / the scripts/kotlin-verify-*.ps1 direct path): the toolchain is
 // verified and this file is executed.
+// NOTE: 行号可能漂移，以 case id 为锚（provisioned conformance/vectors 文件按 pin 复制，re-provision 后行号会变）。
 
 package plist
 

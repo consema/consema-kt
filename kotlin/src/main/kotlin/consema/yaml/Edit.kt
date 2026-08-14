@@ -2,8 +2,7 @@
 // commit, dry-run plan, untouched-byte proof, and SourcePatch derivation.
 //
 // Data authority:
-//   - RFC 0007 §12 (https://github.com/consema/consema/blob/main/docs/rfcs/0007-yaml-family-profiles-and-safety-v1.md
-//): the eight operation ids; transactions are snapshot-bound and
+//   - RFC 0007 §12 (https://github.com/consema/consema/blob/main/docs/rfcs/0007-yaml-family-profiles-and-safety-v1.md): the eight operation ids; transactions are snapshot-bound and
 //     validate all operations before publishing a candidate; common edits
 //     retain indentation, flow/block style, scalar style, comments, line
 //     endings, delimiters, and untouched raw bytes where compatible;
@@ -78,8 +77,7 @@ enum class RepresentationPolicy {
     PreserveElseCanonical,
 }
 
-/** One scalar operation bound to the transaction's base snapshot (edit.rs
- *). */
+/** One scalar operation bound to the transaction's base snapshot (edit.rs). */
 sealed class ScalarReplacement {
     /** Exact target NodeRef. */
     abstract val target: NodeRef
@@ -199,8 +197,7 @@ class EditTransactionBuilder internal constructor(private val base: SnapshotIden
         return this
     }
 
-    /** Adds one arbitrary-key mapping association insertion (edit.rs
- *). */
+    /** Adds one arbitrary-key mapping association insertion (edit.rs). */
     fun insertMappingEntry(
         mapping: NodeRef,
         key: PortableValue,
@@ -1438,8 +1435,7 @@ private fun Document.editParseLimits(): ParseLimits =
         maxDiagnostics = parseLimits.maxDiagnostics,
     )
 
-/** A new anchor name must form one exact anchor property (edit.rs
- *). */
+/** A new anchor name must form one exact anchor property (edit.rs). */
 private fun Document.validateAnchorName(name: String) {
     if (name.isEmpty() || name.length > parseLimits.maxSourceBytes) {
         throw EditFailureException(EditFailure.InvalidAnchorName)

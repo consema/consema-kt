@@ -3,8 +3,7 @@
 // comments, escapes, recovery records, and the lossless coverage index.
 //
 // Data authority:
-//   - RFC 0010 §2, §5, §9 (https://github.com/consema/consema/blob/main/docs/rfcs/0010-java-properties-profiles-v1.md
-//): the Document ends at the native layer; the
+//   - RFC 0010 §2, §5, §9 (https://github.com/consema/consema/blob/main/docs/rfcs/0010-java-properties-profiles-v1.md): the Document ends at the native layer; the
 //     native roles are PropertiesDocument / PropertiesNaturalLine /
 //     PropertiesLogicalLine / PropertiesProperty / PropertiesComment /
 //     PropertiesEscape / PropertiesErrorLine; duplicate keys never collapse;

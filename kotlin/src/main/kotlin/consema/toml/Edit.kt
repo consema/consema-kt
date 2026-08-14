@@ -12,13 +12,11 @@
 //   - https://github.com/consema/consema-rs/blob/main/consema-toml/src/operation_registry.rs pins the seven
 //     frozen operation IDs and their target roles.
 //   - https://github.com/consema/consema-rs/blob/main/consema-toml/src/edit.rs (RepresentationPolicy,
-//     ScalarReplacement), :57-99 (EditOperation), :101-227 (transaction and
-//     builder), :229-280 (EditCommit/EditFailure), :281-430 (commit),
-//     :432-447 (dry_run), :449-1062 (preparation), :1064-1100
-//     (validate_dependencies), :1102-1130 (limits), :1132-1278 (metadata and
-//     summaries), :1280-1332 (the frozen diagnostic_code mapping),
-//     :1334-1651 (PreparedEdit, validate_exact_scalar, semantic_literal,
-//     canonical_literal, find_item_by_span).
+//     ScalarReplacement, EditOperation, transaction and builder,
+//     EditCommit/EditFailure, commit, dry_run, preparation,
+//     validate_dependencies, limits, metadata and summaries, the frozen
+//     diagnostic_code mapping, PreparedEdit, validate_exact_scalar,
+//     semantic_literal, canonical_literal, find_item_by_span).
 //   - conformance/vectors/toml-v1.json toml.edit.* (lines 71-82) and
 //     operations-v1.json operations.v1.toml-* (lines 173-223) pin the
 //     exact replacement bytes and failure codes.
@@ -86,8 +84,7 @@ enum class RepresentationPolicy {
         }
 }
 
-/** One scalar operation bound to a transaction base snapshot (edit.rs
- *). */
+/** One scalar operation bound to a transaction base snapshot (edit.rs). */
 sealed class ScalarReplacement {
     /** Replace by public semantic value under an explicit policy. */
     data class Semantic(

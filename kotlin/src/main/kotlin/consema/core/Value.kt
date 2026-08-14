@@ -10,7 +10,7 @@
 //   - conformance/vectors/v1.json (pvce.null-vector, pvce.object-vector,
 //     pvce.negative-integer-vector) pins the byte surface exercised here.
 //   - Rust https://github.com/consema/consema-rs/blob/main/consema-core/src/value.rs pins the kind registry
-//     order; consema-go/go/core/value.go:39-381 is a cross-reference only.
+//     order; consema-go/go/core/value.go is a cross-reference only.
 //
 // Kotlin-idiomatic design (NOT a translation of any other language's code):
 // the closed kind set is a sealed class hierarchy — exhaustive `when` over

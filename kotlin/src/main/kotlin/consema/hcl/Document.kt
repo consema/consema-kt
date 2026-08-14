@@ -10,11 +10,11 @@
 //     source order and per-occurrence identity; an expression is a
 //     first-class native role with its exact span-derived text always
 //     available.
-//   - RFC 0014 §2 (:56-93): the UTF-8-only source contract; a BOM is
+//   - RFC 0014 §2: the UTF-8-only source contract; a BOM is
 //     Recovered with `hcl.parse.byte-order-mark@1`, invalid UTF-8 is fatal
 //     with `hcl.parse.invalid-utf8@1`, a lone CR is Recovered with
 //     `hcl.parse.lone-cr@1`.
-//   - RFC 0014 §5 (:359-393): `hcl.tfvars@1` is `hcl.native@1` under one
+//   - RFC 0014 §5: `hcl.tfvars@1` is `hcl.native@1` under one
 //     structural restriction — a block anywhere at the top level makes
 //     formation Recovered with one `hcl.tfvars.block-not-allowed@1`
 //     diagnostic per top-level block occurrence; the rejected block remains

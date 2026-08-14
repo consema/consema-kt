@@ -680,8 +680,7 @@ class SourceSnapshotMessageV2 private constructor(
     /** Verified immutable source snapshot. */
     fun snapshot(): SourceSnapshotV2 = snapshot
 
-    /** Encodes the exact source-snapshot v2 schema (source.rs,
- *). */
+    /** Encodes the exact source-snapshot v2 schema (source.rs). */
     fun toValue(): PortableValue =
         PvObject(
             listOf(
@@ -908,8 +907,13 @@ class SourcePatchMessageV2 private constructor(
                         "expected Bytes",
                     )
                 SourceReplacementV2(
-                    oldStart = unsigned64(replacementFields[0], "$path.old_start").toInt(),
-                    oldEnd = unsigned64(replacementFields[1], "$path.old_end").toInt(),
+                    // Wave-4 R41: oldStart/oldEnd are Int model fields, so
+                    // the wire u64 is decoded with the unsigned32 helper —
+                    // a value over the 32-bit range fails with
+                    // INVALID_VALUE instead of being silently truncated to
+                    // the low 32 bits.
+                    oldStart = unsigned32(replacementFields[0], "$path.old_start"),
+                    oldEnd = unsigned32(replacementFields[1], "$path.old_end"),
                     original = original.content(),
                     replacement = replacement.content(),
                     redactOriginal = booleanOf(replacementFields[4], "$path.redact_original"),
@@ -926,8 +930,7 @@ class SourcePatchMessageV2 private constructor(
     /** Validated source patch. */
     fun patch(): SourcePatchV2 = patch
 
-    /** Encodes the exact source-patch v2 schema (source.rs,
- *). */
+    /** Encodes the exact source-patch v2 schema (source.rs). */
     fun toValue(): PortableValue {
         val replacementValues = patch.replacements.map { replacement ->
             PvObject(

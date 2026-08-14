@@ -1,7 +1,7 @@
 // YAML projection tests: exact graph projection with provenance, value
 // projection policies, fidelity and events, and the frozen failure codes.
 //
-// Data authority: RFC 0007 §10 (https://github.com/consema/consema/blob/main/docs/rfcs/0007-yaml-family-profiles-and-
+// Data authority: RFC 0007 搂10 (https://github.com/consema/consema/blob/main/docs/rfcs/0007-yaml-family-profiles-and-
 // safety-v1.md) and the vector cases projection.sharing-policy,
 // projection.cycle, projection.tag-policy, projection.mapping-policy,
 // projection.graph-provenance, graph.shared-cycle, resource.graph-provenance
@@ -13,6 +13,7 @@
 // This file runs in the verified toolchain gate (kotlin-gates gradlew
 // test / the scripts/kotlin-verify-*.ps1 direct path): the toolchain is
 // verified and this file is executed.
+// NOTE: 行号可能漂移，以 case id 为锚（provisioned conformance/vectors 文件按 pin 复制，re-provision 后行号会变）。
 
 package yaml
 
@@ -178,7 +179,7 @@ class ProjectionFidelityTest {
         assertTrue(error.failure is GraphProjectionFailure.ProvenanceLimit)
     }
 
-    /** RFC 0007 §10: value projection resource limits fail with
+    /** RFC 0007 搂10: value projection resource limits fail with
      * yaml.projection.resource-limit@1 (the frozen limit name is
      * reported). */
     @Test
@@ -200,7 +201,7 @@ class ProjectionFidelityTest {
         assertTrue(failed.failure is consema.yaml.ValueProjectionFailure.ResourceLimit)
     }
 
-    /** RFC 0007 §10: a multi-document stream cannot satisfy a single-value
+    /** RFC 0007 搂10: a multi-document stream cannot satisfy a single-value
      * projection (yaml.projection.document-cardinality@1) but still
      * projects to one exact graph. */
     @Test

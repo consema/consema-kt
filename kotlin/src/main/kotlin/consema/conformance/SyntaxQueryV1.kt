@@ -69,8 +69,7 @@ private fun runSyntaxQueryV1Case(case: CaseData) {
     }
 }
 
-/** syntax.json.*: one lossless JSON syntax query (syntax_query_v1.rs
- *). */
+/** syntax.json.*: one lossless JSON syntax query (syntax_query_v1.rs). */
 private fun runJsonSyntaxCase(case: CaseData) {
     val profile = when (inputString(case, "profile") ?: fail("missing input.profile")) {
         "json.strict@1" -> JsonProfile.StrictV1
@@ -114,8 +113,7 @@ private fun runJsonSyntaxCase(case: CaseData) {
     compareMatches(case, actual, "Completed")
 }
 
-/** syntax.toml.*: one lossless TOML syntax query (syntax_query_v1.rs
- *). */
+/** syntax.toml.*: one lossless TOML syntax query (syntax_query_v1.rs). */
 private fun runTomlSyntaxCase(case: CaseData) {
     val profile = inputString(case, "profile") ?: fail("missing input.profile")
     if (profile != "toml.1.0@1") {

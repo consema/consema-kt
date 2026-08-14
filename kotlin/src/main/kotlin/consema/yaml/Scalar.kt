@@ -3,13 +3,11 @@
 // canonical scalar spellings.
 //
 // Data authority:
-//   - RFC 0007 §5-§6 (https://github.com/consema/consema/blob/main/docs/rfcs/0007-yaml-family-profiles-and-safety-v1.md
-//) freezes the resolved tag set, the canonical content rules
+//   - RFC 0007 §5-§6 (https://github.com/consema/consema/blob/main/docs/rfcs/0007-yaml-family-profiles-and-safety-v1.md) freezes the resolved tag set, the canonical content rules
 //     (null "", booleans true/false, unbounded base-10 integers, normalized
 //     decimal coefficient/exponent, .inf/-.inf/.nan, decoded strings), the
 //     1.1 frozen implicit forms, and the exact UTC timestamp rule.
-//   - conformance/vectors/yaml-v1.json cases profile.yaml12-scalars (lines
-//) and profile.yaml11-scalars (lines) pin the per-profile
+//   - conformance/vectors/yaml-v1.json cases profile.yaml12-scalars) and profile.yaml11-scalars (lines) pin the per-profile
 //     kind/canonical facts byte-for-byte.
 //   - https://github.com/consema/consema-rs/blob/main/consema-yaml/src/native.rs is the byte-arbitration
 //     authority for every lexical rule (parse_null/bool/integer/float,
@@ -434,8 +432,7 @@ private fun splitSign(value: String): Pair<Int, String>? {
     }
 }
 
-/** Underscores are valid only between alphanumeric characters (native.rs
- *). */
+/** Underscores are valid only between alphanumeric characters (native.rs). */
 private fun validUnderscored(value: String): String? {
     for (index in value.indices) {
         if (value[index] == '_' &&

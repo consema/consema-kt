@@ -670,7 +670,17 @@ private fun checkOperatorArguments(domain: QueryDomain, operator: OperatorCall) 
         "core.take" -> {
             // The argument-set check guarantees the Integer kind.
             val number = (operator.arguments["count"] as PvInteger).value
-            if (number.signum() < 0 || number.bitLength() > 63) {
+            // Wave-4 R41: the executors take the count as a Kotlin Int
+            // (input.take(count)), so the validation width is 31 bits —
+            // a count of 2^31..2^63-1 was accepted here but silently
+            // truncated by BigInteger.toInt() at execution time (2^32+3
+            // took 3 items; 2^31 became a negative take that crashed with
+            // IllegalArgumentException). Rejecting the unrepresentable
+            // range up front makes the failure a registered
+            // QueryFailureException instead of a silent information loss
+            // or an internal crash (the Rust reference to_usize fails the
+            // same way on oversized counts).
+            if (number.signum() < 0 || number.bitLength() > 31) {
                 throw QueryFailureException(
                     QueryFailureKind.INVALID_ARGUMENT,
                     operator = operator.id,

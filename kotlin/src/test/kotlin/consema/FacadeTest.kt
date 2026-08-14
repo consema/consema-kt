@@ -331,4 +331,59 @@ class ConvertFacadeTest {
         val complete = convertPlist(source, consema.plist.ProjectionRequest.valueTree(), plistTarget)
         assertTrue(complete is ConversionResult.Complete, "owning family consumes the record")
     }
+
+    /** Wave-4 R41-family fix: the conversion facade no longer drops the
+     * projection stage's diagnostics — a failed INI projection carries
+     * the attempt's diagnostics (ini.projection.incomplete-document@1
+     * for a Recovered document). */
+    @Test
+    fun iniProjectionFailureCarriesTheAttemptDiagnostics() {
+        val source = consema.ini.parse(
+            "[section]\nvalue=1\n[section]\nother=2\n".toByteArray(),
+            consema.ini.IniProfile.PortableV1,
+            limits = consema.ini.IniParseLimits.default,
+        )
+        assertEquals(
+            consema.document.FormationStatus.Recovered,
+            source.formationStatus(),
+            "duplicate sections make the document Recovered, so projection fails",
+        )
+        val failed = convertIni(
+            source,
+            consema.ini.ProjectionRequest.bestExactEntryMapping(),
+            jsonRequest(),
+        )
+        val failure = failed as? ConversionResult.Failed ?: fail("conversion must fail")
+        val projection = failure.failure as? ConversionFailure.ProjectionFailed
+            ?: fail("projection failure expected, got $failure")
+        assertTrue(
+            projection.diagnostics.any { it.code == "ini.projection.incomplete-document@1" },
+            "the attempt diagnostics must be carried, got ${projection.diagnostics}",
+        )
+    }
+
+    /** Wave-4 R41-family fix: a failed YAML value projection carries its
+     * frozen registered code (yaml.projection.document-cardinality@1 for
+     * a multi-document stream) instead of an empty diagnostic list. */
+    @Test
+    fun yamlProjectionFailureCarriesItsRegisteredCode() {
+        val source = consema.yaml.parse(
+            "a: 1\n---\nb: 2\n".toByteArray(),
+            consema.yaml.YamlProfile.Yaml12CoreV1,
+            consema.document.ParseLimits.default,
+        )
+        assertEquals(2, source.documentCount(), "two documents: value projection fails")
+        val failed = convertYaml(
+            source,
+            consema.yaml.ValueProjectionRequest.bestExactV1(),
+            jsonRequest(),
+        )
+        val failure = failed as? ConversionResult.Failed ?: fail("conversion must fail")
+        val projection = failure.failure as? ConversionFailure.ProjectionFailed
+            ?: fail("projection failure expected, got $failure")
+        assertTrue(
+            projection.diagnostics.any { it.code == "yaml.projection.document-cardinality@1" },
+            "the yaml.projection.* code must be carried, got ${projection.diagnostics}",
+        )
+    }
 }

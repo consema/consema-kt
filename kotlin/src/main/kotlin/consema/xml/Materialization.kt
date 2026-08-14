@@ -18,10 +18,8 @@
 //     pin the render bytes and the `"invalid-record"` failure spelling.
 //   - https://github.com/consema/consema-rs/blob/main/consema-xml/src/materialization.rs is the byte-arbitration
 //     authority: entry (materialization.rs), request validation
-//     (materialization.rs), reparse limits (materialization.rs
-//), encoding (materialization.rs), record validation
-//     (materialization.rs), the prefix table (materialization.rs
-//), the writer (materialization.rs), and the closure
+//     (materialization.rs), reparse limits (materialization.rs), encoding (materialization.rs), record validation
+//     (materialization.rs), the prefix table (materialization.rs), the writer (materialization.rs), and the closure
 //     verification (materialization.rs).
 //   - RFC 0004 §3/§7 (https://github.com/consema/consema/blob/main/docs/rfcs/0004-materialization-conversion-and-structural-edit-v1.md) pins the common
 //     MaterializationRequest and the completion algebra; the Kotlin common
@@ -629,8 +627,7 @@ private class PrefixTable {
 }
 
 /** One input location recorded during generation, paired by order with the
- * reparsed document during closure verification (materialization.rs
- *). */
+ * reparsed document during closure verification (materialization.rs). */
 private sealed class InputItem {
     abstract val path: ValuePath
 
@@ -978,8 +975,7 @@ private class Writer(private val limits: MaterializationLimits) {
 // Closure verification
 // ---------------------------------------------------------------------------
 
-/** One matched output origin in the reparsed document (materialization.rs
- *). */
+/** One matched output origin in the reparsed document (materialization.rs). */
 private class OutputItem(
     val node: NodeRef,
     val span: Span,

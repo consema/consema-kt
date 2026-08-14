@@ -6,6 +6,7 @@
 // renders, transcribed verbatim. The failure spelling `"invalid-record"`
 // is the runner mapping of InvalidRequest (https://github.com/consema/consema-rs/blob/main/consema-conformance/src/
 // xml_v1.rs).
+// NOTE: 行号可能漂移，以 case id 为锚（provisioned conformance/vectors 文件按 pin 复制，re-provision 后行号会变）。
 
 package xml
 
@@ -117,8 +118,7 @@ class MaterializationTest {
 
     @Test
     fun `content is escaped under the canonical style`() {
-        // Case xml.materialization.escapes-content (xml-1-0-safe-v1.json:
- //).
+        // Case xml.materialization.escapes-content (xml-1-0-safe-v1.json).
         val record = PvObject(
             listOf(
                 consema.core.Entry("record", PvString("xml.element-tree@1")),

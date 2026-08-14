@@ -133,7 +133,7 @@ class Facts {
  * escapes for the JSON whitespace set, `\u00xx` lowercase hex for the other
  * control characters, everything else passed through as UTF-8). The Go
  * harness and the Rust example implement the identical function
- * (consema-go/go/conformance/differential/normalized/runner.go:233-295). The evidence
+ * (consema-go/go/conformance/differential/normalized/runner.go). The evidence
  * vocabulary is compared over bytes, so valid Unicode text must render
  * identically on every side; the consema-go/go/Rust lossy-invalid-UTF-8 branch is
  * unreachable here because Kotlin text values are always valid Unicode and

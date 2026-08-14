@@ -3,12 +3,12 @@
 // immutable native model.
 //
 // Data authority:
-//   - RFC 0007 §3-§4 (https://github.com/consema/consema/blob/main/docs/rfcs/0007-yaml-family-profiles-and-safety-v1.md
-//): both profiles accept UTF-8 (with or without BOM) and
+//   - RFC 0007 §3-§4 (https://github.com/consema/consema/blob/main/docs/rfcs/0007-yaml-family-profiles-and-safety-v1.md):
+//     both profiles accept UTF-8 (with or without BOM) and
 //     UTF-16LE/BE with BOM; formation states Complete | Recovered |
 //     FatalFormationFailure; backend success is never sufficient evidence
 //     for a Complete Document.
-//   - RFC 0007 §8 (…:194-213) pins the composition rules: reserve graph
+//   - RFC 0007 §8 pins the composition rules: reserve graph
 //     identity when a node starts, register an anchor before descending,
 //     resolve an alias to the most recent preceding anchor, never expand
 //     aliases, permit backward self/mutual cycles.

@@ -2,10 +2,10 @@
 //
 // Data authority: https://github.com/consema/consema-rs/blob/main/consema-protocol/src/error_registry.rs — the v7
 // registry pins 187 codes (55/62/90/92/132/166/187 across v1..v7;
-// ERROR_CODES_V2 at error_registry.rs, V3 :617, V4 :662, V5 :935,
-// V6 :1172, V7 :1339). The records below are transcribed VERBATIM from the
-// Rust registries (cross-checked against consema-go/go/protocol/error_registry.go:
-//): every code, category, introduced version, and description is
+// ERROR_CODES_V2 at error_registry.rs (V3 through V7). The records below are
+// transcribed VERBATIM from the Rust registries (cross-checked against
+// consema-go/go/protocol/error_registry.go):
+// every code, category, introduced version, and description is
 // byte-identical; nothing may be invented or dropped. The description
 // wording is presentation metadata; code/category/introduced are
 // normative.

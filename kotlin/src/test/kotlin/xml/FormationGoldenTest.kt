@@ -8,6 +8,7 @@
 // the frozen xml.* codes of https://github.com/consema/consema-rs/blob/main/consema-xml/src/parser.rs (each cited in
 // the test). The UTF-16 golden bytes are transcribed VERBATIM from the
 // vector's render_hex field (case xml.formation.utf16le-with-bom).
+// NOTE: 行号可能漂移，以 case id 为锚（provisioned conformance/vectors 文件按 pin 复制，re-provision 后行号会变）。
 
 package xml
 

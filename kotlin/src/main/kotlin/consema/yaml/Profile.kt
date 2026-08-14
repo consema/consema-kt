@@ -13,14 +13,14 @@
 //     and the syntax kinds the vectors assert (syntax.styles-and-trivia,
 //     yaml-v1.json:31-34).
 //   - https://github.com/consema/consema-rs/blob/main/consema-yaml/src/lib.rs pins YamlProfile and the exact
-//     YamlSyntaxKind spellings (as_str lib.rs, from_name lib.rs
-//); lib.rs pins the profile ids and accepted %YAML
+//     YamlSyntaxKind spellings (as_str lib.rs, from_name lib.rs); lib.rs pins the profile ids and accepted %YAML
 //     versions. consema-go/go/yaml/profile.go is a cross-reference only.
 //
 // Kotlin-idiomatic design (NOT a translation): the profile is a closed enum;
 // the syntax-kind names are the exact language-neutral spellings asserted by
 // the query domain and the vectors, so [YamlSyntaxKind.asStr] IS the frozen
 // spelling.
+// NOTE: 行号可能漂移，以 case id 为锚（provisioned conformance/vectors 文件按 pin 复制，re-provision 后行号会变）。
 
 package consema.yaml
 

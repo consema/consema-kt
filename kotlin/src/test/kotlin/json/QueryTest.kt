@@ -6,9 +6,11 @@
 // BinaryFloat64 native root under domain v2; the syntax-query-v1.json json
 // cases (lines 5-52) pin kind/text matching, ordinals, selection, and the
 // limit/cancellation codes (RFC 0005 §7, RFC 0003 §8).
+// NOTE: 行号可能漂移，以 case id 为锚（provisioned conformance/vectors 文件按 pin 复制，re-provision 后行号会变）。
 
 package json
 
+import consema.core.PvInteger
 import consema.core.PvString
 import consema.protocol.CapabilityId
 import consema.protocol.CapabilitySet
@@ -26,6 +28,7 @@ import consema.json.QueryLimits
 import consema.json.executeJsonQuery
 import consema.json.executeJsonSyntaxQuery
 import consema.json.parse
+import java.math.BigInteger
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -239,6 +242,50 @@ class QueryTest {
         val members = matches.map { it as consema.json.JsonMatch.ObjectMember }
         assertEquals(listOf(0, 1), members.map { it.ordinal })
         assertTrue(members[0].member != members[1].member)
+    }
+
+    /** Wave-4 R41: the core.take count is validated at 31 bits (the
+     * executor takes it as a Kotlin Int). Counts of 2^31 and 2^32 were
+     * previously accepted by the 63-bit validator and then silently
+     * truncated by BigInteger.toInt() at execution time — 2^32+3 took
+     * three items, and 2^31 became a negative take that crashed with
+     * IllegalArgumentException. They now fail with the registered
+     * QueryFailureException (the Rust reference to_usize fails the same
+     * way on oversized counts). */
+    @Test
+    fun takeCountOverflowIsRejectedWithTheRegisteredCode() {
+        val document = parse("[1,2,3]".toByteArray(Charsets.UTF_8), JsonProfile.StrictV1)
+
+        fun take(count: BigInteger): consema.protocol.ExecutableQuery =
+            QueryDefinition(Domains.jsonNativeV1())
+                .withExpression(
+                    QueryExpression(ExpressionKind.Input).then(
+                        OperatorCall("core.take", 1).withArgument("count", PvInteger(count)),
+                    ),
+                )
+                .validate()
+                .bind(capabilities())
+
+        // 2^32 (bitLength 33): the old 63-bit validator accepted it, the
+        // executor truncated it to 0.
+        val tooBig = assertFailsWith<QueryFailureException> {
+            executeJsonQuery(take(BigInteger("4294967296")), document)
+        }
+        assertEquals(QueryFailureKind.INVALID_ARGUMENT, tooBig.kind)
+
+        // 2^31 (bitLength 32): the old executor truncated it to a
+        // negative take and crashed with an uncaught
+        // IllegalArgumentException.
+        val boundary = assertFailsWith<QueryFailureException> {
+            executeJsonQuery(take(BigInteger("2147483648")), document)
+        }
+        assertEquals(QueryFailureKind.INVALID_ARGUMENT, boundary.kind)
+
+        // 2^31 - 1 (bitLength 31): the largest accepted count; the input
+        // is the single root value, so take passes it through — the
+        // boundary keeps working.
+        val matches = executeJsonQuery(take(BigInteger("2147483647")), document)
+        assertEquals(1, matches.size)
     }
 }
 

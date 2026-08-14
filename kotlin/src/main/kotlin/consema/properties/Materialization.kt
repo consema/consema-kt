@@ -24,8 +24,7 @@
 //   - https://github.com/consema/consema-rs/blob/main/consema-properties/src/materialization.rs is the byte-
 //     arbitration authority (writer materialization.rs, closure
 //     materialization.rs, provenance materialization.rs,
-//     encoding materialization.rs, parse limits materialization.rs
-//). consema-go/go/properties/materialization.go is a cross-reference only.
+//     encoding materialization.rs, parse limits materialization.rs). consema-go/go/properties/materialization.go is a cross-reference only.
 //   - The Kotlin document package owns the completion algebra types
 //     (MaterializationResult/CompleteMaterialization/...,
 //     kotlin/src/main/kotlin/consema/document/Materialization.kt). Windows code pages

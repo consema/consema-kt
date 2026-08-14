@@ -59,8 +59,7 @@ data class PgceLimits(
     companion object {
         /** The frozen defaults (64 MiB stream, 1,000,000 roots, 1,000,000
          * nodes, 2,000,000 edges, 1,000,000 container entries, 1 MiB tag,
-         * 64 MiB scalar, depth 256; https://github.com/consema/consema-rs/blob/main/consema-graph/src/pgce.rs
- *). */
+         * 64 MiB scalar, depth 256; https://github.com/consema/consema-rs/blob/main/consema-graph/src/pgce.rs). */
         val default = PgceLimits(
             maxStreamBytes = 64 shl 20,
             maxRoots = 1_000_000,
@@ -143,8 +142,7 @@ fun encodePgceBounded(g: Graph, limits: PgceLimits): ByteArray {
 }
 
 /** Checks the whole-graph limits and the traversal depth before any encoding
- * work (the Rust validate_graph_limits, https://github.com/consema/consema-rs/blob/main/consema-graph/src/pgce.rs
- *). */
+ * work (the Rust validate_graph_limits, https://github.com/consema/consema-rs/blob/main/consema-graph/src/pgce.rs). */
 private fun validateGraphLimits(g: Graph, limits: PgceLimits) {
     checkEncodeLimit("graph-roots", g.roots.size, limits.maxRoots)
     checkEncodeLimit("graph-nodes", g.nodes.size, limits.maxNodes)

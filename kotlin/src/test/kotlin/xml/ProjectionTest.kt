@@ -6,6 +6,7 @@
 // recovered-document failure code xml.projection.recovered-document@1 is
 // pinned by case xml.projection.recovered-never-projects
 // (xml-1-0-safe-v1.json:341-350).
+// NOTE: 行号可能漂移，以 case id 为锚（provisioned conformance/vectors 文件按 pin 复制，re-provision 后行号会变）。
 
 package xml
 
@@ -42,8 +43,7 @@ class ProjectionTest {
 
     @Test
     fun `element tree record projects the exact root facts`() {
-        // Case xml.projection.element-tree-record (xml-1-0-safe-v1.json:
- //).
+        // Case xml.projection.element-tree-record (xml-1-0-safe-v1.json).
         val document = parseUtf8("<root a=\"1\"><child>t</child></root>")
         val result = document.project(ProjectionRequest.elementTree())
         val projection = assertIs<ProjectionResult.Complete>(result).projection
@@ -67,8 +67,7 @@ class ProjectionTest {
 
     @Test
     fun `namespace record projects the resolved uri`() {
-        // Case xml.projection.namespace-record (xml-1-0-safe-v1.json:
- //).
+        // Case xml.projection.namespace-record (xml-1-0-safe-v1.json).
         val document = parseUtf8("<p:root xmlns:p=\"urn:p\"/>")
         val result = document.project(ProjectionRequest.elementTree())
         val projection = assertIs<ProjectionResult.Complete>(result).projection

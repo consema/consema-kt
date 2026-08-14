@@ -17,6 +17,7 @@
 // Kotlin-idiomatic design: the parity facts are derived from the Kotlin
 // facade registry and the protocol registries — the function below holds no
 // duplicated inventory; the CapabilityParity test pins the manifest counts.
+// NOTE: 行号可能漂移，以 capability_set 计数为锚（fc-manifest 按 sync-note 重同步后行号会变）。
 
 package consema
 

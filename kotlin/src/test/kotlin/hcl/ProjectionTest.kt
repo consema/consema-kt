@@ -8,6 +8,7 @@
 // tuples as Sequences, objects as EntryMappings with ordered duplicate
 // preservation, and derived expressions as the authorized `hcl.expression@1`
 // record under the explicit policy.
+// NOTE: 行号可能漂移，以 case id 为锚（provisioned conformance/vectors 文件按 pin 复制，re-provision 后行号会变）。
 
 package hcl
 

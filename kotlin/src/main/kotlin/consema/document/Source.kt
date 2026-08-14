@@ -17,9 +17,8 @@
 // maps SourceError variants to the registered codes.
 //   - consema-go/go/document/source.go is a cross-reference only.
 //
-// The registered error codes (https://github.com/consema/consema-rs/blob/main/consema-protocol/src/error_registry.rs
-// 207, 366-410; transcribed into kotlin/src/main/kotlin/consema/protocol/ErrorRegistry.kt,
-//):
+// The registered error codes (https://github.com/consema/consema-rs/blob/main/consema-protocol/src/error_registry.rs,
+// the source-construction section; transcribed into kotlin/src/main/kotlin/consema/protocol/ErrorRegistry.kt):
 //   core.source.invalid-sequence@1  (InvalidUtf8 and InvalidSequence)
 //   core.source.encoding-conflict@1
 //   core.source.unsupported-bom@1

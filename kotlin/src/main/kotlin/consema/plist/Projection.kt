@@ -23,8 +23,7 @@
 //     per-case outcomes; https://github.com/consema/consema-rs/blob/main/consema-plist/src/projection.rs is the
 //     byte-arbitration authority (targets projection.rs, request
 //     projection.rs, value-tree encoding projection.rs,
-//     require-object projection.rs, failure codes projection.rs
-//).
+//     require-object projection.rs, failure codes projection.rs).
 //
 // Kotlin-idiomatic design: the completion algebra is a sealed class, so
 // exhaustive `when` over Complete/Failed can never meet an unknown outcome;
@@ -235,8 +234,7 @@ class ProjectionRequest private constructor(
             ProjectionRequest(ProjectionTarget.ValueTreeV1, UidPolicy.Exclude,
                 CollisionPolicy.Reject, ProjectionLimits.default)
 
-        /** The value-tree target with an explicit UID policy (projection.rs
- *). */
+        /** The value-tree target with an explicit UID policy (projection.rs). */
         fun valueTreeWithUid(policy: UidPolicy): ProjectionRequest =
             ProjectionRequest(ProjectionTarget.ValueTreeV1, policy,
                 CollisionPolicy.Reject, ProjectionLimits.default)

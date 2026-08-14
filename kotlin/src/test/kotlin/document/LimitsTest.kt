@@ -3,7 +3,7 @@
 // Data authority: https://github.com/consema/consema-rs/blob/main/consema-document/src/lib.rs (ParseLimits),
 // materialization.rs (MaterializationLimits), source.rs
 // (SourceLimits), source_patch.rs (SourcePatchLimits); cross-checked
-// against consema-go/go/document/limits.go:4-58 and consema-go/go/document/source.go:27-43
+// against consema-go/go/document/limits.go and consema-go/go/document/source.go
 // (identical numbers). RFC 0016 §5.1: ParseLimits mirrors the Rust defaults.
 
 package document

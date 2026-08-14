@@ -8,8 +8,8 @@
 //     caller_override, selected), and the priority order
 //     caller_override -> declaration -> bom -> profile_default; any two
 //     present disagreeing facts produce EncodingConflict.
-//   - conformance/vectors/source-v1.json cases source.encoding.* (lines
-//) pin the wire spellings ("utf-8", "utf-16le", "utf-16be",
+//   - conformance/vectors/source-v1.json cases source.encoding.* pin the
+//     wire spellings ("utf-8", "utf-16le", "utf-16be",
 //     "latin-1", "binary") and the rejection codes.
 //   - https://github.com/consema/consema-rs/blob/main/consema-document/src/source.rs pins the shapes and the
 //     resolution/decoding rules; consema-go/go/document/encoding.go is a cross-reference

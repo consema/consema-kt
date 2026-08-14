@@ -4,6 +4,7 @@
 // Key matching takes exact UTF-16 code units encoded as UTF16BE/1 and never
 // normalizes (RFC 0010 §10). Case ids are cited on every test; these tests
 // pin the intent and run at the L2 verification gate.
+// NOTE: 行号可能漂移，以 case id 为锚（provisioned conformance/vectors 文件按 pin 复制，re-provision 后行号会变）。
 
 package properties
 

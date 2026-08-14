@@ -778,8 +778,7 @@ private fun offsetToI32(offset: PvInteger): Int? {
 }
 
 /** Measures a value's canonical PVCE/1 stream size under encode limits
- * without producing bytes (the Rust Sizer, https://github.com/consema/consema-rs/blob/main/consema-pvce/src/lib.rs
- *). */
+ * without producing bytes (the Rust Sizer, https://github.com/consema/consema-rs/blob/main/consema-pvce/src/lib.rs). */
 private class Sizer(private val limits: EncodeLimits) {
     private var nodes = 0
 

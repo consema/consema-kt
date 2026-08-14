@@ -5,6 +5,7 @@
 // query.syntax-decoded-structure-order, and
 // query.validation-limit-cancellation (ini-v1.json:44-58);
 // https://github.com/consema/consema-rs/blob/main/consema-ini/src/query.rs is the byte-arbitration authority.
+// NOTE: 行号可能漂移，以 case id 为锚（provisioned conformance/vectors 文件按 pin 复制，re-provision 后行号会变）。
 
 package ini
 

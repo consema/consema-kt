@@ -7,7 +7,7 @@
 //     by extension; the parser consumes one complete document entity and
 //     opens no other entity, file, URI, network connection, registry,
 //     classpath, or catalog.
-//   - RFC 0012 §2 (0012-...:46-81): the v1 document-entity encoding table
+//   - RFC 0012 §2: the v1 document-entity encoding table
 //     (UTF-8 optional BOM; UTF-16LE/BE with a required BOM; no-BOM defaults
 //     to UTF-8; UTF-16 without a BOM is rejected; UTF-32/Latin-1/Windows
 //     code pages are explicit v1 exclusions).

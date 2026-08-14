@@ -10,7 +10,7 @@
 //     implicit/dotted tables, arrays of tables, inline-table extension
 //     prohibition, implicit-table reuse with remove-and-reinsert) follows
 //     toml_edit 0.22.27 (the frozen Rust backend, IMPLEMENTATION.md) as
-//     transcribed by the Go parser (consema-go/go/toml/parser.go:280-2030, a
+//     transcribed by the Go parser (consema-go/go/toml/parser.go, a
 //     cross-reference only): parseDocument BOM skip, parseComment/lineTrailing
 //     trivia rules, parseKey dotted keys, parseKeyval with the dotted-vs-table
 //     conflict checks, descendPath, parseHeader with the implicit-reuse rule,

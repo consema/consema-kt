@@ -7,15 +7,15 @@
 //     toml.try-array-elements@1, toml.array-element-item@1, plus
 //     core.take@1 and core.distinct-by-identity@1); validation completes
 //     before execution.
-//   - https://github.com/consema/consema-rs/blob/main/consema-toml/src/query.rs (TomlMatch, TomlSyntaxMatch),
-//     :88-180 (execute_toml_query / execute_toml_syntax_query and cursors),
-//     :182-488 (Context::step with the frozen QueryLimits defaults
-//     max_steps 100_000 / max_results 100_000, the expression evaluator,
-//     the operator implementations, and apply_selection), and the domain
-//     checks. The frozen failure codes are the registered core.query.*@1
-//     codes of consema-protocol (QueryFailureException).
-//   - conformance/vectors/syntax-query-v1.json syntax.toml.* cases (lines
-//) pin the match facts (kind, text, ordinal, TomlSyntaxPiece
+//   - https://github.com/consema/consema-rs/blob/main/consema-toml/src/query.rs (TomlMatch, TomlSyntaxMatch,
+//     execute_toml_query / execute_toml_syntax_query and cursors,
+//     Context::step with the frozen QueryLimits defaults max_steps 100_000 /
+//     max_results 100_000, the expression evaluator, the operator
+//     implementations, and apply_selection), and the domain checks. The
+//     frozen failure codes are the registered core.query.*@1 codes of
+//     consema-protocol (QueryFailureException).
+//   - conformance/vectors/syntax-query-v1.json syntax.toml.* cases
+//     pin the match facts (kind, text, ordinal, TomlSyntaxPiece
 //     role) and the failure codes.
 //   - consema-go/go/toml/query.go is a cross-reference only.
 //

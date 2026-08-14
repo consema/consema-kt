@@ -10,6 +10,7 @@
 // This file runs in the verified toolchain gate (kotlin-gates gradlew
 // test / the scripts/kotlin-verify-*.ps1 direct path): the toolchain is
 // verified and this file is executed.
+// NOTE: 行号可能漂移，以 case id 为锚（provisioned conformance/vectors 文件按 pin 复制，re-provision 后行号会变）。
 
 package hcl
 

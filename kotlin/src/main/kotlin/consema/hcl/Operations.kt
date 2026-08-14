@@ -11,7 +11,7 @@
 //     attribute operations only (operation_registry.rs), because
 //     the tfvars restriction admits no block (RFC 0014 §5, §10).
 //   - RFC 0014 §10 (https://github.com/consema/consema/blob/main/docs/rfcs/0014-hcl-family-profiles-v1.md)
-//     freezes the six operation semantics; RFC 0004 §10 (:244-269) freezes
+//     freezes the six operation semantics; RFC 0004 §10 freezes
 //     the registry discipline.
 //   - consema-go/go/hcl is a cross-reference only.
 //
@@ -75,8 +75,7 @@ private fun descriptor(
     support = HclOperationSupport.Supported,
 )
 
-/** The attribute-only surface of `hcl.tfvars@1` (operation_registry.rs
- *). */
+/** The attribute-only surface of `hcl.tfvars@1` (operation_registry.rs). */
 private fun tfvarsDescriptors(): List<HclOperationDescriptor> =
     listOf(
         descriptor(

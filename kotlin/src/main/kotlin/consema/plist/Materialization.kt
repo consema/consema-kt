@@ -70,6 +70,7 @@ import consema.document.ParseLimits
 import consema.document.SourceEncoding
 import consema.protocol.DiagnosticCategory
 import consema.protocol.Severity
+import java.math.BigDecimal
 import kotlin.math.absoluteValue
 
 /** The frozen style identifiers (materialization.rs). */
@@ -148,8 +149,7 @@ sealed class MaterializationFailure(val code: String) : Exception(code) {
         MaterializationFailure("core.materialization.formation-failed@1")
 }
 
-/** One validated value record with its input path (materialization.rs
- *). */
+/** One validated value record with its input path (materialization.rs). */
 private class ValueNode(val path: ValuePath, val kind: ValueKind)
 
 /** One validated dictionary association (materialization.rs). */
@@ -607,21 +607,30 @@ private fun validateKind(
     return kind
 }
 
-/** Converts one exact decimal to its double value; null when the
- * coefficient or exponent exceeds the exact i64 range (materialization.rs
- *). */
+/** Converts one exact decimal to its correctly rounded double value; null
+ * when the coefficient or exponent exceeds the exact i64 range, when
+ * |exponent| > 308 (the double's decimal exponent range), or when the
+ * correctly rounded result overflows to infinity or underflows to zero —
+ * an unrepresentable decimal fails atomically instead of being silently
+ * truncated (wave-4 R42; RFC 0013 §10 "unrepresentable values must fail
+ * atomically"). The conversion is a single correctly rounded pass
+ * (BigDecimal.doubleValue, round-half-even), never a repeated-iteration
+ * scale. */
 private fun decimalToF64(decimal: PvDecimal): Double? {
     val coefficient = bigIntegerToLong(decimal.coefficient) ?: return null
     val exponent = bigIntegerToLong(decimal.exponent) ?: return null
-    var value = coefficient.toDouble()
-    if (exponent >= 0) {
-        for (i in 0 until exponent.toInt().coerceAtMost(400)) {
-            value *= 10.0
-        }
-    } else {
-        for (i in 0 until (-exponent).toInt().coerceAtMost(400)) {
-            value /= 10.0
-        }
+    // The finite double range is roughly 1e-308..1e308; an exponent beyond
+    // it can only overflow or underflow (and exponent > Int.MAX would wrap
+    // in the scaling step below), so it fails here instead.
+    if (exponent > 308 || exponent < -308) {
+        return null
+    }
+    val value = BigDecimal(coefficient).scaleByPowerOfTen(exponent.toInt()).toDouble()
+    // Correctly rounded results are never silently lossy: an overflow
+    // rounds to infinity and a nonzero value that underflows rounds to
+    // zero — both are unrepresentable and fail atomically.
+    if (value.isInfinite() || (value == 0.0 && coefficient != 0L)) {
+        return null
     }
     return value
 }

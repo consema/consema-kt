@@ -6,7 +6,7 @@
 // dependent. conformance/vectors/v1.json pins the contract
 // (value.decimal-normalization: "1.00" == "10e-1"; value.float-signed-zero:
 // +0.0 != -0.0). The hashing contract (FNV-1a over the canonical PVCE/1
-// bytes) follows consema-go/go/core/equal.go:127-138 as cross-reference.
+// bytes) follows consema-go/go/core/equal.go as cross-reference.
 //
 // Kotlin-idiomatic design: top-level functions [equal] and [hash] (the
 // canonical contract), total over nulls, never recursing through container

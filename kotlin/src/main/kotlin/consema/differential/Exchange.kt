@@ -612,8 +612,7 @@ private fun exchangeProjectionRequest(value: PortableValue): PortableValue {
     )
 }
 
-/** One versioned policy call of the projection records (projection.rs
- *). */
+/** One versioned policy call of the projection records (projection.rs). */
 private fun exchangePolicy(value: PortableValue, path: String): PortableValue {
     val fields = exactFieldsOf(value, listOf("id", "version", "arguments"), path)
     val reference = parseContractReferenceOf(fields, path)

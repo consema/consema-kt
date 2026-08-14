@@ -10,6 +10,7 @@
 //     https://github.com/consema/consema-rs/blob/main/consema-xml/src/parser.rs (each cited in the test).
 //   - conformance/vectors/xml-1-0-safe-v1.json cases xml.formation.* and
 //     xml.limit.* pin the status and diagnostic outcomes.
+// NOTE: 行号可能漂移，以 case id 为锚（provisioned conformance/vectors 文件按 pin 复制，re-provision 后行号会变）。
 
 package xml
 
@@ -92,8 +93,7 @@ class SecurityAndSpanTest {
 
     @Test
     fun `mixed content budget drops children with a diagnostic`() {
-        // Case xml.limit.mixed-content-diagnostic (xml-1-0-safe-v1.json:
- //): max_mixed_content_items 1 drops the child element with
+        // Case xml.limit.mixed-content-diagnostic (xml-1-0-safe-v1.json): max_mixed_content_items 1 drops the child element with
         // xml.limit.mixed-content@1.
         val limits = XmlParseLimits.default.copy(maxMixedContentItems = 1)
         val document = parseUtf8("<root>a<child/></root>", limits)

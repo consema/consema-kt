@@ -19,8 +19,7 @@
 //     query.rs); consema-core/src/query.rs pins QueryLimits
 //     defaults and the CancellationToken shape.
 //   - The operator table and argument vocabularies live in the protocol
-//     package (kotlin/src/main/kotlin/consema/protocol/QueryValidate.kt
-//) and validate INI queries before execution.
+//     package (kotlin/src/main/kotlin/consema/protocol/QueryValidate.kt) and validate INI queries before execution.
 //
 // Kotlin-idiomatic design: execution throws the protocol package's typed
 // [consema.protocol.QueryFailureException] carrying the registered code

@@ -22,6 +22,7 @@
 // the family enum types; ids keep the exact language-neutral spellings so
 // `ProfileId.id` IS the wire spelling. The registry is strictly additive —
 // no existing family API is rewritten.
+// NOTE: 行号可能漂移，以 capability_set 计数为锚（fc-manifest 按 sync-note 重同步后行号会变）。
 
 package consema
 
@@ -140,8 +141,9 @@ fun operationRegistry(profile: ProfileId): List<FormatOperationId>? =
  * parse entry. The per-format encoding selection and limits use the frozen
  * profile defaults; the properties reader profile uses an explicit UTF-8
  * selection because its contract has no profile default. An unknown profile
- * id throws [UnknownProfileException] (the typed adapters fail the same
- * way: resolve ids against [profiles] first).
+ * id throws [UnknownProfileException] carrying the frozen code
+ * core.materialization.unsupported-profile@1 (wave-4 R1 five-language
+ * unified choice).
  */
 fun parseDocument(bytes: ByteArray, profile: ProfileId): Document =
     when (profile.id) {
@@ -177,9 +179,20 @@ fun parseDocument(bytes: ByteArray, profile: ProfileId): Document =
         else -> throw UnknownProfileException(profile)
     }
 
-/** Unknown profile id failure of the facade parse entry. */
+/** Unknown profile id failure of the facade parse entry. Wave-4 R1
+ * (five-language unification): the five repos raise the same frozen
+ * registered code for an unknown/unsupported profile — the v7 187-code
+ * registry contains exactly one code whose literal name is
+ * "unsupported-profile", core.materialization.unsupported-profile@1
+ * (grep of error_registry.rs; the ts T1c selection is the same code), so
+ * this exception carries it instead of being codeless. No new code is
+ * added (the registry is frozen; additions are v8 post-1.0.0). */
 class UnknownProfileException(val profile: ProfileId) :
-    Exception("consema: unknown profile ${profile.id}@${profile.version}")
+    Exception("consema: unknown profile ${profile.id}@${profile.version}") {
+    /** The frozen registered code carried by every unknown-profile
+     * failure (wave-4 R1, five-language unified). */
+    val code: String = "core.materialization.unsupported-profile@1"
+}
 
 private fun familyProfile(familyId: String, profile: ProfileId): FormatProfile =
     FormatProfile(FormatFamilyId(familyId, 1), profile)

@@ -3,8 +3,7 @@
 // Complete/Recovered outcomes.
 //
 // Data authority:
-//   - RFC 0013 §2.2, §3, §5 (https://github.com/consema/consema/blob/main/docs/rfcs/0013-plist-family-profiles-v1.md
-//): the 42-byte minimum, the header, the admitted
+//   - RFC 0013 §2.2, §3, §5 (https://github.com/consema/consema/blob/main/docs/rfcs/0013-plist-family-profiles-v1.md): the 42-byte minimum, the header, the admitted
 //     marker table, the integer width rules, extended sizes, real/date/
 //     string/data/UID payloads, array/dictionary references, the offset
 //     table and trailer layout, and the mandatory integrity checks of

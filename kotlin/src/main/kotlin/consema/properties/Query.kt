@@ -21,8 +21,7 @@
 //     (max_steps 100_000, max_results 100_000) and the CancellationToken
 //     shape.
 //   - The operator argument schemas and the UTF16BE/1 validation live in the
-//     protocol package (kotlin/src/main/kotlin/consema/protocol/QueryValidate.kt,
-//); execution here consumes only validated operators.
+//     protocol package (kotlin/src/main/kotlin/consema/protocol/QueryValidate.kt,); execution here consumes only validated operators.
 //
 // Kotlin-idiomatic design: execution throws the protocol package's typed
 // [consema.protocol.QueryFailureException] carrying the registered code; the

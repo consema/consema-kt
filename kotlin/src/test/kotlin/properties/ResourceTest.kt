@@ -9,6 +9,7 @@
 // limit@1 (source_v1.rs); every parse-level limit fails with
 // core.parse.resource-limit@1. These tests pin the intent and run at the
 // L2 verification gate.
+// NOTE: 行号可能漂移，以 case id 为锚（provisioned conformance/vectors 文件按 pin 复制，re-provision 后行号会变）。
 
 package properties
 

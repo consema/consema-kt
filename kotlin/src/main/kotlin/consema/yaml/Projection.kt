@@ -2,8 +2,7 @@
 // and Document -> PortableValue with fidelity, report, and provenance.
 //
 // Data authority:
-//   - RFC 0007 §10 (https://github.com/consema/consema/blob/main/docs/rfcs/0007-yaml-family-profiles-and-safety-v1.md
-//): yaml.projection.best-exact-graph@1 is the default YAML
+//   - RFC 0007 §10 (https://github.com/consema/consema/blob/main/docs/rfcs/0007-yaml-family-profiles-and-safety-v1.md): yaml.projection.best-exact-graph@1 is the default YAML
 //     target (standard resolved tags, arbitrary keys, association order,
 //     sharing, cycles); yaml.projection.best-exact-value@1 defaults to
 //     stream RequireExactlyOneDocument, sharing Reject, cycle Reject, tag
@@ -445,8 +444,7 @@ sealed class ValueProjectionFailure {
     data class ResourceLimit(val name: String) : ValueProjectionFailure()
 }
 
-/** Stable diagnostic code for YAML-to-tree projection (projection.rs
- *). */
+/** Stable diagnostic code for YAML-to-tree projection (projection.rs). */
 fun valueProjectionCode(failure: ValueProjectionFailure): String =
     when (failure) {
         is ValueProjectionFailure.DocumentCardinality -> "yaml.projection.document-cardinality@1"
@@ -463,8 +461,7 @@ fun valueProjectionCode(failure: ValueProjectionFailure): String =
 class ValueProjectionException(val failure: ValueProjectionFailure) :
     Exception("yaml value projection: ${valueProjectionCode(failure)}")
 
-/** Complete-or-failed PortableValue projection algebra (projection.rs
- *). */
+/** Complete-or-failed PortableValue projection algebra (projection.rs). */
 sealed class ValueProjectionResult {
     /** Complete result. */
     data class Complete(val projection: CompleteValueProjection) : ValueProjectionResult()
@@ -480,8 +477,7 @@ sealed class ValueProjectionResult {
 fun Document.projectGraph(limits: GraphLimits = GraphLimits.default): Graph =
     projectGraphWithIds(limits).first
 
-/** Projects all document roots with graph ids for provenance (native.rs
- *). */
+/** Projects all document roots with graph ids for provenance (native.rs). */
 internal fun Document.projectGraphWithIds(limits: GraphLimits): Pair<Graph, List<NodeId>> {
     val builder = Builder.withLimits(limits)
     val ids = try {
@@ -676,8 +672,7 @@ private class GraphProjectionBuilder(
     }
 }
 
-/** Applies explicit YAML-to-PortableValue tree projection (projection.rs
- *). */
+/** Applies explicit YAML-to-PortableValue tree projection (projection.rs). */
 fun Document.projectValue(request: ValueProjectionRequest): ValueProjectionResult {
     if (documentCount() != 1) {
         return ValueProjectionResult.Failed(

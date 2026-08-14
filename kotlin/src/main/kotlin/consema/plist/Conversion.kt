@@ -116,8 +116,7 @@ fun Document.convertTo(
     }
 }
 
-/** Converts one `plist.xml@1` document to `plist.binary@1` (document.rs
- *). */
+/** Converts one `plist.xml@1` document to `plist.binary@1` (document.rs). */
 private fun Document.convertXmlToBinary(limits: PlistParseLimits): ConvertedDocument {
     val valueIndices = valueOnlyIndices()
     val nodeCount = valueIndices.size

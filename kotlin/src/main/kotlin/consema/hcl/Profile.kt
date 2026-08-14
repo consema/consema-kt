@@ -7,7 +7,7 @@
 //     native syntax system, and `hcl.tfvars@1` is `hcl.native@1` under one
 //     structural restriction (the top-level body admits attributes only,
 //     never blocks, RFC 0014 §5).
-//   - RFC 0014 §7.2 (:487-507): the v1 lossless syntax kind set is exactly
+//   - RFC 0014 §7.2: the v1 lossless syntax kind set is exactly
 //     the thirty PascalCase spellings below; there is no `Bom` kind because
 //     a BOM is excluded at formation (RFC 0014 §2).
 //   - https://github.com/consema/consema-rs/blob/main/consema-hcl/src/lib.rs (HclProfile and its id mapping),

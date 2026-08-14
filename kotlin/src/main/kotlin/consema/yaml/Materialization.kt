@@ -1,8 +1,7 @@
 // Canonical PortableGraph and PortableValue materialization for YAML.
 //
 // Data authority:
-//   - RFC 0007 §11 (https://github.com/consema/consema/blob/main/docs/rfcs/0007-yaml-family-profiles-and-safety-v1.md
-//): styles yaml.canonical-block@1 and yaml.canonical-flow@1;
+//   - RFC 0007 §11 (https://github.com/consema/consema/blob/main/docs/rfcs/0007-yaml-family-profiles-and-safety-v1.md): styles yaml.canonical-block@1 and yaml.canonical-flow@1;
 //     graph materialization uses canonical graph numbering, emits explicit
 //     document starts for every root, and introduces deterministic anchors
 //     `&g0`, `&g1`, ... for nodes whose topology requires an alias; a graph
@@ -204,8 +203,7 @@ data class CompleteGraphMaterialization(
     val provenance: GraphMaterializationProvenanceMap,
 )
 
-/** Closed graph materialization completion algebra (materialization.rs
- *). */
+/** Closed graph materialization completion algebra (materialization.rs). */
 sealed class GraphMaterializationResult {
     /** Complete success with every required artifact. */
     data class Complete(val materialization: CompleteGraphMaterialization) : GraphMaterializationResult()
@@ -613,8 +611,7 @@ private class GraphWriter(
         pushStr("!!$suffix")
     }
 
-    /** The canonical double-quoted scalar spelling (materialization.rs
- *). */
+    /** The canonical double-quoted scalar spelling (materialization.rs). */
     private fun writeQuoted(value: String) {
         pushChar('"')
         for (character in value) {
@@ -731,8 +728,7 @@ private fun collectGraphProvenance(
     return GraphMaterializationProvenanceMap(builder.entries)
 }
 
-/** Builds the graph-to-YAML provenance multimap (materialization.rs
- *). */
+/** Builds the graph-to-YAML provenance multimap (materialization.rs). */
 private class GraphProvenanceBuilder(
     private val document: Document,
     private val limits: MaterializationLimits,
@@ -1273,8 +1269,7 @@ internal fun canonicalOffsetDateTime(
     return output
 }
 
-/** The minimal exact fractional-second spelling (materialization.rs
- *). */
+/** The minimal exact fractional-second spelling (materialization.rs). */
 internal fun canonicalFraction(value: PvDecimal, max: Int): String? {
     if (value.coefficient.signum() == 0) {
         return ""
@@ -1330,8 +1325,7 @@ internal fun encodeBase64(value: ByteArray, max: Int): String {
     return output.toString()
 }
 
-/** Builds the value-to-YAML provenance multimap (materialization.rs
- *). */
+/** Builds the value-to-YAML provenance multimap (materialization.rs). */
 private class ValueProvenanceBuilder(
     private val document: Document,
     private val request: MaterializationRequest,

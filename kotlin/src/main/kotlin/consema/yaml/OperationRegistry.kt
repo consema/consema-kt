@@ -6,8 +6,7 @@
 //     immutable ID/version, target role, argument schema, and support
 //     classification; the registry does not claim that operations with
 //     similar names have identical format semantics.
-//   - RFC 0007 §12 (https://github.com/consema/consema/blob/main/docs/rfcs/0007-yaml-family-profiles-and-safety-v1.md
-//) freezes the eight YAML operation ids (yaml.edit.
+//   - RFC 0007 §12 (https://github.com/consema/consema/blob/main/docs/rfcs/0007-yaml-family-profiles-and-safety-v1.md) freezes the eight YAML operation ids (yaml.edit.
 //     replace-scalar-semantic, replace-scalar-literal, insert-mapping-entry,
 //     remove-mapping-entry, insert-sequence-element, remove-sequence-element,
 //     rename-anchor, insert-alias).

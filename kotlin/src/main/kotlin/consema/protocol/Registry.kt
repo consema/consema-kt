@@ -94,8 +94,7 @@ class ProfileDescriptor private constructor(
             )
         }
 
-        /** Strictly decodes `core.profile-descriptor@1` (registry.rs
- *). */
+        /** Strictly decodes `core.profile-descriptor@1` (registry.rs). */
         fun fromValue(value: PortableValue): ProfileDescriptor {
             val fields = schemaFields(
                 value,

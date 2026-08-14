@@ -62,13 +62,26 @@ fun runAllAndPrint(repoRoot: String): RunReport {
 
 /** The conformance CLI entry: per-suite pass/fail. Exit classes per
  * RFC 0015 §5.1 (six classes, codes 0-5; the frozen taxonomy lives in
- * consema.protocol.ExitClass): 0 (success) on a conformant run, 2 (data:
+ * consema.protocol.ExitClass): 0 (success) on a conformant run, 1
+ * (usage: an unknown flag or an extra positional argument — the
+ * documented usage is `consema-conformance [<repo-root>]`), 2 (data:
  * a non-conformant run means the input data failed). The repository-root
  * resolution failure exits 4 (precondition: the required CONSEMA_REPO or
  * provisioned-tree precondition was not met) instead of an uncaught-
  * exception exit-1 stack — an internal-error-looking exit is never
  * produced on a documented failure path. */
 fun main(args: Array<String>) {
+    // Wave-4 usage-class fix: the usage exit (1) was previously
+    // unreachable — every argument was silently treated as the repo-root
+    // positional (an unknown flag ran all 18 suites against a bogus
+    // directory and exited 2, and extra positional arguments were
+    // silently ignored). Unknown flags and extra arguments are now
+    // rejected per RFC 0015 §5.1 (the ts/py runners refuse the same
+    // way).
+    if (args.size > 1 || (args.isNotEmpty() && args[0].startsWith("-"))) {
+        System.err.println("consema-conformance: usage: consema-conformance [<repo-root>]")
+        exitProcess(1)
+    }
     val repoRoot = if (args.isNotEmpty()) {
         args[0]
     } else {

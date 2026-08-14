@@ -40,6 +40,10 @@ import consema.document.MaterializationRequest
 import consema.document.MaterializationResult
 import consema.document.ProfileId
 import consema.protocol.Diagnostic
+import consema.protocol.DiagnosticCategory
+import consema.protocol.ErrorCodeRegistry
+import consema.protocol.ErrorRegistryVersion
+import consema.protocol.Severity
 import consema.ini.project
 import consema.json.project
 import consema.properties.project
@@ -160,6 +164,47 @@ sealed class ConversionFailure {
             UnauthorizedLoss -> "core.conversion.unauthorized-loss@1"
         }
 }
+
+// ---------------------------------------------------------------------------
+// Projection-failure diagnostics (conversion.rs: the convert_* functions
+// pass the projection attempt's diagnostics through; wave-4 R41-family —
+// the facade no longer drops the projection stage's diagnostics).
+// ---------------------------------------------------------------------------
+
+/** The registry the conversion facade externalizes diagnostics through
+ * (the frozen v7 registry). */
+private val conversionRegistry: ErrorCodeRegistry =
+    ErrorCodeRegistry.forVersion(ErrorRegistryVersion.V7)
+
+/** The conversion facade's caller-stable source identity of one source
+ * document (the same process-local snapshot convention the Document
+ * facade uses). */
+private fun snapshotSourceId(snapshot: consema.document.SnapshotIdentity): String =
+    snapshot.asU64.toString()
+
+/** Externalizes one family-owned projection diagnostic whose code lives
+ * outside the frozen core registry (the xml, hcl, and plist family codes
+ * deliberately stay out of the core registry, RFC 0012 §12 / RFC 0013
+ * §12 / RFC 0014 §11): the protocol diagnostic carries the registered
+ * conversion code with the family code in the arguments, so the failure
+ * is carried — never dropped, never misregistered — and the conversion
+ * facade cannot crash on an unregistered family code. */
+private fun familyProjectionDiagnostic(
+    familyCode: String,
+    familyArguments: Map<String, String>,
+    occurrence: ULong,
+): Diagnostic = Diagnostic.of(
+    code = "core.conversion.projection-failed@1",
+    category = DiagnosticCategory.Conversion,
+    severity = Severity.Error,
+    primary = null,
+    related = emptyList(),
+    arguments = familyArguments + ("code" to familyCode),
+    notes = emptyList(),
+    fixes = emptyList(),
+    occurrence = occurrence,
+    registry = conversionRegistry,
+)
 
 /** Complete or explicitly failed conversion (conversion.rs). */
 sealed class ConversionResult {
@@ -493,7 +538,7 @@ fun convertIni(
         is consema.ini.ProjectionResult.Failed -> ConversionResult.Failed(
             ConversionFailure.ProjectionFailed(
                 report = ConversionProjectionReport.Ini(result.attempt.report),
-                diagnostics = emptyList(),
+                diagnostics = result.attempt.diagnostics,
             ),
         )
     }
@@ -516,7 +561,7 @@ fun convertProperties(
         is consema.properties.ProjectionResult.Failed -> ConversionResult.Failed(
             ConversionFailure.ProjectionFailed(
                 report = ConversionProjectionReport.Properties(result.attempt.report),
-                diagnostics = emptyList(),
+                diagnostics = result.attempt.diagnostics,
             ),
         )
     }
@@ -539,7 +584,12 @@ fun convertToml(
         is consema.toml.ProjectionResult.Failed -> ConversionResult.Failed(
             ConversionFailure.ProjectionFailed(
                 report = ConversionProjectionReport.Toml(result.attempt.report),
-                diagnostics = emptyList(),
+                diagnostics = result.attempt.diagnostics.map {
+                    it.toProtocolDiagnostic(
+                        snapshotSourceId(source.snapshotIdentity),
+                        conversionRegistry,
+                    )
+                },
             ),
         )
     }
@@ -559,12 +609,35 @@ fun convertYaml(
             ConversionProjectionReport.Yaml(result.projection.report),
             materializationRequest,
         )
-        is consema.yaml.ValueProjectionResult.Failed -> ConversionResult.Failed(
-            ConversionFailure.ProjectionFailed(
-                report = null,
-                diagnostics = emptyList(),
-            ),
-        )
+        is consema.yaml.ValueProjectionResult.Failed -> {
+            // The YAML projection failure carries its frozen registered
+            // code (yaml.projection.*@1): externalize it as one protocol
+            // diagnostic instead of dropping the failure (the rs
+            // YamlProjectionFailed{failure} counterpart carries the same
+            // typed code).
+            val code = consema.yaml.valueProjectionCode(result.failure)
+            val descriptor = conversionRegistry.descriptor(code)
+                ?: error("yaml projection code $code must be registered")
+            ConversionResult.Failed(
+                ConversionFailure.ProjectionFailed(
+                    report = null,
+                    diagnostics = listOf(
+                        Diagnostic.of(
+                            code = code,
+                            category = descriptor.category,
+                            severity = Severity.Error,
+                            primary = null,
+                            related = emptyList(),
+                            arguments = emptyMap(),
+                            notes = emptyList(),
+                            fixes = emptyList(),
+                            occurrence = 0.toULong(),
+                            registry = conversionRegistry,
+                        ),
+                    ),
+                ),
+            )
+        }
     }
 
 /** Converts one XML document by composing its element-tree projection and a
@@ -586,7 +659,13 @@ fun convertXml(
         is consema.xml.ProjectionResult.Failed -> ConversionResult.Failed(
             ConversionFailure.ProjectionFailed(
                 report = ConversionProjectionReport.Xml(result.attempt.report),
-                diagnostics = emptyList(),
+                diagnostics = result.attempt.diagnostics.map {
+                    familyProjectionDiagnostic(
+                        familyCode = it.code,
+                        familyArguments = it.arguments,
+                        occurrence = it.occurrence,
+                    )
+                },
             ),
         )
     }
@@ -610,7 +689,13 @@ fun convertPlist(
         is consema.plist.ProjectionResult.Failed -> ConversionResult.Failed(
             ConversionFailure.ProjectionFailed(
                 report = ConversionProjectionReport.Plist(result.attempt.report),
-                diagnostics = emptyList(),
+                diagnostics = listOf(
+                    familyProjectionDiagnostic(
+                        familyCode = result.attempt.failure.code,
+                        familyArguments = emptyMap(),
+                        occurrence = 0.toULong(),
+                    ),
+                ),
             ),
         )
     }
@@ -638,7 +723,13 @@ fun convertHcl(
         is consema.hcl.ProjectionResult.Failed -> ConversionResult.Failed(
             ConversionFailure.ProjectionFailed(
                 report = ConversionProjectionReport.Hcl(result.attempt.report),
-                diagnostics = emptyList(),
+                diagnostics = result.attempt.diagnostics.map {
+                    familyProjectionDiagnostic(
+                        familyCode = it.code,
+                        familyArguments = it.arguments,
+                        occurrence = it.occurrence.toULong(),
+                    )
+                },
             ),
         )
     }

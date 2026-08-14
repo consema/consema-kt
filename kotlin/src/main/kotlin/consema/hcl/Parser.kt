@@ -15,8 +15,7 @@
 //     (parser.rs), parse_attribute (parser.rs), parse_block
 //     (parser.rs), the expression ladder (parser.rs), the
 //     term layer (parser.rs), traversal steps (parser.rs
-//     1560), call/tuple/object/paren forms, the recovery scan (parser.rs
-//), and the limit checks (parser.rs).
+//     1560), call/tuple/object/paren forms, the recovery scan (parser.rs), and the limit checks (parser.rs).
 //   - The failure codes are pinned in Errors.kt (parser.rs).
 //   - consema-go/go/hcl is a cross-reference only.
 //
@@ -212,8 +211,7 @@ private class Parser(
     }
 
     /** Emits one error region with its diagnostic; a zero-length region
-     * publishes the diagnostic only, never an empty piece (parser.rs
- *). */
+     * publishes the diagnostic only, never an empty piece (parser.rs). */
     private fun emitErrorRegion(start: Int, end: Int, code: String) {
         recovered = true
         val regionSpan = span(start, end)

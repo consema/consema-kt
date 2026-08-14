@@ -28,7 +28,7 @@
 //     core.edit.resource-limit@1, core.edit.formation-failed@1), the
 //     resolution and line-region helpers (edit.rs), and the
 //     commit/dry-run surface (edit.rs).
-//   - RFC 0004 §13-§16 (:270-386): the transaction/conflict algebra, the
+//   - RFC 0004 §13-§16: the transaction/conflict algebra, the
 //     dry-run EditPlan, the untouched-byte proof, and SourcePatch
 //     derivation.
 //   - The six operation ids are pinned in Operations.kt

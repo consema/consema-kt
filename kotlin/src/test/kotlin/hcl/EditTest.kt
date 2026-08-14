@@ -1,6 +1,7 @@
 // Transcriptions of the conformance/vectors/hcl-v1.json hcl.edit.* cases
 // (:1462-1647, :2047-2080): the six structural operations, the conflict
 // matrix, the untouched-byte proof, patch replay, and dry-run equivalence.
+// NOTE: 行号可能漂移，以 case id 为锚（provisioned conformance/vectors 文件按 pin 复制，re-provision 后行号会变）。
 
 package hcl
 

@@ -12,7 +12,7 @@
 //     64 MiB output bytes, depth 256, 100k report entries, 2M provenance
 //     entries). RFC 0004 §3 (https://github.com/consema/consema/blob/main/docs/rfcs/0004-materialization-conversion-and-
 //     structural-edit-v1.md) freezes the closed v1 limit fields.
-//   - consema-go/go/document/limits.go:4-58 is a cross-reference only (identical
+//   - consema-go/go/document/limits.go is a cross-reference only (identical
 //     numbers).
 //
 // NOTE: the field set is taken from the authority above — ParseLimits has

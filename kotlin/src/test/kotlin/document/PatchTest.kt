@@ -5,6 +5,7 @@
 // The success case (source.patch.success, source-v1.json:120-124) is the
 // primary round-trip: create -> apply must reproduce the exact target bytes
 // and the precomputed target digest, and apply must be repeatable.
+// NOTE: 行号可能漂移，以 case id 为锚（provisioned conformance/vectors 文件按 pin 复制，re-provision 后行号会变）。
 
 package document
 

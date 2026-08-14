@@ -431,8 +431,7 @@ private fun graphProvenanceEntries(case: CaseData): List<GraphProvenanceEntryMes
     }
 }
 
-/** One dual-transport round trip of a v5-registry payload (semantic_model_v5.
- * rs:502-515). */
+/** One dual-transport round trip of a v5-registry payload (semantic_model_v5.rs). */
 private fun dualRoundtrip(contractId: String, payload: PortableValue) {
     val registry = ContractRegistry.forVersion(ContractRegistryVersion.V5)
     val message = transport { ProtocolMessage.of(ContractId(contractId, 1), payload, registry) }

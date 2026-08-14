@@ -1,10 +1,10 @@
 // The frozen contract registry and the common protocol envelope.
 //
 // Data authority: https://github.com/consema/consema-rs/blob/main/consema-protocol/src/contract.rs — CONTRACTS_V1 at
-// contract.rs, V2 at :90, V3 at :111, V5 at :142, V6 at :178, V7 at :225
-// (16/18/25/25/30/38/41 records; v4 reuses v3). The record lists below are
-// transcribed VERBATIM from the Rust source (cross-checked against
-// consema-go/go/protocol/contract.go:289-473). Every contract id/version/stability is
+// contract.rs (V2 through V7; 16/18/25/25/30/38/41 records; v4 reuses v3).
+// The record lists below are transcribed VERBATIM from the Rust source
+// (cross-checked against consema-go/go/protocol/contract.go). Every
+// contract id/version/stability is
 // byte-identical; nothing may be invented or dropped.
 //
 // Kotlin-idiomatic design: immutable value types with `id`/`version`

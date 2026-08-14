@@ -9,9 +9,12 @@
 // (CanonicalForProfile — bytes outside the edit stay untouched), and
 // render the edited document.
 //
-// Run (kotlinc must compile the main sources and the example together;
+// Run from the kotlin/ directory of the consema-kt repository (the
+// repository root holds the language-neutral docs; the Kotlin sources live
+// under kotlin/ — from the repository root the paths below do not exist).
+// kotlinc must compile the main sources and the example together;
 // -J-Xmx2g is required — the default 512 MiB heap exhausts on the
-// 163-main-file K2 compile, see kotlin/gradle.properties):
+// 163-main-file K2 compile, see kotlin/gradle.properties:
 //   kotlinc -J-Xmx2g -jvm-target 17 -d out src/main/kotlin examples/Quickstart.kt
 //   java -cp "out;<kotlinc>\lib\kotlin-stdlib.jar" consema.examples.QuickstartKt
 //

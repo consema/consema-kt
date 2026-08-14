@@ -3,8 +3,7 @@
 // with exact spans.
 //
 // Data authority:
-//   - RFC 0007 §7 (https://github.com/consema/consema/blob/main/docs/rfcs/0007-yaml-family-profiles-and-safety-v1.md
-//): the lossless Document retains comments, whitespace, line
+//   - RFC 0007 §7 (https://github.com/consema/consema/blob/main/docs/rfcs/0007-yaml-family-profiles-and-safety-v1.md): the lossless Document retains comments, whitespace, line
 //     breaks, directives, markers, styles, and exhaustive non-overlapping
 //     raw-byte coverage; the syntax kinds are stable style subfacts.
 //   - conformance/vectors/yaml-v1.json cases syntax.styles-and-trivia
@@ -21,6 +20,7 @@
 // Kotlin-idiomatic design: a single pass over decoded code points producing
 // an immutable [Tokenized] result; the scanner never interprets grammar, it
 // only classifies bytes (the parser owns grammar).
+// NOTE: 行号可能漂移，以 case id 为锚（provisioned conformance/vectors 文件按 pin 复制，re-provision 后行号会变）。
 
 package consema.yaml
 

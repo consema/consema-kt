@@ -23,8 +23,7 @@
 //     exchange); the parse/edit/projection/source codes are raised by this
 //     package.
 //   - Fatal formation failures use the frozen core.parse.resource-limit@1
-//     (error_registry.rs) and core.source.* codes (source_v1.rs
-//), mapped in Encoding.kt.
+//     (error_registry.rs) and core.source.* codes (source_v1.rs), mapped in Encoding.kt.
 //   - RFC 0016 §6 (https://github.com/consema/consema/blob/main/docs/rfcs/0016-go-api-mapping-v1.md): SDK errors
 //     carry the stable registered code; error text is human presentation only.
 //

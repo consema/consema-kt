@@ -151,8 +151,7 @@ class PgceException(
      * [PgceErrorKind.INVALID_GRAPH]; null otherwise. */
     override val cause: GraphException? = null,
 ) : Exception(message) {
-    /** The frozen registered code (https://github.com/consema/consema-rs/blob/main/consema-graph/src/pgce.rs
- *). */
+    /** The frozen registered code (https://github.com/consema/consema-rs/blob/main/consema-graph/src/pgce.rs). */
     val code: String
         get() = when (kind) {
             PgceErrorKind.RESOURCE_LIMIT -> "core.pgce.resource-limit@1"

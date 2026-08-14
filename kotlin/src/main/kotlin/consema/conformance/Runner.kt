@@ -156,13 +156,36 @@ data class SuiteDefinition(
 )
 
 /** The frozen 18-suite inventory (fc-manifest conformance_suite; the case
- * counts are re-pinned by the digest check against the manifest). */
+ * counts are re-pinned by the digest check against the manifest). The
+ * semantic-model identifiers are the declarations of the authoritative
+ * vector files (each suite's semantic_model field, pinned here like the
+ * case counts) — wave-4 R4: all 18 suites validate their semantic-model
+ * identifier, declaration-driven; suites whose vector carries none keep
+ * the empty declaration and are skipped by the equality check. */
 val ALL_SUITES: List<SuiteDefinition> = listOf(
     SuiteDefinition("v1.json", "consema.conformance@1", "", 30, ::runV1),
     SuiteDefinition("toml-v1.json", "consema.toml.conformance@1", "", 18, ::runTomlV1),
-    SuiteDefinition("protocol-v1.json", "consema.protocol.conformance@1", "", 32, ::runProtocolV1),
-    SuiteDefinition("source-v1.json", "consema.source.conformance@1", "", 28, ::runSourceV1),
-    SuiteDefinition("syntax-query-v1.json", "consema.syntax-query.conformance@1", "", 19, ::runSyntaxQueryV1),
+    SuiteDefinition(
+        "protocol-v1.json",
+        "consema.protocol.conformance@1",
+        "core.semantic-model@1",
+        32,
+        ::runProtocolV1,
+    ),
+    SuiteDefinition(
+        "source-v1.json",
+        "consema.source.conformance@1",
+        "core.semantic-model@2",
+        28,
+        ::runSourceV1,
+    ),
+    SuiteDefinition(
+        "syntax-query-v1.json",
+        "consema.syntax-query.conformance@1",
+        "core.semantic-model@2",
+        19,
+        ::runSyntaxQueryV1,
+    ),
     SuiteDefinition(
         "protocol-v2.json",
         "consema.protocol.conformance@2",
@@ -170,11 +193,17 @@ val ALL_SUITES: List<SuiteDefinition> = listOf(
         11,
         ::runProtocolV2,
     ),
-    SuiteDefinition("operations-v1.json", "consema.operations.conformance@1", "", 35, ::runOperationsV1),
+    SuiteDefinition(
+        "operations-v1.json",
+        "consema.operations.conformance@1",
+        "core.semantic-model@3",
+        35,
+        ::runOperationsV1,
+    ),
     SuiteDefinition(
         "json-family-v2.json",
         "consema.json-family.conformance@2",
-        "",
+        "core.semantic-model@4",
         33,
         ::runJsonFamilyV2,
     ),
@@ -208,10 +237,34 @@ val ALL_SUITES: List<SuiteDefinition> = listOf(
         25,
         ::runJavaPropertiesV1,
     ),
-    SuiteDefinition("xml-1-0-safe-v1.json", "consema.xml-1-0-safe.conformance@1", "", 34, ::runXml10SafeV1),
-    SuiteDefinition("plist-v1.json", "consema.plist.conformance@1", "", 49, ::runPlistV1),
-    SuiteDefinition("hcl-v1.json", "consema.hcl.conformance@1", "", 57, ::runHclV1),
-    SuiteDefinition("cli-v1.json", "consema.cli.conformance@1", "", 40, ::runCliV1),
+    SuiteDefinition(
+        "xml-1-0-safe-v1.json",
+        "consema.xml-1-0-safe.conformance@1",
+        "core.semantic-model@6",
+        34,
+        ::runXml10SafeV1,
+    ),
+    SuiteDefinition(
+        "plist-v1.json",
+        "consema.plist.conformance@1",
+        "core.semantic-model@6",
+        49,
+        ::runPlistV1,
+    ),
+    SuiteDefinition(
+        "hcl-v1.json",
+        "consema.hcl.conformance@1",
+        "core.semantic-model@6",
+        57,
+        ::runHclV1,
+    ),
+    SuiteDefinition(
+        "cli-v1.json",
+        "consema.cli.conformance@1",
+        "core.semantic-model@7",
+        40,
+        ::runCliV1,
+    ),
 )
 
 /** One loaded vector case. */
@@ -292,8 +345,17 @@ class Runner(
             skipped = mutableListOf(),
             failed = mutableListOf(),
         )
+        // Wave-4 R4: the semantic-model identifier is validated for every
+        // suite, declaration-driven — the expected value is pinned in
+        // ALL_SUITES from the vector declarations, and a suite whose
+        // vector carries no semantic model has an empty declaration that
+        // the equality check skips naturally. Previously the check only
+        // ran when the declaration was non-empty, leaving the 9 suites
+        // whose vectors declare a model (cli-v1 @7, hcl/plist/xml @6,
+        // json-family-v2 @4, operations-v1 @3, protocol-v1 @1,
+        // source-v1/syntax-query-v1 @2) unvalidated.
         if (data.suite != definition.suiteId ||
-            (definition.semanticModel.isNotEmpty() && data.semanticModel != definition.semanticModel)
+            data.semanticModel != definition.semanticModel
         ) {
             return report.copy(
                 failed = report.failed + CaseFailure(

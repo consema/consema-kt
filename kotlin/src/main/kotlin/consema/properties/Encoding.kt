@@ -322,8 +322,7 @@ private fun validateSelection(
 }
 
 /** Wraps a source construction failure with the frozen code mapping of
- * FatalFormationFailure::source_error (parser.rs; source_v1.rs
- *). */
+ * FatalFormationFailure::source_error (parser.rs; source_v1.rs). */
 private fun constructSource(
     bytes: ByteArray,
     request: EncodingRequest,

@@ -4,6 +4,7 @@
 // language-neutral vector suite; cases source.digest.sha256-empty at
 // source-v1.json:6-10 and source.digest.sha256-abc at source-v1.json:11-16,
 // capability core.source.snapshot@1).
+// NOTE: 行号可能漂移，以 case id 为锚（provisioned conformance/vectors 文件按 pin 复制，re-provision 后行号会变）。
 
 package document
 

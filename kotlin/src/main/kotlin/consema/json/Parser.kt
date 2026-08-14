@@ -13,8 +13,7 @@
 //     (lexing parser.rs, JSON5 lexing parser.rs, number
 //     validation parser.rs, string decoding parser.rs,
 //     object/array recovery parser.rs, diagnostic sink
-//     parser.rs, deterministic sort consema-core/src/diagnostic.rs
-//). consema-go/go/json/parser.go is a cross-reference only.
+//     parser.rs, deterministic sort consema-core/src/diagnostic.rs). consema-go/go/json/parser.go is a cross-reference only.
 //
 // Kotlin-idiomatic design (NOT a translation): the lexer emits immutable
 // lexemes over byte offsets; JSON5 classification reads UTF-8 scalars

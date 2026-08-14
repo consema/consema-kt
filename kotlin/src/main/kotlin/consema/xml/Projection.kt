@@ -14,10 +14,8 @@
 //   - conformance/vectors/xml-1-0-safe-v1.json cases xml.projection.* pin
 //     the record spelling and the recovered-document failure.
 //   - https://github.com/consema/consema-rs/blob/main/consema-xml/src/projection.rs is the byte-arbitration
-//     authority: targets (projection.rs), policies (projection.rs
-//), ProjectionRequest (projection.rs), limits
-//     (projection.rs), the completion algebra (projection.rs
-//), ProjectionFailure codes (projection.rs), the
+//     authority: targets (projection.rs), policies (projection.rs), ProjectionRequest (projection.rs), limits
+//     (projection.rs), the completion algebra (projection.rs), ProjectionFailure codes (projection.rs), the
 //     element-tree record (projection.rs), content items
 //     (projection.rs), text content (projection.rs), and
 //     the entry mapping (projection.rs).

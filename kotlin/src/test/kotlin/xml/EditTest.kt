@@ -7,6 +7,7 @@
 // (https://github.com/consema/consema-rs/blob/main/consema-conformance/src/xml_v1.rs). The operation IDs
 // are the frozen xml.edit.*@1 registrations
 // (https://github.com/consema/consema-rs/blob/main/consema-xml/src/operation_registry.rs).
+// NOTE: 行号可能漂移，以 case id 为锚（provisioned conformance/vectors 文件按 pin 复制，re-provision 后行号会变）。
 
 package xml
 
@@ -76,8 +77,7 @@ class EditTest {
 
     @Test
     fun `insert and remove element compose in one transaction`() {
-        // Case xml.edit.insert-and-remove-element (xml-1-0-safe-v1.json:
- //).
+        // Case xml.edit.insert-and-remove-element (xml-1-0-safe-v1.json).
         val document = parseUtf8("<root><a/></root>")
         val transaction = EditTransactionBuilder.new(document)
             .insertElement(
@@ -93,8 +93,7 @@ class EditTest {
 
     @Test
     fun `rename element rewrites both tags`() {
-        // Case xml.edit.rename-element-both-tags (xml-1-0-safe-v1.json:
- //).
+        // Case xml.edit.rename-element-both-tags (xml-1-0-safe-v1.json).
         val document = parseUtf8("<old><child>t</child></old>")
         val transaction = EditTransactionBuilder.new(document)
             .renameElement(elementRef(document, "old"), NameFacts(null, "new", null))
@@ -129,8 +128,7 @@ class EditTest {
 
     @Test
     fun `replace text targets the exact occurrence ordinal`() {
-        // Case xml.edit.replace-text-occurrence (xml-1-0-safe-v1.json:
- //). The operation targets a text occurrence (RoleXmlText);
+        // Case xml.edit.replace-text-occurrence (xml-1-0-safe-v1.json). The operation targets a text occurrence (RoleXmlText);
         // CDATA is never a replacement target (RFC 0012 §11).
         val document = parseUtf8("<root><a>one</a><b>two</b></root>")
         val transaction = EditTransactionBuilder.new(document)

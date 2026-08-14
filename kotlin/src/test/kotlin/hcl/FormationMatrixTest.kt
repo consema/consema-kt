@@ -10,6 +10,7 @@
 // https://github.com/consema/consema-rs/blob/main/consema-conformance/src/hcl_v1.rs (status exact; the
 // expected diagnostic code present; canonical value of the first attribute
 // expression; proven attribute names exact).
+// NOTE: 行号可能漂移，以 case id 为锚（provisioned conformance/vectors 文件按 pin 复制，re-provision 后行号会变）。
 
 package hcl
 

@@ -6,22 +6,22 @@
 //   - RFC 0014 §4.3-§4.6 (https://github.com/consema/consema/blob/main/docs/rfcs/0014-hcl-family-profiles-v1.md):
 //     the frozen expression grammar, operator precedence, templates,
 //     heredocs, constructors, and for-expressions.
-//   - RFC 0014 §6 (:395-446): an expression is a first-class native role
+//   - RFC 0014 §6: an expression is a first-class native role
 //     retained as an AST (kind, ordered children, exact spans) with its
 //     exact source text derived from the immutable source span; structural
 //     equality is recursive over kind and children (number equality is
 //     canonical-decimal equality); unevaluated is the default contract.
-//   - RFC 0014 §8.1 (:511-537): the literal-complete boundary — a purely
+//   - RFC 0014 §8.1: the literal-complete boundary — a purely
 //     syntactic predicate; no arithmetic is ever computed (hard gate 1).
 //   - https://github.com/consema/consema-rs/blob/main/consema-hcl/src/expression.rs pins the exact shapes and
-//     spellings: HclExpressionKind (:200-312), HclExpressionKindName
-//     (:564-650, "number"/"boolean"/"null"/"template"/"function-call"/
+//     spellings: HclExpressionKind, HclExpressionKindName
+//     ("number"/"boolean"/"null"/"template"/"function-call"/
 //     "variable-ref"/"traversal"/"unary"/"binary"/"conditional"/"for-tuple"/
 //     "for-object"/"tuple"/"object"/"parenthesized"), the kind family
 //     spelling of the `hcl.expression@1` record (projection.rs
 //     "variable" for VariableRef|Traversal, "for" for ForTuple|ForObject),
-//     canonical_decimal (:737-851), the operator spellings (:856-956), and
-//     the traversal/template/heredoc/for/object shapes (:958-1504).
+//     canonical_decimal, the operator spellings, and
+//     the traversal/template/heredoc/for/object shapes.
 //   - The structural fingerprint is the FNV-1a 64-bit hash over the
 //     canonical structural serialization defined by the materialization
 //     codec (materialization.rs), the shared adaptation point of

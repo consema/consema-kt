@@ -4,7 +4,7 @@
 // Data authority: https://github.com/consema/consema-rs/blob/main/consema-conformance/src/properties_v1.rs (the
 // per-case dispatch is transcribed from the Rust handlers); the vector file
 // itself drives every input and expectation (conformance/README.md rules
-//). consema-go/go/conformance is a cross-reference only.
+// 3-4). consema-go/go/conformance is a cross-reference only.
 
 package consema.conformance
 

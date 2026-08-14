@@ -3,8 +3,7 @@
 // outcomes.
 //
 // Data authority:
-//   - RFC 0013 §2.1, §3, §4 (https://github.com/consema/consema/blob/main/docs/rfcs/0013-plist-family-profiles-v1.md
-//): the admitted document-entity encodings
+//   - RFC 0013 §2.1, §3, §4 (https://github.com/consema/consema/blob/main/docs/rfcs/0013-plist-family-profiles-v1.md): the admitted document-entity encodings
 //     (UTF-8 optional BOM; UTF-16LE/BE required BOM), the three-way
 //     formation outcome, the DOCTYPE identifier contract, the root contract
 //     (`<plist version="1.0">` exactly, one value element), the value
@@ -1138,8 +1137,7 @@ internal class XmlParser(
     // ------------------------------------------------------------------
 
     /** Splits one decoded run into Text/CharacterReference/EntityReference
-     * pieces and returns the resolved normalized content (parser_xml.rs
- *). */
+     * pieces and returns the resolved normalized content (parser_xml.rs). */
     private fun resolveFragments(start: Int, end: Int, emitPieces: Boolean): String =
         resolveFragmentSegment(text.substring(start, end), start, emitPieces)
 
@@ -1455,8 +1453,7 @@ internal class XmlParser(
     // ------------------------------------------------------------------
 
     private fun finish(): Document {
-        // Unclosed elements and unclosed unknown subtrees (parser_xml.rs
- //).
+        // Unclosed elements and unclosed unknown subtrees (parser_xml.rs).
         while (stack.isNotEmpty()) {
             val frame = stack.poll()
             if (frame.kind != null) {
@@ -1683,7 +1680,7 @@ internal class XmlParser(
                 }
                 pieces.add(SpanPair(0, len) to PlistSyntaxKind.Bom)
             }
-            if (text.startsWith('﻿')) {
+            if (text.startsWith('\uFEFF')) {
                 pos = 1
             }
         }

@@ -850,8 +850,7 @@ class GraphProvenanceMapMessage private constructor(
             return GraphProvenanceMapMessage(entries)
         }
 
-        /** Strictly decodes one graph provenance map (graph_projection.rs
- *). */
+        /** Strictly decodes one graph provenance map (graph_projection.rs). */
         fun fromValue(value: PortableValue): GraphProvenanceMapMessage {
             val fields = schemaFields(value, "core.graph-provenance-map@1", listOf("schema", "entries"), "$")
             val entries = sequenceOf(fields[1], "$.entries").mapIndexed { index, entry ->

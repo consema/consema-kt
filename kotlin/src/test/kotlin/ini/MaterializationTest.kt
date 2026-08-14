@@ -6,6 +6,7 @@
 // materialization.atomic-failures-and-limits (ini-v1.json:75-86), and
 // https://github.com/consema/consema-rs/blob/main/consema-ini/src/materialization.rs (the byte-arbitration
 // authority).
+// NOTE: 行号可能漂移，以 case id 为锚（provisioned conformance/vectors 文件按 pin 复制，re-provision 后行号会变）。
 
 package ini
 

@@ -3,6 +3,7 @@
 // core.source.snapshot@1 / core.source.encoding@1 /
 // core.source.decoded-location@1 / core.source.limits@1). Every golden
 // case cites its vector case id.
+// NOTE: 行号可能漂移，以 case id 为锚（provisioned conformance/vectors 文件按 pin 复制，re-provision 后行号会变）。
 
 package document
 
