@@ -180,6 +180,52 @@ class FormationClosureTest {
         assertEquals("nesting-depth", error.name)
     }
 
+    /** Wave-4 number-digit cap (magnitude-DoS family): a single number
+     * token above the per-parser digit budget (100,000 coefficient +
+     * exponent digits) is a fatal ResourceLimit failure carrying the
+     * frozen limit code — the O(N²) BigInteger-construction guard. */
+    @Test
+    fun numberDigitsOverLimitIsFatal() {
+        val error = assertFailsWith<JsonFormationException> {
+            parse(
+                ("1" + "0".repeat(100_000)).toByteArray(Charsets.UTF_8),
+                JsonProfile.StrictV1,
+            )
+        }
+        assertEquals("core.parse.resource-limit@1", error.code)
+        assertEquals("number-digits", error.name)
+        assertEquals(100_001, error.observed)
+        assertEquals(100_000, error.limit)
+    }
+
+    /** Wave-4 number-digit cap: exponent digits count toward the budget
+     * (coefficient + exponent), so an exponent over the cap is also a
+     * fatal ResourceLimit failure. */
+    @Test
+    fun numberExponentDigitsOverLimitIsFatal() {
+        val error = assertFailsWith<JsonFormationException> {
+            parse(
+                ("1e" + "0".repeat(100_001)).toByteArray(Charsets.UTF_8),
+                JsonProfile.StrictV1,
+            )
+        }
+        assertEquals("core.parse.resource-limit@1", error.code)
+        assertEquals("number-digits", error.name)
+        assertEquals(100_002, error.observed)
+        assertEquals(100_000, error.limit)
+    }
+
+    /** Wave-4 number-digit cap boundary: a number at exactly the budget
+     * parses normally — no behavior change at or below the cap. */
+    @Test
+    fun numberDigitsAtLimitParses() {
+        val document = parse(
+            ("1" + "0".repeat(99_999)).toByteArray(Charsets.UTF_8),
+            JsonProfile.StrictV1,
+        )
+        assertEquals(FormationStatus.Complete, document.formationStatus())
+    }
+
     private fun assertRecoveredWith(source: String, code: String) {
         val document = parse(source.toByteArray(Charsets.UTF_8), JsonProfile.Json5StandardV1)
         assertEquals(FormationStatus.Recovered, document.formationStatus())

@@ -17,9 +17,11 @@
 //
 // NOTE: the field set is taken from the authority above — ParseLimits has
 // five fields (max_source_bytes, max_nesting_depth, max_token_count,
-// max_node_count, max_diagnostics), NOT the max_input_nodes/depth/
-// amplification triples of any draft; there is no "amplification" field in
-// the frozen contract.
+// max_node_count, max_diagnostics) plus the wave-4 per-parser number-digit
+// cap (maxNumberDigits, default 100,000 — the hcl maxNumberDigits
+// precedent; consema-rs lands the same field in the same wave), NOT the
+// max_input_nodes/depth/amplification triples of any draft; there is no
+// "amplification" field in the frozen contract.
 
 package consema.document
 
@@ -39,17 +41,25 @@ data class ParseLimits(
     val maxNodeCount: Int,
     /** Maximum diagnostics before an explicit truncation marker. */
     val maxDiagnostics: Int,
+    /** Maximum digits in one number literal (coefficient digits plus
+     * exponent digits; a JSON5 hex literal counts its hex digits) — the
+     * per-parser O(N²) BigInteger-construction amplification guard
+     * (wave 4). Exceeding the cap is a fatal ResourceLimit failure
+     * carrying the frozen limit code (RFC 0016 §5.1); the default mirrors
+     * the hcl maxNumberDigits precedent (100,000, RFC 0014 §11). */
+    val maxNumberDigits: Int = 100_000,
 ) {
     companion object {
         /** The frozen defaults (lib.rs): 64 MiB source bytes,
          * depth 256, 2,000,000 tokens, 1,000,000 nodes, 10,000
-         * diagnostics. */
+         * diagnostics, 100,000 digits per number literal (wave 4). */
         val default = ParseLimits(
             maxSourceBytes = 64 shl 20,
             maxNestingDepth = 256,
             maxTokenCount = 2_000_000,
             maxNodeCount = 1_000_000,
             maxDiagnostics = 10_000,
+            maxNumberDigits = 100_000,
         )
     }
 }

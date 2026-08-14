@@ -992,6 +992,7 @@ private class Parser(
             TokenKind.Number -> {
                 position += 1
                 val text = tokenText(token)
+                checkNumberDigits(text)
                 val kind = if (profile.isJson5()) {
                     parseJson5Number(text)
                 } else if (text.indexOfFirst { it == '.' || it == 'e' || it == 'E' } >= 0) {
@@ -1078,6 +1079,18 @@ private class Parser(
                     InternalValueKind.Unavailable(SemanticUnavailable.ErrorRegion),
                 )
             }
+        }
+    }
+
+    /** O(N²)-amplification guard for one number token (wave 4): counts the
+     * coefficient digits plus the exponent digits of the literal (a JSON5
+     * hex literal counts its hex digits) and fails fatally — the frozen
+     * ResourceLimit code, never a crash, never a silent truncation
+     * (RFC 0016 §5.1) — when the per-parser cap is exceeded. */
+    private fun checkNumberDigits(text: String) {
+        val digits = numberDigitCount(text)
+        if (digits > limits.maxNumberDigits) {
+            throw resourceLimit("number-digits", digits, limits.maxNumberDigits)
         }
     }
 
@@ -1509,6 +1522,22 @@ private fun decodeIdentifierEscapeFromString(literal: String, offset: Int): Int?
         value = value * 16 + digit
     }
     return if (Character.isValidCodePoint(value)) value else null
+}
+
+/** Counts the digit characters of one number token: coefficient digits
+ * plus exponent digits. A JSON5 hex literal counts its hex digits (a hex
+ * literal has no exponent marker, so 'e'/'E' are unambiguous there). */
+private fun numberDigitCount(text: String): Int {
+    val hex = text.startsWith("0x") || text.startsWith("0X") ||
+        text.startsWith("-0x") || text.startsWith("-0X") ||
+        text.startsWith("+0x") || text.startsWith("+0X")
+    var count = 0
+    for (c in text) {
+        if (c in '0'..'9' || (hex && (c in 'a'..'f' || c in 'A'..'F'))) {
+            count += 1
+        }
+    }
+    return count
 }
 
 /** Decodes one JSON5 number literal to its exact native category
