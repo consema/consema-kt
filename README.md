@@ -97,12 +97,13 @@ fun main() {
 - `scripts/`：跨语言差分验证脚本（byte parity / normalized differential /
   protocol exchange）。脚本构建 consema-rs 的 Rust emitter 并对拍 Kotlin 实现；
   Rust 侧来自 consema-rs 仓 checkout（CI 多仓模式），conformance 数据来自规范仓 checkout。
-- `.github/workflows/ci-kotlin.yml`：七个 job 的 Kotlin CI——kotlin-gates
+- `.github/workflows/ci-kotlin.yml`：八个 job 的 Kotlin CI——kotlin-gates
   （gradlew 单测 + kover 60% 覆盖率 + 依赖面断言）、kotlin-conformance
   （18 suites / 519 cases，聚合 digest 字面量钉 + 直驱 K2JVMCompiler）、
   kotlin-differential（Kotlin-Rust 差分门禁，直驱 K2JVMCompiler；多仓
-  checkout）、check-version-consistency、examples、kotlin-package 与聚合
-  check（windows-latest 4 job + ubuntu-latest 3 job）。
+  checkout）、check-version-consistency、examples、kotlin-package、
+  runtime-classpath-audit（2026-08-14 G103 增补）与聚合 check
+  （windows-latest 5 job + ubuntu-latest 3 job）。
 
 ## 构建与测试
 

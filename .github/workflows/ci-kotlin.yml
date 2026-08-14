@@ -1,8 +1,10 @@
 # Consema Kotlin CI (https://github.com/consema/consema/blob/main/docs/five-language-ci-design.md §1.2, §7.1): the
 # Kotlin implementation joins the release gate with seven explicit jobs —
 # kotlin-gates, kotlin-conformance, kotlin-differential,
-# check-version-consistency, examples, kotlin-package and the aggregate
-# check (the design rejects a single shared matrix, §5.2). kotlin-gates runs the
+# check-version-consistency, examples, kotlin-package,
+# runtime-classpath-audit (added 2026-08-14, G103) — plus the aggregate
+# check, 8 jobs in total (the design rejects a single shared matrix, §5.2).
+# kotlin-gates runs the
 # full unit-test suite and the kover 60% line-coverage gate through the
 # committed Gradle wrapper (kotlin/gradlew.bat, gradle 8.14 — the design
 # §7.3 L0-batch item landed with the wrapper batch, c60d31a);
@@ -28,12 +30,16 @@
 # kotlin-differential runs the bidirectional
 # scripts/kotlin-verify-*.ps1 harnesses against the Rust emitters. The
 # verify scripts and the toolchain layout are Windows-native (bin\java.exe,
-# debug\examples\*.exe), so the four implementation jobs (kotlin-gates,
-# kotlin-conformance, kotlin-differential, examples) run on windows-latest;
-# check-version-consistency, kotlin-package and the aggregate check run on
-# ubuntu-latest. The
+# debug\examples\*.exe), so the five implementation jobs (kotlin-gates,
+# kotlin-conformance, kotlin-differential, examples,
+# runtime-classpath-audit) run on windows-latest; check-version-consistency,
+# kotlin-package and the aggregate check run on ubuntu-latest. The
 # runner-CLI entry point (kotlin/src/main/kotlin/consema/conformance/Cli.kt)
-# landed with the runner batch (95cf5d6), while the shared-conformance
+# came with the implementation tree inherited from the spec repository
+# (repo root commit 95cf5d6 — whose commit message is the spec repo's fuzz
+# evidence accumulation, unrelated to the runner batch; see CHANGELOG.md);
+# its current kotlin/ path dates from the six-repo split commit 613ae2f,
+# while the shared-conformance
 # script (scripts/kotlin-verify-shared-conformance.ps1, §3.6/§7.2) is not
 # committed yet — the fourth differential step stays deferred. No repository
 # secrets are required.
@@ -54,10 +60,10 @@
 # are the single authority) beside this repository and copy the conformance
 # data into the workspace root (the runner resolves conformance/* and the
 # manifest by repository-relative path from CONSEMA_REPO=$GITHUB_WORKSPACE).
-# The remaining four jobs use the single-repo checkout — no conformance data
+# The remaining five jobs use the single-repo checkout — no conformance data
 # needed — and annotate it at their job definition: check-version-consistency,
-# examples, kotlin-package, and the aggregate check (the last one has no
-# checkout step at all). The differential job
+# examples, kotlin-package, runtime-classpath-audit, and the aggregate check
+# (the last one has no checkout step at all). The differential job
 # additionally checks out consema/consema-rs (the Rust emitter workspace;
 # the kotlin-verify-*.ps1 scripts default to <repo root>\consema-rs) and
 # the scripts build the pinned emitter examples (cargo build --locked -p
