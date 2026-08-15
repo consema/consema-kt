@@ -12,7 +12,7 @@
 // so when it is not reachable the comparison is skipped (JUnit
 // assumption) — a fresh checkout without provisioned data does not fail.
 //
-// Data authority: https://github.com/consema/consema/blob/main/docs/fc-manifest-0.13.0.json:30-34 (capability_set
+// Data authority: https://github.com/consema/consema/blob/main/docs/fc-manifest-0.13.0.json (capability_set
 // record); https://github.com/consema/consema-rs/blob/main/consema/src/lib.rs (the Rust facade's own
 // registry tests this test mirrors); https://github.com/consema/consema-go/blob/main/go/capability_parity_test.go is a
 // cross-reference only.
@@ -24,6 +24,7 @@ import java.io.File
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
+import kotlin.test.fail
 import org.junit.jupiter.api.Assumptions
 
 class CapabilityParityTest {
@@ -61,14 +62,21 @@ class CapabilityParityTest {
     @Test
     fun kotlinCapabilitySetMatchesTheManifest() {
         val parity = CapabilityParity.current()
-        val counts = provisionedManifest()?.let { manifestCapabilityCounts(it) }
-        if (counts == null) {
+        val manifest = provisionedManifest()
+        if (manifest == null) {
             Assumptions.assumeTrue(
                 false,
                 "provisioned docs/fc-manifest-0.13.0.json (digests.capability_set) not reachable — live-manifest comparison skipped",
             )
             return
         }
+        // Wave-5: a provisioned manifest whose capability_set record is
+        // unrecognized must FAIL, not skip — the sentence-shape regex
+        // returning null is a manifest drift (mother-repo rewording or
+        // structural migration), and the comparison must not vanish
+        // silently.
+        val counts = manifestCapabilityCounts(manifest)
+            ?: fail("the provisioned manifest exists but digests.capability_set is not the expected sentence shape — a record drift must fail loudly, not skip the comparison")
         assertEquals(counts[0], parity.families.size, "families match the manifest capability_set")
         assertEquals(counts[1], parity.profiles.size, "profiles match the manifest capability_set")
         assertEquals(counts[2], parity.queryDomains.size, "query domains match the manifest capability_set")

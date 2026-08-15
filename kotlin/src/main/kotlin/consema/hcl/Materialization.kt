@@ -244,7 +244,12 @@ private fun parseLimits(limits: MaterializationLimits): HclParseLimits =
         maxBodyItemCount = limits.maxInputNodes * 2,
         maxIdentifierLen = limits.maxOutputBytes,
         maxStringLen = limits.maxOutputBytes,
-        maxNumberDigits = limits.maxOutputBytes,
+        // Wave-5: the closure reparse must not be more permissive than the
+        // frozen parse face — maxNumberDigits was mapped to maxOutputBytes
+        // (64 MiB), so a number the parse face rejects at 100,000 digits
+        // was re-admitted on the materialization side. The frozen
+        // HclParseLimits cap applies here.
+        maxNumberDigits = HclParseLimits.default.maxNumberDigits,
         maxTemplateLen = limits.maxOutputBytes,
         maxTemplateInterpolations = limits.maxInputNodes,
         maxHeredocLines = limits.maxOutputBytes,
@@ -820,7 +825,30 @@ private fun writeValue(writer: CanonicalWriter, node: ValueNode, depth: Int, out
             out.append(escapeString(node.text))
             out.append('"')
         }
-        is ValueNode.Integer -> out.append(node.value.toString())
+        is ValueNode.Integer -> {
+            // Wave-5: the frozen parse-face maxNumberDigits cap (100,000)
+            // applies to materialization output — an unbounded PvInteger
+            // magnitude would burn O(n²) in BigInteger.toString before
+            // the output-bytes budget trips (the closure reparse would
+            // then reject it anyway). The bitLength pre-check is O(1) and
+            // rejects clearly-over-limit magnitudes before any toString;
+            // the exact digit count (excluding the sign) then applies the
+            // frozen cut.
+            val maxDigits = HclParseLimits.default.maxNumberDigits
+            // log2(10) ~= 3.32193: 100,000 decimal digits need at most
+            // ~332,193 bits; a margin of 1,000 bits keeps the pre-check
+            // strictly conservative (it never rejects an in-limit value).
+            val bitCeiling = (maxDigits * 3.322).toInt() + 1_000
+            if (node.value.bitLength() > bitCeiling) {
+                throw HclMaterializationException(HclMaterializationFailure.ResourceLimit("number-digits"))
+            }
+            val spelling = node.value.toString()
+            val digitCount = spelling.length - if (node.value.signum() < 0) 1 else 0
+            if (digitCount > maxDigits) {
+                throw HclMaterializationException(HclMaterializationFailure.ResourceLimit("number-digits"))
+            }
+            out.append(spelling)
+        }
         is ValueNode.Real -> {
             val canonical = canonicalDecimalString(node.value.coefficient, node.value.exponent.toInt())
             out.append(canonical)

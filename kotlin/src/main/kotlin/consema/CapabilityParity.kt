@@ -1,7 +1,7 @@
 // The L4 capability parity surface (Kotlin).
 //
 // Data authority (language-neutral sources first):
-//   - https://github.com/consema/consema/blob/main/docs/fc-manifest-0.13.0.json:32 (capability_set: "8 families /
+//   - https://github.com/consema/consema/blob/main/docs/fc-manifest-0.13.0.json (capability_set record: "8 families /
 //     16 profiles / 21 query domains / 16 operation registries / 187 error
 //     codes"; the manifest records the machine-readable capability facts
 //     the Rust CLI derives from the facade registry).

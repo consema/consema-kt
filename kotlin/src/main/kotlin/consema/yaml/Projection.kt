@@ -911,6 +911,18 @@ private class ValueContext(
                 )
             }
             YamlScalarKind.Integer -> {
+                // Wave-5: the frozen per-parser maxNumberDigits cap
+                // (ParseLimits default, 100,000 — the wave-4 O(N²)
+                // BigInteger-construction amplification guard) applies to
+                // the YAML projection too: the canonical spelling is
+                // already materialized, so the digit count is O(n) to
+                // check before the BigInteger construction (the ts/py/go
+                // YAML faces carry the same guard).
+                if (scalar.canonical.count { it.isDigit() } > consema.document.ParseLimits.default.maxNumberDigits) {
+                    throw ValueProjectionException(
+                        ValueProjectionFailure.ResourceLimit("number-digits"),
+                    )
+                }
                 val value = scalar.canonical.toBigIntegerOrNull()
                     ?: throw ValueProjectionException(
                         ValueProjectionFailure.InvalidCanonicalScalar(node),

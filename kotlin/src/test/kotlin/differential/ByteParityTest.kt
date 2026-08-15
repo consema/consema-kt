@@ -42,6 +42,13 @@ class ByteParityTest {
         for (kind in allKindNames) {
             assertTrue(kind in kinds, "case set must cover kind $kind")
         }
+        // Wave-5: the vocabulary boundary is guarded in BOTH directions —
+        // an unknown 16th kind introduced into cases.json must fail here
+        // (the kinds-subset-of-vocabulary direction had no assertion, so a
+        // vocabulary drift was invisible to this test).
+        for (kind in kinds) {
+            assertTrue(kind in allKindNames, "case set must only use the fifteen-kind vocabulary (unknown kind $kind)")
+        }
         // Sanity: the Kotlin encoders can encode every case without golden
         // bytes (the integrity run keeps the input set honest).
         val report = runByteParity(cases, null)

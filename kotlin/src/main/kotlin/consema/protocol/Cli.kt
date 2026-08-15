@@ -1,10 +1,12 @@
 // The CLI machine-protocol payloads of RFC 0015 §4/§8/§9.
 //
 // Data authority: RFC 0015 (https://github.com/consema/consema/blob/main/docs/rfcs/0015-cli-machine-protocol-and-batch-
-// apply-v1.md) and https://github.com/consema/consema-rs/blob/main/consema-protocol/src/cli.rs (the command set at
-// cli.rs, the envelope at cli.rs, the batch-plan manifest at
-// cli.rs, the batch-result manifest at cli.rs, the SemVer
-// shape at cli.rs). Every decoder re-validates the cross constraints
+// apply-v1.md) and https://github.com/consema/consema-rs/blob/main/consema-protocol/src/cli.rs — the command set
+// (CliCommand), the envelope (CliOutputMessage), the batch-plan manifest
+// (BatchPlanMessage), the batch-result manifest (BatchResultMessage), the
+// SemVer shape (is_semantic_version) — symbol-named anchors so each fact
+// is locatable in the thousand-line file and a refactor out of cli.rs
+// yields a visible drift signal. Every decoder re-validates the cross constraints
 // (closed command and exit-class sets, payload-schema/command consistency,
 // redaction consistency, digest equality, per-status presence rules)
 // instead of trusting the schema discriminator. consema-go/go/protocol/cli.go is a

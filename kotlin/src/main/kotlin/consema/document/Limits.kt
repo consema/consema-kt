@@ -46,7 +46,10 @@ data class ParseLimits(
      * per-parser O(N²) BigInteger-construction amplification guard
      * (wave 4). Exceeding the cap is a fatal ResourceLimit failure
      * carrying the frozen limit code (RFC 0016 §5.1); the default mirrors
-     * the hcl maxNumberDigits precedent (100,000, RFC 0014 §11). */
+     * the hcl maxNumberDigits precedent (100,000 — RFC 0014 §11 only
+     * requires number digit counts to be bounded; the 100,000 value is the
+     * reference implementation's consema-hcl/src/lib.rs
+     * `max_number_digits` default, not an RFC-pinned number). */
     val maxNumberDigits: Int = 100_000,
 ) {
     companion object {
