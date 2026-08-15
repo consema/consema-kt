@@ -8,8 +8,9 @@
 # made every changed file have to match and dropped core on any md in the
 # PR). Literal root patterns (LICENSE/.gitignore/.gitattributes) match only
 # the repo-root file (minimatch, no matchBase). Area labels are derived from
-# paths only; `kind:` labels remain the human/PR-template merge gate
-# (pr-labels.yml).
+# paths only; `kind:` labels are the human/PR-template gate reported by
+# pr-labels.yml (a soft gate — branch protection requires only the aggregate
+# check, wave-5 truthing).
 
 'area: core':
   # any changed file inside the Kotlin tree (source hit is enough)
@@ -33,3 +34,8 @@
   - changed-files:
       - any-glob-to-any-file:
           - '**/*.md'
+          # Wave-5: LABELS.md documents '*.md, docs/**' — the docs/**
+          # coverage was missing from the implementation (docs/ carries
+          # fc-manifest-0.13.0.json.sync-note.md and the provisioned
+          # gitignored fc-manifest json; non-md changes there must label).
+          - 'docs/**'

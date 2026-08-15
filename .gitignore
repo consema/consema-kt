@@ -1,8 +1,11 @@
 # consema-kt: minimal .gitignore for the split repository.
-build/
-.gradle/
-*.class
-*.jar
+# Anchored patterns only (wave-5): the previous unanchored build/,
+# .gradle/, *.class and *.jar could silently ignore future source-tree
+# fixtures (e.g. kotlin/src/test/.../build/ or committed fixture jars and
+# classes) with zero CI signal — build outputs live under kotlin/ only,
+# so the anchors below cover them exactly.
+/kotlin/build/
+kotlin/.gradle/
 
 # Provisioned conformance data: the single authority is the consema spec
 # repository (CI provisions conformance/ + docs/fc-manifest-0.13.0.json into

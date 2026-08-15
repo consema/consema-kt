@@ -126,7 +126,7 @@ powershell -File scripts/kotlin-verify-protocol-exchange.ps1
 - **与 Jackson / kotlinx.serialization 的关系？** 互补而非竞争：Jackson/kotlinx.serialization 做 JVM 对象与数据格式间的类型编解码，Consema 做格式内容处理（无损文档、查询、投影、原子编辑、跨格式转换）；Consema 明确不做业务 schema 校验（平台接入指南）。
 - **性能如何？** 行为一致性由 18 suites / 519 cases conformance 门禁与跨语言差分门禁保证；解析/渲染基准基线见规范仓 `https://github.com/consema/consema/blob/main/docs/BENCHMARKS-0.13.0.md` 与 Go 仓 [consema-go/go/README.md](https://github.com/consema/consema-go/blob/main/go/README.md)。
 - **依赖面？** 运行时仅 kotlin-stdlib（KGP 默认注入）及其传递的 `org.jetbrains:annotations`——build.gradle.kts 自身声明全部 test-scoped，依赖门禁断言 runtimeClasspath 不含任何第三方 group。
-- **跨语言一致性如何保证？** 18 套语言无关 conformance suite 共 519/519 cases（聚合 digest `cfd6e296…`）由规范仓维护、五仓共享；CI 多仓 checkout 跑 conformance runner 与 Kotlin-Rust 差分门禁（byte parity / normalized differential / protocol-exchange）。
+- **跨语言一致性如何保证？** 18 套语言无关 conformance suite 共 519/519 cases（聚合 digest `cfd6e296…`）由规范仓维护；实际钉/复算该 digest 的是 rs/go/py/kt 四仓 runner 与母仓 shared-conformance-digest 作业（ts 不 provision fc-manifest，其 digest 断言按 documented skip 永久跳过——ts 仓 ci-typescript.yml 如实注记，wave-5 修正「五仓共享」措辞）；CI 多仓 checkout 跑 conformance runner 与 Kotlin-Rust 差分门禁（byte parity / normalized differential / protocol-exchange）。
 - **兼容承诺？** 语义化版本；`check-version-consistency` 门禁断言 README 版本行与 `build.gradle.kts` 一致；kover 60% 行覆盖门禁；兼容与支持政策见 RFC 0020。
 - **如何贡献？** 见本仓 [CONTRIBUTING.md](CONTRIBUTING.md)（规范仓为权威版）；conformance 向量/夹具/oracle/差分数据权威在规范仓——向量变更是五仓同步事件，必须先回规范仓提交再同步五个语言仓。
 - **"默认拒绝信息损失"是什么意思？** 投影/转换/编辑中的任何 loss（如 YAML 共享结构展开、Properties 重复键折叠、数值舍入）必须显式授权；未授权时操作原子失败（`ConversionResult.Failed`；fidelity 三档：Exact / Transformed / Lossy）。
