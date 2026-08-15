@@ -153,7 +153,14 @@ jobs:
       # 2026-08-15: exactly the three env-gated differential legs print a
       # marker (differentialByteParity / differentialNormalized /
       # protocolExchange; gradle aggregates system-out per suite, so the
-      # bound is on [SKIP] marker occurrences in the XML).
+      # bound is on [SKIP] marker occurrences in the XML). Wave-5 H4
+      # (2026-08-15): the marker glob was previously relative to this
+      # step's working-directory (kotlin), resolving to
+      # kotlin/kotlin/build/... — always empty, skipped pinned at 0 — a
+      # dead gate; the glob is now absolute per the twin gate
+      # (ci-kotlin.yml, Join-Path $env:GITHUB_WORKSPACE 'kotlin\build\
+      # test-results\test') with a not-found guard, so a missing results
+      # directory fails the job instead of passing silently.
       - name: gradlew test (release-path test gate, provisioned conformance data)
         working-directory: kotlin
         env:
@@ -162,9 +169,12 @@ jobs:
           set -euo pipefail
           bash gradlew test --no-daemon
           skipped=$(python3 -c '
-          import glob, re
+          import glob, os, re
+          result_dir = os.path.join(os.environ["GITHUB_WORKSPACE"], "kotlin", "build", "test-results", "test")
+          if not os.path.isdir(result_dir):
+              raise SystemExit("gradle test results not found: " + result_dir)
           n = 0
-          for f in glob.glob("kotlin/build/test-results/test/TEST-*.xml"):
+          for f in glob.glob(os.path.join(result_dir, "TEST-*.xml")):
               n += len(re.findall(r"\[SKIP\]", open(f, encoding="utf-8").read()))
           print(n)
           ')
