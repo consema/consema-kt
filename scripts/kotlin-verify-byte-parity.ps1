@@ -1,4 +1,4 @@
-param(
+﻿param(
     [string]$CaseFile = '',
     [string]$OutDir = '',
     # consema-rs checkout directory (multi-repo mode); default: <repo
@@ -29,7 +29,11 @@ param(
 # $env:CONSEMA_JAVA_HOME), and a Kotlin compiler distribution (or
 # $env:CONSEMA_KOTLINC); the Rust workspace is the consema-rs checkout
 # (<repo root>\consema-rs by default, -RustWorkspace overrides). Windows
-# PowerShell 5.1 compatible, no third-party dependencies.
+# PowerShell 5.1 compatible, no third-party dependencies. Windows-only:
+# the toolchain/emitter paths are the Windows-native layout (bin\java.exe,
+# lib\kotlin-compiler.jar, debug\examples\emit_parity_bytes.exe) — the
+# scripts must run under PowerShell on Windows (CI: windows-latest); on
+# POSIX hosts the direct-compile paths of ci-kotlin.yml apply.
 #
 # NOTE: CONSEMA_JAVA_HOME defaults to $env:JAVA_HOME when unset — no
 # machine-coupled path is baked in. CONSEMA_KOTLINC has no generic
@@ -262,7 +266,7 @@ fun main(args: Array<String>) {
     }
     println("tests: $runs run, $failures failed")
     if (runs == 0) {
-        println("no tests ran — refusing to pass")
+        println("no tests ran - refusing to pass")
         exitProcess(1)
     }
     if (failures > 0) exitProcess(1)
@@ -304,15 +308,20 @@ if (Test-Path $stderrFile) {
     Get-Content $stderrFile | ForEach-Object { Write-Host $_ }
 }
 
-# The parity test must have RUN (not skipped) and passed.
+# The parity test must have RUN (not skipped) and passed. Wave-5 G45:
+# the skip attribution is derived from the actual marker line — the
+# whole-suite stdout can carry a marker from another method of the same
+# class (a future legit skip must not misattribute a passing run), so the
+# guard only fires when the parity summary is absent.
 $output = Get-Content $stdoutFile -Raw
-if ($output -match 'CONSEMA_DIFFERENTIAL_RUST_DIR is not set') {
-    Write-Error 'the differential test skipped: the Rust byte directory was not provisioned'
-    exit 1
-}
 $summary = [regex]::Match($output, 'byte parity: \d+/\d+ equal \(\d+ pvce, \d+ pgce\)')
 if (-not $summary.Success) {
-    Write-Error "the differential test did not pass (exit $testCode)"
+    $skip = [regex]::Match($output, '(?m)^\[SKIP\][^\r\n]*CONSEMA_DIFFERENTIAL_RUST_DIR is not set[^\r\n]*')
+    if ($skip.Success) {
+        Write-Error "the differential test skipped: $($skip.Value.Trim())"
+    } else {
+        Write-Error "the differential test did not run and printed no documented skip marker (exit $testCode)"
+    }
     if ($testCode -eq 0) { exit 1 } else { exit $testCode }
 }
 if ($testCode -ne 0) {
