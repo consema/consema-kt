@@ -72,14 +72,15 @@
 # the kotlin-verify-*.ps1 scripts default to <repo root>\consema-rs) and
 # the scripts build the pinned emitter examples (cargo build --locked -p
 # consema-conformance --example …) there. The consema/consema checkout is
-# pinned by commit (ref) to ccc9943 — the 2026-08-15 wave-4 R5 unified
-# provision pin re-anchored by F2 to the mother-repo HEAD (after
-# b8bf4cb's R40 field-anchor evidence rework, manifest digest 3fdf9a77 →
-# 5cb4ab51; all wave-3/wave-4 manifest+conformance fixes) that carries
+# pinned by commit (ref) to db821cd — the 2026-08-15 wave-5 close
+# unified provision pin (db821cd was the mother-repo HEAD at the wave-5
+# close; after b8bf4cb's R40 field-anchor evidence rework, manifest
+# digest 3fdf9a77 → 5cb4ab51 → af27d599; all wave-3/wave-4/wave-5
+# manifest+conformance fixes) that carries
 # the cfd6e296 519-case inventory (the
 # digest literal cfd6e296da5b22b62d37b076d35bf6bbf58b0678ceddb37eea51a8b47200ab6a
 # is asserted by the kotlin-conformance digest step; the fc-manifest
-# sha256 5cb4ab51 is asserted after each provision) — so the provisioned
+# sha256 af27d599 is asserted after each provision) — so the provisioned
 # data cannot drift with the spec repository's default branch; the
 # consema-rs checkout is pinned to bd5734ea, the commit that vendored the
 # same cfd6e296 519-case conformance snapshot.
@@ -125,7 +126,7 @@ jobs:
           persist-credentials: false
           repository: consema/consema
           path: consema-repo
-          ref: ccc99430a6e3003bc1b0830d81cbad245323f0a4 # wave-4 R5 unified provision pin, F2 re-anchored to mother-repo HEAD (fc-manifest sha256 5cb4ab51)
+          ref: db821cdf463d0542fa166d61d7e28cec46812bbc # wave-5 close re-pin (db821cd = mother-repo HEAD at the wave-5 close carrying fc-manifest sha256 af27d599)
       - uses: actions/setup-java@cf277c60eb25467037889841efdb72551f06f6c3 # v4.9.1
         with:
           distribution: temurin
@@ -148,9 +149,9 @@ jobs:
           }
           Copy-Item -LiteralPath $manifest -Destination (Join-Path $env:GITHUB_WORKSPACE 'docs\fc-manifest-0.13.0.json') -Force
           # Wave-4 R5 manifest sha256 assertion (unified provision pin
-          # ccc9943): the pinned checkout must carry exactly the digest
+          # db821cd, wave-5 close re-pin): the pinned checkout must carry exactly the digest
           # recorded at the pin — silent manifest drift fails the job.
-          $expectedDigest = '5cb4ab518cc3b3e1754a07f21953693b4b9ec113443d44c6ed8a6d4fa8faa6f8'
+          $expectedDigest = 'af27d599f5c4903d1757c89940911e250a392c7777568907d1c7049cf9977004'
           $actualDigest = (Get-FileHash -Algorithm SHA256 -LiteralPath (Join-Path $env:GITHUB_WORKSPACE 'docs\fc-manifest-0.13.0.json')).Hash.ToLowerInvariant()
           if ($actualDigest -ne $expectedDigest) {
             throw "fc-manifest sha256 mismatch after provision: expected $expectedDigest, got $actualDigest"
@@ -329,7 +330,7 @@ jobs:
           persist-credentials: false
           repository: consema/consema
           path: consema-repo
-          ref: ccc99430a6e3003bc1b0830d81cbad245323f0a4 # wave-4 R5 unified provision pin, F2 re-anchored to mother-repo HEAD (fc-manifest sha256 5cb4ab51)
+          ref: db821cdf463d0542fa166d61d7e28cec46812bbc # wave-5 close re-pin (db821cd = mother-repo HEAD at the wave-5 close carrying fc-manifest sha256 af27d599)
       - uses: actions/setup-java@cf277c60eb25467037889841efdb72551f06f6c3 # v4.9.1
         with:
           distribution: temurin
@@ -352,9 +353,9 @@ jobs:
           }
           Copy-Item -LiteralPath $manifest -Destination (Join-Path $env:GITHUB_WORKSPACE 'docs\fc-manifest-0.13.0.json') -Force
           # Wave-4 R5 manifest sha256 assertion (unified provision pin
-          # ccc9943): the pinned checkout must carry exactly the digest
+          # db821cd, wave-5 close re-pin): the pinned checkout must carry exactly the digest
           # recorded at the pin — silent manifest drift fails the job.
-          $expectedDigest = '5cb4ab518cc3b3e1754a07f21953693b4b9ec113443d44c6ed8a6d4fa8faa6f8'
+          $expectedDigest = 'af27d599f5c4903d1757c89940911e250a392c7777568907d1c7049cf9977004'
           $actualDigest = (Get-FileHash -Algorithm SHA256 -LiteralPath (Join-Path $env:GITHUB_WORKSPACE 'docs\fc-manifest-0.13.0.json')).Hash.ToLowerInvariant()
           if ($actualDigest -ne $expectedDigest) {
             throw "fc-manifest sha256 mismatch after provision: expected $expectedDigest, got $actualDigest"
@@ -678,7 +679,7 @@ jobs:
           persist-credentials: false
           repository: consema/consema
           path: consema-repo
-          ref: ccc99430a6e3003bc1b0830d81cbad245323f0a4 # wave-4 R5 unified provision pin, F2 re-anchored to mother-repo HEAD (fc-manifest sha256 5cb4ab51)
+          ref: db821cdf463d0542fa166d61d7e28cec46812bbc # wave-5 close re-pin (db821cd = mother-repo HEAD at the wave-5 close carrying fc-manifest sha256 af27d599)
       # Rust toolchain for the emitter build (G70, 2026-08-14): pinned to
       # 1.97.1 — the version the harness was locally verified with; a
       # floating 'stable' would make the differential goldens depend on the
@@ -720,9 +721,9 @@ jobs:
           }
           Copy-Item -LiteralPath $manifest -Destination (Join-Path $env:GITHUB_WORKSPACE 'docs\fc-manifest-0.13.0.json') -Force
           # Wave-4 R5 manifest sha256 assertion (unified provision pin
-          # ccc9943): the pinned checkout must carry exactly the digest
+          # db821cd, wave-5 close re-pin): the pinned checkout must carry exactly the digest
           # recorded at the pin — silent manifest drift fails the job.
-          $expectedDigest = '5cb4ab518cc3b3e1754a07f21953693b4b9ec113443d44c6ed8a6d4fa8faa6f8'
+          $expectedDigest = 'af27d599f5c4903d1757c89940911e250a392c7777568907d1c7049cf9977004'
           $actualDigest = (Get-FileHash -Algorithm SHA256 -LiteralPath (Join-Path $env:GITHUB_WORKSPACE 'docs\fc-manifest-0.13.0.json')).Hash.ToLowerInvariant()
           if ($actualDigest -ne $expectedDigest) {
             throw "fc-manifest sha256 mismatch after provision: expected $expectedDigest, got $actualDigest"
