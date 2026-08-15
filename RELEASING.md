@@ -7,8 +7,11 @@ tag 推送后 `.github/workflows/release.yml` 执行 `gradle publish`，把
 
 **Maven Central 是六语言中凭证最重的发布通道**：需要 Sonatype 账号 +
 namespace 认领 + PGP 签名密钥。凭证均为用户侧一次性动作（下述 §2），
-workflow 已写完整，但**凭证未配置前推送 tag 会明确失败**（portal 认证/
-签名校验拒绝），这是有意的护栏。
+workflow 已写完整，但**凭证未配置前推送 tag 会失败**：OSSRH 认证对缺失
+时 portal 认证明确拒绝；SIGNING 对缺失时签名被静默跳过（build.gradle.kts
+signing 块「When absent ... signing is skipped」）、`gradlew publish`
+照常上传未签名制品——失败发生在 portal/消费者侧而非 workflow 显式失败
+（wave-5 如实注记；§3 核对清单含签名核对步）。
 
 ## 1. 发布步骤（人执行的部分）
 
@@ -97,7 +100,10 @@ Maven Central 要求所有 artifact（含 pom、module、sources/javadoc jar）
 ## 3. 发布后核对
 
 1. central.sonatype.com → My components 确认发布记录（或 portal 的
-   publish history）成功，无 "signature verification failed" 等错误。
+   publish history）成功，无 "signature verification failed" 等错误；
+   并核对每个 artifact 带对应 `.asc` 签名文件——SIGNING_KEY/
+   SIGNING_PASSWORD 缺失时签名被静默跳过（build.gradle.kts signing
+   块），未签名制品会在此步被发现（wave-5）。
 2. search.maven.org / mvnrepository.com 上 `dev.consema:consema-kotlin`
    新版本可见（portal 处理通常数分钟内完成）。
 3. pom 元数据（name/description/licenses/scm/developers）在 portal 页面

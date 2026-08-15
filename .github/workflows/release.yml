@@ -22,15 +22,21 @@
 # copies the conformance data into the workspace root before
 # testing (multi-repo checkout + provision pattern, ci-kotlin.yml).
 #
-# REQUIRED user configuration before the first tag push (the workflow is
-# complete but will fail without these; they are deliberately NOT
-# placeholder-secret gated so the failure is explicit):
+# REQUIRED user configuration before the first tag push (failure behavior
+# differs per pair — wave-5 truthing, 2026-08-15):
 #   - OSSRH_USERNAME / OSSRH_PASSWORD: Sonatype Central Portal credentials
 #     (portal token name/value) — publish target is the portal deploy
-#     endpoint (build.gradle.kts publishing block).
+#     endpoint (build.gradle.kts publishing block). Missing -> the publish
+#     step fails explicitly (portal auth rejection).
 #   - SIGNING_KEY / SIGNING_PASSWORD: PGP key pair for artifact signing
 #     (ASCII-armored private key + passphrase; the matching public key must
-#     be registered on keys.openpgp.org / the portal).
+#     be registered on keys.openpgp.org / the portal). Missing -> signing
+#     is SILENTLY SKIPPED (build.gradle.kts signing block: 'When absent ...
+#     signing is skipped so gradle build keeps working') and `gradlew
+#     publish` uploads UNSIGNED artifacts to the portal staging endpoint —
+#     the failure is NOT explicit at workflow level; the portal/consumer
+#     side rejects or flags unsigned artifacts (RELEASING.md §3.1 lists
+#     'verify the signature' as a post-release check for this reason).
 #   - The namespace dev.consema must be claimed on the Central Portal and
 #     the first publication verified once (see RELEASING.md).
 name: Release to Maven Central
@@ -39,12 +45,20 @@ on:
   push:
     tags: ['v*']
 
-# Concurrency guard (W3-27, 2026-08-14): a tag re-push or a continued run
-# must not start a second concurrent publish (same shape as the
-# consema-go/consema-ts release workflows).
+# Concurrency guard (W3-27, 2026-08-14; wave-5 truthing): a tag re-push or
+# a continued run must not run a second publish concurrently. Wave-5
+# (2026-08-15): cancel-in-progress is FALSE — a mid-publish cancel on an
+# immutable registry (Maven Central staging multi-artifact upload) can
+# leave partial publish state with no recovery path (a re-push then fails
+# on duplicate version). Queuing serializes instead: a re-push during a
+# publish waits for the in-progress run to finish and then fails loudly on
+# the duplicate version at the portal, leaving no partial state. (Same
+# shape as the consema-go/consema-rs/consema-ts/consema-py workflows
+# originally, which still use cancel-in-progress: true — kt diverges
+# deliberately.)
 concurrency:
   group: release-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 permissions:
   contents: read
@@ -80,24 +94,57 @@ jobs:
             exit 1
           fi
           echo "tag $GITHUB_REF_NAME (peeled $peeled) points at a commit on origin/main"
-      # Release guard (rc 前六角色审计 P1, 2026-08-12): the tag minus the
-      # leading v must equal the rootProject version, otherwise a mismatched
-      # tag could publish the wrong version to Maven Central.
-      - name: verify tag matches manifest version (build.gradle.kts)
+      # Release guard (rc 前六角色审计 P1, 2026-08-12; wave-5 hardening,
+      # 2026-08-15): the tag minus the leading v must equal the rootProject
+      # version, otherwise a mismatched tag could publish the wrong version
+      # to Maven Central. Wave-5: (a) the extraction is anchored to the
+      # '// rootProject version' declaration (a plain first-match sed would
+      # silently switch to any top-level 'version = ...' property declared
+      # above it — same first-match family as the CI gate); (b) the check
+      # now re-asserts the FULL version-consistency surface (the
+      # check-version-consistency job's four carriers — README Version
+      # line, README Maven coordinates, bug-report template note,
+      # TestFixtures.kt literal), because a tag push bypasses main-CI:
+      # release-time is the last gate before Maven Central.
+      - name: verify tag matches the full version surface (build.gradle.kts + README line + Maven coordinates + bug-report note + test fixture)
         shell: bash
         run: |
           set -euo pipefail
-          manifest="$(sed -n 's/^version *= *"\([^"]*\)".*/\1/p' kotlin/build.gradle.kts | head -n 1)"
+          manifest="$(awk '/rootProject version/{f=1} f && /^version[[:space:]]*=[[:space:]]*"/{print; exit}' kotlin/build.gradle.kts | sed -E 's/^version[[:space:]]*=[[:space:]]*"([^"]+)".*/\1/')"
           tag="${GITHUB_REF_NAME#v}"
           if [[ -z "$manifest" ]]; then
-            echo "::error::could not read version from kotlin/build.gradle.kts"
+            echo "::error::could not read rootProject version from kotlin/build.gradle.kts"
             exit 1
           fi
           if [[ "$tag" != "$manifest" ]]; then
             echo "::error::tag $GITHUB_REF_NAME does not match build.gradle.kts version $manifest"
             exit 1
           fi
-          echo "tag $GITHUB_REF_NAME matches build.gradle.kts version $manifest"
+          # Same assertions as the ci-kotlin.yml check-version-consistency
+          # job (wave-4 R36): whole-line / whole-token matches so the
+          # rc->GA direction cannot pass via substring.
+          grep -qxF "Version: $manifest" README.md || {
+            echo "::error::README.md does not declare 'Version: $manifest' as a whole line"
+            exit 1
+          }
+          grep -qF 'dev.consema:consema-kotlin:' README.md || {
+            echo "::error::README.md quick-start Maven coordinates are missing"
+            exit 1
+          }
+          stale="$(grep -oE 'dev\.consema:consema-kotlin:[0-9][^`"()）]*' README.md | grep -vxF "dev.consema:consema-kotlin:$manifest" || true)"
+          if [[ -n "$stale" ]]; then
+            echo "::error::README.md Maven coordinates do not pin dev.consema:consema-kotlin:$manifest (found: $stale)"
+            exit 1
+          fi
+          grep -qF "当前 $manifest" .github/ISSUE_TEMPLATE/bug_report.yml || {
+            echo "::error::bug_report.yml does not note '当前 $manifest'"
+            exit 1
+          }
+          grep -qF "version = \"$manifest\"" kotlin/src/test/kotlin/toml/TestFixtures.kt || {
+            echo "::error::toml/TestFixtures.kt does not pin 'version = \"$manifest\"'"
+            exit 1
+          }
+          echo "tag $GITHUB_REF_NAME matches the full version surface: $manifest"
       - uses: actions/setup-java@cf277c60eb25467037889841efdb72551f06f6c3 # v4.9.1
         with:
           distribution: temurin
@@ -183,6 +230,57 @@ jobs:
             exit 1
           fi
           echo "skipped [SKIP] markers: $skipped (<= 3 env-gated differential legs)"
+      # Wave-5 zero-test lower bound (2026-08-15): gradle prints 'No tests
+      # found for given includes' and exits 0 when the test source set
+      # silently disappears (misconfigured sourceSet / path drift) — the
+      # whole suite could vanish while the release gate stays green. The
+      # JUnit XML must contain at least one executed testcase
+      # (ConformanceRunnerTest's digest/18-519 pins ride the same run).
+      - name: assert the gradle test run executed testcases (zero-test lower bound)
+        shell: bash
+        run: |
+          set -euo pipefail
+          result_dir="${GITHUB_WORKSPACE}/kotlin/build/test-results/test"
+          test -d "$result_dir" || {
+            echo "::error::gradle test results not found: $result_dir"
+            exit 1
+          }
+          total="$(python3 -c '
+          import glob, os, re
+          n = 0
+          for f in glob.glob(os.path.join(os.environ["GITHUB_WORKSPACE"], "kotlin", "build", "test-results", "test", "TEST-*.xml")):
+              n += len(re.findall(r"<testcase ", open(f, encoding="utf-8").read()))
+          print(n)
+          ')"
+          if [ "$total" -eq 0 ]; then
+            echo "::error::gradle test ran with zero testcases — the test source set may have silently disappeared"
+            exit 1
+          fi
+          echo "gradle test executed $total testcases"
+      # Wave-5 jar-content gate (2026-08-15): `gradlew test` compiles and
+      # tests the classes directory, never the jar artifact — a jar
+      # packaging regression (sourceSet exclusion, silent empty jar task)
+      # would publish an empty shell to Maven Central. The kotlin-package
+      # job's jar-content assertion (consema/ classes present) is
+      # re-run here on the tag path, on the exact artifact publish will
+      # upload (same gradle wrapper, same working directory).
+      - name: gradlew jar + verify the artifact contains consema classes
+        working-directory: kotlin
+        run: |
+          set -euo pipefail
+          bash gradlew jar --no-daemon
+          # gradlew jar runs with working-directory kotlin, so the jar
+          # lives at kotlin/build/libs relative to the workspace root.
+          jar_file="$(ls "$GITHUB_WORKSPACE/kotlin/build/libs/"consema-kotlin-*.jar 2>/dev/null | head -n 1 || true)"
+          if [[ -z "$jar_file" ]]; then
+            echo "::error::no consema-kotlin jar produced by gradlew jar"
+            exit 1
+          fi
+          if ! jar tf "$jar_file" | grep -q '^consema/'; then
+            echo "::error::jar must contain consema/ classes: $jar_file (an empty-shell artifact must never be published)"
+            exit 1
+          fi
+          echo "jar verified: $(basename "$jar_file") contains consema/ classes"
       - name: gradlew publish (portal deploy, signed artifacts)
         working-directory: kotlin
         env:
