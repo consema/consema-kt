@@ -61,6 +61,7 @@ import consema.graph.MappingEntry
 import consema.graph.NodeId
 import consema.document.NodeRef
 import consema.document.NodeRole
+import consema.document.ParseLimits
 import consema.document.SnapshotIdentity
 import consema.document.Span
 import java.math.BigInteger
@@ -921,7 +922,7 @@ private class ValueContext(
                 "-.inf" -> PvBinaryFloat64(-0x10_0000_0000_0000L)
                 ".nan" -> PvBinaryFloat64(0x7ff8_0000_0000_0000L)
                 else -> {
-                    val decimal = parseJsonNumber(scalar.canonical)
+                    val decimal = parseJsonNumber(scalar.canonical, ParseLimits.default.maxNumberDigits)
                         ?: throw ValueProjectionException(
                             ValueProjectionFailure.InvalidCanonicalScalar(node),
                         )
@@ -1104,7 +1105,7 @@ private fun projectTimestamp(value: String): PortableValue? {
     val fraction = if (zoneStart == 0) {
         consema.core.PvDecimal.of(BigInteger.ZERO, BigInteger.ZERO)
     } else {
-        parseJsonNumber("0" + tail.substring(0, zoneStart)) ?: return null
+        parseJsonNumber("0" + tail.substring(0, zoneStart), ParseLimits.default.maxNumberDigits) ?: return null
     }
     val time = try {
         consema.core.PvTime.of(hour, minute, second, fraction)

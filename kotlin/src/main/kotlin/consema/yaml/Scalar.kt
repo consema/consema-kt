@@ -50,12 +50,16 @@ internal class NativeScalar(
     val style: YamlScalarStyle,
 )
 
-/** Resolves one explicit-tag or implicit plain scalar (native.rs). */
+/** Resolves one explicit-tag or implicit plain scalar (native.rs). The
+ * per-parser number-digit cap (ParseLimits.maxNumberDigits, default
+ * 100,000 — the json/hcl checkNumberDigits shape, wave 5) bounds every
+ * number literal before any BigInteger construction. */
 internal fun resolveScalar(
     decoded: String,
     style: YamlScalarStyle,
     explicitTag: String?,
     profile: YamlProfile,
+    maxNumberDigits: Int,
 ): Pair<String, NativeScalar> {
     if (explicitTag != null) {
         if (isStandardCollectionTag(explicitTag)) {
@@ -65,16 +69,16 @@ internal fun resolveScalar(
             return TAG_STR to NativeScalar(decoded, decoded, YamlScalarKind.String, style)
         }
         if (explicitTag == TAG_NULL) {
-            return resolveExplicit(decoded, style, TAG_NULL, YamlScalarKind.Null, profile)
+            return resolveExplicit(decoded, style, TAG_NULL, YamlScalarKind.Null, profile, maxNumberDigits)
         }
         if (explicitTag == TAG_BOOL) {
-            return resolveExplicit(decoded, style, TAG_BOOL, YamlScalarKind.Boolean, profile)
+            return resolveExplicit(decoded, style, TAG_BOOL, YamlScalarKind.Boolean, profile, maxNumberDigits)
         }
         if (explicitTag == TAG_INT) {
-            return resolveExplicit(decoded, style, TAG_INT, YamlScalarKind.Integer, profile)
+            return resolveExplicit(decoded, style, TAG_INT, YamlScalarKind.Integer, profile, maxNumberDigits)
         }
         if (explicitTag == TAG_FLOAT) {
-            return resolveExplicit(decoded, style, TAG_FLOAT, YamlScalarKind.Float, profile)
+            return resolveExplicit(decoded, style, TAG_FLOAT, YamlScalarKind.Float, profile, maxNumberDigits)
         }
         if (explicitTag == TAG_TIMESTAMP) {
             val canonical = parseTimestamp(decoded)
@@ -94,7 +98,7 @@ internal fun resolveScalar(
     if (style != YamlScalarStyle.Plain) {
         return TAG_STR to NativeScalar(decoded, decoded, YamlScalarKind.String, style)
     }
-    return resolveImplicit(decoded, style, profile)
+    return resolveImplicit(decoded, style, profile, maxNumberDigits)
 }
 
 /** Resolves one explicit standard scalar tag with grammar validation
@@ -105,12 +109,13 @@ private fun resolveExplicit(
     tag: String,
     kind: YamlScalarKind,
     profile: YamlProfile,
+    maxNumberDigits: Int,
 ): Pair<String, NativeScalar> {
     val canonical: String = when (kind) {
         YamlScalarKind.Null -> if (parseNull(decoded)) "" else null
         YamlScalarKind.Boolean -> parseBool(decoded, profile)
-        YamlScalarKind.Integer -> parseInteger(decoded, profile)
-        YamlScalarKind.Float -> parseFloat(decoded, profile)
+        YamlScalarKind.Integer -> parseInteger(decoded, profile, maxNumberDigits)
+        YamlScalarKind.Float -> parseFloat(decoded, profile, maxNumberDigits)
         else -> error("remaining scalar kinds are handled before explicit-tag formation")
     }
         ?: throw nativeFailure("yaml.scalar.invalid-explicit-tag@1")
@@ -122,6 +127,7 @@ private fun resolveImplicit(
     decoded: String,
     style: YamlScalarStyle,
     profile: YamlProfile,
+    maxNumberDigits: Int,
 ): Pair<String, NativeScalar> {
     if (parseNull(decoded)) {
         return TAG_NULL to NativeScalar(decoded, "", YamlScalarKind.Null, style)
@@ -129,10 +135,10 @@ private fun resolveImplicit(
     parseBool(decoded, profile)?.let {
         return TAG_BOOL to NativeScalar(decoded, it, YamlScalarKind.Boolean, style)
     }
-    parseInteger(decoded, profile)?.let {
+    parseInteger(decoded, profile, maxNumberDigits)?.let {
         return TAG_INT to NativeScalar(decoded, it, YamlScalarKind.Integer, style)
     }
-    parseFloat(decoded, profile)?.let {
+    parseFloat(decoded, profile, maxNumberDigits)?.let {
         return TAG_FLOAT to NativeScalar(decoded, it, YamlScalarKind.Float, style)
     }
     if (profile == YamlProfile.Yaml11CompatV1) {
@@ -200,8 +206,10 @@ internal fun parseBool(value: String, profile: YamlProfile): String? {
 }
 
 /** YAML integer resolution with the exact 1.2/1.1 rule order (native.rs
- *). Underscores are 1.1-only and must sit between alphanumerics. */
-internal fun parseInteger(value: String, profile: YamlProfile): String? {
+ *). Underscores are 1.1-only and must sit between alphanumerics. The
+ * per-parser digit cap bounds every base-N magnitude and sexagesimal
+ * literal before any BigInteger construction. */
+internal fun parseInteger(value: String, profile: YamlProfile, maxNumberDigits: Int): String? {
     val signPair = splitSign(value) ?: return null
     val sign = signPair.first
     val unsigned = signPair.second
@@ -233,16 +241,18 @@ internal fun parseInteger(value: String, profile: YamlProfile): String? {
         base = 8
         digits = cleaned
     } else if (profile == YamlProfile.Yaml11CompatV1 && cleaned.contains(':')) {
-        return parseSexagesimalInteger(sign, cleaned)
+        return parseSexagesimalInteger(sign, cleaned, maxNumberDigits)
     }
-    val magnitude = parseBaseMagnitude(digits, base) ?: return null
+    val magnitude = parseBaseMagnitude(digits, base, maxNumberDigits) ?: return null
     val value = if (sign < 0) magnitude.negate() else magnitude
     return value.toString()
 }
 
 /** YAML float resolution: frozen non-finite spellings, normalized finite
- * decimals, and the 1.1 sexagesimal form (native.rs). */
-internal fun parseFloat(value: String, profile: YamlProfile): String? {
+ * decimals, and the 1.1 sexagesimal form (native.rs). The per-parser
+ * digit cap bounds every coefficient/exponent and sexagesimal literal
+ * before any BigInteger construction. */
+internal fun parseFloat(value: String, profile: YamlProfile, maxNumberDigits: Int): String? {
     when (value) {
         ".inf", ".Inf", ".INF", "+.inf", "+.Inf", "+.INF" -> return ".inf"
         "-.inf", "-.Inf", "-.INF" -> return "-.inf"
@@ -256,13 +266,13 @@ internal fun parseFloat(value: String, profile: YamlProfile): String? {
         value
     }
     if (profile == YamlProfile.Yaml11CompatV1 && cleaned.contains(':')) {
-        return parseSexagesimalFloat(cleaned)
+        return parseSexagesimalFloat(cleaned, maxNumberDigits)
     }
     if (!cleaned.contains('.') && !cleaned.contains('e') && !cleaned.contains('E')) {
         return null
     }
     val normalized = normalizeDecimalLexeme(cleaned)
-    val decimal = parseJsonNumber(normalized) ?: return null
+    val decimal = parseJsonNumber(normalized, maxNumberDigits) ?: return null
     return decimalCanonical(decimal)
 }
 
@@ -298,8 +308,10 @@ internal fun decimalCanonical(decimal: PvDecimal): String =
 
 /** Strict JSON-number parsing to a normalized exact decimal (the Rust
  * Decimal::parse_json_number, native.rs). Returns null when the
- * lexeme is not a valid JSON number. */
-internal fun parseJsonNumber(text: String): PvDecimal? {
+ * lexeme is not a valid JSON number. The per-parser digit cap covers
+ * coefficient digits plus exponent digits after the structural
+ * validation and before any BigInteger construction. */
+internal fun parseJsonNumber(text: String, maxNumberDigits: Int): PvDecimal? {
     var index = 0
     var negative = false
     if (index < text.length && (text[index] == '-' || text[index] == '+')) {
@@ -336,6 +348,10 @@ internal fun parseJsonNumber(text: String): PvDecimal? {
         if (exponentDigits.isEmpty() || fractionDigits.isEmpty() && integerDigits.isEmpty()) {
             return null
         }
+        requireNumberDigits(
+            exponentDigits.length + integerDigits.length + fractionDigits.length,
+            maxNumberDigits,
+        )
         exponentValue = BigInteger(exponentDigits).let {
             if (exponentNegative) it.negate() else it
         }
@@ -343,6 +359,7 @@ internal fun parseJsonNumber(text: String): PvDecimal? {
     if (index != text.length || integerDigits.isEmpty() && fractionDigits.isEmpty()) {
         return null
     }
+    requireNumberDigits(integerDigits.length + fractionDigits.length, maxNumberDigits)
     val coefficientText = integerDigits + fractionDigits
     val coefficient = BigInteger(coefficientText)
     val exponent = exponentValue.subtract(BigInteger.valueOf(fractionDigits.length.toLong()))
@@ -350,20 +367,26 @@ internal fun parseJsonNumber(text: String): PvDecimal? {
     return PvDecimal.of(signed, exponent)
 }
 
-/** YAML 1.1 sexagesimal integer `[0-9]+(:[0-5][0-9])+` (native.rs). */
-private fun parseSexagesimalInteger(sign: Int, value: String): String? {
+/** YAML 1.1 sexagesimal integer `[0-9]+(:[0-5][0-9])+` (native.rs). The
+ * per-parser digit cap runs after the lexical validation and before any
+ * bigint accumulation. */
+private fun parseSexagesimalInteger(sign: Int, value: String, maxNumberDigits: Int): String? {
     val parts = value.split(':')
     val first = parts[0]
     if (first.isEmpty() || !first.all { it.isDigit() }) {
         return null
     }
-    var magnitude = parseBaseMagnitude(first, 10) ?: return null
-    var count = 0
     for (part in parts.subList(1, parts.size)) {
         val component = part.toIntOrNull() ?: return null
         if (component > 59 || part.isEmpty() || part.length > 2) {
             return null
         }
+    }
+    requireNumberDigits(decimalDigitCount(value), maxNumberDigits)
+    var magnitude = parseBaseMagnitude(first, 10, maxNumberDigits) ?: return null
+    var count = 0
+    for (part in parts.subList(1, parts.size)) {
+        val component = part.toIntOrNull() ?: return null
         magnitude = magnitude.multiply(BigInteger.valueOf(60)).add(BigInteger.valueOf(component.toLong()))
         count++
     }
@@ -375,8 +398,9 @@ private fun parseSexagesimalInteger(sign: Int, value: String): String? {
 }
 
 /** YAML 1.1 sexagesimal float `[0-9]+(:[0-5][0-9])+:[0-9]+\.[0-9]+`
- * (native.rs). */
-private fun parseSexagesimalFloat(value: String): String? {
+ * (native.rs). The per-parser digit cap runs after the lexical
+ * validation and before any bigint accumulation. */
+private fun parseSexagesimalFloat(value: String, maxNumberDigits: Int): String? {
     val signPair = splitSign(value) ?: return null
     val sign = signPair.first
     val unsigned = signPair.second
@@ -391,25 +415,32 @@ private fun parseSexagesimalFloat(value: String): String? {
     if (fraction.isEmpty() || !fraction.all { it.isDigit() }) {
         return null
     }
-    var magnitude = BigInteger.ZERO
-    var magnitudeSet = false
+    if (parts.isEmpty()) {
+        return null
+    }
     for ((index, part) in parts.withIndex()) {
         val component = part.toLongOrNull() ?: return null
         if (index > 0 && component > 59) {
             return null
         }
+    }
+    val wholeValue = whole.toIntOrNull() ?: return null
+    if (wholeValue > 59) {
+        return null
+    }
+    requireNumberDigits(decimalDigitCount(unsigned), maxNumberDigits)
+    var magnitude = BigInteger.ZERO
+    var magnitudeSet = false
+    for ((index, part) in parts.withIndex()) {
+        val component = part.toLongOrNull() ?: return null
         if (index == 0) {
-            magnitude = parseBaseMagnitude(part, 10) ?: return null
+            magnitude = parseBaseMagnitude(part, 10, maxNumberDigits) ?: return null
             magnitudeSet = true
         } else {
             magnitude = magnitude.multiply(BigInteger.valueOf(60)).add(BigInteger.valueOf(component))
         }
     }
-    if (parts.isEmpty() || !magnitudeSet) {
-        return null
-    }
-    val wholeValue = whole.toIntOrNull() ?: return null
-    if (wholeValue > 59) {
+    if (!magnitudeSet) {
         return null
     }
     magnitude = magnitude.multiply(BigInteger.valueOf(60)).add(BigInteger.valueOf(wholeValue.toLong()))
@@ -445,14 +476,34 @@ private fun validUnderscored(value: String): String? {
     return value
 }
 
-/** Parses one non-empty base-N digit string (native.rs). */
-private fun parseBaseMagnitude(value: String, base: Int): BigInteger? {
+/** Counts the decimal digit characters of one number literal:
+ * coefficient digits plus exponent digits (the json/hcl checkNumberDigits
+ * shape, wave 5). A base-N literal counts its full base-digit length
+ * instead — every char is a digit in that base. */
+private fun decimalDigitCount(text: String): Int = text.count { it in '0'..'9' }
+
+/** The per-parser number-literal digit cap (wave 5): fails fatally with
+ * the frozen resource-limit code (ParseLimits.maxNumberDigits, default
+ * 100,000 — RFC 0016 §5.1) when the literal exceeds the cap. The check
+ * runs before any BigInteger construction or bigint accumulation, so an
+ * over-limit literal costs only a linear scan; the failure is never a
+ * crash and never a silent fallback to a String scalar. */
+private fun requireNumberDigits(digitCount: Int, maxNumberDigits: Int) {
+    if (digitCount > maxNumberDigits) {
+        throw resourceLimit("number-digits", digitCount, maxNumberDigits)
+    }
+}
+
+/** Parses one non-empty base-N digit string (native.rs). The digit cap
+ * runs before the O(N²) BigInteger construction. */
+private fun parseBaseMagnitude(value: String, base: Int, maxNumberDigits: Int): BigInteger? {
     if (value.isEmpty()) {
         return null
     }
     if (!value.all { it.digitToIntOrNull(base) != null }) {
         return null
     }
+    requireNumberDigits(value.length, maxNumberDigits)
     return BigInteger(value, base)
 }
 

@@ -190,7 +190,7 @@ private class Composer(
                     raw,
                     source.decodedText() ?: "",
                 )
-                val (tag, scalar) = resolveScalar(decoded, publicStyle(kind.style), kind.tag?.let { it.prefix + it.suffix }, profile)
+                val (tag, scalar) = resolveScalar(decoded, publicStyle(kind.style), kind.tag?.let { it.prefix + it.suffix }, profile, limits.maxNumberDigits)
                 val span = rawSpan(event.span)
                 nodes[index] = NativeNode(
                     tag,

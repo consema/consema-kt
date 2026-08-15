@@ -256,6 +256,114 @@ class FormationTest {
         assertEquals("source-bytes", error.name)
     }
 
+    /** Wave-5 audit P1 (Scalar.kt parse path): the per-parser
+     * maxNumberDigits=100_000 cap (ParseLimits.maxNumberDigits, the
+     * json/hcl checkNumberDigits shape) rejects an over-limit integer
+     * before any BigInteger construction with the frozen resource-limit
+     * code — never a crash, never a silent String fallback. */
+    @Test
+    fun integerOverDigitCapIsFatal() {
+        val error = assertFailsWith<YamlFormationException> {
+            parse(
+                "[${"9".repeat(100_001)}]\n".toByteArray(Charsets.UTF_8),
+                YamlProfile.Yaml12CoreV1,
+            )
+        }
+        assertEquals("core.parse.resource-limit@1", error.code)
+        assertEquals("number-digits", error.name)
+        assertEquals(100_001, error.observed)
+        assertEquals(100_000, error.limit)
+    }
+
+    /** Wave-5 audit P1 (Scalar.kt parse path): an over-limit decimal
+     * coefficient is a fatal resource-limit failure. */
+    @Test
+    fun decimalCoefficientOverDigitCapIsFatal() {
+        val error = assertFailsWith<YamlFormationException> {
+            parse(
+                "[1.${"9".repeat(100_001)}]\n".toByteArray(Charsets.UTF_8),
+                YamlProfile.Yaml12CoreV1,
+            )
+        }
+        assertEquals("core.parse.resource-limit@1", error.code)
+        assertEquals("number-digits", error.name)
+        assertEquals(100_002, error.observed)
+    }
+
+    /** Wave-5 audit P1 (Scalar.kt parse path): an over-limit exponent is a
+     * fatal resource-limit failure (coefficient digits plus exponent
+     * digits count together, the json/hcl checkNumberDigits shape). */
+    @Test
+    fun exponentOverDigitCapIsFatal() {
+        val error = assertFailsWith<YamlFormationException> {
+            parse(
+                "[1e${"9".repeat(100_001)}]\n".toByteArray(Charsets.UTF_8),
+                YamlProfile.Yaml12CoreV1,
+            )
+        }
+        assertEquals("core.parse.resource-limit@1", error.code)
+        assertEquals("number-digits", error.name)
+        assertEquals(100_002, error.observed)
+    }
+
+    /** Wave-5 audit P1 (Scalar.kt parse path): an over-limit base-prefixed
+     * integer is a fatal resource-limit failure (hex digits count). */
+    @Test
+    fun basePrefixedIntegerOverDigitCapIsFatal() {
+        val error = assertFailsWith<YamlFormationException> {
+            parse(
+                "[0x${"f".repeat(100_001)}]\n".toByteArray(Charsets.UTF_8),
+                YamlProfile.Yaml12CoreV1,
+            )
+        }
+        assertEquals("core.parse.resource-limit@1", error.code)
+        assertEquals("number-digits", error.name)
+        assertEquals(100_001, error.observed)
+    }
+
+    /** Wave-5 audit P1 (Scalar.kt parse path): an over-limit 1.1
+     * sexagesimal literal is a fatal resource-limit failure. */
+    @Test
+    fun sexagesimalOverDigitCapIsFatal() {
+        val error = assertFailsWith<YamlFormationException> {
+            parse(
+                "[${"9".repeat(100_001)}:1]\n".toByteArray(Charsets.UTF_8),
+                YamlProfile.Yaml11CompatV1,
+            )
+        }
+        assertEquals("core.parse.resource-limit@1", error.code)
+        assertEquals("number-digits", error.name)
+        assertEquals(100_002, error.observed)
+    }
+
+    /** Wave-5 audit P1 (Scalar.kt parse path): an integer exactly at the
+     * digit cap parses to its exact canonical Integer spelling. */
+    @Test
+    fun integerAtDigitCapParses() {
+        val digits = "9".repeat(100_000)
+        val document = parse(
+            "[$digits]\n".toByteArray(Charsets.UTF_8),
+            YamlProfile.Yaml12CoreV1,
+        )
+        val scalar = document.document(0)!!.root().sequenceItem(0)!!.node().scalar()!!
+        assertEquals("Integer", scalar.kind().name)
+        assertEquals(digits, scalar.canonical())
+    }
+
+    /** Wave-5 audit P1 (Scalar.kt parse path): a decimal coefficient at
+     * the cap parses; the canonical strips the trailing zero. */
+    @Test
+    fun decimalAtDigitCapParses() {
+        val digits = "9".repeat(99_999)
+        val document = parse(
+            "[$digits.0]\n".toByteArray(Charsets.UTF_8),
+            YamlProfile.Yaml12CoreV1,
+        )
+        val scalar = document.document(0)!!.root().sequenceItem(0)!!.node().scalar()!!
+        assertEquals("Float", scalar.kind().name)
+        assertEquals(digits, scalar.canonical())
+    }
+
     /** Audit gap (fixture yaml/github-actions-ci.yaml): flow indicators
      * (`{`/`}`) are plain-scalar content in block context, so
      * `runs-on: ${{ matrix.os }}` forms one scalar and the stream

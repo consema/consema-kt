@@ -1282,6 +1282,15 @@ internal class XmlParser(
             return null
         }
         val digits = content.substring(start, end)
+        // The per-parser number-digit cap (common ParseLimits.
+        // maxNumberDigits, default 100,000 — the json/hcl checkNumberDigits
+        // shape, wave 4/5): the check runs before the O(N²) BigInteger
+        // construction, and an over-limit literal is a fatal
+        // resource-limit failure (RFC 0016 §5.1) — never a crash and never
+        // a silent recovery to a Recovered document (hard gate 4).
+        if (digits.length > limits.common.maxNumberDigits) {
+            throw commonLimit("number-digits", digits.length, limits.common.maxNumberDigits)
+        }
         val magnitude = try {
             BigInteger(digits, if (hex) 16 else 10)
         } catch (e: NumberFormatException) {
