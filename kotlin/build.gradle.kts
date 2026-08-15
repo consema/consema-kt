@@ -6,7 +6,7 @@
 // declared configuration is test-scoped, mirroring the go.mod zero-require
 // precedent).
 plugins {
-    kotlin("jvm") version "2.2.0"
+    kotlin("jvm") version "2.4.10"
     `maven-publish`
     `signing`
     id("org.jetbrains.kotlinx.kover") version "0.9.9"
