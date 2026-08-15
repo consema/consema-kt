@@ -25,13 +25,13 @@ kotlinc -J-Xmx2g -jvm-target 17 -d out src/main/kotlin quickstart.kt
 java -cp "out;<kotlinc>\lib\kotlin-stdlib.jar" QuickstartKt
 ```
 
-（上面命令块中的 `src/main/kotlin` 与 `quickstart.kt` 均为 kotlin/ 目录内相对路径，基准目录就是上文的 `cd kotlin` 之后；命令块不受门禁保护——examples job 只比对下方 ```kotlin 栅栏与入库文件的 Trim 后核心代码（剥离头部注释/package 行）；命令块为人工同步，按需保持最新。）
+（上面命令块中的 `src/main/kotlin` 与 `quickstart.kt` 均为 kotlin/ 目录内相对路径，基准目录就是上文的 `cd kotlin` 之后；命令块不受门禁保护——examples job 只比对下方 ```kotlin 栅栏与入库文件的 Trim 后核心代码（两侧剥离 `//` 注释行与 package 行，wave-5 修正「剥离头部注释」声称：实现按注释行剥离，不依赖位置巧合）；命令块为人工同步，按需保持最新。）
 
 注：kotlinc 2.2.0 启动器默认堆为 512 MiB，对 163 个主源文件的 K2 编译会在
 IR 阶段耗尽堆——必须加 `-J-Xmx2g`（与 CI 直驱路径的内存档位一致，见
 kotlin/gradle.properties 与 ci-kotlin.yml）。本地整仓编译约 2 分钟。
 
-同一示例已入库为 [`kotlin/examples/Quickstart.kt`](kotlin/examples/Quickstart.kt)（带 `package consema.examples`，运行类 `consema.examples.QuickstartKt`），由 CI examples job 与 SdkChain.kt 一起编译并运行验证；CI examples job 还比对 README ```kotlin 栅栏与入库文件（两侧经 Trim 并剥离头部注释/package 行后比较，粘贴版与入库版必须保持一致，由门禁强制）。
+同一示例已入库为 [`kotlin/examples/Quickstart.kt`](kotlin/examples/Quickstart.kt)（带 `package consema.examples`，运行类 `consema.examples.QuickstartKt`），由 CI examples job 与 SdkChain.kt 一起编译并运行验证；CI examples job 还比对 README ```kotlin 栅栏与入库文件（两侧经 Trim 并剥离 `//` 注释行与 package 行后比较，粘贴版与入库版必须保持一致，由门禁强制）。
 
 ```kotlin
 import consema.core.PvInteger

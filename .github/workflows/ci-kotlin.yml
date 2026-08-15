@@ -236,17 +236,26 @@ jobs:
       # differential tests without their golden env vars print a documented
       # [SKIP] line and pass (§0.2 skip discipline; the verify scripts are
       # what assert RUN not SKIP). Wave-4 R47 skip bound: the gradle test
-      # run must not silently grow its skipped set — exactly the three
+      # run must not silently change its skipped set — exactly the three
       # env-gated differential legs print a [SKIP] marker here (no
       # CONSEMA_DIFFERENTIAL_* / CONSEMA_EXCHANGE_* env vars are set in
       # this job; measured 2026-08-15: ByteParityTest.differentialByteParity,
       # NormalizedTest.differentialNormalized and
       # ExchangeTest.protocolExchange — NormalizedTest.emitFormatConsistency
-      # emits into a temp dir and never skips), so the [SKIP] marker count
-      # in the JUnit XML system-out is asserted <= 3. The markers are
-      # printed stdout, not JUnit assumptions — the XML `skipped` attribute
-      # stays 0; gradle aggregates system-out per suite (not per testcase),
-      # so the bound is on marker occurrences.
+      # emits into a temp dir and never skips; the RUST_DIR/KOTLIN_DIR
+      # early returns print only the first marker per class, so the total
+      # is 3, not 5). Wave-5 (2026-08-15): a fourth printer exists and is
+      # provision-gated, not env-gated — TestFixturesTest.
+      # realSharedFilesArePreferredWhenReachable prints a [SKIP] marker
+      # when conformance/fixtures is unreachable from the gradle working
+      # directory; the provision step above always completes (it throws
+      # otherwise), so it never fires in this job. The markers are printed
+      # stdout, not JUnit assumptions — the XML `skipped` attribute stays
+      # 0; gradle aggregates system-out per suite (not per testcase), so
+      # the bound is on marker occurrences. The gate asserts the skip
+      # evidence set equals exactly 3 (markers + JUnit assumption-skip XML
+      # evidence): an assumption-skip addition or a marker disappearing
+      # (reverse regression) must fail loudly, not pass a <= bound.
       - name: run unit tests + kover 60% coverage gate
         shell: pwsh
         working-directory: kotlin
@@ -256,11 +265,16 @@ jobs:
           $ErrorActionPreference = 'Stop'
           .\gradlew.bat test koverVerify
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-          # Wave-4 R47: assert the documented skip upper bound from the
-          # JUnit XML results (gradle test output does not surface the
-          # tests' [SKIP] stdout lines; the XML skipped attribute counts
-          # JUnit assumptions only, and the env-gated legs pass with a
-          # printed marker instead).
+          # Wave-4 R47: assert the documented skip set from the JUnit XML
+          # results (gradle test output does not surface the tests' [SKIP]
+          # stdout lines; the XML skipped attribute counts JUnit
+          # assumptions only, and the env-gated legs pass with a printed
+          # marker instead). Wave-5: the set counts BOTH the [SKIP]
+          # markers and the JUnit assumption-skip XML evidence (the
+          # skipped attribute / <skipped/> element — invisible to the
+          # marker scan) and must equal exactly the three env-gated
+          # differential legs: a new assumption-skip grows the set and a
+          # disappeared marker shrinks it — both fail.
           $skipBound = 3
           $resultDir = Join-Path $env:GITHUB_WORKSPACE 'kotlin\build\test-results\test'
           if (-not (Test-Path -LiteralPath $resultDir)) {
@@ -268,12 +282,16 @@ jobs:
           }
           $skipped = 0
           Get-ChildItem -LiteralPath $resultDir -Filter '*.xml' | ForEach-Object {
-            $skipped += ([regex]::Matches((Get-Content -LiteralPath $_.FullName -Raw), '\[SKIP\]')).Count
+            $content = Get-Content -LiteralPath $_.FullName -Raw
+            $skipped += ([regex]::Matches($content, '\[SKIP\]')).Count
+            # JUnit assumption-style skips surface as a skipped attribute
+            # or <skipped/> element, never as a [SKIP] stdout marker.
+            $skipped += ([regex]::Matches($content, 'skipped="true"|<skipped\b')).Count
           }
-          if ($skipped -gt $skipBound) {
-            throw "unexpectedly many [SKIP] markers: $skipped (at most $skipBound env-gated differential legs may print a marker — a new silent skip must not grow this set)"
+          if ($skipped -ne $skipBound) {
+            throw "skip-evidence set is $skipped (the invariant is exactly ${skipBound} — the three env-gated differential legs print a [SKIP] marker here and nothing else may skip; an assumption-skip addition or a disappeared marker must fail loudly)"
           }
-          Write-Output "skipped [SKIP] markers: $skipped (<= $skipBound env-gated differential legs)"
+          Write-Output "skip evidence: $skipped (exactly the $skipBound env-gated differential legs)"
       # Test-only-dependency policy (§1.3): the build.gradle.kts
       # dependencies block keeps every declared configuration test-scoped —
       # the runtime classpath carries only the Kotlin platform
@@ -441,7 +459,12 @@ jobs:
       # to org.junit.jupiter.api.Test). kotlinc bundles kotlin-test.jar and
       # kotlin-test-junit5.jar, so only this jar is provisioned into the
       # repo-local verify lib (the scripts/kotlin-verify-*.ps1 download
-      # idiom; the compile step below guards on the same path).
+      # idiom; the compile step below guards on the same path). Wave-5
+      # scope note: this pinned jar serves the direct-driver reflective
+      # annotation discovery (and the scripts' compile) only — the
+      # gradle-executed junit-jupiter:5.10.2 (engine/params/platform
+      # family) resolves via Maven Central without checksum verification
+      # (SECURITY.md supply-chain note, 2026-08-15).
       - name: provision junit-jupiter-api 5.10.2 jar (repo verify lib)
         shell: pwsh
         run: |
@@ -481,10 +504,13 @@ jobs:
       # pattern of scripts/kotlin-verify-byte-parity.ps1 (the committed
       # kotlin/verify/TestShim.kt shim was removed 2026-08-13 — the runner
       # drives the @Test methods directly). Wave-4 R52: the runner
-      # discovers the @Test methods reflectively (annotation qualified name,
-      # no junit jar needed at runtime) instead of a hand-maintained
-      # mapOf list — a new @Test on ConformanceRunnerTest runs
-      # automatically and can never silently stay off the execution face.
+      # discovers the @Test methods reflectively (matched by annotation
+      # qualified name — the junit-jupiter-api jar rides the runner's
+      # RUNTIME classpath so org.junit.jupiter.api.Test is loadable at
+      # reflection time; see the run step below) instead of a
+      # hand-maintained mapOf list — a new @Test on ConformanceRunnerTest
+      # runs automatically and can never silently stay off the execution
+      # face.
       - name: compile the conformance runner test + temp main() runner (K2JVMCompiler)
         shell: pwsh
         run: |
@@ -587,8 +613,23 @@ jobs:
             throw "junit-jupiter-api jar not found: $junitJar"
           }
           $runCp = "$mainOut;$runnerOut;$stdlib;$kotlinTestJar;$junitJar"
-          & $java -Xmx2g -cp $runCp consema.conformance.ConformanceTestRunnerKt
+          $output = & $java -Xmx2g -cp $runCp consema.conformance.ConformanceTestRunnerKt 2>&1
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          # Wave-5 output evidence (G37): exit 0 alone would not prove the
+          # reflective discovery found every @Test — a partially discovered
+          # method set (annotation load failure, future non-junit5
+          # typealias) would still exit 0 while a test silently stays off
+          # the execution face. The runner's own 'tests: N run' summary
+          # must show exactly the 3 @Test methods of ConformanceRunnerTest.
+          $passLines = @($output | Where-Object { $_ -match '^PASS ConformanceRunnerTest\.' })
+          if ($passLines.Count -ne 3) {
+            throw "conformance runner must run exactly the 3 @Test methods of ConformanceRunnerTest (got $($passLines.Count) PASS lines — partial reflective discovery must fail loudly)"
+          }
+          $summaryLines = @($output | Where-Object { $_ -match '^tests: 3 run, 0 failed$' })
+          if ($summaryLines.Count -ne 1) {
+            throw "conformance runner must print exactly one 'tests: 3 run, 0 failed' summary (got $($summaryLines.Count))"
+          }
+          Write-Output "conformance runner: 3/3 @Test methods ran, 0 failed ($($summaryLines[0]))"
       # CLI smoke gate (six-repo audit G158): the runner CLI (Cli.kt main)
       # was shipped but had no executor — run it here and require exit 0
       # (RFC 0015 §5.1 success class; a conformant run must exit 0). Wave-4
@@ -644,6 +685,13 @@ jobs:
       # runner's current stable and break replayability. The emitters are
       # built and the goldens regenerated inside this same job, so both
       # directions always use this one toolchain.
+      # Wave-5 supply-chain disclosure: this action's commit SHA pins the
+      # action CODE, not the downloaded toolchain bytes — the rustup
+      # toolchain download is version-pinned (1.97.1) but has no in-repo
+      # sha256 pin (contrast every repo-side download above, which carries
+      # one). Same for actions/setup-java below: Temurin 17 is
+      # version-pinned by the action's resolution, the JDK download bytes
+      # are not sha256-pinned in-repo.
       - uses: dtolnay/rust-toolchain@4360b52568e2003a75bf9bc1d59f33a8e3fc893c # 1.97.1
         with:
           toolchain: 1.97.1
@@ -783,7 +831,12 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          version=$(grep -m1 '^version' kotlin/build.gradle.kts | sed -E 's/^version[[:space:]]*=[[:space:]]*"([^"]+)".*/\1/')
+          # Wave-5: the extraction is anchored to the rootProject version
+          # declaration (the '// rootProject version' comment precedes it) —
+          # a plain first-match would silently switch to any top-level
+          # 'version = ...' property declared above it (first-match family,
+          # go ci-go.yml:427 / ts ci-typescript.yml:605).
+          version="$(awk '/rootProject version/{f=1} f && /^version[[:space:]]*=[[:space:]]*"/{print; exit}' kotlin/build.gradle.kts | sed -E 's/^version[[:space:]]*=[[:space:]]*"([^"]+)".*/\1/')"
           if [ -z "$version" ]; then
             echo "::error::no 'version' found in kotlin/build.gradle.kts"
             exit 1
@@ -812,7 +865,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          version=$(grep -m1 '^version' kotlin/build.gradle.kts | sed -E 's/^version[[:space:]]*=[[:space:]]*"([^"]+)".*/\1/')
+          version="$(awk '/rootProject version/{f=1} f && /^version[[:space:]]*=[[:space:]]*"/{print; exit}' kotlin/build.gradle.kts | sed -E 's/^version[[:space:]]*=[[:space:]]*"([^"]+)".*/\1/')"
           grep -qF 'dev.consema:consema-kotlin:' README.md || {
             echo "::error::README.md quick-start Maven coordinates are missing (must pin dev.consema:consema-kotlin:$version)"
             exit 1
@@ -842,7 +895,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          version=$(grep -m1 '^version' kotlin/build.gradle.kts | sed -E 's/^version[[:space:]]*=[[:space:]]*"([^"]+)".*/\1/')
+          version="$(awk '/rootProject version/{f=1} f && /^version[[:space:]]*=[[:space:]]*"/{print; exit}' kotlin/build.gradle.kts | sed -E 's/^version[[:space:]]*=[[:space:]]*"([^"]+)".*/\1/')"
           fixture=kotlin/src/test/kotlin/toml/TestFixtures.kt
           grep -qF 'version = "' "$fixture" || {
             echo "::error::$fixture workspace-package version literal is missing"
@@ -950,10 +1003,17 @@ jobs:
           if ($normalized.Count -ne 2) {
             throw 'kotlin/examples/Quickstart.kt must declare package consema.examples'
           }
-          $body = $normalized[1].Trim()
+          # Wave-5: the documented mechanism is 'strip comments and the
+          # package line' on BOTH sides — the split alone only drops
+          # comments sitting above the package line (positional luck, not a
+          # mechanism). Every // comment line is stripped from both sides,
+          # so a comment moved after the package line (legal Kotlin) or
+          # added to either side cannot poison the comparison.
+          $stripCommentLines = { param($text) ($text -split '\r?\n' | Where-Object { $_ -notmatch '^\s*//' }) -join "`n" }
+          $body = (& $stripCommentLines $normalized[1]).Trim()
           $matches = @()
           foreach ($m in [regex]::Matches($readme, '(?s)```kotlin\r?\n(.*?)\r?\n```')) {
-            $fence = ($m.Groups[1].Value -replace "`r", '').Trim()
+            $fence = (& $stripCommentLines ($m.Groups[1].Value -replace "`r", '')).Trim()
             if ($fence -eq $body) {
               $matches += $fence
             }
@@ -984,10 +1044,23 @@ jobs:
           $stdlib = Join-Path $kotlinc 'lib\kotlin-stdlib.jar'
           & $java -Xmx2g -cp "$kotlinc\lib\*" org.jetbrains.kotlin.cli.jvm.K2JVMCompiler -jvm-target 17 -classpath "$mainOut;$stdlib" -d $exampleOut (Join-Path $kotlinDir 'examples\SdkChain.kt') (Join-Path $kotlinDir 'examples\Quickstart.kt')
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-          & $java -Xmx2g -cp "$exampleOut;$mainOut;$stdlib" consema.examples.SdkChainKt
+          # Wave-5 output evidence (G37): exit 0 alone would not prove the
+          # chains actually ran — a silent early return exits 0 while the
+          # chain never runs (same discipline as the CLI smoke step and the
+          # ts sibling examples job).
+          $sdkOutput = & $java -Xmx2g -cp "$exampleOut;$mainOut;$stdlib" consema.examples.SdkChainKt 2>&1
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-          & $java -Xmx2g -cp "$exampleOut;$mainOut;$stdlib" consema.examples.QuickstartKt
+          if (@($sdkOutput | Where-Object { $_ -match '^convert to toml\.canonical-document:' }).Count -ne 1) {
+            throw "SdkChain.kt must reach the final TOML conversion step (found no 'convert to toml.canonical-document:' line — a silent early return would exit 0 while the chain never runs)"
+          }
+          if (@($sdkOutput | Where-Object { $_ -match '^query b\.c: matches=1 value=2 ' }).Count -ne 1) {
+            throw "SdkChain.kt must print the b.c query result line (found no 'query b.c: matches=1 value=2 ...' line)"
+          }
+          $quickstartOutput = & $java -Xmx2g -cp "$exampleOut;$mainOut;$stdlib" consema.examples.QuickstartKt 2>&1
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          if (@($quickstartOutput | Where-Object { $_ -match '"a":1,"b":\{"c":42\}' }).Count -ne 1) {
+            throw 'Quickstart.kt must render the edited document (found no render line with "a":1,"b":{"c":42})'
+          }
 
   # L5 packaging gate (five-language-ci-design.md §1.1 package row / §5.3
   # L5 row): `gradlew jar` must produce the library jar under
