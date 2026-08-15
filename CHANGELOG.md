@@ -8,7 +8,7 @@ Consema 遵循 Semantic Versioning。本仓变更记录以规范仓 CHANGELOG �
 
 - L0-L4 落地（2026-08-12，随六仓拆分自规范仓继承）：core / graph / protocol / document + 8 格式家族 + root facade + conformance runner（实现树由本仓根提交 95cf5d6 携带，其 commit message 为规范仓 fuzz 证据积累、与 L0-L4 事件无关——跨仓历史继承，完整时间线见规范仓 CHANGELOG）；
 - L5 差分 harness（2026-08-12 · 233ee66）：byte-parity / normalized differential / protocol-exchange 跨语言差分 + 五语言 CI workflow；
-- 首跑缺陷修复（2026-08-12 · f198335）：kotlin jar 供给 + TestShim.kt 入库（TestShim.kt 已于次日 2026-08-13 · 10d2e1e 删除——其死的 `package kotlin.test` 注解类会与 kotlin-test.jar 在任意 classpath 上冲突，交付树中不再存在，git 历史保留；临时 runner 与三份 verify 脚本不再引用该 shim）；
+- 首跑缺陷修复（2026-08-12 · f198335）：kotlin jar 供给 + TestShim.kt 入库（TestShim.kt 已于次日 2026-08-13 · 10d2e1e 删除——其死的 `package kotlin.test` 注解类会与 kotlin-test.jar 在任意 classpath 上冲突，交付树中不再存在，git 历史保留；临时 runner 与三份 verify 脚本不再依赖该 shim——脚本注释保留其删除注记）；
 - conformance 519/519（18 套 / 聚合 digest cfd6e296 共钉）+ capability parity；
 - CI（ci-kotlin.yml）：gradlew 单测（wrapper 驱动）+ 依赖面门禁、conformance runner 门禁、Kotlin-Rust 差分门禁；
 - 完整历史与跨语言时间线见规范仓 CHANGELOG。
