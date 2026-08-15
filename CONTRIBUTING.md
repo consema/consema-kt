@@ -44,7 +44,7 @@ powershell -File scripts/kotlin-verify-protocol-exchange.ps1
 
 ## CI 门禁
 
-`.github/workflows/ci-kotlin.yml` 八个 job（聚合 check 为唯一必选）：
+`.github/workflows/ci-kotlin.yml`（job 数以最近 CI run 为准；聚合 check 为唯一必选）：
 kotlin-gates 经已入库的 Gradle wrapper（`gradlew.bat test koverVerify`）
 跑全量单测 + kover 60% 行覆盖门禁 + 零依赖断言；kotlin-conformance /
 kotlin-differential 直驱 JVM K2JVMCompiler（conformance runner 18 suites /

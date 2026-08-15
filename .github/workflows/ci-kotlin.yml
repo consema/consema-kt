@@ -3,7 +3,8 @@
 # kotlin-gates, kotlin-conformance, kotlin-differential,
 # check-version-consistency, examples, kotlin-package,
 # runtime-classpath-audit (added 2026-08-14, G103) — plus the aggregate
-# check, 8 jobs in total (the design rejects a single shared matrix, §5.2).
+# check (job count per the latest CI run on GitHub Actions; the design
+# rejects a single shared matrix, §5.2).
 # kotlin-gates runs the
 # full unit-test suite and the kover 60% line-coverage gate through the
 # committed Gradle wrapper (kotlin/gradlew.bat, gradle 8.14 — the design

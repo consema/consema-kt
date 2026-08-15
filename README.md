@@ -27,7 +27,7 @@ java -cp "out;<kotlinc>\lib\kotlin-stdlib.jar" QuickstartKt
 
 （上面命令块中的 `src/main/kotlin` 与 `quickstart.kt` 均为 kotlin/ 目录内相对路径，基准目录就是上文的 `cd kotlin` 之后；命令块不受门禁保护——examples job 只比对下方 ```kotlin 栅栏与入库文件的 Trim 后核心代码（两侧剥离 `//` 注释行与 package 行，wave-5 修正「剥离头部注释」声称：实现按注释行剥离，不依赖位置巧合）；命令块为人工同步，按需保持最新。）
 
-注：kotlinc 2.2.0 启动器默认堆为 512 MiB，对 163 个主源文件的 K2 编译会在
+注：kotlinc 2.2.0 启动器默认堆为 512 MiB，对主源文件的 K2 编译会在
 IR 阶段耗尽堆——必须加 `-J-Xmx2g`（与 CI 直驱路径的内存档位一致，见
 kotlin/gradle.properties 与 ci-kotlin.yml）。本地整仓编译约 2 分钟。
 
@@ -98,13 +98,13 @@ fun main() {
 - `scripts/`：跨语言差分验证脚本（byte parity / normalized differential /
   protocol exchange）。脚本构建 consema-rs 的 Rust emitter 并对拍 Kotlin 实现；
   Rust 侧来自 consema-rs 仓 checkout（CI 多仓模式），conformance 数据来自规范仓 checkout。
-- `.github/workflows/ci-kotlin.yml`：八个 job 的 Kotlin CI——kotlin-gates
+- `.github/workflows/ci-kotlin.yml`：Kotlin CI 门禁（job 数以最近 CI run 为准，GitHub Actions）——kotlin-gates
   （gradlew 单测 + kover 60% 覆盖率 + 依赖面断言）、kotlin-conformance
   （18 suites / 519 cases，聚合 digest 字面量钉 + 直驱 K2JVMCompiler）、
   kotlin-differential（Kotlin-Rust 差分门禁，直驱 K2JVMCompiler；多仓
   checkout）、check-version-consistency、examples、kotlin-package、
   runtime-classpath-audit（2026-08-14 G103 增补）与聚合 check
-  （windows-latest 5 job + ubuntu-latest 3 job）。
+  （windows-latest / ubuntu-latest 双 runner；job 数以最近 CI run 为准）。
 
 ## 构建与测试
 
