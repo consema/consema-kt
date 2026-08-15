@@ -20,7 +20,7 @@ pattern; ci-kotlin.yml). Two equivalent paths exist locally:
 Gradle path (wrapper committed 2026-08-12):
 
 ```
-./gradlew build          # compile + full unit-test suite (585 tests, 2026-08-15 静态计数：@Test 注解数——计数随测试新增漂移，以最近 CI run 为准) + kover 60% verify
+./gradlew build          # compile + full unit-test suite (595 tests, 2026-08-15 静态计数：@Test 注解数——计数随测试新增漂移，以最近 CI run 为准) + kover 60% verify
 ./gradlew koverHtmlReport koverXmlReport   # coverage reports (build/reports/kover/)
 ```
 
@@ -72,8 +72,8 @@ kotlin/examples/Quickstart.kt after Trim and the header/package-line strip
 
 Feasibility verdict: **viable.** The wrapper (gradle 8.14; `gradlew`,
 `gradlew.bat`, `gradle/wrapper/`) was generated and committed;
-`./gradlew build` resolves build.gradle.kts, compiles all 238 sources
-(163 main + 75 test), runs the 585-test JUnit suite green (2026-08-15
+`./gradlew build` resolves build.gradle.kts, compiles all 239 sources
+(163 main + 76 test), runs the 595-test JUnit suite green (2026-08-15
 静态计数), and passes the
 60% kover line-coverage verify. Findings that matter for a future CI
 switch:
@@ -88,7 +88,7 @@ switch:
   `./gradlew test` there needs no new wiring; locally it must be set.
 - **Internal visibility is preserved**: gradle compiles main and test as
   separate source sets (friend modules), the direct path compiles them into
-  one module — the 585-test green suite (2026-08-15 静态计数) shows no dependence on the merged
+  one module — the 595-test green suite (2026-08-15 静态计数) shows no dependence on the merged
   visibility.
 - **CI switch (landed)**: kotlin-gates switched to the committed Gradle
   wrapper (b640af6: `.\gradlew.bat test koverVerify` — the kover 60%

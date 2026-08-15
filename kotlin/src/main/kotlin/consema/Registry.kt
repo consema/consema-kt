@@ -11,9 +11,10 @@
 //     facts the CLI derives exclusively from this surface;
 //     https://github.com/consema/consema-rs/blob/main/consema/src/bin/consema/registry.rs as the CLI thin
 //     enumeration).
-//   - https://github.com/consema/consema/blob/main/docs/fc-manifest-0.13.0.json:31-34 (capability_set: 8 families /
-//     16 profiles / 21 query domains / 16 operation registries / 187 error
-//     codes) — the CapabilityParity test pins these counts.
+//   - https://github.com/consema/consema/blob/main/docs/fc-manifest-0.13.0.json (capability_set record: 8
+//     families / 16 profiles / 21 query domains / 16 operation registries
+//     / 187 error codes — line numbers drift on every re-provision, the
+//     field is the anchor) — the CapabilityParity test pins these counts.
 //   - https://github.com/consema/consema/blob/main/docs/multi-language-implementation-plan.md §0.3/§1 (L1 root facade
 //     "Document union/Registry/convert" — implemented in this repository;
 //     consema-go/go/registry.go is a cross-reference only).

@@ -35,7 +35,8 @@ data class FamilyFact(
 )
 
 /** One capability-parity fact group: the counts the Feature-Complete
- * Manifest pins (fc-manifest-0.13.0.json:32). */
+ * Manifest pins (the fc-manifest-0.13.0.json capability_set record; line
+ * numbers drift on every re-provision, the field is the anchor). */
 data class CapabilityParity(
     /** The eight format families. */
     val families: List<FamilyFact>,

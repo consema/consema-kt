@@ -54,10 +54,10 @@ signing 块「When absent ... signing is skipped」）、`gradlew publish`
    （CONSEMA_REPO 指向 workspace 根），无数据时 conformance/fixture 测试
    必然失败——不要删掉 provision 步骤。差分腿在发布 job 中不设 golden
    环境变量，按 §0.2 skip 纪律打印 documented [SKIP] 后通过；release.yml
-   断言 JUnit XML 中的 [SKIP] 标记数 ≤ 3（wave-4 R47，与 kotlin-gates
-   同界——实测三个 env-gated 差分腿：differentialByteParity /
-   differentialNormalized / protocolExchange），新增静默 skip
-   会在发布路径变红。发布 job 不启用 Gradle 缓存。
+   断言 JUnit XML 中的 [SKIP] 标记数 ≤ 3（wave-4 R47 上界——实测三个
+   env-gated 差分腿：differentialByteParity / differentialNormalized /
+   protocolExchange；kotlin-gates 在 CI 侧进一步断言精确集合，wave-5），
+   新增静默 skip 会在发布路径变红。发布 job 不启用 Gradle 缓存。
 
 ## 2. 凭证配置（用户侧一次性动作）
 
