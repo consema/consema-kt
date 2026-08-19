@@ -31,7 +31,7 @@ dependencies {
     // kotlin("test") maps to kotlin.test assertions; JUnit5 is the runner.
     testImplementation(kotlin("test"))
     testImplementation("org.junit.jupiter:junit-jupiter:5.10.2")
-    testRuntimeOnly("org.junit.platform:junit-platform-launcher:1.10.2")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher:6.1.3")
 }
 
 tasks.test {
