@@ -9,7 +9,7 @@ plugins {
     kotlin("jvm") version "2.2.0"
     `maven-publish`
     `signing`
-    id("org.jetbrains.kotlinx.kover") version "0.9.9"
+    id("org.jetbrains.kotlinx.kover") version "0.9.11"
 }
 
 // Maven coordinates: dev.consema:consema-kotlin:<version>.
